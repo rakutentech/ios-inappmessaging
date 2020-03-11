@@ -1,0 +1,16 @@
+# Import base_config from git
+import_from_git(url: 'https://github.com/rakutentech/ios-buildconfig.git')
+
+platform :ios do
+  desc "Build everything"
+  lane :ci do |options|
+    # Use env variables to set up endpoints/keys in order to keep them secret
+    set_info_plist_value(path: "./Sample/Info.plist",
+                         key: "InAppMessagingConfigurationURL",
+                         value: ENV['RIAM_CONFIG_URL'] || "https://config.com/get-config")
+    set_info_plist_value(path: "./Sample/Info.plist",
+                         key: "InAppMessagingAppSubscriptionID",
+                         value: ENV['RIAM_APP_SUBSCRIPTION_KEY'] || "SUBSCRIPTION_KEY")
+    shared_tests(options)
+  end
+end

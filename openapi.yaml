@@ -1,0 +1,439 @@
+openapi: 3.0.1
+info:
+  title: In-App Messaging
+  description: This document represents endpoints that SDK use to manage campaigns.
+    Provided paths are examples (no paths are hardcoded in the SDK).
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  version: 0.1.0
+tags:
+- name: Configuration
+- name: Campaign
+- name: Impressions
+paths:
+  /get-config:
+    post:
+      tags:
+      - Configuration
+      summary: Get configuration to setup SDK
+      description: From the response from this endpoint SDK should decide to continue
+        initialization or disable all functionality. The response also gives endpoint
+        urls for all other requests. All parameters are required
+      operationId: getConfig
+      requestBody:
+        description: Pet object that needs to be added to the store
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfigRequest'
+        required: false
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConfigResponse'
+  /ping:
+    post:
+      tags:
+      - Campaign
+      summary: Get list of campaigns targeted to this device
+      description: The next ping call should be scheduled using nextPingMillis property
+        from the response. All parameters are required
+      operationId: ping
+      parameters:
+      - name: Subscription-Id
+        in: header
+        schema:
+          type: string
+          example: App subscription key
+      - name: device_id
+        in: header
+        schema:
+          type: string
+          format: uuid
+          example: Device id of user's device
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PingRequest'
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PingResponse'
+  /display_permission:
+    post:
+      tags:
+      - Campaign
+      summary: Check whether campaign is still valid
+      description: This endpoint is responsible for making final precaution checks before either allowing or stopping the SDK from showing an active campaign message. It doesn't apply for test campaigns. In case of request failure, SDK will display the campaign message. All parameters are required
+      operationId: displayPermission
+      parameters:
+      - name: Subscription-Id
+        in: header
+        schema:
+          type: string
+          example: App subscription key
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DisplayPermissionRequest'
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  display:
+                    type: boolean
+                    description: true - Display the campaign message
+                  performPing:
+                    type: boolean
+                    description: true - Perform additional /ping call
+                    
+  /impression:
+    post:
+      tags:
+      - Impressions
+      summary: Send impressions
+      description: This endpoint is used for persisting campaign impressions. Each request will update campaign's data (ex. maxImpressions) for this device which will be seen in next /ping response. All parameters are required
+      operationId: impression
+      parameters:
+      - name: Subscription-Id
+        in: header
+        schema:
+          type: string
+          example: App subscription key
+      - name: device_id
+        in: header
+        schema:
+          type: string
+          format: uuid
+          example: Device id of user's device
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImpressionRequest'
+      responses:
+        200:
+          description: Request succeeded
+components:
+  schemas:
+    ConfigRequest:
+      type: object
+      properties:
+        locale:
+          type: string
+          example: jp
+        appVersion:
+          type: string
+          example: "1.0"
+        platform:
+          type: integer
+          description: iOS or Android
+          example: 1
+        appId:
+          type: string
+          description: application bundle identifier
+          example: jp.co.company.app
+        sdkVersion:
+          type: string
+          example: 0.1.0
+    ConfigResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+            endpoints:
+              type: object
+              properties:
+                ping:
+                  type: string
+                  format: url
+                  example: https://.../ping
+                impression:
+                  type: string
+                  format: url
+                  example: https://.../impression
+                displayPermission:
+                  type: string
+                  format: url
+                  example: https://.../display_permission
+    PingRequest:
+      type: object
+      properties:
+        appVersion:
+          type: string
+          example: "1.0"
+        userIdentifiers:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserIdentifier'
+    PingResponse:
+      type: object
+      properties:
+        currentPingMillis:
+          type: integer
+          format: long
+          description: Timestamp in milliseconds
+          example: 1581305955817
+        nextPingMillis:
+          type: integer
+          description: Delay before next /ping call. Time in milliseconds
+          example: 3600000
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              campaignData:
+                type: object
+                properties:
+                  campaignId: 
+                    type: string
+                  type: 
+                    type: integer
+                    description: Type of this in-app message. 0 - INVALID, 1 - Modal View, 2 - Full Screen, 3 - Slide Banner, 4 - Html
+                    example: 1
+                  isTest:
+                    type: boolean
+                    description: "Display imeediately if true. Used for viewing purposes."
+                  triggers:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CampaignTrigger'
+                  messagePayload:
+                    type: object
+                    properties:
+                      title:
+                        type: string
+                        description: Title of the in-app message. This could be displayed on Push Notification.
+                      header:
+                        type: string
+                        description: Optional. Header text if any (Image-only campaigns don't have message body).
+                      messageBody:
+                        type: string
+                        description: Optional. Message body if any (Image-only campaigns don't have message body).
+                      titleColor:
+                        type: string
+                        example: "#000000"
+                        format: hexadecimal
+                        description: Optional. Title text color if any (Image-only campaigns don't have message body).
+                      headerColor:
+                        type: string
+                        example: "#000000"
+                        format: hexadecimal
+                        description: Optional. Header text color if any (Image-only campaigns don't have message body).
+                      messageBodyColor:
+                        type: string
+                        example: "#000000"
+                        format: hexadecimal
+                        description: Optional. Message body text color if any (Image-only campaigns don't have message body).
+                      backgroundColor:
+                        type: string
+                        example: "#000000"
+                        format: hexadecimal
+                      frameColor:
+                        type: string
+                        example: "#000000"
+                        format: hexadecimal
+                      resource:
+                        type: object
+                        properties:
+                          assetsUrl:
+                            type: string
+                            description: Optional (HTML view only)
+                            format: url
+                          imageUrl:
+                            type: string
+                            description: Optional
+                            format: url
+                          cropType:
+                            type: integer
+                            example: 1
+                            description: 0 - INVALID, 1 - Fill, 2 - Center
+                  messageSettings:
+                    type: object
+                    properties:
+                      displaySettings:
+                        type: object
+                        properties:
+                          slideFrom:
+                            type: integer
+                            description: Optional (for slide-up only). 1 - bottom, 2 - top, 3 - left, 4 - right
+                            example: 2
+                          endTimeMillis:
+                            type: integer
+                            description: The latest time to display in-app message. (UTC Milliseconds)
+                            format: long
+                            example: 1582984800000
+                          orientation:
+                            type: integer
+                            description: In-app message display orientation. 0 - INVALID, 1 - Portrait, 2 - Landscape
+                            example: 1
+                          textAlign:
+                            type: integer
+                            description: 0 - INVALID, 1 - Fill, 2 - Center
+                            example: 1
+                          optOut:
+                            type: boolean
+                            description: If true, message should include 'Do Not Display Again' checkbox.
+                          delay:
+                            type: integer
+                            description: Min time between consecutive messages. Milliseconds.
+                            example: 3000
+                      controlSettings:
+                        type: object
+                        properties:
+                          content:
+                            type: object
+                            properties:
+                              campaignTrigger: 
+                                $ref: '#/components/schemas/CampaignTrigger'
+                              onClickBehavior:
+                                $ref: '#/components/schemas/ButtonBehavior'
+                          buttons:
+                            type: array
+                            description: Only up to two items supported (none, center, left + right)
+                            items:
+                              type: object
+                              properties:
+                                buttonText:
+                                  type: string
+                                  description: Optional
+                                buttonTextColor:
+                                  type: string
+                                  example: "#000000"
+                                  format: hexadecimal
+                                  description: Optional
+                                buttonBackgroundColor:
+                                  type: string
+                                  example: "#000000"
+                                  format: hexadecimal
+                                  description: Optional
+                                buttonBehavior:
+                                  $ref: '#/components/schemas/ButtonBehavior'
+                                campaignTrigger:
+                                  $ref: '#/components/schemas/CampaignTrigger'
+    ButtonBehavior:
+      type: object
+      properties:
+        action:
+          type: integer
+          example: 3
+          description: Actions -> 0 - INVALID, 1 - Redirect, 2 - Deeplink, 3 - Close
+        uri:
+          type: string
+          description: URI for redirect or deeplink
+          format: uri
+    CampaignTrigger:
+      type: object
+      properties:
+        type:
+          type: integer
+          default: 1
+          description: 0 - INVALID, 1 - EVENT
+        eventType:
+          type: integer
+          example: 4
+          description: 0 - INVALID, 1 - App Start, 2 - Login Successful, 3 - Purchase Successful, 4 - Custom
+        eventName:
+          type: string
+        attributes:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+              value:
+                type: string
+              type:
+                type: integer
+                example: 3
+                description: 0 - INVALID, 1 - String, 2 - Integer, 3 - Double, 4 - Boolean, 5 - Time in Milliseconds
+              operator:
+                type: integer
+                example: 6
+                description: 0 - INVALID, 1 - Equals, 2 - Is Not Equal, 3 - Greater Than, 4 - Less Than, 5 - Is Blank, 6 - Is Not Blank, 7 - Matches Regex, 8 - Does Not Match Regex
+    UserIdentifier:
+      type: object
+      properties:
+        type:
+          type: integer
+          example: 3
+        id:
+          type: string
+          example: userId
+    DisplayPermissionRequest:
+      type: object
+      properties:
+        campaignId: 
+          type: string
+        userIdentifiers:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserIdentifier'
+        locale:
+          type: string
+          example: jp
+        appVersion:
+          type: string
+          example: "1.0"
+        platform:
+          type: integer
+          description: iOS or Android
+          example: 1
+        sdkVersion:
+          type: string
+          example: 0.1.0
+        lastPingInMillis:
+          type: integer
+          format: long
+          description: Time in milliseconds of the last ping request
+          example: 1582984800000
+    ImpressionRequest:
+      type: object
+      properties:
+        campaignId: 
+          type: string
+        isTest:
+          type: boolean
+          description: Must match campaign's `isTest` property (from /ping response)
+        appVersion:
+          type: string
+          example: "1.0"
+        sdkVersion:
+          type: string
+          example: 0.1.0
+        impressions:
+          type: array
+          items:
+            type: object
+            properties:
+              type:
+                type: integer
+                example: 6
+                description: 0 - INVALID, 1 - impression (display), 2 - left button, 3 - right button, 4 - close, 5 - click content, 6 - opt out
+              timestamp:
+                type: integer
+                format: long
+                description: Time in milliseconds
+                example: 1581910435156
+        userIdentifiers:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserIdentifier'

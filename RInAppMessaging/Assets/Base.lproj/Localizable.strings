@@ -1,0 +1,4 @@
+"optOut_message" = "Do not show me this message again";
+"dialog_alert_invalidURI_title" = "Page not found";
+"dialog_alert_invalidURI_message" = "Encountered error while navigating to the page";
+"dialog_alert_invalidURI_close" = "Close";

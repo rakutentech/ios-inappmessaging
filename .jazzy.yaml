@@ -1,0 +1,11 @@
+clean: true
+author: Rakuten
+module_version: 0.1.0
+module: RInAppMessaging
+xcodebuild_arguments:
+  - -workspace
+  - RInAppMessaging.xcworkspace.xcworkspace
+  - -scheme
+  - RInAppMessaging-Example
+podspec: RInAppMessaging.podspec
+readme: README.md

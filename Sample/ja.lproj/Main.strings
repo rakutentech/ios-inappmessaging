@@ -1,0 +1,15 @@
+
+/* Class = "UIButton"; normalTitle = "login_successful"; ObjectID = "He8-N3-cSd"; */
+"He8-N3-cSd.normalTitle" = "login_successful";
+
+/* Class = "UIButton"; normalTitle = "purchase_successful"; ObjectID = "gVB-nV-Xh6"; */
+"gVB-nV-Xh6.normalTitle" = "purchase_successful";
+
+/* Class = "UIButton"; normalTitle = "app_start"; ObjectID = "lru-TA-Ydd"; */
+"lru-TA-Ydd.normalTitle" = "app_start";
+
+/* Class = "UIButton"; normalTitle = "Go to second page"; ObjectID = "v1Y-eE-Q4A"; */
+"v1Y-eE-Q4A.normalTitle" = "Go to second page";
+
+/* Class = "UIButton"; normalTitle = "custom_test"; ObjectID = "zzZ-Cb-5PD"; */
+"zzZ-Cb-5PD.normalTitle" = "custom_test";

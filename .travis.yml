@@ -1,0 +1,25 @@
+language: swift
+xcode_workspace: Example/InAppMessaging.xcworkspace
+xcode_scheme: InAppMessaging-Example
+osx_image: xcode11.3
+
+before_install:
+- pod repo update
+
+script:
+- travis_wait fastlane ci
+- bundle exec danger
+
+after_success:
+  # generate docs
+- jazzy
+- pod lib lint
+
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN
+  keep_history: true
+  local_dir: docs
+  on:
+    branch: master

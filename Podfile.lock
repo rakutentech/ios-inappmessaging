@@ -1,0 +1,31 @@
+PODS:
+  - Nimble (8.0.5)
+  - Quick (2.2.0)
+  - RInAppMessaging (0.1.0)
+  - SwiftLint (0.39.1)
+
+DEPENDENCIES:
+  - Nimble
+  - Quick
+  - RInAppMessaging (from `.`)
+  - SwiftLint (~> 0.39.0)
+
+SPEC REPOS:
+  https://github.com/CocoaPods/Specs.git:
+    - Nimble
+    - Quick
+    - SwiftLint
+
+EXTERNAL SOURCES:
+  RInAppMessaging:
+    :path: "."
+
+SPEC CHECKSUMS:
+  Nimble: 4ab1aeb9b45553c75b9687196b0fa0713170a332
+  Quick: 7fb19e13be07b5dfb3b90d4f9824c855a11af40e
+  RInAppMessaging: 8a34f2b9592c748257ee48593d2c362f9b25366a
+  SwiftLint: 55e96a4a4d537d4a3156859fc1c54bd24851a046
+
+PODFILE CHECKSUM: 1180f3b79c58d96fae06c592cbf9d2bd25a186bc
+
+COCOAPODS: 1.8.4
