@@ -338,6 +338,7 @@ class BaseViewPresenterTests: QuickSpec {
 private class FullViewMock: UIView, FullViewType {
     var isOptOutChecked: Bool = false
     var onDismiss: (() -> Void)?
+    var isUsingAutoLayout = true
 
     private(set) var wasInitializeViewCalled = false
     private(set) var wasDismissCalled = false
@@ -354,10 +355,13 @@ private class FullViewMock: UIView, FullViewType {
     func addButtons(_ buttons: [(ActionButton, viewModel: ActionButtonViewModel)]) {
         addedButtons = buttons
     }
+
+    func animateOnShow() { }
 }
 
 private class SlideUpViewMock: UIView, SlideUpViewType {
     var onDismiss: (() -> Void)?
+    var isUsingAutoLayout = false
 
     private(set) var wasInitializeViewCalled = false
     private(set) var wasDismissCalled = false
@@ -369,6 +373,8 @@ private class SlideUpViewMock: UIView, SlideUpViewType {
     func dismiss() {
         wasDismissCalled = true
     }
+
+    func animateOnShow() { }
 }
 
 private class CampaignsValidatorMock: CampaignsValidatorType {

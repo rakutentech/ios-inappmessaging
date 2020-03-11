@@ -14,6 +14,10 @@ internal class SlideUpView: UIView, SlideUpViewType {
     }
 
     var onDismiss: (() -> Void)?
+    var isUsingAutoLayout: Bool {
+        return false
+    }
+
     private let presenter: SlideUpViewPresenter
     private let dialogView = UIView()
     private var slideDirection = SlideDirection.bottom
@@ -61,9 +65,7 @@ internal class SlideUpView: UIView, SlideUpViewType {
         appendSubview()
     }
 
-    /// Handles the animation of the SlideUpView.
-    /// - Parameter viewModel: The view's view model.
-    func animateOnShow(viewModel: FullViewModel) {
+    func animateOnShow() {
         //swiftlint:disable:next todo
         //TODO: (Daniel Tam) - Support TOP direction for slide-up
         UIView.animate(withDuration: 0.4, delay: 0, options: .curveEaseInOut, animations: {

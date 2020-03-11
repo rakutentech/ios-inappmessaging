@@ -34,6 +34,9 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
     var isOptOutChecked: Bool {
         return !optOutView.isHidden && optOutView.isChecked
     }
+    var isUsingAutoLayout: Bool {
+        return true
+    }
     var onDismiss: (() -> Void)?
 
     private let presenter: FullViewPresenter
@@ -112,6 +115,8 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
     }
 
     func updateUIConstants() { }
+
+    func animateOnShow() { }
 
     private func setUpAccessibility() {
         backgroundView.accessibilityIdentifier = "IAMBackgroundView"

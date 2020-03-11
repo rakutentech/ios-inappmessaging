@@ -4,6 +4,7 @@ import class UIKit.UIView
 internal protocol BaseView: UIView {
     var viewIdentifier: String { get }
     var onDismiss: (() -> Void)? { get set }
+    var isUsingAutoLayout: Bool { get }
 
     /// Handle the login for displaying Modal/Fullscreen IAM views
     func show(accessibilityCompatible: Bool, onDismiss: @escaping () -> Void)
@@ -29,8 +30,6 @@ internal extension BaseView {
         onDismiss?()
     }
 
-    func animateOnShow() { }
-
     /// Find the presented view controller and add the `BaseView` on top.
     private func displayView(accessibilityCompatible: Bool) {
         self.accessibilityIdentifier = viewIdentifier
@@ -49,10 +48,18 @@ internal extension BaseView {
 
         guard let window =  UIApplication.shared.keyWindow,
             findPresentedIAMView(from: window) == nil else {
-            return
+                return
         }
 
         let parentView = accessibilityCompatible ? (window.subviews.first ?? window) : window
-        parentView.addSubview(self)
+        if isUsingAutoLayout {
+            translatesAutoresizingMaskIntoConstraints = false
+            parentView.addSubview(self)
+            activateConstraintsFilling(parent: parentView)
+        } else {
+            parentView.addSubview(self)
+        }
+
+        animateOnShow()
     }
 }

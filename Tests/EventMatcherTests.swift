@@ -47,7 +47,42 @@ class EventMatcherTests: QuickSpec {
                     }.to(throwError(EventMatcherError.couldntFindRequestedSetOfEvents))
                 }
 
-                it("will succeed if only global events are required") {
+                it("will not persist normal events") {
+                    campaignRepository.list = [testCampaign]
+                    eventMatcher.matchAndStore(event: LoginSuccessfulEvent())
+                    eventMatcher.matchAndStore(event: AppStartEvent())
+                    try? eventMatcher.removeSetOfMatchedEvents([AppStartEvent(), LoginSuccessfulEvent()],
+                                                               for: testCampaign)
+                    expect {
+                        try eventMatcher.removeSetOfMatchedEvents([AppStartEvent(), LoginSuccessfulEvent()],
+                                                                  for: testCampaign)
+                    }.to(throwError(EventMatcherError.couldntFindRequestedSetOfEvents))
+                }
+
+                it("will succeed if all events were found") {
+                    campaignRepository.list = [testCampaign]
+                    eventMatcher.matchAndStore(event: LoginSuccessfulEvent())
+                    eventMatcher.matchAndStore(event: AppStartEvent())
+                    expect {
+                        try eventMatcher.removeSetOfMatchedEvents([AppStartEvent(), LoginSuccessfulEvent()],
+                                                                  for: testCampaign)
+                    }.toNot(throwError())
+                }
+
+                it("will succeed again without need for persistent event to be logged") {
+                    campaignRepository.list = [testCampaign]
+                    eventMatcher.matchAndStore(event: LoginSuccessfulEvent())
+                    eventMatcher.matchAndStore(event: AppStartEvent())
+                    try? eventMatcher.removeSetOfMatchedEvents([AppStartEvent(), LoginSuccessfulEvent()],
+                                                               for: testCampaign)
+                    eventMatcher.matchAndStore(event: LoginSuccessfulEvent())
+                    expect {
+                        try eventMatcher.removeSetOfMatchedEvents([AppStartEvent(), LoginSuccessfulEvent()],
+                                                                  for: testCampaign)
+                    }.toNot(throwError())
+                }
+
+                it("will succeed if only persistent events are required") {
                     let campaign = TestHelpers.generateCampaign(id: "test",
                                                                 test: false, delay: 0,
                                                                 maxImpressions: 1,
@@ -65,7 +100,26 @@ class EventMatcherTests: QuickSpec {
                     }.toNot(throwError())
                 }
 
-                it("Won't remove global events") {
+                it("will succeed only once if only persistent events are required") {
+                    let campaign = TestHelpers.generateCampaign(id: "test",
+                                                                test: false, delay: 0,
+                                                                maxImpressions: 1,
+                                                                triggers: [
+                                                                    Trigger(type: .event,
+                                                                            eventType: .appStart,
+                                                                            eventName: "appStartTest",
+                                                                            attributes: [])
+                        ]
+                    )
+                    campaignRepository.list = [campaign]
+                    eventMatcher.matchAndStore(event: AppStartEvent())
+                    try? eventMatcher.removeSetOfMatchedEvents([AppStartEvent()], for: campaign)
+                    expect {
+                        try eventMatcher.removeSetOfMatchedEvents([AppStartEvent()], for: campaign)
+                    }.to(throwError(EventMatcherError.providedSetOfEventsHaveAlreadyBeenUsed))
+                }
+
+                it("won't remove persistent events") {
                     campaignRepository.list = [testCampaign]
                     eventMatcher.matchAndStore(event: AppStartEvent())
                     eventMatcher.matchAndStore(event: LoginSuccessfulEvent())
@@ -78,7 +132,7 @@ class EventMatcherTests: QuickSpec {
                                                                   for: testCampaign)
                     }.toNot(throwError())
                     // this case doesn't make sense as a use case but it's the only way
-                    // to check for existence of AppStartEvent() in EventMather.globalEvents list
+                    // to check for existence of AppStartEvent() in EventMather.persistentEvents list
                     // without exposing properties
                 }
             }

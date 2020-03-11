@@ -3,7 +3,7 @@ import Foundation
 internal protocol EventMatcherType: AnyObject {
 
     /// Function to store logged event.
-    /// Event won't be stored if it is not categorized as global event
+    /// Event won't be stored if it is not categorized as persistent event
     /// or there are no campaigns with matching triggers.
     /// - Parameter event: An event to store
     func matchAndStore(event: Event)
@@ -12,13 +12,14 @@ internal protocol EventMatcherType: AnyObject {
 
     /// Function tries to find and remove one record for each event in set for provided campaign.
     /// Operation succeeds only if there is at least one record of each event.
-    /// Function can be used with global events - they won't be removed.
+    /// Function can be used with persistent events - they won't be removed.
     /// - Throws: Can throw EventMatcherError when records of requested events cannot be found
     func removeSetOfMatchedEvents(_ eventsToRemove: Set<Event>, for campaign: Campaign) throws
 }
 
 internal enum EventMatcherError: Error {
     case couldntFindRequestedSetOfEvents
+    case providedSetOfEventsHaveAlreadyBeenUsed
 }
 
 /// A class to store logged events that match a campaign's trigger.
@@ -27,15 +28,16 @@ internal class EventMatcher: EventMatcherType {
 
     private let campaignRepository: CampaignRepositoryType
     private var matchedEvents = [String: [Event]]()
-    private var globalEvents = Set<Event>()
+    private var usedPersistentEventsOnlyCampaigns = Set<String>()
+    private var persistentEvents = Set<Event>()
 
     init(campaignRepository: CampaignRepositoryType) {
         self.campaignRepository = campaignRepository
     }
 
     func matchAndStore(event: Event) {
-        guard !event.isGlobal else {
-            globalEvents.insert(event)
+        guard !event.isPersistent else {
+            persistentEvents.insert(event)
             return
         }
 
@@ -55,26 +57,32 @@ internal class EventMatcher: EventMatcherType {
     }
 
     func matchedEvents(for campaign: Campaign) -> [Event] {
-        return matchedEvents[campaign.id, default: []] + globalEvents
+        return matchedEvents[campaign.id, default: []] + persistentEvents
     }
 
     func containsAllMatchedEvents(for campaign: Campaign) -> Bool {
         guard let triggers = campaign.data.triggers else {
             return false
         }
-        let events = matchedEvents[campaign.id, default: []] + globalEvents
+        let events = matchedEvents[campaign.id, default: []] + persistentEvents
         return events.allSatisfy { isEventMatchingOneOfTriggers(event: $0, triggers: triggers) }
     }
 
     func removeSetOfMatchedEvents(_ eventsToRemove: Set<Event>, for campaign: Campaign) throws {
         var campaignEvents = matchedEvents[campaign.id, default: []]
-        guard campaignEvents.count + globalEvents.count >= eventsToRemove.count else {
+        let totalMatchedEvents = campaignEvents.count + persistentEvents.count
+        guard totalMatchedEvents > 0, totalMatchedEvents >= eventsToRemove.count else {
             throw EventMatcherError.couldntFindRequestedSetOfEvents
+        }
+
+        let persistentEventsOnlyCampaign = campaignEvents.isEmpty
+        guard !(persistentEventsOnlyCampaign && usedPersistentEventsOnlyCampaigns.contains(campaign.id)) else {
+            throw EventMatcherError.providedSetOfEventsHaveAlreadyBeenUsed
         }
 
         for eventToRemove in eventsToRemove {
             guard let index = campaignEvents.firstIndex(of: eventToRemove) else {
-                if eventToRemove.isGlobal && globalEvents.contains(eventToRemove) {
+                if eventToRemove.isPersistent && persistentEvents.contains(eventToRemove) {
                     continue
                 }
                 throw EventMatcherError.couldntFindRequestedSetOfEvents
@@ -82,7 +90,11 @@ internal class EventMatcher: EventMatcherType {
             campaignEvents.remove(at: index)
         }
 
-        matchedEvents[campaign.id] = campaignEvents
+        if persistentEventsOnlyCampaign {
+            usedPersistentEventsOnlyCampaigns.insert(campaign.id)
+        } else {
+            matchedEvents[campaign.id] = campaignEvents
+        }
     }
 
     private func isEventMatchingOneOfTriggers(event: Event, triggers: [Trigger]) -> Bool {
@@ -99,7 +111,7 @@ internal class EventMatcher: EventMatcherType {
 }
 
 private extension Event {
-    var isGlobal: Bool {
+    var isPersistent: Bool {
         return type == .appStart
     }
 }

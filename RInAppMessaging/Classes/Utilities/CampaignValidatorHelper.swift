@@ -11,10 +11,10 @@ internal struct CampaignsValidatorHelper {
         return { campaign, triggeredEvents in
             do {
                 try eventMatcher.removeSetOfMatchedEvents(triggeredEvents, for: campaign)
+                dispatcher.addToQueue(campaign: campaign)
             } catch {
                 // Campaign is not ready to be displayed
             }
-            dispatcher.addToQueue(campaign: campaign)
         }
     }
 }
