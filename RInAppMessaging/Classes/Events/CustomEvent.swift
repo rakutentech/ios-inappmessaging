@@ -18,7 +18,8 @@
     }
 
     @objc
-    public init(withName name: String, withCustomAttributes customAttributes: [CustomAttribute]?) {
+    public init(withName name: String,
+                withCustomAttributes customAttributes: [CustomAttribute]?) {
 
         self.customAttributes = customAttributes
 
@@ -26,7 +27,9 @@
                    name: name)
     }
 
-    init(withName name: String, withCustomAttributes customAttributes: [CustomAttribute]?, timestamp: Int) {
+    init(withName name: String,
+         withCustomAttributes customAttributes: [CustomAttribute]?,
+         timestamp: Int64) {
 
         self.customAttributes = customAttributes
 

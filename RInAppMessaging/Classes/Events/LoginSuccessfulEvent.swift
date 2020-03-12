@@ -15,7 +15,7 @@
                    name: Constants.Event.loginSuccessful)
     }
 
-    init(timestamp: Int) {
+    init(timestamp: Int64) {
         super.init(type: EventType.loginSuccessful,
                    name: Constants.Event.loginSuccessful,
                    timestamp: timestamp)

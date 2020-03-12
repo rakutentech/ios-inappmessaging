@@ -5,7 +5,7 @@ internal class ConfigurationClient: HttpRequestable, ErrorReportable, Reachabili
 
     private let reachability: ReachabilityType?
     private let configURL: String
-    private static var retryDelayMillis = 10000
+    private var retryDelayMillis = Int32(10000)
     private var lastRequestTime: TimeInterval = 0
     private let dataValidityPeriod: TimeInterval = 60
 
@@ -89,12 +89,12 @@ internal class ConfigurationClient: HttpRequestable, ErrorReportable, Reachabili
 
         switch response {
         case .failure(let error):
-            let description = "InAppMessaging: Error calling config server. Retrying in \(ConfigurationClient.retryDelayMillis)ms"
+            let description = "InAppMessaging: Error calling config server. Retrying in \(retryDelayMillis)ms"
             CommonUtility.debugPrint(description)
             reportError(description: description, data: error)
-            WorkScheduler.scheduleTask(milliseconds: ConfigurationClient.retryDelayMillis, closure: retryHandler, wallDeadline: true)
+            WorkScheduler.scheduleTask(milliseconds: Int(retryDelayMillis), closure: retryHandler, wallDeadline: true)
             // Exponential backoff for pinging Configuration server.
-            ConfigurationClient.retryDelayMillis *= 2
+            retryDelayMillis = retryDelayMillis.multipliedReportingOverflow(by: 2).partialValue
             return (nil, nil)
 
         case .success((let data, _)):

@@ -1,7 +1,7 @@
 /// Data model for Campaign response.
 internal struct PingResponse: Decodable {
     let nextPingMillis: Int
-    let currentPingMillis: Int
+    let currentPingMillis: Int64
     let data: [Campaign]
 }
 
@@ -104,7 +104,7 @@ internal struct MessageSettings: Decodable {
 internal struct DisplaySettings: Decodable {
     let orientation: Int
     let slideFrom: SlideDirection?
-    let endTimeMillis: Int
+    let endTimeMillis: Int64
     let textAlign: Int
     let optOut: Bool
     let html: Bool?

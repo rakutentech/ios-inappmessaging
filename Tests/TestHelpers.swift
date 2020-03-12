@@ -53,7 +53,7 @@ struct TestHelpers {
                         displaySettings: DisplaySettings(
                             orientation: 1,
                             slideFrom: .bottom,
-                            endTimeMillis: Int.max,
+                            endTimeMillis: Int64.max,
                             textAlign: 1,
                             optOut: false,
                             html: false,
@@ -92,7 +92,7 @@ struct TestHelpers {
                         displaySettings: DisplaySettings(
                             orientation: 1,
                             slideFrom: .bottom,
-                            endTimeMillis: Int.max,
+                            endTimeMillis: Int64.max,
                             textAlign: 1,
                             optOut: false,
                             html: false,

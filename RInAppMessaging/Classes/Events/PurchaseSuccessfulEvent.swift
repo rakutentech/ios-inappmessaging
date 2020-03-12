@@ -45,7 +45,7 @@
         withNumberOfItems numberOfItems: Int,
         withCurrencyCode currencyCode: String,
         withItems itemList: [String],
-        timestamp: Int) {
+        timestamp: Int64) {
 
             self.purchaseAmount = purchaseAmount
             self.numberOfItems = numberOfItems

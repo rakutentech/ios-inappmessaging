@@ -15,7 +15,7 @@ internal class MessageMixerClient: MessageMixerClientType, HttpRequestable, Task
 
     weak var errorDelegate: ErrorDelegate?
     var workItemReference: DispatchWorkItem?
-    private var retryDelayMillis = 10000 // Milliseconds before pinging Message Mixer server.
+    private var retryDelayMillis = Int32(10000) // Milliseconds before pinging Message Mixer server.
 
     init(campaignsValidator: CampaignsValidatorType,
          campaignRepository: CampaignRepositoryType,
@@ -51,9 +51,9 @@ internal class MessageMixerClient: MessageMixerClientType, HttpRequestable, Task
             httpMethod: .post,
             addtionalHeaders: buildRequestHeader()).get().data else {
 
-                WorkScheduler.scheduleTask(milliseconds: retryDelayMillis, closure: pingMixerServer, wallDeadline: true)
+                WorkScheduler.scheduleTask(milliseconds: Int(retryDelayMillis), closure: pingMixerServer, wallDeadline: true)
                 // Exponential backoff for pinging Message Mixer server.
-                retryDelayMillis *= 2
+                retryDelayMillis = retryDelayMillis.multipliedReportingOverflow(by: 2).partialValue
                 return
         }
 

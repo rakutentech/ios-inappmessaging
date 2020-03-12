@@ -142,7 +142,7 @@ private class PermissionClientMock: PermissionClientType {
 
 private class CampaignRepositoryMock: CampaignRepositoryType {
     var list: [Campaign] = []
-    var lastSyncInMilliseconds: Int?
+    var lastSyncInMilliseconds: Int64?
     var resourcesToLock: [LockableResource] = []
 
     var wasDecrementImpressionsCalled = false
@@ -152,6 +152,6 @@ private class CampaignRepositoryMock: CampaignRepositoryType {
         return Campaign.updatedCampaign(campaign, withImpressionLeft: campaign.impressionsLeft - 1)
     }
 
-    func syncWith(list: [Campaign], timestampMilliseconds: Int) { }
+    func syncWith(list: [Campaign], timestampMilliseconds: Int64) { }
     func optOutCampaign(_ campaign: Campaign) -> Campaign? { return nil }
 }

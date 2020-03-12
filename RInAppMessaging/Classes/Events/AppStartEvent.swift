@@ -15,7 +15,7 @@
                    name: Constants.Event.appStart)
     }
 
-    init(timestamp: Int) {
+    init(timestamp: Int64) {
         super.init(type: EventType.appStart,
                    name: Constants.Event.appStart,
                    timestamp: timestamp)

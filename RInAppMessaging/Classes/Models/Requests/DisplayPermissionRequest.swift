@@ -7,5 +7,5 @@ internal struct DisplayPermissionRequest: Encodable {
     let appVersion: String
     let sdkVersion: String
     let locale: String
-    let lastPingInMillis: Int
+    let lastPingInMillis: Int64
 }

@@ -89,9 +89,9 @@ class EventMatcherTests: QuickSpec {
 private class CampaignRepositoryMock: CampaignRepositoryType {
     var list: [Campaign] = []
     var resourcesToLock: [LockableResource] = []
-    var lastSyncInMilliseconds: Int?
+    var lastSyncInMilliseconds: Int64?
 
-    func syncWith(list: [Campaign], timestampMilliseconds: Int) { }
+    func syncWith(list: [Campaign], timestampMilliseconds: Int64) { }
     func optOutCampaign(_ campaign: Campaign) -> Campaign? { return nil }
     func decrementImpressionsLeftInCampaign(_ campaign: Campaign) -> Campaign? { return nil }
 }

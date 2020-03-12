@@ -1,10 +1,10 @@
 internal protocol CampaignRepositoryType: AnyObject, Lockable {
     var list: [Campaign] { get }
-    var lastSyncInMilliseconds: Int? { get }
+    var lastSyncInMilliseconds: Int64? { get }
 
     /// Used to sync with list from the server. Server list is considered as source of truth.
     /// Order must be preserved.
-    func syncWith(list: [Campaign], timestampMilliseconds: Int)
+    func syncWith(list: [Campaign], timestampMilliseconds: Int64)
 
     /// Opts out the campaign and updates the repository.
     /// - Parameter campaign: The campaign to opt out.
@@ -23,7 +23,7 @@ internal protocol CampaignRepositoryType: AnyObject, Lockable {
 internal class CampaignRepository: CampaignRepositoryType {
 
     private let campaigns = LockableObject([Campaign]())
-    private(set) var lastSyncInMilliseconds: Int?
+    private(set) var lastSyncInMilliseconds: Int64?
     var list: [Campaign] {
         return campaigns.get()
     }
@@ -31,7 +31,7 @@ internal class CampaignRepository: CampaignRepositoryType {
         return [campaigns]
     }
 
-    func syncWith(list: [Campaign], timestampMilliseconds: Int) {
+    func syncWith(list: [Campaign], timestampMilliseconds: Int64) {
         lastSyncInMilliseconds = timestampMilliseconds
         let oldList = self.campaigns.get()
         var newList = [Campaign]()

@@ -4,14 +4,14 @@
 @objc public class Event: NSObject, Codable {
 
     var type: EventType
-    var timestamp: Int
+    var timestamp: Int64
     var name: String
 
     var analyticsParameters: [String: Any] {
         return [:]
     }
 
-    init(type: EventType, name: String, timestamp: Int = Date().millisecondsSince1970) {
+    init(type: EventType, name: String, timestamp: Int64 = Date().millisecondsSince1970) {
         self.type = type
         self.timestamp = timestamp
         self.name = name.lowercased()

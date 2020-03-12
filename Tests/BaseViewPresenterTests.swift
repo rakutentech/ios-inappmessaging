@@ -381,7 +381,7 @@ private class CampaignsValidatorMock: CampaignsValidatorType {
 private class CampaignRepositoryMock: CampaignRepositoryType {
     var resourcesToLock: [LockableResource] = []
     var list: [Campaign] = []
-    var lastSyncInMilliseconds: Int?
+    var lastSyncInMilliseconds: Int64?
 
     private(set) var wasOptOutCalled = false
 
@@ -390,7 +390,7 @@ private class CampaignRepositoryMock: CampaignRepositoryType {
         return Campaign.updatedCampaign(campaign, asOptedOut: true)
     }
 
-    func syncWith(list: [Campaign], timestampMilliseconds: Int) { }
+    func syncWith(list: [Campaign], timestampMilliseconds: Int64) { }
     func decrementImpressionsLeftInCampaign(_ campaign: Campaign) -> Campaign? { return nil }
 }
 
