@@ -22,7 +22,6 @@ paths:
         urls for all other requests. All parameters are required
       operationId: getConfig
       requestBody:
-        description: Pet object that needs to be added to the store
         content:
           application/json:
             schema:
