@@ -13,4 +13,21 @@ platform :ios do
                          value: ENV['RIAM_APP_SUBSCRIPTION_KEY'] || "SUBSCRIPTION_KEY")
     shared_tests(options)
   end
+
+  desc "With removed slather and format_objc steps"
+  override_lane :shared_tests do
+    cocoapods(repo_update: ENV['REM_FL_CP_REPO_UPDATE'] || false)
+
+    scan(
+      clean: true,
+      skip_build: true,
+      output_directory: './artifacts/unit-tests',
+      scheme: ENV['REM_FL_TESTS_SCHEME'] || 'Tests',
+      device: ENV['REM_FL_TESTS_DEVICE'] || 'REM SDK Unit Tests',
+      code_coverage: true,
+      output_types: 'json-compilation-database,html,junit',
+      output_files: 'compile_commands.json,report.html,report.junit')
+
+    lint_module
+  end
 end

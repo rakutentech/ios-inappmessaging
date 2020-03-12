@@ -1,17 +1,17 @@
-#MacOS
+# MacOS
 .DS_Store
 .LSOverride
 
-#Xcode
+# Xcode
 xcuserdata
 *.pbxuser
 *.xccheckout
 *.xcworkspace
 
-#Pods
+# Pods
 Pods/
 
-#Fastlane
+# Fastlane
 fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots/**/*.png
@@ -19,7 +19,7 @@ fastlane/test_output
 fastlane/README.md
 Gemfile.lock
 
-#Build
+# Build
 build/
 DerivedData/
 artifacts
@@ -28,5 +28,11 @@ artifacts
 *.dSYM.zip
 *.dSYM
 
-#Jazzy
+# Jazzy
 docs/
+
+# Gems
+.bundle/
+vendor/
+# Use latest gem versions
+Gemfile.lock
