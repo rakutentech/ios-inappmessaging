@@ -23,7 +23,7 @@ after_success:
 
 deploy:
   provider: pages
-  skip_cleanup: true
+  edge: true
   github_token: $PUBLISHER_GITHUB_API_TOKEN
   keep_history: true
   local_dir: docs
