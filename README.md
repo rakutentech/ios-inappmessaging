@@ -1,3 +1,7 @@
+[![Build Status](https://travis-ci.org/rakutentech/ios-inappmessaging.svg?branch=master)](https://travis-ci.org/rakutentech/ios-inappmessaging)
+[![codecov](https://codecov.io/gh/rakutentech/ios-inappmessaging/branch/master/graph/badge.svg)](https://codecov.io/gh/rakutentech/ios-inappmessaging)
+
+
 # RInAppMessaging
 
 InAppMessaging allows app developers to easily configure and display notifications within their app.
@@ -10,7 +14,7 @@ More information on installing pods: [https://guides.cocoapods.org/using/getting
 1) Include the following in your application's Podfile
 
 ```ruby
-pod 'InAppMessaging'
+pod 'InAppMessaging' :git => 'https://github.com/rakutentech/ios-inappmessaging.git'
 ```
 
 2) Run the following in the terminal
