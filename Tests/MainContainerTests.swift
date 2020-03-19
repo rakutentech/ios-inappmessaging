@@ -17,21 +17,25 @@ class MainContainerTests: QuickSpec {
             it("will have all dependencies resolved") {
                 let instances: [Any?] = [
                     dependencyManager.resolve(type: CommonUtility.self),
-                    dependencyManager.resolve(type: ConfigurationClient.self),
+                    dependencyManager.resolve(type: ConfigurationServiceType.self),
+                    dependencyManager.resolve(type: ConfigurationRepositoryType.self),
+                    dependencyManager.resolve(type: ConfigurationManagerType.self),
                     dependencyManager.resolve(type: CampaignRepositoryType.self),
                     dependencyManager.resolve(type: EventMatcherType.self),
                     dependencyManager.resolve(type: ReadyCampaignDispatcherType.self),
                     dependencyManager.resolve(type: IAMPreferenceRepository.self),
-                    dependencyManager.resolve(type: PermissionClientType.self),
+                    dependencyManager.resolve(type: DisplayPermissionServiceType.self),
                     dependencyManager.resolve(type: RouterType.self),
-                    dependencyManager.resolve(type: MessageMixerClientType.self),
-                    dependencyManager.resolve(type: ImpressionClientType.self),
+                    dependencyManager.resolve(type: MessageMixerServiceType.self),
+                    dependencyManager.resolve(type: ImpressionServiceType.self),
                     dependencyManager.resolve(type: CampaignsValidatorType.self),
                     dependencyManager.resolve(type: ReachabilityType.self),
                     dependencyManager.resolve(type: FullViewPresenter.self),
-                    dependencyManager.resolve(type: SlideUpViewPresenter.self)
+                    dependencyManager.resolve(type: SlideUpViewPresenter.self),
+                    dependencyManager.resolve(type: CampaignsListManagerType.self)
                 ]
                 expect(instances).to(allPass({ $0 != nil }))
+                // this test will fail if there are any cycle references
             }
         }
     }

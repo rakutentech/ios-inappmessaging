@@ -8,14 +8,14 @@ class BaseViewPresenterTests: QuickSpec {
 
         var campaignsValidator: CampaignsValidatorMock!
         var campaignRepository: CampaignRepositoryMock!
-        var impressionClient: ImpressionClientMock!
+        var impressionService: ImpressionServiceMock!
         var eventMatcher: EventMatcherMock!
         var readyCampaignDispatcher: ReadyCampaignDispatcherStub!
 
         beforeEach {
             campaignsValidator = CampaignsValidatorMock()
             campaignRepository = CampaignRepositoryMock()
-            impressionClient = ImpressionClientMock()
+            impressionService = ImpressionServiceMock()
             eventMatcher = EventMatcherMock()
             readyCampaignDispatcher = ReadyCampaignDispatcherStub()
         }
@@ -27,7 +27,7 @@ class BaseViewPresenterTests: QuickSpec {
             beforeEach {
                 presenter = BaseViewPresenter(campaignsValidator: campaignsValidator,
                                              campaignRepository: campaignRepository,
-                                             impressionClient: impressionClient,
+                                             impressionService: impressionService,
                                              eventMatcher: eventMatcher,
                                              readyCampaignDispatcher: readyCampaignDispatcher)
                 presenter.campaign = defaultCampaign
@@ -54,7 +54,7 @@ class BaseViewPresenterTests: QuickSpec {
                     }
 
                     presenter.sendImpressions()
-                    expect(impressionClient.sentImpressions?.list).to(equal(impressions))
+                    expect(impressionService.sentImpressions?.list).to(equal(impressions))
                 }
 
                 it("will send impressions for provided campaign") {
@@ -64,7 +64,7 @@ class BaseViewPresenterTests: QuickSpec {
                     }
 
                     presenter.sendImpressions()
-                    expect(impressionClient.sentImpressions?.campaignID).to(equal(defaultCampaign.id))
+                    expect(impressionService.sentImpressions?.campaignID).to(equal(defaultCampaign.id))
                 }
 
                 it("will clear the list of logged impressions after sending") {
@@ -121,7 +121,7 @@ class BaseViewPresenterTests: QuickSpec {
                 view = SlideUpViewMock()
                 presenter = SlideUpViewPresenter(campaignsValidator: campaignsValidator,
                                                  campaignRepository: campaignRepository,
-                                                 impressionClient: impressionClient,
+                                                 impressionService: impressionService,
                                                  eventMatcher: eventMatcher,
                                                  readyCampaignDispatcher: readyCampaignDispatcher)
                 presenter.view = view
@@ -145,12 +145,12 @@ class BaseViewPresenterTests: QuickSpec {
 
                 it("will send impressions containing .exit type") {
                     presenter.didClickExitButton()
-                    expect(impressionClient.sentImpressions?.list).to(contain(.exit))
+                    expect(impressionService.sentImpressions?.list).to(contain(.exit))
                 }
 
                 it("will not send impressions containing .optOut type") {
                     presenter.didClickExitButton()
-                    expect(impressionClient.sentImpressions?.list).toNot(contain(.optOut))
+                    expect(impressionService.sentImpressions?.list).toNot(contain(.optOut))
                 }
             }
 
@@ -163,12 +163,12 @@ class BaseViewPresenterTests: QuickSpec {
 
                 it("will send impressions containing .clickContent type") {
                     presenter.didClickContent()
-                    expect(impressionClient.sentImpressions?.list).to(contain(.clickContent))
+                    expect(impressionService.sentImpressions?.list).to(contain(.clickContent))
                 }
 
                 it("will not send impressions containing .optOut type") {
                     presenter.didClickContent()
-                    expect(impressionClient.sentImpressions?.list).toNot(contain(.optOut))
+                    expect(impressionService.sentImpressions?.list).toNot(contain(.optOut))
                 }
 
                 it("will log new event based on the content's trigger") {
@@ -203,7 +203,7 @@ class BaseViewPresenterTests: QuickSpec {
                 view = FullViewMock()
                 presenter = FullViewPresenter(campaignsValidator: campaignsValidator,
                                                  campaignRepository: campaignRepository,
-                                                 impressionClient: impressionClient,
+                                                 impressionService: impressionService,
                                                  eventMatcher: eventMatcher,
                                                  readyCampaignDispatcher: readyCampaignDispatcher)
                 presenter.view = view
@@ -283,20 +283,20 @@ class BaseViewPresenterTests: QuickSpec {
 
                 it("will send impressions containing button's impression") {
                     presenter.didClickAction(sender: sender)
-                    expect(impressionClient.sentImpressions?.list).to(contain(sender.impression))
+                    expect(impressionService.sentImpressions?.list).to(contain(sender.impression))
                 }
 
                 it("will send impressions containing .optOut type if campaign was opted out") {
                     view.isOptOutChecked = true
                     presenter.didClickAction(sender: sender)
                     expect(presenter.campaign.isOptedOut).to(beTrue())
-                    expect(impressionClient.sentImpressions?.list).to(contain(.optOut))
+                    expect(impressionService.sentImpressions?.list).to(contain(.optOut))
                 }
 
                 it("will not send impressions containing .optOut type if campaign was not opted out") {
                     presenter.didClickAction(sender: sender)
                     expect(presenter.campaign.isOptedOut).to(beFalse())
-                    expect(impressionClient.sentImpressions?.list).toNot(contain(.optOut))
+                    expect(impressionService.sentImpressions?.list).toNot(contain(.optOut))
                 }
 
                 it("will log new event based on the button's trigger") {
@@ -315,20 +315,20 @@ class BaseViewPresenterTests: QuickSpec {
 
                 it("will send impressions containing .exit type") {
                     presenter.didClickExitButton()
-                    expect(impressionClient.sentImpressions?.list).to(contain(.exit))
+                    expect(impressionService.sentImpressions?.list).to(contain(.exit))
                 }
 
                 it("will send impressions containing .optOut type if campaign was opted out") {
                     view.isOptOutChecked = true
                     presenter.didClickExitButton()
                     expect(presenter.campaign.isOptedOut).to(beTrue())
-                    expect(impressionClient.sentImpressions?.list).to(contain(.optOut))
+                    expect(impressionService.sentImpressions?.list).to(contain(.optOut))
                 }
 
                 it("will not send impressions containing .optOut type if campaign was not opted out") {
                     presenter.didClickExitButton()
                     expect(presenter.campaign.isOptedOut).to(beFalse())
-                    expect(impressionClient.sentImpressions?.list).toNot(contain(.optOut))
+                    expect(impressionService.sentImpressions?.list).toNot(contain(.optOut))
                 }
             }
         }
@@ -400,7 +400,7 @@ private class CampaignRepositoryMock: CampaignRepositoryType {
     func decrementImpressionsLeftInCampaign(_ campaign: Campaign) -> Campaign? { return nil }
 }
 
-private class ImpressionClientMock: ImpressionClientType {
+private class ImpressionServiceMock: ImpressionServiceType {
     weak var errorDelegate: ErrorDelegate?
     var sentImpressions: (list: [ImpressionType], campaignID: String)?
 
@@ -421,6 +421,7 @@ private class EventMatcherMock: EventMatcherType {
 }
 
 private class ReadyCampaignDispatcherStub: ReadyCampaignDispatcherType {
+    weak var delegate: ReadyCampaignDispatcherDelegate?
     func addToQueue(campaign: Campaign) { }
     func dispatchAllIfNeeded() { }
 }

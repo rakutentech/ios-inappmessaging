@@ -1,7 +1,7 @@
 /// Protocol that is conformed to when impression tracking is needed.
 internal protocol ImpressionTrackable: AnyObject {
     var impressions: [Impression] { get set }
-    var impressionClient: ImpressionClientType { get }
+    var impressionService: ImpressionServiceType { get }
 
     /// Log the impression of a campaign.
     /// - Parameter type: Enum type of the impression.
@@ -16,7 +16,7 @@ internal protocol ImpressionTrackable: AnyObject {
 
 extension ImpressionTrackable {
     func sendImpressions(for campaign: Campaign) {
-        impressionClient.pingImpression(
+        impressionService.pingImpression(
             impressions: impressions,
             campaignData: campaign.data)
     }

@@ -1,6 +1,12 @@
 import Foundation
 
+internal protocol ReadyCampaignDispatcherDelegate: AnyObject {
+    func performPing()
+}
+
 internal protocol ReadyCampaignDispatcherType {
+    var delegate: ReadyCampaignDispatcherDelegate? { get set }
+
     func addToQueue(campaign: Campaign)
     func dispatchAllIfNeeded()
 }
@@ -10,7 +16,7 @@ internal protocol ReadyCampaignDispatcherType {
 internal class ReadyCampaignDispatcher: ReadyCampaignDispatcherType {
 
     private let router: RouterType
-    private let permissionClient: PermissionClientType
+    private let permissionService: DisplayPermissionServiceType
     private let campaignRepository: CampaignRepositoryType
     private let campaignParser = CampaignParser.self
 
@@ -18,12 +24,14 @@ internal class ReadyCampaignDispatcher: ReadyCampaignDispatcherType {
     private var queuedCampaigns = [Campaign]()
     private var isDispatching = false
 
+    weak var delegate: ReadyCampaignDispatcherDelegate?
+
     init(router: RouterType,
-         permissionClient: PermissionClientType,
+         permissionService: DisplayPermissionServiceType,
          campaignRepository: CampaignRepositoryType) {
 
         self.router = router
-        self.permissionClient = permissionClient
+        self.permissionService = permissionService
         self.campaignRepository = campaignRepository
     }
 
@@ -52,9 +60,11 @@ internal class ReadyCampaignDispatcher: ReadyCampaignDispatcherType {
 
             var campaign = self.queuedCampaigns.removeFirst()
 
-            guard campaign.data.isTest ||
-                self.permissionClient.checkPermission(withCampaign: campaign.data)
-            else {
+            let permissionResponse = self.permissionService.checkPermission(forCampaign: campaign.data)
+            if permissionResponse.performPing {
+                self.delegate?.performPing()
+            }
+            guard campaign.data.isTest || permissionResponse.display else {
                 self.dispatchNext()
                 return
             }
@@ -79,6 +89,6 @@ internal class ReadyCampaignDispatcher: ReadyCampaignDispatcherType {
 
     private func delayBetweenMessages(for campaignData: CampaignData) -> Int {
         return campaignParser.getDisplaySettingsDelay(from: campaignData) ??
-            Constants.Configuration.milliBetweenDisplays
+            Constants.CampaignMessage.intervalBetweenDisplaysInMS
     }
 }

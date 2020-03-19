@@ -1,60 +1,71 @@
 /// Class represents bootstrap behaviour and main functionality of InAppMessaging.
-internal class InAppMessagingModule: ErrorDelegate, AnalyticsBroadcaster {
+internal class InAppMessagingModule: AnalyticsBroadcaster,
+    ErrorDelegate, ReadyCampaignDispatcherDelegate {
 
-    private let configurationClient: ConfigurationClient
-    private var messageMixerClient: MessageMixerClientType
+    private var configurationManager: ConfigurationManagerType
+    private var campaignsListManager: CampaignsListManagerType
     private let preferenceRepository: IAMPreferenceRepository
     private let campaignsValidator: CampaignsValidatorType
     private let eventMatcher: EventMatcherType
-    private let readyCampaignDispatcher: ReadyCampaignDispatcherType
-    private var impressionClient: ImpressionClientType
+    private var readyCampaignDispatcher: ReadyCampaignDispatcherType
+    private var impressionService: ImpressionServiceType
+
+    private var isInitialized = false
+    private var isEnabled = true
 
     var aggregatedErrorHandler: ((NSError) -> Void)?
 
-    private(set) var isInitialized = false
-
-    init(configurationClient: ConfigurationClient,
-         messageMixerClient: MessageMixerClientType,
-         impressionClient: ImpressionClientType,
+    init(configurationManager: ConfigurationManagerType,
+         campaignsListManager: CampaignsListManagerType,
+         impressionService: ImpressionServiceType,
          preferenceRepository: IAMPreferenceRepository,
          campaignsValidator: CampaignsValidatorType,
          eventMatcher: EventMatcherType,
          readyCampaignDispatcher: ReadyCampaignDispatcherType) {
 
-        self.configurationClient = configurationClient
-        self.messageMixerClient = messageMixerClient
+        self.configurationManager = configurationManager
+        self.campaignsListManager = campaignsListManager
         self.preferenceRepository = preferenceRepository
         self.campaignsValidator = campaignsValidator
         self.eventMatcher = eventMatcher
         self.readyCampaignDispatcher = readyCampaignDispatcher
-        self.impressionClient = impressionClient
+        self.impressionService = impressionService
 
-        self.configurationClient.errorDelegate = self
-        self.messageMixerClient.errorDelegate = self
-        self.impressionClient.errorDelegate = self
+        self.configurationManager.errorDelegate = self
+        self.campaignsListManager.errorDelegate = self
+        self.impressionService.errorDelegate = self
+        self.readyCampaignDispatcher.delegate = self
     }
 
-    /// Function to initialize InAppMessaging Module.
-    /// - Parameter restartHandler: Code to be exetuted in case of failed initialization.
-    func initialize(restartHandler: @escaping () -> Void) {
-        // Return and exit thread if SDK were to be disabled.
-        guard !isInitialized && configurationClient.isConfigEnabled(retryHandler: restartHandler) else {
+    // should be called once
+    func initialize(deinitHandler: @escaping () -> Void) {
+        guard !isInitialized else {
             return
         }
 
-        isInitialized = true
+        configurationManager.fetchAndSaveConfigData { [weak self] config in
+            self?.isEnabled = config.enabled
+            self?.isInitialized = true
 
-        // Enable MessageMixerClient which starts beacon pinging message mixer server.
-        messageMixerClient.ping()
+            if config.enabled {
+                self?.campaignsListManager.refreshList()
+            } else {
+                deinitHandler()
+            }
+        }
     }
 
     func logEvent(_ event: Event) {
-        guard isInitialized else {
+        guard isEnabled else {
             return
         }
 
         eventMatcher.matchAndStore(event: event)
         sendEventName(Constants.RAnalytics.events, event.analyticsParameters)
+
+        guard isInitialized else {
+            return
+        }
 
         campaignsValidator.validate(
             validatedCampaignHandler: CampaignsValidatorHelper.defaultValidatedCampaignHandler(
@@ -64,16 +75,29 @@ internal class InAppMessagingModule: ErrorDelegate, AnalyticsBroadcaster {
     }
 
     func registerPreference(_ preference: IAMPreference?) {
+        guard isEnabled else {
+            return
+        }
+
         preferenceRepository.setPreference(preference)
 
         guard isInitialized else {
             return
         }
 
-        // Everytime a new ID is registered, send a ping request.
-        messageMixerClient.ping()
+        campaignsListManager.refreshList()
     }
+}
 
+// MARK: - ReadyCampaignDispatcherDelegate methods
+extension InAppMessagingModule {
+    func performPing() {
+        campaignsListManager.refreshList()
+    }
+}
+
+// MARK: - ErrorDelegate methods
+extension InAppMessagingModule {
     func didReceiveError(sender: ErrorReportable, error: NSError) {
         aggregatedErrorHandler?(error)
     }

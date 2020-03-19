@@ -1,7 +1,7 @@
 /// Base presenter class (abstract) for all of IAM's supported campaign presenters.
 internal class BaseViewPresenter: ImpressionTrackable {
 
-    private(set) var impressionClient: ImpressionClientType
+    private(set) var impressionService: ImpressionServiceType
     private let campaignsValidator: CampaignsValidatorType
     private let campaignRepository: CampaignRepositoryType
     private let eventMatcher: EventMatcherType
@@ -23,12 +23,12 @@ internal class BaseViewPresenter: ImpressionTrackable {
 
     init(campaignsValidator: CampaignsValidatorType,
          campaignRepository: CampaignRepositoryType,
-         impressionClient: ImpressionClientType,
+         impressionService: ImpressionServiceType,
          eventMatcher: EventMatcherType,
          readyCampaignDispatcher: ReadyCampaignDispatcherType) {
 
         self.campaignsValidator = campaignsValidator
-        self.impressionClient = impressionClient
+        self.impressionService = impressionService
         self.eventMatcher = eventMatcher
         self.campaignRepository = campaignRepository
         self.readyCampaignDispatcher = readyCampaignDispatcher

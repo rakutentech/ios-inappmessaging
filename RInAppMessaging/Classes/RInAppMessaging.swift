@@ -12,7 +12,7 @@
 @objc public class RInAppMessaging: NSObject {
 
     private static let inAppQueue = DispatchQueue(label: "IAM.Main", attributes: .concurrent)
-    private static var initializedModule: InAppMessagingModule?
+    internal static var initializedModule: InAppMessagingModule?
     private(set) static var dependencyManager: DependencyManager?
 
     private override init() { super.init() }
@@ -34,7 +34,7 @@
     /// Function to be called by host application to start a new thread that
     /// configures Rakuten InAppMessaging SDK.
     @objc public static func configure() {
-        guard initializedModule?.isInitialized != true else {
+        guard initializedModule == nil else {
             return
         }
 
@@ -48,10 +48,13 @@
         self.dependencyManager = dependencyManager
 
         inAppQueue.async(flags: .barrier) {
+            guard initializedModule == nil else {
+                return
+            }
 
-            guard let configurationClient = dependencyManager.resolve(type: ConfigurationClient.self),
-                let messageMixerClient = dependencyManager.resolve(type: MessageMixerClientType.self),
-                let impressionClient = dependencyManager.resolve(type: ImpressionClientType.self),
+            guard let configurationManager = dependencyManager.resolve(type: ConfigurationManagerType.self),
+                let campaignsListManager = dependencyManager.resolve(type: CampaignsListManagerType.self),
+                let impressionService = dependencyManager.resolve(type: ImpressionServiceType.self),
                 let eventMatcher = dependencyManager.resolve(type: EventMatcherType.self),
                 let preferenceRepository = dependencyManager.resolve(type: IAMPreferenceRepository.self),
                 let campaignsValidator = dependencyManager.resolve(type: CampaignsValidatorType.self),
@@ -63,9 +66,9 @@
             }
             router.accessibilityCompatibleDisplay = accessibilityCompatibleDisplay
 
-            initializedModule = InAppMessagingModule(configurationClient: configurationClient,
-                                                     messageMixerClient: messageMixerClient,
-                                                     impressionClient: impressionClient,
+            initializedModule = InAppMessagingModule(configurationManager: configurationManager,
+                                                     campaignsListManager: campaignsListManager,
+                                                     impressionService: impressionService,
                                                      preferenceRepository: preferenceRepository,
                                                      campaignsValidator: campaignsValidator,
                                                      eventMatcher: eventMatcher,
@@ -73,7 +76,10 @@
             initializedModule?.aggregatedErrorHandler = { error in
                 errorDelegate?.inAppMessagingDidReturnError(error)
             }
-            initializedModule?.initialize(restartHandler: configure) // Restart will recreate standard DependencyManager
+            initializedModule?.initialize(deinitHandler: {
+                self.initializedModule = nil
+                self.dependencyManager = nil
+            })
         }
     }
 

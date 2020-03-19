@@ -10,7 +10,7 @@ internal struct CommonUtility {
             }
 
             return jsonData
-        } catch let error {
+        } catch {
             debugPrint("InAppMessaging: Error converting data: \(error)")
             return nil
         }
@@ -19,7 +19,7 @@ internal struct CommonUtility {
     /// Provides a way to lock objects when performing a function.
     /// - Parameter objects: A list of objects with resources to lock.
     /// - Parameter operation: The function to perform with the objects locked.
-    static func lock(resourcesIn objects: [Lockable], operation: () -> Void) {
+    static func lock(resourcesIn objects: [Lockable], for operation: () -> Void) {
         let resourcesToLock = objects.flatMap { $0.resourcesToLock }
 
         resourcesToLock.forEach { $0.lock() }

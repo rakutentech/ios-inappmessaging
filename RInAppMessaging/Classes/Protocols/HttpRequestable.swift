@@ -7,120 +7,100 @@ internal enum HttpMethod: String {
 }
 
 internal enum RequestError: Error {
-    case badData
-    case badURL
+    case unknown
     case taskFailed(Error)
     case httpError(Int, URLResponse?, Data?)
+    case bodyEncodingError(Error?)
 }
 
-/// Protocol that is conformed to when a class requires HTTP communication abilities.
 internal protocol HttpRequestable {
 
     typealias RequestResult = Result<(data: Data, response: HTTPURLResponse), RequestError>
 
-    /// Generic method for calling an API synchronously.
-    /// - Parameter url: The URL of the API to call.
-    /// - Parameter httpMethod: The HTTP method used. E.G "POST" / "GET"
-    /// - Parameter optionalParams: Any extra parameters to be added into the request body.
-    /// - Parameter addtionalHeaders: Any extra parameters to be added into the request header.
-    /// - Returns: A response data. `HTTPURLResponse` for success and `RequestError` for failure.
-    func requestFromServerSync(url: String,
+    var httpSession: URLSession { get }
+
+    func requestFromServerSync(url: URL,
                                httpMethod: HttpMethod,
-                               optionalParams: [String: Any],
+                               parameters: [String: Any]?,
                                addtionalHeaders: [Attribute]?) -> RequestResult
 
-    /// Generic method for calling an API asynchronously.
-    /// - Parameter url: The URL of the API to call.
-    /// - Parameter httpMethod: The HTTP method used. E.G "POST" / "GET"
-    /// - Parameter optionalParams: Any extra parameters to be added into the request body.
-    /// - Parameter addtionalHeaders: Any extra parameters to be added into the request header.
-    /// - Parameter completion: The code to execute when a request has been resolved
-    func requestFromServer(url: String,
+    func requestFromServer(url: URL,
                            httpMethod: HttpMethod,
-                           optionalParams: [String: Any],
+                           parameters: [String: Any]?,
                            addtionalHeaders: [Attribute]?,
                            completion: @escaping (_ result: RequestResult) -> Void)
 
-    /// Build out the request body for talking to configuration server.
-    /// - Returns: The data of serialized JSON object with the required fields (Optional).
-    func buildHttpBody(withOptionalParams optionalParams: [String: Any]?) -> Data?
-
-    /// Append additional headers to the request body.
-    /// - Parameter headers: Headers to be added.
-    /// - Parameter request: A reference to the request to modify
-    func appendHeaders(withHeaders headers: [Attribute]?, forRequest request: inout URLRequest)
+    func buildHttpBody(with parameters: [String: Any]?) -> Result<Data, Error>
 }
 
 /// Default implementation of HttpRequestable.
 extension HttpRequestable {
 
-    func requestFromServerSync(url: String,
+    func requestFromServerSync(url: URL,
                                httpMethod: HttpMethod,
-                               optionalParams: [String: Any] = [:],
+                               parameters: [String: Any]? = nil,
                                addtionalHeaders: [Attribute]?) -> RequestResult {
 
-        var dataToReturn: Data?
-        var responseToReturn: HTTPURLResponse?
-        var errorToReturn: RequestError?
+        if Thread.current.isMainThread {
+            print("InAppMessaging: Performing HTTP task synchronously on main thread. This should be avoided.")
+            assertionFailure()
+        }
+
+        var result: RequestResult?
 
         requestFromServer(
             url: url,
             httpMethod: httpMethod,
-            optionalParams: optionalParams,
+            parameters: parameters,
             addtionalHeaders: addtionalHeaders,
             shouldWait: true,
-            completion: { result in
-                switch result {
-                case .success((let data, let response)):
-                    dataToReturn = data
-                    responseToReturn = response
-                case .failure(let error):
-                    errorToReturn = error
-                }
-            })
+            completion: { result = $0 })
 
-        guard let data = dataToReturn,
-            let response = responseToReturn else {
-                return .failure(errorToReturn ?? .badData)
+        guard let unwrappedResult = result else {
+            CommonUtility.debugPrint("Error: Didn't get any result - completion handler not called!")
+            assertionFailure()
+            return .failure(.unknown)
         }
 
-        return .success((data, response))
+        return unwrappedResult
     }
 
-    func requestFromServer(url: String,
+    func requestFromServer(url: URL,
                            httpMethod: HttpMethod,
-                           optionalParams: [String: Any] = [:],
+                           parameters: [String: Any]? = nil,
                            addtionalHeaders: [Attribute]?,
                            completion: @escaping (_ result: RequestResult) -> Void) {
 
         requestFromServer(url: url,
                           httpMethod: httpMethod,
-                          optionalParams: optionalParams,
+                          parameters: parameters,
                           addtionalHeaders: addtionalHeaders,
                           shouldWait: false,
                           completion: completion)
     }
 
-    private func requestFromServer(url: String,
+    private func requestFromServer(url: URL,
                                    httpMethod: HttpMethod,
-                                   optionalParams: [String: Any],
+                                   parameters: [String: Any]?,
                                    addtionalHeaders: [Attribute]?,
                                    shouldWait: Bool,
                                    completion: @escaping (_ result: RequestResult) -> Void) {
 
-        guard let requestUrl = URL(string: url) else {
-            completion(.failure(.badURL))
+        var request = URLRequest(url: url)
+        request.httpMethod = httpMethod.rawValue
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        let bodyResult = buildHttpBody(with: parameters)
+        switch bodyResult {
+        case .success(let body):
+            request.httpBody = body
+        case .failure(let error):
+            completion(.failure(.bodyEncodingError(error)))
             return
         }
 
-        // Add in the HTTP headers and body.
-        var request = URLRequest(url: requestUrl)
-        request.httpMethod = httpMethod.rawValue
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpBody = buildHttpBody(withOptionalParams: optionalParams)
-
         if let headers = addtionalHeaders {
-            appendHeaders(withHeaders: headers, forRequest: &request)
+            appendHeaders(headers, forRequest: &request)
         }
 
         // Semaphore added for synchronous HTTP calls.
@@ -130,7 +110,7 @@ extension HttpRequestable {
         var serverResponse: HTTPURLResponse?
 
         // Start HTTP call.
-        URLSession.shared.dataTask(with: request, completionHandler: { (data, response, error) in
+        httpSession.dataTask(with: request, completionHandler: { (data, response, error) in
 
             defer {
                 // Signal completion of HTTP request.
@@ -164,7 +144,7 @@ extension HttpRequestable {
         }
     }
 
-    func appendHeaders(withHeaders headers: [Attribute]?, forRequest request: inout URLRequest) {
+    private func appendHeaders(_ headers: [Attribute]?, forRequest request: inout URLRequest) {
         headers?.forEach({ header in
             request.addValue(header.value, forHTTPHeaderField: header.key)
         })

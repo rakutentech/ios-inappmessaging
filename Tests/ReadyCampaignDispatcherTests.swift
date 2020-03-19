@@ -7,23 +7,26 @@ class ReadyCampaignDispatcherTests: QuickSpec {
     override func spec() {
         describe("ReadyCampaignDispatcher") {
             var dispatcher: ReadyCampaignDispatcher!
-            var permissionClient: PermissionClientMock!
+            var permissionService: PermissionServiceMock!
             var campaignRepository: CampaignRepositoryMock!
+            var delegate: Delegate!
             var router: RouterMock!
 
             beforeEach {
-                permissionClient = PermissionClientMock()
+                permissionService = PermissionServiceMock()
                 campaignRepository = CampaignRepositoryMock()
                 router = RouterMock()
+                delegate = Delegate()
                 dispatcher = ReadyCampaignDispatcher(router: router,
-                                                     permissionClient: permissionClient,
+                                                     permissionService: permissionService,
                                                      campaignRepository: campaignRepository)
+                dispatcher.delegate = delegate
             }
 
             context("before dispatching") {
 
                 it("won't start dispatching while adding to the queue") {
-                    permissionClient.shouldGrantPermission = true
+                    permissionService.shouldGrantPermission = true
                     let testCampaigns = TestHelpers.MockResponse.withGeneratedCampaigns(count: 3, test: false, delay: 0).data
                     testCampaigns.forEach {
                         dispatcher.addToQueue(campaign: $0)
@@ -41,7 +44,7 @@ class ReadyCampaignDispatcherTests: QuickSpec {
 
                 context("when display permission is granted") {
                     beforeEach {
-                        permissionClient.shouldGrantPermission = true
+                        permissionService.shouldGrantPermission = true
                     }
 
                     it("will dispatch newly added campaigns") {
@@ -65,11 +68,19 @@ class ReadyCampaignDispatcherTests: QuickSpec {
                         dispatcher.dispatchAllIfNeeded()
                         expect(router.lastDisplayedCampaign).toEventuallyNot(equal(secondCampaign))
                     }
+
+                    it("will perform ping if flag in the response is true") {
+                        permissionService.shouldPerformPing = true
+                        let testCampaign = TestHelpers.generateCampaign(id: "test")
+                        dispatcher.addToQueue(campaign: testCampaign)
+                        dispatcher.dispatchAllIfNeeded()
+                        expect(delegate.wasPingCalled).toEventually(beTrue())
+                    }
                 }
 
                 context("when display permission is denied") {
                     beforeEach {
-                        permissionClient.shouldGrantPermission = false
+                        permissionService.shouldGrantPermission = false
                     }
 
                     it("will always dispatch test campaigns") {
@@ -94,13 +105,21 @@ class ReadyCampaignDispatcherTests: QuickSpec {
                             }
                         }
                     }
+
+                    it("will perform ping if flag in the response is true") {
+                        permissionService.shouldPerformPing = true
+                        let testCampaign = TestHelpers.generateCampaign(id: "test")
+                        dispatcher.addToQueue(campaign: testCampaign)
+                        dispatcher.dispatchAllIfNeeded()
+                        expect(delegate.wasPingCalled).toEventually(beTrue())
+                    }
                 }
             }
 
             context("after dispatching") {
 
                 it("will decrement impressions left in campaign") {
-                    permissionClient.shouldGrantPermission = true
+                    permissionService.shouldGrantPermission = true
                     let campaign = TestHelpers.MockResponse.withGeneratedCampaigns(count: 1, test: false, delay: 0).data[0]
                     dispatcher.addToQueue(campaign: campaign)
                     dispatcher.dispatchAllIfNeeded()
@@ -108,7 +127,7 @@ class ReadyCampaignDispatcherTests: QuickSpec {
                 }
 
                 it("will dispatch all campaigns") {
-                    permissionClient.shouldGrantPermission = true
+                    permissionService.shouldGrantPermission = true
                     TestHelpers.MockResponse.withGeneratedCampaigns(count: 10, test: false, delay: 10).data.forEach {
                         dispatcher.addToQueue(campaign: $0)
                     }
@@ -132,11 +151,13 @@ private class RouterMock: RouterType {
     }
 }
 
-private class PermissionClientMock: PermissionClientType {
+private class PermissionServiceMock: DisplayPermissionServiceType {
     var shouldGrantPermission = false
+    var shouldPerformPing = false
 
-    func checkPermission(withCampaign campaign: CampaignData) -> Bool {
-        return shouldGrantPermission
+    func checkPermission(forCampaign campaign: CampaignData) -> DisplayPermissionResponse {
+        return DisplayPermissionResponse(display: shouldGrantPermission,
+                                         performPing: shouldPerformPing)
     }
 }
 
@@ -154,4 +175,12 @@ private class CampaignRepositoryMock: CampaignRepositoryType {
 
     func syncWith(list: [Campaign], timestampMilliseconds: Int64) { }
     func optOutCampaign(_ campaign: Campaign) -> Campaign? { return nil }
+}
+
+private class Delegate: ReadyCampaignDispatcherDelegate {
+    var wasPingCalled = false
+
+    func performPing() {
+        wasPingCalled = true
+    }
 }

@@ -76,10 +76,10 @@ internal class Reachability: ReachabilityType {
     /// Convenience method to create new Reachability with URL
     /// A hostname will be extracted from url and used to create an instance
     /// (ex. 'https://google.com/maps') It will be turned into 'google.com'
-    /// - Parameter url: a valid http or https url
-    /// - Returns: new Reachability instance or `nil` if hostname couldn't be extracted or is invalid
-    convenience init?(url: String) {
-        guard let hostname = URL(string: url)?.host else {
+    /// - Parameter url: url containing hostname
+    /// - Returns: new Reachability instance or `nil` if hostname couldn't be extracted
+    convenience init?(url: URL) {
+        guard let hostname = url.host else {
             CommonUtility.debugPrint("InAppMessaging: Reachability couldn't be set up with url:\(url)")
             return nil
         }

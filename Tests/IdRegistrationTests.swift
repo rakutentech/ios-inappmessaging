@@ -7,30 +7,30 @@ class IdRegistrationTests: QuickSpec {
 
     override func spec() {
 
-        var preferenceRepository: IAMPreferenceRepository! {
-            return RInAppMessaging.dependencyManager?.resolve(type: IAMPreferenceRepository.self)
-        }
-
         func stubContainer() -> DependencyManager.Container {
             return DependencyManager.Container([
-                DependencyManager.ContainerElement(type: ConfigurationClient.self, factory: {
-                    return ConfigurationClientStub()
+                DependencyManager.ContainerElement(type: ConfigurationManagerType.self, factory: {
+                    return ConfigurationManagerStub()
                 }),
-                DependencyManager.ContainerElement(type: MessageMixerClientType.self, factory: {
-                    return MessageMixerClientStub()
+                DependencyManager.ContainerElement(type: MessageMixerServiceType.self, factory: {
+                    return MessageMixerServiceStub()
                 })
             ])
         }
 
+        let dependencyManager = DependencyManager()
+        var preferenceRepository: IAMPreferenceRepository! {
+            return dependencyManager.resolve(type: IAMPreferenceRepository.self)
+        }
+
         beforeSuite {
-            let dependencyManager = DependencyManager()
             dependencyManager.appendContainer(MainContainerFactory.create(dependencyManager: dependencyManager))
             dependencyManager.appendContainer(stubContainer())
-            RInAppMessaging.configure(dependencyManager: dependencyManager)
         }
 
         beforeEach {
-            RInAppMessaging.registerPreference(nil)
+            RInAppMessaging.initializedModule = nil
+            RInAppMessaging.configure(dependencyManager: dependencyManager)
         }
 
         context("ID Registration") {
@@ -50,7 +50,7 @@ class IdRegistrationTests: QuickSpec {
                 )
 
                 let expected = [UserIdentifier(type: 3, identifier: "whales and dolphins")]
-                expect(preferenceRepository.getUserIdentifiers()).toEventually(equal(expected))
+                expect(preferenceRepository.getUserIdentifiers()).toEventually(equal(expected), timeout: 3, pollInterval: 1)
             }
 
             it("should have two matching id type and id value") {
@@ -70,16 +70,20 @@ class IdRegistrationTests: QuickSpec {
     }
 }
 
-private class ConfigurationClientStub: ConfigurationClient {
-    init() {
-        super.init(reachability: nil, configURL: "https://google.com")
-    }
-    override func isConfigEnabled(retryHandler: @escaping () -> Void) -> Bool {
-        return true
+private class ConfigurationManagerStub: ConfigurationManagerType {
+    weak var errorDelegate: ErrorDelegate?
+    func fetchAndSaveConfigData(completion: @escaping (ConfigData) -> Void) {
+        let emptyURL = URL(string: "about:blank")!
+        let emptyEndpoints = EndpointURL(ping: emptyURL,
+                                         displayPermission: emptyURL,
+                                         impression: emptyURL)
+        completion(ConfigData(enabled: true, endpoints: emptyEndpoints))
     }
 }
 
-private class MessageMixerClientStub: MessageMixerClientType {
+private class MessageMixerServiceStub: MessageMixerServiceType {
     weak var errorDelegate: ErrorDelegate?
-    func ping() {}
+    func ping() -> Result<PingResponse, MessageMixerServiceError> {
+        return .failure(.invalidConfiguration)
+    }
 }

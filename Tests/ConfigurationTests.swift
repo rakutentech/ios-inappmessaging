@@ -8,63 +8,86 @@ class ConfigurationTests: QuickSpec {
     override func spec() {
         context("InAppMessaging") {
 
-            var mockConfigurationClient: ConfigurationClient!
-            var mockMessageMixer: MockMessageMixer!
+            var configurationManager: ConfigurationManagerMock!
+            var mockMessageMixer: MessageMixerMock!
             var dependencyManager: DependencyManager!
 
             func mockContainer() -> DependencyManager.Container {
                 return DependencyManager.Container([
-                    DependencyManager.ContainerElement(type: ConfigurationClient.self, factory: {
-                        return mockConfigurationClient
+                    DependencyManager.ContainerElement(type: ConfigurationManagerType.self, factory: {
+                        return configurationManager
                     }),
-                    DependencyManager.ContainerElement(type: MessageMixerClientType.self, factory: {
+                    DependencyManager.ContainerElement(type: MessageMixerServiceType.self, factory: {
                         return mockMessageMixer
                     })
                 ])
             }
 
             beforeEach {
-                mockMessageMixer = MockMessageMixer()
+                mockMessageMixer = MessageMixerMock()
                 dependencyManager = DependencyManager()
+                configurationManager = ConfigurationManagerMock()
+                RInAppMessaging.initializedModule = nil
                 dependencyManager.appendContainer(MainContainerFactory.create(dependencyManager: dependencyManager))
                 dependencyManager.appendContainer(mockContainer())
             }
 
-            it("is disabled because configuration returned false") {
-                mockConfigurationClient = MockConfigurationClient(isConfigEnabled: false)
-                RInAppMessaging.configure(dependencyManager: dependencyManager)
+            context("when configuration returned false") {
 
-                expect(mockMessageMixer.enabledWasCalled).toEventuallyNot(equal(true))
+                it("will disable module") {
+                    configurationManager.isConfigEnabled = false
+                    waitUntil(timeout: 1) { done in
+                        configurationManager.fetchCalledClosure = {
+                            expect(RInAppMessaging.initializedModule).toNot(beNil())
+                            done()
+                        }
+                        RInAppMessaging.configure(dependencyManager: dependencyManager)
+                    }
+
+                    expect(RInAppMessaging.initializedModule).toEventually(beNil())
+                }
+
+                it("will not call ping") {
+                    configurationManager.isConfigEnabled = false
+                    RInAppMessaging.configure(dependencyManager: dependencyManager)
+
+                    expect(mockMessageMixer.wasPingCalled).toEventuallyNot(equal(true))
+                }
             }
 
-            it("is enabled because configuration returned true") {
-                mockConfigurationClient = MockConfigurationClient(isConfigEnabled: true)
-                RInAppMessaging.configure(dependencyManager: dependencyManager)
+            context("when configuration returned true") {
 
-                expect(mockMessageMixer.enabledWasCalled).toEventually(equal(true))
+                it("will call ping") {
+                    configurationManager.isConfigEnabled = true
+                    RInAppMessaging.configure(dependencyManager: dependencyManager)
+
+                    expect(mockMessageMixer.wasPingCalled).toEventually(equal(true))
+                }
             }
         }
     }
 }
 
-private class MockConfigurationClient: ConfigurationClient {
-    private let isConfigEnabled: Bool
+private class ConfigurationManagerMock: ConfigurationManagerType {
+    weak var errorDelegate: ErrorDelegate?
+    var isConfigEnabled = true
+    var fetchCalledClosure = {}
 
-    init(isConfigEnabled: Bool) {
-        self.isConfigEnabled = isConfigEnabled
-        super.init(reachability: nil, configURL: "https://google.com")
-    }
-
-    override func isConfigEnabled(retryHandler: @escaping () -> Void) -> Bool {
-        return self.isConfigEnabled
+    func fetchAndSaveConfigData(completion: @escaping (ConfigData) -> Void) {
+        fetchCalledClosure()
+        let emptyURL = URL(string: "about:blank")!
+        let emptyEndpoints = EndpointURL(ping: emptyURL,
+                                         displayPermission: emptyURL,
+                                         impression: emptyURL)
+        completion(ConfigData(enabled: isConfigEnabled, endpoints: emptyEndpoints))
     }
 }
 
-private class MockMessageMixer: MessageMixerClientType {
-    weak var errorDelegate: ErrorDelegate?
-    var enabledWasCalled = false
+private class MessageMixerMock: MessageMixerServiceType {
+    var wasPingCalled = false
 
-    func ping() {
-        self.enabledWasCalled = true
+    func ping() -> Result<PingResponse, MessageMixerServiceError> {
+        self.wasPingCalled = true
+        return .failure(.invalidConfiguration)
     }
 }
