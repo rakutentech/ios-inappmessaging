@@ -10,14 +10,14 @@ class BaseViewPresenterTests: QuickSpec {
         var campaignRepository: CampaignRepositoryMock!
         var impressionService: ImpressionServiceMock!
         var eventMatcher: EventMatcherMock!
-        var readyCampaignDispatcher: ReadyCampaignDispatcherStub!
+        var readyCampaignDispatcher: ReadyCampaignDispatcherMock!
 
         beforeEach {
             campaignsValidator = CampaignsValidatorMock()
             campaignRepository = CampaignRepositoryMock()
             impressionService = ImpressionServiceMock()
             eventMatcher = EventMatcherMock()
-            readyCampaignDispatcher = ReadyCampaignDispatcherStub()
+            readyCampaignDispatcher = ReadyCampaignDispatcherMock()
         }
         describe("BaseViewPresenter") {
 
@@ -377,60 +377,11 @@ private class SlideUpViewMock: UIView, SlideUpViewType {
     func animateOnShow() { }
 }
 
-private class CampaignsValidatorMock: CampaignsValidatorType {
-    private(set) var wasValidateCalled = false
-    func validate(validatedCampaignHandler: (Campaign, Set<Event>) -> Void) {
-        wasValidateCalled = true
-    }
-}
-
-private class CampaignRepositoryMock: CampaignRepositoryType {
-    var resourcesToLock: [LockableResource] = []
-    var list: [Campaign] = []
-    var lastSyncInMilliseconds: Int64?
-
-    private(set) var wasOptOutCalled = false
-
-    func optOutCampaign(_ campaign: Campaign) -> Campaign? {
-        wasOptOutCalled = true
-        return Campaign.updatedCampaign(campaign, asOptedOut: true)
-    }
-
-    func syncWith(list: [Campaign], timestampMilliseconds: Int64) { }
-    func decrementImpressionsLeftInCampaign(_ campaign: Campaign) -> Campaign? { return nil }
-}
-
 private class ImpressionServiceMock: ImpressionServiceType {
     weak var errorDelegate: ErrorDelegate?
     var sentImpressions: (list: [ImpressionType], campaignID: String)?
 
     func pingImpression(impressions: [Impression], campaignData: CampaignData) {
         sentImpressions = (impressions.map({ $0.type }), campaignData.campaignId)
-    }
-}
-
-private class EventMatcherMock: EventMatcherType {
-    private(set) var loggedEvents = [Event]()
-    func matchAndStore(event: Event) {
-        loggedEvents.append(event)
-    }
-
-    func matchedEvents(for campaign: Campaign) -> [Event] { return [] }
-    func containsAllMatchedEvents(for campaign: Campaign) -> Bool { return true }
-    func removeSetOfMatchedEvents(_ eventsToRemove: Set<Event>, for campaign: Campaign) throws { }
-}
-
-private class ReadyCampaignDispatcherStub: ReadyCampaignDispatcherType {
-    weak var delegate: ReadyCampaignDispatcherDelegate?
-    func addToQueue(campaign: Campaign) { }
-    func dispatchAllIfNeeded() { }
-}
-
-private extension UIColor {
-    static var blackRGB: UIColor {
-        return UIColor(red: 0, green: 0, blue: 0, alpha: 1)
-    }
-    static var whiteRGB: UIColor {
-        return UIColor(red: 1, green: 1, blue: 1, alpha: 1)
     }
 }

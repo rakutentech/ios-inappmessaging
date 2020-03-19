@@ -161,22 +161,6 @@ private class PermissionServiceMock: DisplayPermissionServiceType {
     }
 }
 
-private class CampaignRepositoryMock: CampaignRepositoryType {
-    var list: [Campaign] = []
-    var lastSyncInMilliseconds: Int64?
-    var resourcesToLock: [LockableResource] = []
-
-    var wasDecrementImpressionsCalled = false
-
-    func decrementImpressionsLeftInCampaign(_ campaign: Campaign) -> Campaign? {
-        wasDecrementImpressionsCalled = true
-        return Campaign.updatedCampaign(campaign, withImpressionLeft: campaign.impressionsLeft - 1)
-    }
-
-    func syncWith(list: [Campaign], timestampMilliseconds: Int64) { }
-    func optOutCampaign(_ campaign: Campaign) -> Campaign? { return nil }
-}
-
 private class Delegate: ReadyCampaignDispatcherDelegate {
     var wasPingCalled = false
 

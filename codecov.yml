@@ -1,4 +1,5 @@
-ignore:
-  - "Pods"
-  - "Tests"
-  - "Sample"
+coverage:
+  ignore:
+    - "Pods"
+    - "Tests"
+    - "Sample"

@@ -15,6 +15,7 @@ internal class MessageMixerService: MessageMixerServiceType, HttpRequestable {
 
     weak var errorDelegate: ErrorDelegate?
     private(set) var httpSession: URLSession
+    var bundleInfo = BundleInfo.self
 
     init(preferenceRepository: IAMPreferenceRepository,
          configurationRepository: ConfigurationRepositoryType) {
@@ -65,7 +66,7 @@ extension MessageMixerService {
 
     func buildHttpBody(with parameters: [String: Any]?) -> Result<Data, Error> {
 
-        guard let appVersion = Bundle.appVersion else {
+        guard let appVersion = bundleInfo.appVersion else {
             CommonUtility.debugPrint("InAppMessaging: failed creating a request body")
             assertionFailure()
             return .failure(RequestError.unknown)
@@ -88,7 +89,7 @@ extension MessageMixerService {
         let Keys = Constants.Request.Header.self
         var additionalHeaders: [Attribute] = []
 
-        if let subId = Bundle.inAppSubscriptionId {
+        if let subId = bundleInfo.inAppSubscriptionId {
             additionalHeaders.append(Attribute(key: Keys.subscriptionID, value: subId))
         }
 

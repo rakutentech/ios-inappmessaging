@@ -8,6 +8,21 @@ class EventMatcherTests: QuickSpec {
 
         describe("EventMatcher") {
 
+            let testCampaign = TestHelpers.generateCampaign(id: "test",
+                                                            test: false, delay: 0,
+                                                            maxImpressions: 1,
+                                                            triggers: [
+                                                                Trigger(type: .event,
+                                                                        eventType: .appStart,
+                                                                        eventName: "appStartTest",
+                                                                        attributes: []),
+                                                                Trigger(type: .event,
+                                                                        eventType: .loginSuccessful,
+                                                                        eventName: "loginSuccessfulTest",
+                                                                        attributes: [])
+                ]
+            )
+
             var campaignRepository: CampaignRepositoryMock!
             var eventMatcher: EventMatcher!
 
@@ -17,20 +32,6 @@ class EventMatcherTests: QuickSpec {
             }
 
             context("when removing events") {
-                let testCampaign = TestHelpers.generateCampaign(id: "test",
-                                                                test: false, delay: 0,
-                                                                maxImpressions: 1,
-                                                                triggers: [
-                                                                    Trigger(type: .event,
-                                                                            eventType: .appStart,
-                                                                            eventName: "appStartTest",
-                                                                            attributes: []),
-                                                                    Trigger(type: .event,
-                                                                            eventType: .loginSuccessful,
-                                                                            eventName: "loginSuccessfulTest",
-                                                                            attributes: [])
-                    ]
-                )
 
                 it("will throw error if events for given campaign weren't found") {
                     expect {
@@ -136,16 +137,60 @@ class EventMatcherTests: QuickSpec {
                     // without exposing properties
                 }
             }
+
+            it("will properly match persistent events") {
+                campaignRepository.list = [testCampaign]
+                eventMatcher.matchAndStore(event: AppStartEvent())
+                let events = eventMatcher.matchedEvents(for: testCampaign)
+                expect(events).to(contain(AppStartEvent()))
+            }
+
+            it("will properly match non-persistent events") {
+                campaignRepository.list = [testCampaign]
+                eventMatcher.matchAndStore(event: LoginSuccessfulEvent())
+                let events = eventMatcher.matchedEvents(for: testCampaign)
+                expect(events).to(contain(LoginSuccessfulEvent()))
+            }
+
+            context("when calling containsAllMatchedEvents") {
+                beforeEach {
+                    campaignRepository.list = [testCampaign]
+                }
+
+                it("will return true if all required events were stored") {
+                    eventMatcher.matchAndStore(event: AppStartEvent())
+                    eventMatcher.matchAndStore(event: LoginSuccessfulEvent())
+                    expect(eventMatcher.containsAllMatchedEvents(for: testCampaign)).to(beTrue())
+                }
+
+                it("will return true if more events than required were stored") {
+                    eventMatcher.matchAndStore(event: AppStartEvent())
+                    eventMatcher.matchAndStore(event: LoginSuccessfulEvent())
+                    eventMatcher.matchAndStore(event: LoginSuccessfulEvent())
+                    eventMatcher.matchAndStore(event: PurchaseSuccessfulEvent())
+                    expect(eventMatcher.containsAllMatchedEvents(for: testCampaign)).to(beTrue())
+                }
+
+                it("will return false if not all required events were stored") {
+                    eventMatcher.matchAndStore(event: AppStartEvent())
+                    expect(eventMatcher.containsAllMatchedEvents(for: testCampaign)).to(beFalse())
+                }
+
+                it("will return false if none of required events were stored") {
+                    expect(eventMatcher.containsAllMatchedEvents(for: testCampaign)).to(beFalse())
+                }
+
+                it("will return false campaign has no triggers (which is an invalid state)") {
+                    let campaign = TestHelpers.generateCampaign(id: "test",
+                                                                test: false, delay: 0,
+                                                                maxImpressions: 1,
+                                                                triggers: [])
+                    campaignRepository.list = [campaign]
+                    eventMatcher.matchAndStore(event: AppStartEvent())
+                    eventMatcher.matchAndStore(event: LoginSuccessfulEvent())
+                    expect(eventMatcher.containsAllMatchedEvents(for: campaign)).to(beFalse())
+                }
+            }
         }
     }
-}
-
-private class CampaignRepositoryMock: CampaignRepositoryType {
-    var list: [Campaign] = []
-    var resourcesToLock: [LockableResource] = []
-    var lastSyncInMilliseconds: Int64?
-
-    func syncWith(list: [Campaign], timestampMilliseconds: Int64) { }
-    func optOutCampaign(_ campaign: Campaign) -> Campaign? { return nil }
-    func decrementImpressionsLeftInCampaign(_ campaign: Campaign) -> Campaign? { return nil }
 }

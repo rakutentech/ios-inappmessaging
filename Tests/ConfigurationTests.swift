@@ -9,7 +9,7 @@ class ConfigurationTests: QuickSpec {
         context("InAppMessaging") {
 
             var configurationManager: ConfigurationManagerMock!
-            var mockMessageMixer: MessageMixerMock!
+            var mockMessageMixer: MessageMixerServiceMock!
             var dependencyManager: DependencyManager!
 
             func mockContainer() -> DependencyManager.Container {
@@ -24,7 +24,7 @@ class ConfigurationTests: QuickSpec {
             }
 
             beforeEach {
-                mockMessageMixer = MessageMixerMock()
+                mockMessageMixer = MessageMixerServiceMock()
                 dependencyManager = DependencyManager()
                 configurationManager = ConfigurationManagerMock()
                 RInAppMessaging.initializedModule = nil
@@ -65,29 +65,5 @@ class ConfigurationTests: QuickSpec {
                 }
             }
         }
-    }
-}
-
-private class ConfigurationManagerMock: ConfigurationManagerType {
-    weak var errorDelegate: ErrorDelegate?
-    var isConfigEnabled = true
-    var fetchCalledClosure = {}
-
-    func fetchAndSaveConfigData(completion: @escaping (ConfigData) -> Void) {
-        fetchCalledClosure()
-        let emptyURL = URL(string: "about:blank")!
-        let emptyEndpoints = EndpointURL(ping: emptyURL,
-                                         displayPermission: emptyURL,
-                                         impression: emptyURL)
-        completion(ConfigData(enabled: isConfigEnabled, endpoints: emptyEndpoints))
-    }
-}
-
-private class MessageMixerMock: MessageMixerServiceType {
-    var wasPingCalled = false
-
-    func ping() -> Result<PingResponse, MessageMixerServiceError> {
-        self.wasPingCalled = true
-        return .failure(.invalidConfiguration)
     }
 }

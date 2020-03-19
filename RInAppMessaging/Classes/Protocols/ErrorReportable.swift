@@ -4,7 +4,6 @@ internal protocol ErrorDelegate: AnyObject {
     func didReceiveError(sender: ErrorReportable, error: NSError)
 }
 
-/// Protocol used to report errors to the delegate object.
 internal protocol ErrorReportable {
     var errorDelegate: ErrorDelegate? { get set }
     func reportError(description: String, data: Any?)

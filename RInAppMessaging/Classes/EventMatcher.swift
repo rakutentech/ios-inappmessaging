@@ -28,7 +28,7 @@ internal class EventMatcher: EventMatcherType {
 
     private let campaignRepository: CampaignRepositoryType
     private var matchedEvents = [String: [Event]]()
-    private var usedPersistentEventsOnlyCampaigns = Set<String>()
+    private var usedPersistentEventOnlyCampaigns = Set<String>()
     private var persistentEvents = Set<Event>()
 
     init(campaignRepository: CampaignRepositoryType) {
@@ -61,11 +61,11 @@ internal class EventMatcher: EventMatcherType {
     }
 
     func containsAllMatchedEvents(for campaign: Campaign) -> Bool {
-        guard let triggers = campaign.data.triggers else {
+        guard let triggers = campaign.data.triggers, !triggers.isEmpty else {
             return false
         }
         let events = matchedEvents[campaign.id, default: []] + persistentEvents
-        return events.allSatisfy { isEventMatchingOneOfTriggers(event: $0, triggers: triggers) }
+        return triggers.allSatisfy { isTriggerMatchingOneOfEvents(trigger: $0, events: events) }
     }
 
     func removeSetOfMatchedEvents(_ eventsToRemove: Set<Event>, for campaign: Campaign) throws {
@@ -76,7 +76,7 @@ internal class EventMatcher: EventMatcherType {
         }
 
         let persistentEventsOnlyCampaign = campaignEvents.isEmpty
-        guard !(persistentEventsOnlyCampaign && usedPersistentEventsOnlyCampaigns.contains(campaign.id)) else {
+        guard !(persistentEventsOnlyCampaign && usedPersistentEventOnlyCampaigns.contains(campaign.id)) else {
             throw EventMatcherError.providedSetOfEventsHaveAlreadyBeenUsed
         }
 
@@ -91,7 +91,7 @@ internal class EventMatcher: EventMatcherType {
         }
 
         if persistentEventsOnlyCampaign {
-            usedPersistentEventsOnlyCampaigns.insert(campaign.id)
+            usedPersistentEventOnlyCampaigns.insert(campaign.id)
         } else {
             matchedEvents[campaign.id] = campaignEvents
         }

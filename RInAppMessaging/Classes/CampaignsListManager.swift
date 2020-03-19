@@ -59,8 +59,7 @@ internal class CampaignsListManager: CampaignsListManagerType, TaskSchedulable {
 
         readyCampaignDispatcher.dispatchAllIfNeeded()
 
-        let workItem = DispatchWorkItem { self.pingMixerServer() }
-        scheduleWorkItem(decodedResponse.nextPingMillis, task: workItem, wallDeadline: true)
+        scheduleNextPingCall(in: decodedResponse.nextPingMillis)
     }
 
     private func handleError(_ error: Error) {
@@ -76,10 +75,15 @@ internal class CampaignsListManager: CampaignsListManagerType, TaskSchedulable {
             reportError(description: description, data: decodingError)
 
         default:
-            WorkScheduler.scheduleTask(milliseconds: Int(retryDelayMS),
-                                       closure: pingMixerServer, wallDeadline: true)
+            scheduleNextPingCall(in: Int(retryDelayMS))
             // Exponential backoff for pinging Message Mixer server.
             retryDelayMS = retryDelayMS.multipliedReportingOverflow(by: 2).partialValue
         }
+    }
+
+    private func scheduleNextPingCall(in milliseconds: Int) {
+        scheduleWorkItem(milliseconds: milliseconds,
+                         task: DispatchWorkItem { self.pingMixerServer() },
+                         wallDeadline: true)
     }
 }

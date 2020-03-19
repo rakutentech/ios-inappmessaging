@@ -11,6 +11,7 @@ internal struct ConfigurationService: ConfigurationServiceType, HttpRequestable 
 
     private let configURL: URL
     private(set) var httpSession: URLSession
+    var bundleInfo = BundleInfo.self
 
     init(configURL: URL, sessionConfiguration: URLSessionConfiguration) {
         self.configURL = configURL
@@ -50,10 +51,9 @@ extension ConfigurationService {
 
     func buildHttpBody(with parameters: [String: Any]?) -> Result<Data, Error> {
 
-        guard let locale = Locale.formattedCode,
-            let appVersion = Bundle.appVersion,
-            let appId = Bundle.applicationId,
-            let sdkVersion = Bundle.inAppSdkVersion else {
+        guard let appVersion = bundleInfo.appVersion,
+            let appId = bundleInfo.applicationId,
+            let sdkVersion = bundleInfo.inAppSdkVersion else {
 
                 CommonUtility.debugPrint("InAppMessaging: failed creating a request body")
                 assertionFailure()
@@ -61,7 +61,7 @@ extension ConfigurationService {
         }
 
         let getConfigRequest = GetConfigRequest(
-            locale: locale,
+            locale: Locale.current.identifier,
             appVersion: appVersion,
             platform: PlatformEnum.ios.rawValue,
             appId: appId,

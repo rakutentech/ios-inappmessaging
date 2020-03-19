@@ -14,14 +14,13 @@ internal extension UIColor {
     /// - Parameter alpha: alpha value to append to the `UIColor` object
     convenience init?(fromHexString string: String, alpha: CGFloat = 1.0) {
         var hexString = string.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
-        var rgbValue = UInt32("FFFFFF", radix: 16)!
 
         if hexString.hasPrefix("#") {
             hexString.removeFirst()
         }
 
         guard hexString.count == 6,
-            Scanner(string: hexString).scanHexInt32(&rgbValue) else {
+            let rgbValue = UInt32(hexString, radix: 16) else {
             return nil
         }
 

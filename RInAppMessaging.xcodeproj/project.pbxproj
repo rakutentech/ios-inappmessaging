@@ -13,8 +13,13 @@
 		45563B03240614AE004EAFD3 /* ReadyCampaignDispatcherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45563B02240614AE004EAFD3 /* ReadyCampaignDispatcherTests.swift */; };
 		45563B0724064D78004EAFD3 /* CampaignRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45563B0624064D78004EAFD3 /* CampaignRepositoryTests.swift */; };
 		45563B0924064D98004EAFD3 /* LockableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45563B0824064D98004EAFD3 /* LockableTests.swift */; };
+		456FE1E72428513200304872 /* ErrorReportableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456FE1E62428513200304872 /* ErrorReportableTests.swift */; };
 		459DE86A24074F720002F451 /* EventMatcherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459DE86924074F720002F451 /* EventMatcherTests.swift */; };
 		459DE86C2407B5750002F451 /* CustomEventTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459DE86B2407B5750002F451 /* CustomEventTests.swift */; };
+		45BDFD032421D311004DEA0C /* CampaignsListManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45BDFD022421D311004DEA0C /* CampaignsListManagerTests.swift */; };
+		45BDFD052421EE7B004DEA0C /* SharedMocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45BDFD042421EE7B004DEA0C /* SharedMocks.swift */; };
+		45BDFD0724232714004DEA0C /* PublicAPITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45BDFD0624232714004DEA0C /* PublicAPITests.swift */; };
+		45BDFD09242362C3004DEA0C /* UIColorExtensionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45BDFD08242362C3004DEA0C /* UIColorExtensionsTests.swift */; };
 		45D4DA4F240F5597009B9B37 /* BaseViewPresenterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D4DA4E240F5597009B9B37 /* BaseViewPresenterTests.swift */; };
 		45DA01AD23D5831900A27CC6 /* ConfigurationManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA01AC23D5831900A27CC6 /* ConfigurationManagerTests.swift */; };
 		607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD51AFB9204008FA782 /* AppDelegate.swift */; };
@@ -48,8 +53,13 @@
 		45563B02240614AE004EAFD3 /* ReadyCampaignDispatcherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadyCampaignDispatcherTests.swift; sourceTree = "<group>"; };
 		45563B0624064D78004EAFD3 /* CampaignRepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CampaignRepositoryTests.swift; sourceTree = "<group>"; };
 		45563B0824064D98004EAFD3 /* LockableTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockableTests.swift; sourceTree = "<group>"; };
+		456FE1E62428513200304872 /* ErrorReportableTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorReportableTests.swift; sourceTree = "<group>"; };
 		459DE86924074F720002F451 /* EventMatcherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventMatcherTests.swift; sourceTree = "<group>"; };
 		459DE86B2407B5750002F451 /* CustomEventTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomEventTests.swift; sourceTree = "<group>"; };
+		45BDFD022421D311004DEA0C /* CampaignsListManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CampaignsListManagerTests.swift; sourceTree = "<group>"; };
+		45BDFD042421EE7B004DEA0C /* SharedMocks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedMocks.swift; sourceTree = "<group>"; };
+		45BDFD0624232714004DEA0C /* PublicAPITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicAPITests.swift; sourceTree = "<group>"; };
+		45BDFD08242362C3004DEA0C /* UIColorExtensionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColorExtensionsTests.swift; sourceTree = "<group>"; };
 		45D4DA4E240F5597009B9B37 /* BaseViewPresenterTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseViewPresenterTests.swift; sourceTree = "<group>"; };
 		45DA01AC23D5831900A27CC6 /* ConfigurationManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationManagerTests.swift; sourceTree = "<group>"; };
 		607FACD01AFB9204008FA782 /* RInAppMessaging_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RInAppMessaging_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -137,20 +147,25 @@
 		607FACE81AFB9204008FA782 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
-				D92D1F2122249833008EA748 /* CampaignsValidatorTests.swift */,
-				459DE86B2407B5750002F451 /* CustomEventTests.swift */,
-				D9F418282110FD9F00E2158F /* ConfigurationTests.swift */,
-				45DA01AC23D5831900A27CC6 /* ConfigurationManagerTests.swift */,
-				D92D1F242224A265008EA748 /* TestHelpers.swift */,
-				45563B0624064D78004EAFD3 /* CampaignRepositoryTests.swift */,
-				459DE86924074F720002F451 /* EventMatcherTests.swift */,
-				45563B0824064D98004EAFD3 /* LockableTests.swift */,
-				45563B02240614AE004EAFD3 /* ReadyCampaignDispatcherTests.swift */,
-				D911DC56211159DE0082B950 /* IdRegistrationTests.swift */,
-				4534947123C6ABF700189A81 /* SerializationTests.swift */,
-				4516601123CD411300310181 /* DependencyManagerTests.swift */,
-				4516601C23CD740300310181 /* MainContainerTests.swift */,
 				45D4DA4E240F5597009B9B37 /* BaseViewPresenterTests.swift */,
+				45563B0624064D78004EAFD3 /* CampaignRepositoryTests.swift */,
+				45BDFD022421D311004DEA0C /* CampaignsListManagerTests.swift */,
+				D92D1F2122249833008EA748 /* CampaignsValidatorTests.swift */,
+				45DA01AC23D5831900A27CC6 /* ConfigurationManagerTests.swift */,
+				D9F418282110FD9F00E2158F /* ConfigurationTests.swift */,
+				459DE86B2407B5750002F451 /* CustomEventTests.swift */,
+				4516601123CD411300310181 /* DependencyManagerTests.swift */,
+				456FE1E62428513200304872 /* ErrorReportableTests.swift */,
+				459DE86924074F720002F451 /* EventMatcherTests.swift */,
+				D911DC56211159DE0082B950 /* IdRegistrationTests.swift */,
+				45563B0824064D98004EAFD3 /* LockableTests.swift */,
+				4516601C23CD740300310181 /* MainContainerTests.swift */,
+				45BDFD0624232714004DEA0C /* PublicAPITests.swift */,
+				45563B02240614AE004EAFD3 /* ReadyCampaignDispatcherTests.swift */,
+				4534947123C6ABF700189A81 /* SerializationTests.swift */,
+				45BDFD042421EE7B004DEA0C /* SharedMocks.swift */,
+				D92D1F242224A265008EA748 /* TestHelpers.swift */,
+				45BDFD08242362C3004DEA0C /* UIColorExtensionsTests.swift */,
 				607FACE91AFB9204008FA782 /* Supporting Files */,
 			);
 			path = Tests;
@@ -311,17 +326,22 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				456FE1E72428513200304872 /* ErrorReportableTests.swift in Sources */,
+				45BDFD052421EE7B004DEA0C /* SharedMocks.swift in Sources */,
 				D911DC4F211115730082B950 /* ConfigurationTests.swift in Sources */,
 				45563B03240614AE004EAFD3 /* ReadyCampaignDispatcherTests.swift in Sources */,
 				45D4DA4F240F5597009B9B37 /* BaseViewPresenterTests.swift in Sources */,
 				D92D1F262224A269008EA748 /* TestHelpers.swift in Sources */,
+				45BDFD09242362C3004DEA0C /* UIColorExtensionsTests.swift in Sources */,
 				D92D1F2322249853008EA748 /* CampaignsValidatorTests.swift in Sources */,
+				45BDFD032421D311004DEA0C /* CampaignsListManagerTests.swift in Sources */,
 				459DE86A24074F720002F451 /* EventMatcherTests.swift in Sources */,
 				45563B0924064D98004EAFD3 /* LockableTests.swift in Sources */,
 				45DA01AD23D5831900A27CC6 /* ConfigurationManagerTests.swift in Sources */,
 				4534947223C6ABF700189A81 /* SerializationTests.swift in Sources */,
 				D911DC5821115B410082B950 /* IdRegistrationTests.swift in Sources */,
 				4516601D23CD740300310181 /* MainContainerTests.swift in Sources */,
+				45BDFD0724232714004DEA0C /* PublicAPITests.swift in Sources */,
 				459DE86C2407B5750002F451 /* CustomEventTests.swift in Sources */,
 				4516601223CD411300310181 /* DependencyManagerTests.swift in Sources */,
 				45563B0724064D78004EAFD3 /* CampaignRepositoryTests.swift in Sources */,

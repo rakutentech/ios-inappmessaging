@@ -21,6 +21,7 @@ internal class ImpressionService: ImpressionServiceType, HttpRequestable, Analyt
 
     weak var errorDelegate: ErrorDelegate?
     private(set) var httpSession: URLSession
+    var bundleInfo = BundleInfo.self
 
     init(preferenceRepository: IAMPreferenceRepository,
          configurationRepository: ConfigurationRepositoryType) {
@@ -81,8 +82,8 @@ extension ImpressionService {
         guard let parameters = parameters,
             let impressions = parameters[Keys.Params.impression] as? [Impression],
             let campaign = parameters[Keys.Params.campaign] as? CampaignData,
-            let appVersion = Bundle.appVersion,
-            let sdkVersion = Bundle.inAppSdkVersion
+            let appVersion = bundleInfo.appVersion,
+            let sdkVersion = bundleInfo.inAppSdkVersion
             else {
 
                 let error = "InAppMessaging: Error building impressions request body"
@@ -116,7 +117,7 @@ extension ImpressionService {
         let Keys = Constants.Request.Header.self
         var additionalHeaders: [Attribute] = []
 
-        if let subId = Bundle.inAppSubscriptionId {
+        if let subId = bundleInfo.inAppSubscriptionId {
             additionalHeaders.append(Attribute(key: Keys.subscriptionID, value: subId))
         }
 

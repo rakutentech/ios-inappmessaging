@@ -105,7 +105,7 @@ struct TestHelpers {
         )
     }
 
-    struct MockResponse {
+    enum MockResponse {
 
         static func withGeneratedCampaigns(count: Int,
                                            test: Bool,
@@ -428,5 +428,20 @@ struct TestHelpers {
                                                 ]
                                             )])
         }()
+    }
+}
+
+extension NSError {
+    static var emptyError: Error {
+        return NSError(domain: "", code: 0, userInfo: nil) as Error
+    }
+}
+
+extension UIColor {
+    static var blackRGB: UIColor {
+        return UIColor(red: 0, green: 0, blue: 0, alpha: 1)
+    }
+    static var whiteRGB: UIColor {
+        return UIColor(red: 1, green: 1, blue: 1, alpha: 1)
     }
 }

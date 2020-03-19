@@ -9,6 +9,7 @@ internal struct DisplayPermissionService: DisplayPermissionServiceType, HttpRequ
     private let configurationRepository: ConfigurationRepositoryType
 
     private(set) var httpSession: URLSession
+    var bundleInfo = BundleInfo.self
 
     init(campaignRepository: CampaignRepositoryType,
          preferenceRepository: IAMPreferenceRepository,
@@ -54,11 +55,10 @@ extension DisplayPermissionService {
 
     func buildHttpBody(with parameters: [String: Any]?) -> Result<Data, Error> {
 
-        guard let subscriptionId = Bundle.inAppSubscriptionId,
+        guard let subscriptionId = bundleInfo.inAppSubscriptionId,
             let campaignId = parameters?[Constants.Request.campaignID] as? String,
-            let appVersion = Bundle.appVersion,
-            let sdkVersion = Bundle.inAppSdkVersion,
-            let locale = Locale.formattedCode
+            let appVersion = bundleInfo.appVersion,
+            let sdkVersion = bundleInfo.inAppSdkVersion
             else {
                 CommonUtility.debugPrint("InAppMessaging: error while building request body for display permssion.")
                 return .failure(RequestError.unknown)
@@ -70,7 +70,7 @@ extension DisplayPermissionService {
                                                          platform: PlatformEnum.ios.rawValue,
                                                          appVersion: appVersion,
                                                          sdkVersion: sdkVersion,
-                                                         locale: locale,
+                                                         locale: Locale.current.identifier,
                                                          lastPingInMillis: campaignRepository.lastSyncInMilliseconds ?? 0)
         do {
             let body = try JSONEncoder().encode(permissionRequest)
@@ -85,7 +85,7 @@ extension DisplayPermissionService {
         let Keys = Constants.Request.Header.self
         var additionalHeaders: [Attribute] = []
 
-        if let subId = Bundle.inAppSubscriptionId {
+        if let subId = bundleInfo.inAppSubscriptionId {
             additionalHeaders.append(Attribute(key: Keys.subscriptionID, value: subId))
         }
 

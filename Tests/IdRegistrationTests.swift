@@ -13,7 +13,7 @@ class IdRegistrationTests: QuickSpec {
                     return ConfigurationManagerStub()
                 }),
                 DependencyManager.ContainerElement(type: MessageMixerServiceType.self, factory: {
-                    return MessageMixerServiceStub()
+                    return MessageMixerServiceMock()
                 })
             ])
         }
@@ -78,12 +78,5 @@ private class ConfigurationManagerStub: ConfigurationManagerType {
                                          displayPermission: emptyURL,
                                          impression: emptyURL)
         completion(ConfigData(enabled: true, endpoints: emptyEndpoints))
-    }
-}
-
-private class MessageMixerServiceStub: MessageMixerServiceType {
-    weak var errorDelegate: ErrorDelegate?
-    func ping() -> Result<PingResponse, MessageMixerServiceError> {
-        return .failure(.invalidConfiguration)
     }
 }

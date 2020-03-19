@@ -13,7 +13,7 @@ internal enum MainContainerFactory {
         if isTestEnvironment {
             return URL(string: "config.com")
         } else {
-            guard let configURLString = Bundle.inAppConfigurationURL, !configURLString.isEmpty else {
+            guard let configURLString = BundleInfo.inAppConfigurationURL, !configURLString.isEmpty else {
                 return nil
             }
             return URL(string: configURLString)
