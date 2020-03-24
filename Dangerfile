@@ -5,7 +5,6 @@ xcov.report(
   workspace: 'RInAppMessaging.xcworkspace',
   scheme: 'RInAppMessaging-Example',
   output_directory: 'artifacts/unit-tests/coverage',
-  source_directory: 'RInAppMessaging',
   json_report: true,
   include_targets: 'RInAppMessaging.framework',
   include_test_targets: false

@@ -30,4 +30,14 @@ platform :ios do
 
     lint_module
   end
+
+  lane :coverage do
+    xcov(
+      workspace: "RInAppMessaging.xcworkspace",
+      scheme: "RInAppMessaging-Example",
+      output_directory: "xcov_output",
+      include_test_targets: false,
+      json_report: true
+    )  
+  end
 end

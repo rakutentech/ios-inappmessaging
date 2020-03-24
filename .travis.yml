@@ -1,7 +1,7 @@
 language: swift
 xcode_workspace: Example/InAppMessaging.xcworkspace
 xcode_scheme: InAppMessaging-Example
-osx_image: xcode11.3
+osx_image: xcode11.4
 
 script:
   - travis_wait bundle exec fastlane ci
@@ -16,10 +16,14 @@ before_install:
   - pod outdated | awk '{ if ( $1 ~ /^-/ ) { print $0 } }' | awk '{ if ( $3 != $5 ) { pod update $2 } else { print "No updated needed it for" $2 } }'
 
 after_success:
-  - bash <(curl -s https://codecov.io/bash) -J '^RInAppMessaging$'
+  # prepare coverage report for codecov
+  - xcrun xccov view --report --json ./artifacts/unit-tests/coverage/action_0.xccovreport > ./artifacts/unit-tests/coverage/coverage.json
+  - xcrun swift xccov-json-to-cobertura-xml.swift ./artifacts/unit-tests/coverage/coverage.json > ./artifacts/unit-tests/coverage/cobertura.xml
+  - bash <(curl -s https://codecov.io/bash) -f ./artifacts/unit-tests/coverage/cobertura.xml
+  # - bash <(curl -s https://codecov.io/bash) -J '^RInAppMessaging$' -X gcov
   - pod lib lint
-  # generate docs
-  - bundle exec jazzy
+  # generate docs (no PRs)
+  - test $TRAVIS_PULL_REQUEST = "false" && bundle exec jazzy
 
 deploy:
   provider: pages
