@@ -26,6 +26,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         var dialogViewHorizontalMargin: CGFloat = 20 // The spacing between dialog view and the children elements.
         var dialogViewWidthOffset: CGFloat = 0 // Spacing on the left and right side of subviews.
         var dialogViewWidthMultiplier: CGFloat = 1 // Spacing on the left and right side of subviews.
+        var dialogViewSafeAreaOffsetY: CGFloat = 0 // Offset for text content applied when there is no image
     }
     var uiConstants = UIConstants()
     var mode: FullViewMode {
@@ -66,6 +67,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
     @IBOutlet private weak var contentWidthOffsetConstraint: NSLayoutConstraint!
     /// Constriaint for vertical position above content view
     @IBOutlet private weak var exitButtonYPositionConstraint: NSLayoutConstraint!
+    @IBOutlet private weak var dialogViewOffsetYConstraint: NSLayoutConstraint!
 
     // Will change to true if campaign has an image URL.
     private var hasImage = false {
@@ -94,10 +96,8 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         }
 
         setupMainView()
-        setUpAccessibility()
+        setupAccessibility()
         updateUIConstants()
-        layoutContentView(viewModel: viewModel)
-        layoutUIComponents()
 
         backgroundView.backgroundColor = uiConstants.backgroundColor ?? viewModel.backgroundColor
 
@@ -109,6 +109,9 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
             hasImage = false
         }
 
+        layoutContentView(viewModel: viewModel)
+        layoutUIComponents()
+
         createMessageBody(viewModel: viewModel)
 
         presenter.logImpression(type: .impression)
@@ -118,7 +121,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
 
     func animateOnShow() { }
 
-    private func setUpAccessibility() {
+    private func setupAccessibility() {
         backgroundView.accessibilityIdentifier = "IAMBackgroundView"
         dialogView.accessibilityIdentifier = "dialogView"
         bodyView.accessibilityIdentifier = "textView"
@@ -161,6 +164,8 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
 
         contentWidthOffsetConstraint.constant = -uiConstants.dialogViewWidthOffset
         contentWidthOffsetConstraint.setMultiplier(uiConstants.dialogViewWidthMultiplier)
+
+        dialogViewOffsetYConstraint.constant = hasImage ? 0 : uiConstants.dialogViewSafeAreaOffsetY
 
         contentView.backgroundColor = viewModel.backgroundColor
         contentView.clipsToBounds = true

@@ -19,6 +19,7 @@
                 <outlet property="contentWidthOffsetConstraint" destination="rmG-89-pbI" id="RLz-RF-qgv"/>
                 <outlet property="dialogContainerView" destination="Isa-nZ-Ubf" id="1fc-8c-nA2"/>
                 <outlet property="dialogView" destination="kFe-rN-o5K" id="PPI-qz-zko"/>
+                <outlet property="dialogViewOffsetYConstraint" destination="kc0-sT-7N8" id="Ewa-fv-tly"/>
                 <outlet property="exitButton" destination="ZII-OX-pA4" id="AA2-Rt-r98"/>
                 <outlet property="exitButtonYPositionConstraint" destination="4gf-Oe-7t9" id="0Di-eI-mTA"/>
                 <outlet property="headerLabel" destination="T7s-2B-xbs" id="z3s-fm-1Ez"/>
