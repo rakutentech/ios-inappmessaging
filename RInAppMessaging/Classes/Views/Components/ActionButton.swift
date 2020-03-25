@@ -31,7 +31,7 @@ internal class ActionButton: UIButton {
         setTitleColor(viewModel.textColor, for: .normal)
         titleLabel?.font = .boldSystemFont(ofSize: Constants.fontSize)
         layer.cornerRadius = Constants.cornerRadius
-        self.backgroundColor = backgroundColor
+        self.backgroundColor = viewModel.backgroundColor
         layer.borderColor = viewModel.textColor.cgColor
         layer.borderWidth = Constants.borderWidth
     }
