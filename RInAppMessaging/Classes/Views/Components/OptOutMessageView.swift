@@ -32,6 +32,7 @@ internal class OptOutMessageView: UIView {
         let optOutMessage = UILabel()
         optOutMessage.text = "optOut_message".localized
         optOutMessage.font = .systemFont(ofSize: Constants.fontSize)
+        optOutMessage.textColor = .black
         optOutMessage.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapAction)))
         optOutMessage.isUserInteractionEnabled = true
         optOutMessage.sizeToFit()
