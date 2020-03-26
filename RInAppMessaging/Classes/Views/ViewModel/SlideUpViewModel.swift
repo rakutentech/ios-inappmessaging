@@ -1,6 +1,6 @@
 internal struct SlideUpViewModel {
-    let slideDirection: SlideDirection
+    let slideFromDirection: SlideDirection
     let backgroundColor: UIColor
-    let messageBody: String?
+    let messageBody: String
     let messageBodyColor: UIColor
 }

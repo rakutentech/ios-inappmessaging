@@ -338,7 +338,6 @@ class ViewPresenterTests: QuickSpec {
 private class FullViewMock: UIView, FullViewType {
     var isOptOutChecked: Bool = false
     var onDismiss: (() -> Void)?
-    var isUsingAutoLayout = true
 
     private(set) var wasSetupCalled = false
     private(set) var wasDismissCalled = false
@@ -357,11 +356,11 @@ private class FullViewMock: UIView, FullViewType {
     }
 
     func animateOnShow() { }
+    func constraintsForParent(_ parent: UIView) -> [NSLayoutConstraint] { [] }
 }
 
 private class SlideUpViewMock: UIView, SlideUpViewType {
     var onDismiss: (() -> Void)?
-    var isUsingAutoLayout = false
 
     private(set) var wasSetupCalled = false
     private(set) var wasDismissCalled = false
@@ -375,4 +374,5 @@ private class SlideUpViewMock: UIView, SlideUpViewType {
     }
 
     func animateOnShow() { }
+    func constraintsForParent(_ parent: UIView) -> [NSLayoutConstraint] { [] }
 }

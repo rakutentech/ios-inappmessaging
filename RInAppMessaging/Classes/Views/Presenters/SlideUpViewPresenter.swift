@@ -1,3 +1,5 @@
+import class UIKit.UIColor
+
 internal protocol SlideUpViewPresenterType: BaseViewPresenterType {
     var view: SlideUpViewType? { get set }
 
@@ -10,15 +12,19 @@ internal class SlideUpViewPresenter: BaseViewPresenter, SlideUpViewPresenterType
     weak var view: SlideUpViewType?
 
     override func viewDidInitialize() {
-        guard let direction = campaign.data.messagePayload.messageSettings.displaySettings.slideFrom else {
+        let messagePayload = campaign.data.messagePayload
+
+        guard let messageBody = messagePayload.messageBody,
+            let direction = campaign.data.messagePayload.messageSettings.displaySettings.slideFrom else {
+
             CommonUtility.debugPrint("InAppMessaging: Error constructing a SlideUpView.")
+            view?.dismiss()
             return
         }
 
-        let messagePayload = campaign.data.messagePayload
-        let viewModel = SlideUpViewModel(slideDirection: direction,
+        let viewModel = SlideUpViewModel(slideFromDirection: direction,
                                          backgroundColor: UIColor(fromHexString: messagePayload.backgroundColor) ?? .white,
-                                         messageBody: messagePayload.messageBody,
+                                         messageBody: messageBody,
                                          messageBodyColor: UIColor(fromHexString: messagePayload.messageBodyColor) ?? .black)
         view?.setup(viewModel: viewModel)
     }
@@ -26,7 +32,7 @@ internal class SlideUpViewPresenter: BaseViewPresenter, SlideUpViewPresenterType
     func didClickContent() {
         let campaignContent = campaign.data.messagePayload.messageSettings.controlSettings?.content
 
-        if campaignContent?.onClickBehavior.action != .close {
+        if [.redirect, .deeplink].contains(campaignContent?.onClickBehavior.action) {
             guard let uri = campaignContent?.onClickBehavior.uri,
                 let uriToOpen = URL(string: uri),
                 UIApplication.shared.canOpenURL(uriToOpen) else {

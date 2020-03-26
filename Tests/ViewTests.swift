@@ -180,12 +180,12 @@ class ViewTests: QuickSpec {
 
 private class BaseViewTestObject: UIView, BaseView {
     var onDismiss: (() -> Void)?
-    var isUsingAutoLayout = false
     private(set) var wasAnimateOnShowCalled = false
 
     func animateOnShow() {
         wasAnimateOnShowCalled = true
     }
+    func constraintsForParent(_ parent: UIView) -> [NSLayoutConstraint] { [] }
 }
 
 private class FullViewPresenterMock: FullViewPresenterType {
@@ -244,7 +244,7 @@ extension FullViewModel {
 
 extension SlideUpViewModel {
     static var empty: SlideUpViewModel {
-        return .init(slideDirection: .bottom,
+        return .init(slideFromDirection: .bottom,
                      backgroundColor: .black,
                      messageBody: "",
                      messageBodyColor: .black)

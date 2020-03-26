@@ -3,7 +3,7 @@ import UIKit
 extension UIView {
 
     @discardableResult
-    func activateConstraintsFilling(parent: UIView) -> [NSLayoutConstraint] {
+    func constraintsFilling(parent: UIView, activate: Bool) -> [NSLayoutConstraint] {
         let constraints = [
             leadingAnchor.constraint(equalTo: parent.leadingAnchor),
             trailingAnchor.constraint(equalTo: parent.trailingAnchor),
@@ -11,7 +11,9 @@ extension UIView {
             bottomAnchor.constraint(equalTo: parent.bottomAnchor)
         ]
 
-        NSLayoutConstraint.activate(constraints)
+        if activate {
+            NSLayoutConstraint.activate(constraints)
+        }
         return constraints
     }
 

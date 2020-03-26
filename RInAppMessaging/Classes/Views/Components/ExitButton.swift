@@ -48,7 +48,7 @@ internal class ExitButton: UIControl {
 
         xLabel.translatesAutoresizingMaskIntoConstraints = false
         addSubview(xLabel)
-        xLabel.activateConstraintsFilling(parent: self)
+        xLabel.constraintsFilling(parent: self, activate: true)
     }
 
     private func updateColors() {

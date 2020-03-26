@@ -65,9 +65,6 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
     var isOptOutChecked: Bool {
         return !optOutView.isHidden && optOutView.isChecked
     }
-    var isUsingAutoLayout: Bool {
-        return true
-    }
     var onDismiss: (() -> Void)?
 
     private var hasImage = false {
@@ -121,6 +118,10 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
 
     func animateOnShow() { }
 
+    func constraintsForParent(_ parent: UIView) -> [NSLayoutConstraint] {
+        return constraintsFilling(parent: parent, activate: false)
+    }
+
     private func setupAccessibility() {
         backgroundView.accessibilityIdentifier = "IAMBackgroundView"
         dialogView.accessibilityIdentifier = "dialogView"
@@ -138,7 +139,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         }
         containerView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(containerView)
-        containerView.activateConstraintsFilling(parent: self)
+        containerView.constraintsFilling(parent: self, activate: true)
     }
 
     private func layoutContentView(viewModel: FullViewModel) {
@@ -226,7 +227,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         webViewContainer.isHidden = false
         webViewContainer.removeAllSubviews()
         webViewContainer.addSubview(webView)
-        webView.activateConstraintsFilling(parent: webViewContainer)
+        webView.constraintsFilling(parent: webViewContainer, activate: true)
     }
 
     private func setupBodyMessage(viewModel: FullViewModel) {

@@ -5,7 +5,6 @@ import func Foundation.NSClassFromString
 internal protocol BaseView: UIView {
     var viewIdentifier: String { get }
     var onDismiss: (() -> Void)? { get set }
-    var isUsingAutoLayout: Bool { get }
 
     /// Handle the login for displaying Modal/Fullscreen IAM views
     func show(accessibilityCompatible: Bool, onDismiss: @escaping () -> Void)
@@ -15,6 +14,9 @@ internal protocol BaseView: UIView {
 
     /// Dismiss the presented IAM view
     func dismiss()
+
+    /// Return the constraints necessary for adding this view as a parent's subview
+    func constraintsForParent(_ parent: UIView) -> [NSLayoutConstraint]
 }
 
 internal extension BaseView {
@@ -63,14 +65,11 @@ internal extension BaseView {
             parentView = mainSubview
         }
 
-        if isUsingAutoLayout {
-            translatesAutoresizingMaskIntoConstraints = false
-            parentView.addSubview(self)
-            activateConstraintsFilling(parent: parentView)
-        } else {
-            parentView.addSubview(self)
-        }
+        translatesAutoresizingMaskIntoConstraints = false
+        parentView.addSubview(self)
+        NSLayoutConstraint.activate(constraintsForParent(parentView))
 
+        parentView.layoutIfNeeded()
         animateOnShow()
     }
 }
