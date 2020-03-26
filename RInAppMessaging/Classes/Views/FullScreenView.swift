@@ -14,7 +14,7 @@ internal class FullScreenView: FullView {
         uiConstants.exitButtonVerticalOffset = -56
         uiConstants.exitButtonSize = 25
         uiConstants.exitButtonFontSize = 14
-        uiConstants.dialogViewSafeAreaOffsetY =
+        uiConstants.bodyViewSafeAreaOffsetY =
             -uiConstants.exitButtonVerticalOffset - uiConstants.exitButtonSize + 8.0
 
         if UIDevice.current.userInterfaceIdiom == .pad {

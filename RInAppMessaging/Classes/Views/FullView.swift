@@ -26,34 +26,21 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         var dialogViewHorizontalMargin: CGFloat = 20 // The spacing between dialog view and the children elements.
         var dialogViewWidthOffset: CGFloat = 0 // Spacing on the left and right side of subviews.
         var dialogViewWidthMultiplier: CGFloat = 1 // Spacing on the left and right side of subviews.
-        var dialogViewSafeAreaOffsetY: CGFloat = 0 // Offset for text content applied when there is no image
+        var bodyViewSafeAreaOffsetY: CGFloat = 0 // Offset for text content applied when there is no image
     }
-    var uiConstants = UIConstants()
-    var mode: FullViewMode {
-        return .none
-    }
-    var isOptOutChecked: Bool {
-        return !optOutView.isHidden && optOutView.isChecked
-    }
-    var isUsingAutoLayout: Bool {
-        return true
-    }
-    var onDismiss: (() -> Void)?
-
-    private let presenter: FullViewPresenterType
 
     @IBOutlet private weak var backgroundView: UIView!
     @IBOutlet private weak var imageView: UIImageView!
     @IBOutlet private weak var contentView: UIView! // Wraps dialog view to allow rounded corners
-    @IBOutlet private weak var dialogContainerView: UIView!
+    @IBOutlet private weak var controlsView: UIView!
     @IBOutlet private weak var dialogView: UIStackView!
     @IBOutlet private weak var headerLabel: UILabel!
     @IBOutlet private weak var bodyLabel: UILabel!
     @IBOutlet private weak var lowerBodyLabel: UILabel!
     @IBOutlet private weak var bodyView: UIStackView!
-    @IBOutlet private weak var bodyContainerView: UIScrollView!
-    @IBOutlet private weak var webViewContainer: UIView!
+    @IBOutlet private weak var bodyContainerView: UIView!
     // WKWebView cannot be used as a @IBOutlet for targets that support versions older than iOS 11
+    @IBOutlet private weak var webViewContainer: UIView!
     @IBOutlet private weak var optOutView: OptOutMessageView!
     @IBOutlet private weak var optOutAndButtonsSpacer: UIView!
     @IBOutlet private weak var buttonsContainer: UIStackView!
@@ -67,9 +54,22 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
     @IBOutlet private weak var contentWidthOffsetConstraint: NSLayoutConstraint!
     /// Constriaint for vertical position above content view
     @IBOutlet private weak var exitButtonYPositionConstraint: NSLayoutConstraint!
-    @IBOutlet private weak var dialogViewOffsetYConstraint: NSLayoutConstraint!
+    @IBOutlet private weak var bodyViewOffsetYConstraint: NSLayoutConstraint!
 
-    // Will change to true if campaign has an image URL.
+    private let presenter: FullViewPresenterType
+
+    var uiConstants = UIConstants()
+    var mode: FullViewMode {
+        return .none
+    }
+    var isOptOutChecked: Bool {
+        return !optOutView.isHidden && optOutView.isChecked
+    }
+    var isUsingAutoLayout: Bool {
+        return true
+    }
+    var onDismiss: (() -> Void)?
+
     private var hasImage = false {
         didSet {
             exitButton.invertedColors = hasImage
@@ -165,7 +165,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         contentWidthOffsetConstraint.constant = -uiConstants.dialogViewWidthOffset
         contentWidthOffsetConstraint.setMultiplier(uiConstants.dialogViewWidthMultiplier)
 
-        dialogViewOffsetYConstraint.constant = hasImage ? 0 : uiConstants.dialogViewSafeAreaOffsetY
+        bodyViewOffsetYConstraint.constant = hasImage ? 0 : uiConstants.bodyViewSafeAreaOffsetY
 
         contentView.backgroundColor = viewModel.backgroundColor
         contentView.clipsToBounds = true
@@ -173,8 +173,8 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
     }
 
     private func layoutUIComponents() {
-        dialogView.isLayoutMarginsRelativeArrangement = true
-        dialogView.layoutMargins = UIEdgeInsets(top: 0, left: uiConstants.dialogViewHorizontalMargin,
+        bodyView.isLayoutMarginsRelativeArrangement = true
+        bodyView.layoutMargins = UIEdgeInsets(top: 0, left: uiConstants.dialogViewHorizontalMargin,
                                                 bottom: 0, right: uiConstants.dialogViewHorizontalMargin)
 
         exitButton.widthAnchor.constraint(equalToConstant: uiConstants.exitButtonSize).isActive = true
@@ -183,8 +183,6 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         exitButton.fontSize = uiConstants.exitButtonFontSize
     }
 
-    /// Creates the modal view to be displayed using the campaign information.
-    /// - Parameter viewModel: The view's view model.
     private func createMessageBody(viewModel: FullViewModel) {
         bodyView.isLayoutMarginsRelativeArrangement = true
         bodyView.layoutMargins.top = uiConstants.bodyMarginTop
@@ -201,8 +199,6 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
             setupBodyMessage(viewModel: viewModel)
         }
 
-        optOutView.isHidden = !viewModel.showOptOut
-
         presenter.loadButtons()
         updateUIComponentsVisibility(viewModel: viewModel)
     }
@@ -215,13 +211,13 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
                         !viewModel.showOptOut &&
                         !viewModel.showButtons
 
+        buttonsContainer.isHidden = !viewModel.showButtons
+        optOutView.isHidden = !viewModel.showOptOut
         optOutAndButtonsSpacer.isHidden = buttonsContainer.isHidden || optOutView.isHidden
-        dialogContainerView.isHidden = isBodyEmpty
+        controlsView.isHidden = buttonsContainer.isHidden && optOutView.isHidden
+        bodyView.isHidden = isBodyEmpty
     }
 
-    /// Creates a webview and load in the HTML string provided by the Ping response.
-    /// - Parameter htmlString: HTML string by the backend. This string should
-    /// contain only safe characters -- it should NOT contain any un-escaped characters.
     private func setupWebView(withHtmlString htmlString: String) {
         let webView = createWebView(withHtmlString: htmlString,
                                     andFrame: .zero)
@@ -233,8 +229,6 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         webView.activateConstraintsFilling(parent: webViewContainer)
     }
 
-    /// Creates the text view to be displayed using the campaign information.
-    /// - Parameter viewModel: The view's view model.
     private func setupBodyMessage(viewModel: FullViewModel) {
         if let bodyMessage = viewModel.messageBody {
             bodyLabel.isHidden = false
@@ -273,20 +267,15 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         headerLabel.font = .boldSystemFont(ofSize: uiConstants.headerMessageFontSize)
     }
 
-    /// Adds buttons to dialog view.
-    /// - Parameter buttons: A list of tuples containing `ActionButton` and its view model.
     func addButtons(_ buttons: [(ActionButton, viewModel: ActionButtonViewModel)]) {
+        buttonsContainer.arrangedSubviews.forEach { buttonsContainer.removeArrangedSubview($0) }
+
         guard !buttons.isEmpty else {
-            buttonsContainer.isHidden = true
             return
         }
 
-        buttonsContainer.isHidden = false
-        buttonsContainer.arrangedSubviews.forEach { buttonsContainer.removeArrangedSubview($0) }
-
         let onlyOneButton = buttons.count == 1
         let margin = onlyOneButton ? uiConstants.singleButtonWidthMargin : 0
-        buttonsContainer.isHidden = false
         buttonsContainer.spacing = uiConstants.buttonsSpacing
         buttonsContainer.isLayoutMarginsRelativeArrangement = true
         buttonsContainer.layoutMargins = UIEdgeInsets(top: 0, left: margin,
@@ -304,15 +293,10 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         }
     }
 
-    /// Obj-c selector to handle close, redirect, and deeplink type buttons.
-    /// When the URL fails to validate through canOpenUrl() or is empty, an alert message will pop up
-    /// to warn about the navigation error.
-    /// - Parameter sender: The button that was clicked.
     @objc private func onActionButtonClick(_ sender: ActionButton) {
         presenter.didClickAction(sender: sender)
     }
 
-    /// Obj-c selector to handle exit button.
     @objc private func onExitButtonClick() {
         presenter.didClickExitButton()
     }

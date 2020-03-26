@@ -2,7 +2,11 @@
 internal class ModalView: FullView {
 
     override var mode: FullViewMode {
-        return .modal(maxWindowHeightPercentage: 0.65)
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            return .modal(maxWindowHeightPercentage: 0.75)
+        } else {
+            return .modal(maxWindowHeightPercentage: 0.65)
+        }
     }
 
     override func setup(viewModel: FullViewModel) {
