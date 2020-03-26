@@ -39,7 +39,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
     }
     var onDismiss: (() -> Void)?
 
-    private let presenter: FullViewPresenter
+    private let presenter: FullViewPresenterType
 
     @IBOutlet private weak var backgroundView: UIView!
     @IBOutlet private weak var imageView: UIImageView!
@@ -75,7 +75,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         }
     }
 
-    init(presenter: FullViewPresenter) {
+    init(presenter: FullViewPresenterType) {
         self.presenter = presenter
         super.init(frame: .zero)
         self.presenter.view = self
@@ -86,7 +86,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func initializeView(viewModel: FullViewModel) {
+    func setup(viewModel: FullViewModel) {
 
         removeAllSubviews()
         guard mode != .none else {

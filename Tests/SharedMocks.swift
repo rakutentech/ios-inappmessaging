@@ -35,8 +35,11 @@ class CampaignRepositoryMock: CampaignRepositoryType {
 class ReadyCampaignDispatcherMock: ReadyCampaignDispatcherType {
     weak var delegate: ReadyCampaignDispatcherDelegate?
     private(set) var wasDispatchCalled = false
+    private(set) var addedCampaigns = [Campaign]()
 
-    func addToQueue(campaign: Campaign) { }
+    func addToQueue(campaign: Campaign) {
+        addedCampaigns.append(campaign)
+    }
     func dispatchAllIfNeeded() {
         wasDispatchCalled = true
     }
@@ -44,13 +47,27 @@ class ReadyCampaignDispatcherMock: ReadyCampaignDispatcherType {
 
 class EventMatcherMock: EventMatcherType {
     private(set) var loggedEvents = [Event]()
+    var simulateMatchingSuccess = true
+    var simulateMatcherError: EventMatcherError?
+
     func matchAndStore(event: Event) {
         loggedEvents.append(event)
     }
 
     func matchedEvents(for campaign: Campaign) -> [Event] { return [] }
-    func containsAllMatchedEvents(for campaign: Campaign) -> Bool { return true }
-    func removeSetOfMatchedEvents(_ eventsToRemove: Set<Event>, for campaign: Campaign) throws { }
+
+    func containsAllMatchedEvents(for campaign: Campaign) -> Bool {
+        return simulateMatchingSuccess
+    }
+
+    func removeSetOfMatchedEvents(_ eventsToRemove: Set<Event>, for campaign: Campaign) throws {
+        if let error = simulateMatcherError {
+            throw error
+        }
+        if !simulateMatchingSuccess {
+            throw EventMatcherError.couldntFindRequestedSetOfEvents
+        }
+    }
 }
 
 class MessageMixerServiceMock: MessageMixerServiceType {
@@ -127,6 +144,19 @@ class ConfigurationRepositoryMock: ConfigurationRepositoryType {
 
     func getIsEnabledStatus() -> Bool? {
         return configuration?.enabled
+    }
+}
+
+class CampaignTriggerAgentMock: CampaignTriggerAgentType {
+    func trigger(campaign: Campaign, triggeredEvents: Set<Event>) { }
+}
+
+class ImpressionServiceMock: ImpressionServiceType {
+    weak var errorDelegate: ErrorDelegate?
+    var sentImpressions: (list: [ImpressionType], campaignID: String)?
+
+    func pingImpression(impressions: [Impression], campaignData: CampaignData) {
+        sentImpressions = (impressions.map({ $0.type }), campaignData.campaignId)
     }
 }
 

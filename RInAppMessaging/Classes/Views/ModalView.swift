@@ -5,8 +5,8 @@ internal class ModalView: FullView {
         return .modal(maxWindowHeightPercentage: 0.65)
     }
 
-    override func initializeView(viewModel: FullViewModel) {
-        super.initializeView(viewModel: viewModel)
+    override func setup(viewModel: FullViewModel) {
+        super.setup(viewModel: viewModel)
         exitButton.invertedColors = true
     }
 

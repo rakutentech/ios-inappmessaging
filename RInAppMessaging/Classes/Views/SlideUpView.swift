@@ -18,7 +18,7 @@ internal class SlideUpView: UIView, SlideUpViewType {
         return false
     }
 
-    private let presenter: SlideUpViewPresenter
+    private let presenter: SlideUpViewPresenterType
     private let dialogView = UIView()
     private var slideDirection = SlideDirection.bottom
     private var bottomSafeAreaInsets: CGFloat {
@@ -32,7 +32,7 @@ internal class SlideUpView: UIView, SlideUpViewType {
         return 0
     }
 
-    init(presenter: SlideUpViewPresenter) {
+    init(presenter: SlideUpViewPresenterType) {
         self.presenter = presenter
         super.init(frame: UIScreen.main.bounds)
         self.presenter.view = self
@@ -43,7 +43,7 @@ internal class SlideUpView: UIView, SlideUpViewType {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func initializeView(viewModel: SlideUpViewModel) {
+    func setup(viewModel: SlideUpViewModel) {
 
         self.slideDirection = viewModel.slideDirection
         frame.origin = startingFramePosition(fromSliding: viewModel.slideDirection)
@@ -62,7 +62,9 @@ internal class SlideUpView: UIView, SlideUpViewType {
         }
 
         appendExitButton()
-        appendSubview()
+        appendSubviews()
+
+        presenter.logImpression(type: .impression)
     }
 
     func animateOnShow() {
@@ -124,9 +126,8 @@ internal class SlideUpView: UIView, SlideUpViewType {
         dialogView.addSubview(exitButton)
     }
 
-    private func appendSubview() {
+    private func appendSubviews() {
         addSubview(dialogView)
-        presenter.logImpression(type: .impression)
     }
 
     /// Find the frame origin depending on the slide direction.

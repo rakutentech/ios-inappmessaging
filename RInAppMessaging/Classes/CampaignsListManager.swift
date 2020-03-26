@@ -11,7 +11,7 @@ internal class CampaignsListManager: CampaignsListManagerType, TaskSchedulable {
     private let campaignsValidator: CampaignsValidatorType
     private var campaignRepository: CampaignRepositoryType
     private let readyCampaignDispatcher: ReadyCampaignDispatcherType
-    private let eventMatcher: EventMatcherType
+    private let campaignTriggerAgent: CampaignTriggerAgentType
     private let messageMixerService: MessageMixerServiceType
 
     weak var errorDelegate: ErrorDelegate?
@@ -21,13 +21,13 @@ internal class CampaignsListManager: CampaignsListManagerType, TaskSchedulable {
     init(campaignsValidator: CampaignsValidatorType,
          campaignRepository: CampaignRepositoryType,
          readyCampaignDispatcher: ReadyCampaignDispatcherType,
-         eventMatcher: EventMatcherType,
+         campaignTriggerAgent: CampaignTriggerAgentType,
          messageMixerService: MessageMixerServiceType) {
 
         self.campaignsValidator = campaignsValidator
         self.campaignRepository = campaignRepository
         self.readyCampaignDispatcher = readyCampaignDispatcher
-        self.eventMatcher = eventMatcher
+        self.campaignTriggerAgent = campaignTriggerAgent
         self.messageMixerService = messageMixerService
     }
 
@@ -52,10 +52,9 @@ internal class CampaignsListManager: CampaignsListManagerType, TaskSchedulable {
             campaignRepository.syncWith(list: decodedResponse.data,
                                         timestampMilliseconds: decodedResponse.currentPingMillis)
         }
-        campaignsValidator.validate(
-            validatedCampaignHandler: CampaignsValidatorHelper.defaultValidatedCampaignHandler(
-                eventMatcher: eventMatcher,
-                dispatcher: readyCampaignDispatcher))
+        campaignsValidator.validate { campaign, events in
+            campaignTriggerAgent.trigger(campaign: campaign, triggeredEvents: events)
+        }
 
         readyCampaignDispatcher.dispatchAllIfNeeded()
 

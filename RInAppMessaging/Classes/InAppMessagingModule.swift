@@ -9,6 +9,7 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
     private let eventMatcher: EventMatcherType
     private var readyCampaignDispatcher: ReadyCampaignDispatcherType
     private var impressionService: ImpressionServiceType
+    private let campaignTriggerAgent: CampaignTriggerAgentType
 
     private var isInitialized = false
     private var isEnabled = true
@@ -21,7 +22,8 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
          preferenceRepository: IAMPreferenceRepository,
          campaignsValidator: CampaignsValidatorType,
          eventMatcher: EventMatcherType,
-         readyCampaignDispatcher: ReadyCampaignDispatcherType) {
+         readyCampaignDispatcher: ReadyCampaignDispatcherType,
+         campaignTriggerAgent: CampaignTriggerAgentType) {
 
         self.configurationManager = configurationManager
         self.campaignsListManager = campaignsListManager
@@ -30,6 +32,7 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
         self.eventMatcher = eventMatcher
         self.readyCampaignDispatcher = readyCampaignDispatcher
         self.impressionService = impressionService
+        self.campaignTriggerAgent = campaignTriggerAgent
 
         self.configurationManager.errorDelegate = self
         self.campaignsListManager.errorDelegate = self
@@ -67,10 +70,9 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
             return
         }
 
-        campaignsValidator.validate(
-            validatedCampaignHandler: CampaignsValidatorHelper.defaultValidatedCampaignHandler(
-                eventMatcher: eventMatcher,
-                dispatcher: readyCampaignDispatcher))
+        campaignsValidator.validate { campaign, events in
+            campaignTriggerAgent.trigger(campaign: campaign, triggeredEvents: events)
+        }
         readyCampaignDispatcher.dispatchAllIfNeeded()
     }
 

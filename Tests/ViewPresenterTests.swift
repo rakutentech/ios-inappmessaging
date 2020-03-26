@@ -2,7 +2,7 @@ import Quick
 import Nimble
 @testable import RInAppMessaging
 
-class BaseViewPresenterTests: QuickSpec {
+class ViewPresenterTests: QuickSpec {
 
     override func spec() {
 
@@ -10,27 +10,27 @@ class BaseViewPresenterTests: QuickSpec {
         var campaignRepository: CampaignRepositoryMock!
         var impressionService: ImpressionServiceMock!
         var eventMatcher: EventMatcherMock!
-        var readyCampaignDispatcher: ReadyCampaignDispatcherMock!
 
         beforeEach {
             campaignsValidator = CampaignsValidatorMock()
             campaignRepository = CampaignRepositoryMock()
             impressionService = ImpressionServiceMock()
             eventMatcher = EventMatcherMock()
-            readyCampaignDispatcher = ReadyCampaignDispatcherMock()
         }
+
         describe("BaseViewPresenter") {
 
             var presenter: BaseViewPresenter!
-            let defaultCampaign = TestHelpers.generateCampaign(id: "test", test: false, delay: 0, maxImpressions: 1)
+            let testCampaign = TestHelpers.generateCampaign(id: "test", test: false,
+                                                            delay: 0, maxImpressions: 1)
 
             beforeEach {
                 presenter = BaseViewPresenter(campaignsValidator: campaignsValidator,
                                              campaignRepository: campaignRepository,
                                              impressionService: impressionService,
                                              eventMatcher: eventMatcher,
-                                             readyCampaignDispatcher: readyCampaignDispatcher)
-                presenter.campaign = defaultCampaign
+                                             campaignTriggerAgent: CampaignTriggerAgentMock())
+                presenter.campaign = testCampaign
             }
 
             context("when logImpression is called") {
@@ -64,7 +64,7 @@ class BaseViewPresenterTests: QuickSpec {
                     }
 
                     presenter.sendImpressions()
-                    expect(impressionService.sentImpressions?.campaignID).to(equal(defaultCampaign.id))
+                    expect(impressionService.sentImpressions?.campaignID).to(equal(testCampaign.id))
                 }
 
                 it("will clear the list of logged impressions after sending") {
@@ -123,7 +123,7 @@ class BaseViewPresenterTests: QuickSpec {
                                                  campaignRepository: campaignRepository,
                                                  impressionService: impressionService,
                                                  eventMatcher: eventMatcher,
-                                                 readyCampaignDispatcher: readyCampaignDispatcher)
+                                                 campaignTriggerAgent: CampaignTriggerAgentMock())
                 presenter.view = view
                 presenter.campaign = campaign
             }
@@ -132,7 +132,7 @@ class BaseViewPresenterTests: QuickSpec {
 
                 it("will call initializeView on the view object") {
                     presenter.viewDidInitialize()
-                    expect(view.wasInitializeViewCalled).to(beTrue())
+                    expect(view.wasSetupCalled).to(beTrue())
                 }
             }
 
@@ -202,10 +202,10 @@ class BaseViewPresenterTests: QuickSpec {
             beforeEach {
                 view = FullViewMock()
                 presenter = FullViewPresenter(campaignsValidator: campaignsValidator,
-                                                 campaignRepository: campaignRepository,
-                                                 impressionService: impressionService,
-                                                 eventMatcher: eventMatcher,
-                                                 readyCampaignDispatcher: readyCampaignDispatcher)
+                                              campaignRepository: campaignRepository,
+                                              impressionService: impressionService,
+                                              eventMatcher: eventMatcher,
+                                              campaignTriggerAgent: CampaignTriggerAgentMock())
                 presenter.view = view
                 presenter.campaign = campaign
             }
@@ -215,7 +215,7 @@ class BaseViewPresenterTests: QuickSpec {
                 it("will call initializeView on the view object") {
 
                     presenter.viewDidInitialize()
-                    expect(view.wasInitializeViewCalled).to(beTrue())
+                    expect(view.wasSetupCalled).to(beTrue())
                 }
             }
 
@@ -340,12 +340,12 @@ private class FullViewMock: UIView, FullViewType {
     var onDismiss: (() -> Void)?
     var isUsingAutoLayout = true
 
-    private(set) var wasInitializeViewCalled = false
+    private(set) var wasSetupCalled = false
     private(set) var wasDismissCalled = false
     private(set) var addedButtons = [(ActionButton, viewModel: ActionButtonViewModel)]()
 
-    func initializeView(viewModel: FullViewModel) {
-        wasInitializeViewCalled = true
+    func setup(viewModel: FullViewModel) {
+        wasSetupCalled = true
     }
 
     func dismiss() {
@@ -363,11 +363,11 @@ private class SlideUpViewMock: UIView, SlideUpViewType {
     var onDismiss: (() -> Void)?
     var isUsingAutoLayout = false
 
-    private(set) var wasInitializeViewCalled = false
+    private(set) var wasSetupCalled = false
     private(set) var wasDismissCalled = false
 
-    func initializeView(viewModel: SlideUpViewModel) {
-        wasInitializeViewCalled = true
+    func setup(viewModel: SlideUpViewModel) {
+        wasSetupCalled = true
     }
 
     func dismiss() {
@@ -375,13 +375,4 @@ private class SlideUpViewMock: UIView, SlideUpViewType {
     }
 
     func animateOnShow() { }
-}
-
-private class ImpressionServiceMock: ImpressionServiceType {
-    weak var errorDelegate: ErrorDelegate?
-    var sentImpressions: (list: [ImpressionType], campaignID: String)?
-
-    func pingImpression(impressions: [Impression], campaignData: CampaignData) {
-        sentImpressions = (impressions.map({ $0.type }), campaignData.campaignId)
-    }
 }

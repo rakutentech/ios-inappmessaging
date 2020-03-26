@@ -53,33 +53,38 @@ internal struct CommonUtility {
             return CustomAttribute(withKeyName: attribute.name, withStringValue: attribute.value)
         case .integer:
             guard let value = Int(attribute.value) else {
-                debugPrint("InAppMessaging: Error converting value.")
-                return nil
+                break
             }
 
             return CustomAttribute(withKeyName: attribute.name, withIntValue: value)
         case .double:
             guard let value = Double(attribute.value) else {
-                debugPrint("InAppMessaging: Error converting value.")
-                return nil
+                break
             }
 
             return CustomAttribute(withKeyName: attribute.name, withDoubleValue: value)
         case .boolean:
-            guard let value = Bool(attribute.value) else {
-                debugPrint("InAppMessaging: Error converting value.")
-                return nil
+            var value: Bool?
+            if let intRepresentation = Int(attribute.value) {
+                value = Bool(exactly: NSNumber(value: intRepresentation))
+            } else {
+                value = Bool(attribute.value.lowercased())
+            }
+            guard let unwrappedValue = value else {
+                break
             }
 
-            return CustomAttribute(withKeyName: attribute.name, withBoolValue: value)
+            return CustomAttribute(withKeyName: attribute.name, withBoolValue: unwrappedValue)
         case .timeInMilli:
             guard let value = Int(attribute.value) else {
-                debugPrint("InAppMessaging: Error converting value.")
-                return nil
+                break
             }
 
             return CustomAttribute(withKeyName: attribute.name, withTimeInMilliValue: value)
         }
+
+        debugPrint("InAppMessaging: Error converting value.")
+        return nil
     }
 
     static func debugPrint(_ value: Any?) {

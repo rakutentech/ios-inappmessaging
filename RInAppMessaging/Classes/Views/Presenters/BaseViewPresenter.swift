@@ -1,11 +1,20 @@
-/// Base presenter class (abstract) for all of IAM's supported campaign presenters.
-internal class BaseViewPresenter: ImpressionTrackable {
+internal protocol BaseViewPresenterType: ImpressionTrackable {
+    var campaign: Campaign! { get set }
+    var impressions: [Impression] { get set }
+    var associatedImage: UIImage? { get set }
+
+    func viewDidInitialize()
+    func handleButtonTrigger(_ trigger: Trigger?)
+    func optOutCampaign()
+}
+
+internal class BaseViewPresenter: BaseViewPresenterType {
 
     private(set) var impressionService: ImpressionServiceType
     private let campaignsValidator: CampaignsValidatorType
     private let campaignRepository: CampaignRepositoryType
     private let eventMatcher: EventMatcherType
-    private let readyCampaignDispatcher: ReadyCampaignDispatcherType
+    private let campaignTriggerAgent: CampaignTriggerAgentType
 
     var campaign: Campaign!
     var impressions: [Impression] = []
@@ -25,13 +34,13 @@ internal class BaseViewPresenter: ImpressionTrackable {
          campaignRepository: CampaignRepositoryType,
          impressionService: ImpressionServiceType,
          eventMatcher: EventMatcherType,
-         readyCampaignDispatcher: ReadyCampaignDispatcherType) {
+         campaignTriggerAgent: CampaignTriggerAgentType) {
 
         self.campaignsValidator = campaignsValidator
         self.impressionService = impressionService
         self.eventMatcher = eventMatcher
         self.campaignRepository = campaignRepository
-        self.readyCampaignDispatcher = readyCampaignDispatcher
+        self.campaignTriggerAgent = campaignTriggerAgent
     }
 
     /// To be called by associated view after init
@@ -47,10 +56,9 @@ internal class BaseViewPresenter: ImpressionTrackable {
             return
         }
         eventMatcher.matchAndStore(event: CommonUtility.convertTriggerObjectToCustomEvent(trigger))
-        campaignsValidator.validate(
-            validatedCampaignHandler: CampaignsValidatorHelper.defaultValidatedCampaignHandler(
-                eventMatcher: eventMatcher,
-                dispatcher: readyCampaignDispatcher))
+        campaignsValidator.validate { campaign, events in
+            campaignTriggerAgent.trigger(campaign: campaign, triggeredEvents: events)
+        }
     }
 
     func optOutCampaign() {

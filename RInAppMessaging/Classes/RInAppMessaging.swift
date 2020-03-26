@@ -59,6 +59,7 @@
                 let preferenceRepository = dependencyManager.resolve(type: IAMPreferenceRepository.self),
                 let campaignsValidator = dependencyManager.resolve(type: CampaignsValidatorType.self),
                 let readyCampaignDispatcher = dependencyManager.resolve(type: ReadyCampaignDispatcherType.self),
+                let campaignTriggerAgent = dependencyManager.resolve(type: CampaignTriggerAgentType.self),
                 let router = dependencyManager.resolve(type: RouterType.self) else {
 
                     assertionFailure("In-App Messaging SDK module initialization failure: Dependencies could not be resolved")
@@ -72,7 +73,8 @@
                                                      preferenceRepository: preferenceRepository,
                                                      campaignsValidator: campaignsValidator,
                                                      eventMatcher: eventMatcher,
-                                                     readyCampaignDispatcher: readyCampaignDispatcher)
+                                                     readyCampaignDispatcher: readyCampaignDispatcher,
+                                                     campaignTriggerAgent: campaignTriggerAgent)
             initializedModule?.aggregatedErrorHandler = { error in
                 errorDelegate?.inAppMessagingDidReturnError(error)
             }

@@ -1,4 +1,5 @@
 import class UIKit.UIView
+import func Foundation.NSClassFromString
 
 /// Base protocol for all of IAM's supported campaign views
 internal protocol BaseView: UIView {
@@ -51,7 +52,17 @@ internal extension BaseView {
                 return
         }
 
-        let parentView = accessibilityCompatible ? (window.subviews.first ?? window) : window
+        var parentView: UIView = window
+
+        // For accessibilityCompatible option, campaign view must be inserted to
+        // UIWindow's main subview. Private instance of UITransitionView
+        // shouldn't be used for that - that's why it's omitted.
+        if accessibilityCompatible,
+            let mainSubview = window.subviews.first(
+                where: { !$0.isKind(of: NSClassFromString("UITransitionView")!) }) {
+            parentView = mainSubview
+        }
+
         if isUsingAutoLayout {
             translatesAutoresizingMaskIntoConstraints = false
             parentView.addSubview(self)

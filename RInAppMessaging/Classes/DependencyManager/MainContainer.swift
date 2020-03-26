@@ -22,7 +22,7 @@ internal enum MainContainerFactory {
 
     static func create(dependencyManager manager: DependencyManager) -> DependencyManager.Container {
 
-        return DependencyManager.Container([
+        var elements = [
             ContainerElement(type: CommonUtility.self, factory: { CommonUtility() }),
             ContainerElement(type: ReachabilityType.self, factory: {
                 guard let configURL = getValidConfigURL() else {
@@ -79,28 +79,36 @@ internal enum MainContainerFactory {
                 CampaignsListManager(campaignsValidator: manager.resolve(type: CampaignsValidatorType.self)!,
                                      campaignRepository: manager.resolve(type: CampaignRepositoryType.self)!,
                                      readyCampaignDispatcher: manager.resolve(type: ReadyCampaignDispatcherType.self)!,
-                                     eventMatcher: manager.resolve(type: EventMatcherType.self)!,
+                                     campaignTriggerAgent: manager.resolve(type: CampaignTriggerAgentType.self)!,
                                      messageMixerService: manager.resolve(type: MessageMixerServiceType.self)!)
-            }),
+            })]
 
+        // transient containers
+        elements.append(contentsOf: [
             ContainerElement(type: CampaignsValidatorType.self, factory: {
                 CampaignsValidator(campaignRepository: manager.resolve(type: CampaignRepositoryType.self)!,
                                    eventMatcher: manager.resolve(type: EventMatcherType.self)!)
             }, transient: true),
-            ContainerElement(type: FullViewPresenter.self, factory: {
+            ContainerElement(type: FullViewPresenterType.self, factory: {
                 FullViewPresenter(campaignsValidator: manager.resolve(type: CampaignsValidatorType.self)!,
                                   campaignRepository: manager.resolve(type: CampaignRepositoryType.self)!,
                                   impressionService: manager.resolve(type: ImpressionServiceType.self)!,
                                   eventMatcher: manager.resolve(type: EventMatcherType.self)!,
-                                  readyCampaignDispatcher: manager.resolve(type: ReadyCampaignDispatcherType.self)!)
+                                  campaignTriggerAgent: manager.resolve(type: CampaignTriggerAgentType.self)!)
             }, transient: true),
-            ContainerElement(type: SlideUpViewPresenter.self, factory: {
+            ContainerElement(type: SlideUpViewPresenterType.self, factory: {
                 SlideUpViewPresenter(campaignsValidator: manager.resolve(type: CampaignsValidatorType.self)!,
                                      campaignRepository: manager.resolve(type: CampaignRepositoryType.self)!,
                                      impressionService: manager.resolve(type: ImpressionServiceType.self)!,
                                      eventMatcher: manager.resolve(type: EventMatcherType.self)!,
+                                     campaignTriggerAgent: manager.resolve(type: CampaignTriggerAgentType.self)!)
+            }, transient: true),
+            ContainerElement(type: CampaignTriggerAgentType.self, factory: {
+                CampaignTriggerAgent(eventMatcher: manager.resolve(type: EventMatcherType.self)!,
                                      readyCampaignDispatcher: manager.resolve(type: ReadyCampaignDispatcherType.self)!)
             }, transient: true)
         ])
+
+        return DependencyManager.Container(elements)
     }
 }

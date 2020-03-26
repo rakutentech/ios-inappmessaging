@@ -1,4 +1,12 @@
-internal class FullViewPresenter: BaseViewPresenter {
+internal protocol FullViewPresenterType: BaseViewPresenterType {
+    var view: FullViewType? { get set }
+
+    func loadButtons()
+    func didClickAction(sender: ActionButton)
+    func didClickExitButton()
+}
+
+internal class FullViewPresenter: BaseViewPresenter, FullViewPresenterType {
     weak var view: FullViewType?
 
     override func viewDidInitialize() {
@@ -16,7 +24,7 @@ internal class FullViewPresenter: BaseViewPresenter {
                                       showOptOut: messagePayload.messageSettings.displaySettings.optOut,
                                       showButtons: messagePayload.messageSettings.controlSettings?.buttons?.isEmpty == false)
 
-        view?.initializeView(viewModel: viewModel)
+        view?.setup(viewModel: viewModel)
     }
 
     func loadButtons() {

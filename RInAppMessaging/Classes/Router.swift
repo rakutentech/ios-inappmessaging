@@ -32,7 +32,7 @@ internal class Router: RouterType {
         DispatchQueue.global(qos: .userInteractive).async {
             DispatchQueue.main.async {
 
-                func getPresenter<T: BaseViewPresenter>(type: T.Type) -> T? {
+                func getPresenter<T>(type: T.Type) -> T? {
                     guard let presenter = self.dependencyManager.resolve(type: type) else {
                         CommonUtility.debugPrint("Error: \(type) couldn't be resolved")
                         return nil
@@ -45,19 +45,19 @@ internal class Router: RouterType {
                 // TODO(daniel.tam) Add the other view types.
                 switch campaignViewType {
                 case .modal:
-                    guard let presenter = getPresenter(type: FullViewPresenter.self) else {
+                    guard let presenter = getPresenter(type: FullViewPresenterType.self) else {
                         break
                     }
                     presenter.campaign = campaign
                     view = ModalView(presenter: presenter)
                 case .full:
-                    guard let presenter = getPresenter(type: FullViewPresenter.self) else {
+                    guard let presenter = getPresenter(type: FullViewPresenterType.self) else {
                         break
                     }
                     presenter.campaign = campaign
                     view = FullScreenView(presenter: presenter)
                 case .slide:
-                    guard let presenter = getPresenter(type: SlideUpViewPresenter.self) else {
+                    guard let presenter = getPresenter(type: SlideUpViewPresenterType.self) else {
                         break
                     }
                     presenter.campaign = campaign

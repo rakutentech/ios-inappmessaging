@@ -1,4 +1,11 @@
-internal class SlideUpViewPresenter: BaseViewPresenter {
+internal protocol SlideUpViewPresenterType: BaseViewPresenterType {
+    var view: SlideUpViewType? { get set }
+
+    func didClickContent()
+    func didClickExitButton()
+}
+
+internal class SlideUpViewPresenter: BaseViewPresenter, SlideUpViewPresenterType {
 
     weak var view: SlideUpViewType?
 
@@ -13,7 +20,7 @@ internal class SlideUpViewPresenter: BaseViewPresenter {
                                          backgroundColor: UIColor(fromHexString: messagePayload.backgroundColor) ?? .white,
                                          messageBody: messagePayload.messageBody,
                                          messageBodyColor: UIColor(fromHexString: messagePayload.messageBodyColor) ?? .black)
-        view?.initializeView(viewModel: viewModel)
+        view?.setup(viewModel: viewModel)
     }
 
     func didClickContent() {

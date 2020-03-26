@@ -2,11 +2,11 @@ import Quick
 import Nimble
 @testable import RInAppMessaging
 
-private class LockableTestObject: Lockable {
+class LockableTestObject: Lockable {
     var resourcesToLock: [LockableResource] {
         return [resource]
     }
-    let resource = LockableObject([1, 2])
+    let resource = LockableObject([Int]())
 
     func append(_ number: Int) {
         var resource = self.resource.get()
@@ -18,21 +18,35 @@ private class LockableTestObject: Lockable {
 class LockableTests: QuickSpec {
 
     override func spec() {
-        describe("CommonUtility.lock") {
+
+        describe("Lockable object") {
             var lockableObject: LockableTestObject!
 
             beforeEach {
                 lockableObject = LockableTestObject()
+                lockableObject.append(1)
+                lockableObject.append(2)
             }
 
-            it("will lock provided resource for the time of operation") {
+            it("will lock provided resources when lock is called on them") {
                 DispatchQueue.global().asyncAfter(deadline: .now() + 1, execute: {
                     lockableObject.append(4)
                 })
-                CommonUtility.lock(resourcesIn: [lockableObject]) {
-                    sleep(2)
-                    lockableObject.append(3)
-                }
+
+                lockableObject.resourcesToLock.forEach { $0.lock() }
+                sleep(2)
+                expect(lockableObject.resource.get()).toEventuallyNot(equal([1, 2, 4]))
+            }
+
+            it("will unlock provided resources when unlock is called on them") {
+                DispatchQueue.global().asyncAfter(deadline: .now() + 1, execute: {
+                    lockableObject.append(4)
+                })
+
+                lockableObject.resourcesToLock.forEach { $0.lock() }
+                sleep(2)
+                lockableObject.append(3)
+                lockableObject.resourcesToLock.forEach { $0.unlock() }
 
                 expect(lockableObject.resource.get()).toEventually(equal([1, 2, 3, 4]))
             }
