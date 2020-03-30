@@ -1,7 +1,7 @@
 internal enum Constants {
 
     enum CampaignMessage {
-        static let intervalBetweenDisplaysInMS = 3000
+        static let defaultIntervalBetweenDisplaysInMS = 3000
     }
 
     enum Request {

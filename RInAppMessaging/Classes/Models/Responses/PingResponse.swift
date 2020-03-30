@@ -1,7 +1,12 @@
-/// Data model for Campaign response.
 internal struct PingResponse: Decodable {
-    let nextPingMillis: Int
-    let currentPingMillis: Int64
+    private enum CodingKeys: String, CodingKey {
+        case nextPingMilliseconds = "nextPingMillis"
+        case currentPingMilliseconds = "currentPingMillis"
+        case data
+    }
+
+    let nextPingMilliseconds: Int
+    let currentPingMilliseconds: Int64
     let data: [Campaign]
 }
 
@@ -19,7 +24,7 @@ internal struct Campaign: Decodable, Hashable {
         return data.campaignId
     }
     var isOutdated: Bool {
-        let endTimeMilliseconds = data.messagePayload.messageSettings.displaySettings.endTimeMillis
+        let endTimeMilliseconds = data.messagePayload.messageSettings.displaySettings.endTimeMilliseconds
         return endTimeMilliseconds < Date().millisecondsSince1970
     }
 
@@ -52,13 +57,16 @@ internal struct Campaign: Decodable, Hashable {
 }
 
 internal struct CampaignData: Decodable, Hashable {
-
     let campaignId: String
     let maxImpressions: Int
     let type: Int
     let triggers: [Trigger]?
     let isTest: Bool
     let messagePayload: MessagePayload
+
+    var intervalBetweenDisplaysInMS: Int? {
+        return messagePayload.messageSettings.displaySettings.delay
+    }
 
     func hash(into hasher: inout Hasher) {
         hasher.combine(campaignId)
@@ -102,9 +110,19 @@ internal struct MessageSettings: Decodable {
 }
 
 internal struct DisplaySettings: Decodable {
+    private enum CodingKeys: String, CodingKey {
+        case orientation
+        case slideFrom
+        case endTimeMilliseconds = "endTimeMillis"
+        case textAlign
+        case optOut
+        case html
+        case delay
+    }
+
     let orientation: Int
     let slideFrom: SlideDirection?
-    let endTimeMillis: Int64
+    let endTimeMilliseconds: Int64
     let textAlign: Int
     let optOut: Bool
     let html: Bool?

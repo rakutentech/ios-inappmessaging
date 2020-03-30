@@ -18,7 +18,6 @@ internal class ReadyCampaignDispatcher: ReadyCampaignDispatcherType {
     private let router: RouterType
     private let permissionService: DisplayPermissionServiceType
     private let campaignRepository: CampaignRepositoryType
-    private let campaignParser = CampaignParser.self
 
     private let dispatchQueue = DispatchQueue(label: "IAM.Campaign", attributes: .concurrent)
     private var queuedCampaigns = [Campaign]()
@@ -81,14 +80,14 @@ internal class ReadyCampaignDispatcher: ReadyCampaignDispatcherType {
                     return
                 }
                 WorkScheduler.scheduleTask(
-                    milliseconds: strongSelf.delayBetweenMessages(for: campaign.data),
+                    milliseconds: strongSelf.delayBeforeNextMessage(for: campaign.data),
                     closure: strongSelf.dispatchNext)
             }
         }
     }
 
-    private func delayBetweenMessages(for campaignData: CampaignData) -> Int {
-        return campaignParser.getDisplaySettingsDelay(from: campaignData) ??
-            Constants.CampaignMessage.intervalBetweenDisplaysInMS
+    private func delayBeforeNextMessage(for campaignData: CampaignData) -> Int {
+        return campaignData.intervalBetweenDisplaysInMS ??
+            Constants.CampaignMessage.defaultIntervalBetweenDisplaysInMS
     }
 }

@@ -1,4 +1,3 @@
-/// Data model for configuration server response.
 internal struct GetConfigResponse: Decodable {
     let data: ConfigData
 }

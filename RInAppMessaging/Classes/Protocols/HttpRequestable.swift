@@ -22,12 +22,12 @@ internal protocol HttpRequestable {
     func requestFromServerSync(url: URL,
                                httpMethod: HttpMethod,
                                parameters: [String: Any]?,
-                               addtionalHeaders: [Attribute]?) -> RequestResult
+                               addtionalHeaders: [HeaderAttribute]?) -> RequestResult
 
     func requestFromServer(url: URL,
                            httpMethod: HttpMethod,
                            parameters: [String: Any]?,
-                           addtionalHeaders: [Attribute]?,
+                           addtionalHeaders: [HeaderAttribute]?,
                            completion: @escaping (_ result: RequestResult) -> Void)
 
     func buildHttpBody(with parameters: [String: Any]?) -> Result<Data, Error>
@@ -39,7 +39,7 @@ extension HttpRequestable {
     func requestFromServerSync(url: URL,
                                httpMethod: HttpMethod,
                                parameters: [String: Any]? = nil,
-                               addtionalHeaders: [Attribute]?) -> RequestResult {
+                               addtionalHeaders: [HeaderAttribute]?) -> RequestResult {
 
         if Thread.current.isMainThread {
             print("InAppMessaging: Performing HTTP task synchronously on main thread. This should be avoided.")
@@ -68,7 +68,7 @@ extension HttpRequestable {
     func requestFromServer(url: URL,
                            httpMethod: HttpMethod,
                            parameters: [String: Any]? = nil,
-                           addtionalHeaders: [Attribute]?,
+                           addtionalHeaders: [HeaderAttribute]?,
                            completion: @escaping (_ result: RequestResult) -> Void) {
 
         requestFromServer(url: url,
@@ -82,7 +82,7 @@ extension HttpRequestable {
     private func requestFromServer(url: URL,
                                    httpMethod: HttpMethod,
                                    parameters: [String: Any]?,
-                                   addtionalHeaders: [Attribute]?,
+                                   addtionalHeaders: [HeaderAttribute]?,
                                    shouldWait: Bool,
                                    completion: @escaping (_ result: RequestResult) -> Void) {
 
@@ -105,9 +105,6 @@ extension HttpRequestable {
 
         // Semaphore added for synchronous HTTP calls.
         let semaphore = DispatchSemaphore(value: 0)
-
-        var dataToReturn: Data?
-        var serverResponse: HTTPURLResponse?
 
         // Start HTTP call.
         httpSession.dataTask(with: request, completionHandler: { (data, response, error) in
@@ -144,7 +141,7 @@ extension HttpRequestable {
         }
     }
 
-    private func appendHeaders(_ headers: [Attribute]?, forRequest request: inout URLRequest) {
+    private func appendHeaders(_ headers: [HeaderAttribute]?, forRequest request: inout URLRequest) {
         headers?.forEach({ header in
             request.addValue(header.value, forHTTPHeaderField: header.key)
         })

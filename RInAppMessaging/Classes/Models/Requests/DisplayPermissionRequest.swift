@@ -1,5 +1,15 @@
-/// Model of the request body for 'display-permission'.
 internal struct DisplayPermissionRequest: Encodable {
+    private enum CodingKeys: String, CodingKey {
+        case subscriptionId
+        case campaignId
+        case userIdentifiers
+        case platform
+        case appVersion
+        case sdkVersion
+        case locale
+        case lastPingInMilliseconds = "lastPingInMillis"
+    }
+
     let subscriptionId: String
     let campaignId: String
     let userIdentifiers: [UserIdentifier]
@@ -7,5 +17,5 @@ internal struct DisplayPermissionRequest: Encodable {
     let appVersion: String
     let sdkVersion: String
     let locale: String
-    let lastPingInMillis: Int64
+    let lastPingInMilliseconds: Int64
 }

@@ -274,33 +274,33 @@ class CommonUtilityTests: QuickSpec {
                     }
                 }
 
-                context("when given attribute is timeInMilli type") {
+                context("when given attribute is timeInMilliseconds type") {
 
-                    it("will return timeInMilli value CustomAttribute for valid value") {
+                    it("will return timeInMilliseconds value CustomAttribute for valid value") {
                         let attribute = TriggerAttribute(name: "att", value: "-5",
-                                                         type: .timeInMilli, operator: .invalid)
+                                                         type: .timeInMilliseconds, operator: .invalid)
                         let result = CommonUtility.convertAttributeObjectToCustomAttribute(attribute)
-                        expect(result?.type).to(equal(.timeInMilli))
+                        expect(result?.type).to(equal(.timeInMilliseconds))
                         expect(result?.value as? Int).to(equal(-5))
                     }
 
                     it("will return nil for double value") {
                         let attribute = TriggerAttribute(name: "att", value: "5.0",
-                                                         type: .timeInMilli, operator: .invalid)
+                                                         type: .timeInMilliseconds, operator: .invalid)
                         let result = CommonUtility.convertAttributeObjectToCustomAttribute(attribute)
                         expect(result).to(beNil())
                     }
 
                     it("will return nil for empty value") {
                         let attribute = TriggerAttribute(name: "att", value: "",
-                                                         type: .timeInMilli, operator: .invalid)
+                                                         type: .timeInMilliseconds, operator: .invalid)
                         let result = CommonUtility.convertAttributeObjectToCustomAttribute(attribute)
                         expect(result).to(beNil())
                     }
 
                     it("will return nil for invalid value") {
                         let attribute = TriggerAttribute(name: "att", value: "A",
-                                                         type: .timeInMilli, operator: .invalid)
+                                                         type: .timeInMilliseconds, operator: .invalid)
                         let result = CommonUtility.convertAttributeObjectToCustomAttribute(attribute)
                         expect(result).to(beNil())
                     }

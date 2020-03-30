@@ -8,24 +8,13 @@ internal struct TriggerAttributesValidator {
     /// - Returns: `true` if the trigger and event matches.
     static func isTriggerSatisfied(_ trigger: Trigger, _ event: Event) -> Bool {
 
-        // Iterate through all the trigger attributes.
-        for triggerAttribute in trigger.attributes {
-
-            // Return false if there isnt a matching trigger name between the trigger and event.
+        return trigger.attributes.allSatisfy { triggerAttribute -> Bool in
             guard let eventAttribute = event.getAttributeMap()?[triggerAttribute.name] else {
                 return false
             }
 
-            // Since there is a matching name between the trigger and event, see if the attributes are satisfied.
-            if !isAttributeSatisfied(triggerAttribute, eventAttribute) {
-                // If the attribute is not satisfied, then the trigger cannot be satisfied.
-                return false
-            }
-
+            return isAttributeSatisfied(triggerAttribute, eventAttribute)
         }
-
-        // Return true since all the attributes are matched.
-        return true
     }
 
     /// Check if a trigger attribute and event attribute matches.
@@ -39,21 +28,16 @@ internal struct TriggerAttributesValidator {
     /// - Returns: A flag indicating whether or not the attributes match.
     private static func isAttributeSatisfied(_ triggerAttribute: TriggerAttribute, _ eventAttribute: CustomAttribute) -> Bool {
 
-        // Make sure the attribute name and event attribute name is the same.
-        if triggerAttribute.name != eventAttribute.name {
-            return false
-        }
-
-        // Make sure the value type between the attribute value and event value is the same.
-        if triggerAttribute.type != eventAttribute.type {
+        guard triggerAttribute.name == eventAttribute.name,
+            triggerAttribute.type == eventAttribute.type else {
             return false
         }
 
         return isValueReconciled(
-            withValueType: triggerAttribute.type,
-            withOperator: triggerAttribute.operator,
-            withTriggerAttributeValue: triggerAttribute.value,
-            withEventAttributeValue: eventAttribute.value
+            valueType: triggerAttribute.type,
+            operator: triggerAttribute.operator,
+            triggerAttributeValue: triggerAttribute.value,
+            eventAttributeValue: eventAttribute.value
         )
     }
 
@@ -66,20 +50,20 @@ internal struct TriggerAttributesValidator {
     /// - Parameter eventValue: Value of the event that will be casted to the eventType.
     /// - Returns: A flag indicating whether or not the values of both attributes are satisfied.
     private static func isValueReconciled(
-        withValueType valueType: AttributeType,
-        withOperator operatorType: AttributeOperator,
-        withTriggerAttributeValue triggerValue: String,
-        withEventAttributeValue eventValue: Any) -> Bool {
+        valueType: AttributeType,
+        operator operatorType: AttributeOperator,
+        triggerAttributeValue triggerValue: String,
+        eventAttributeValue eventValue: Any) -> Bool {
 
         switch valueType {
 
         case .invalid:
+            CommonUtility.debugPrint("Error - invalid attribute value")
             return false
 
         case .string:
             guard let stringEventValue = eventValue as? String else {
-                CommonUtility.debugPrint("InAppMessaging: Error converting value.")
-                return false
+                break
             }
 
             return MatchingUtility.compareValues(
@@ -91,10 +75,7 @@ internal struct TriggerAttributesValidator {
         case .integer:
             guard let intEventValue = eventValue as? Int,
                 let intTriggerValue = Int(triggerValue)
-                else {
-                    CommonUtility.debugPrint("InAppMessaging: Error converting value.")
-                    return false
-            }
+                else { break }
 
             return MatchingUtility.compareValues(
                 triggerAttributeValue: intTriggerValue,
@@ -104,10 +85,7 @@ internal struct TriggerAttributesValidator {
         case .double:
             guard let doubleEventValue = eventValue as? Double,
                 let doubleTriggerValue = Double(triggerValue)
-                else {
-                    CommonUtility.debugPrint("InAppMessaging: Error converting value.")
-                    return false
-            }
+                else { break }
 
             return MatchingUtility.compareValues(
                 triggerAttributeValue: doubleTriggerValue,
@@ -118,10 +96,7 @@ internal struct TriggerAttributesValidator {
         case .boolean:
             guard let boolEventValue = eventValue as? Bool,
                 let boolTriggerValue = Bool(triggerValue.lowercased())
-                else {
-                    CommonUtility.debugPrint("InAppMessaging: Error converting value.")
-                    return false
-            }
+                else { break }
 
             return MatchingUtility.compareValues(
                 triggerAttributeValue: boolTriggerValue,
@@ -129,13 +104,10 @@ internal struct TriggerAttributesValidator {
                 operatorType: operatorType
             )
 
-        case .timeInMilli:
+        case .timeInMilliseconds:
             guard let timeEventValue = eventValue as? Int,
                 let timeTriggerValue = Int(triggerValue)
-                else {
-                    CommonUtility.debugPrint("InAppMessaging: Error converting value.")
-                    return false
-            }
+                else { break }
 
             return MatchingUtility.compareTimeValues(
                 triggerAttributeValue: timeTriggerValue,
@@ -143,5 +115,8 @@ internal struct TriggerAttributesValidator {
                 operatorType: operatorType
             )
         }
+
+        CommonUtility.debugPrint("Error converting values")
+        return false
     }
 }

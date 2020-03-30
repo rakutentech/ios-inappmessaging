@@ -75,7 +75,7 @@ internal struct CommonUtility {
             }
 
             return CustomAttribute(withKeyName: attribute.name, withBoolValue: unwrappedValue)
-        case .timeInMilli:
+        case .timeInMilliseconds:
             guard let value = Int(attribute.value) else {
                 break
             }

@@ -77,8 +77,8 @@ class CampaignsListManagerTests: QuickSpec {
                 context("and ping call succeeded") {
 
                     let pingResponse = PingResponse(
-                        nextPingMillis: 100,
-                        currentPingMillis: 0,
+                        nextPingMilliseconds: 100,
+                        currentPingMilliseconds: 0,
                         data: TestHelpers.MockResponse.withGeneratedCampaigns(count: 2, test: false, delay: 0).data)
 
                     beforeEach {

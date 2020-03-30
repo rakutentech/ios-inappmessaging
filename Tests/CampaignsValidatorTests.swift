@@ -170,7 +170,7 @@ private enum MockedCampaigns {
                         displaySettings: DisplaySettings(
                             orientation: 1,
                             slideFrom: .bottom,
-                            endTimeMillis: 0,
+                            endTimeMilliseconds: 0,
                             textAlign: 1,
                             optOut: false,
                             html: false,
@@ -213,7 +213,7 @@ private enum MockedCampaigns {
                         displaySettings: DisplaySettings(
                             orientation: 1,
                             slideFrom: .bottom,
-                            endTimeMillis: 0,
+                            endTimeMilliseconds: 0,
                             textAlign: 1,
                             optOut: false,
                             html: false,

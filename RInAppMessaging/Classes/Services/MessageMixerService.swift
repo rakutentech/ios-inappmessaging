@@ -85,16 +85,16 @@ extension MessageMixerService {
         }
     }
 
-    private func buildRequestHeader() -> [Attribute] {
+    private func buildRequestHeader() -> [HeaderAttribute] {
         let Keys = Constants.Request.Header.self
-        var additionalHeaders: [Attribute] = []
+        var additionalHeaders: [HeaderAttribute] = []
 
         if let subId = bundleInfo.inAppSubscriptionId {
-            additionalHeaders.append(Attribute(key: Keys.subscriptionID, value: subId))
+            additionalHeaders.append(HeaderAttribute(key: Keys.subscriptionID, value: subId))
         }
 
         if let deviceId = UIDevice.current.identifierForVendor?.uuidString {
-            additionalHeaders.append(Attribute(key: Keys.deviceID, value: deviceId))
+            additionalHeaders.append(HeaderAttribute(key: Keys.deviceID, value: deviceId))
         }
 
         return additionalHeaders

@@ -53,7 +53,7 @@ struct TestHelpers {
                         displaySettings: DisplaySettings(
                             orientation: 1,
                             slideFrom: .bottom,
-                            endTimeMillis: Int64.max,
+                            endTimeMilliseconds: Int64.max,
                             textAlign: 1,
                             optOut: false,
                             html: false,
@@ -92,7 +92,7 @@ struct TestHelpers {
                         displaySettings: DisplaySettings(
                             orientation: 1,
                             slideFrom: .bottom,
-                            endTimeMillis: Int64.max,
+                            endTimeMilliseconds: Int64.max,
                             textAlign: 1,
                             optOut: false,
                             html: false,
@@ -122,8 +122,8 @@ struct TestHelpers {
             }
 
             return PingResponse(
-                nextPingMillis: 0,
-                currentPingMillis: 0,
+                nextPingMilliseconds: 0,
+                currentPingMilliseconds: 0,
                 data: campaigns)
         }
 
@@ -330,7 +330,7 @@ struct TestHelpers {
                                                 eventName: "testevent",
                                                 attributes: [
                                                     TriggerAttribute(name: "attributeone", value: "1100",
-                                                                     type: .timeInMilli, operator: .equals)
+                                                                     type: .timeInMilliseconds, operator: .equals)
                                                 ]
                                             )])
         }()
@@ -346,7 +346,7 @@ struct TestHelpers {
                                                 eventName: "testevent",
                                                 attributes: [
                                                     TriggerAttribute(name: "attributeone", value: "1100",
-                                                                     type: .timeInMilli, operator: .isNotEqual)
+                                                                     type: .timeInMilliseconds, operator: .isNotEqual)
                                                 ]
                                             )])
         }()
@@ -362,7 +362,7 @@ struct TestHelpers {
                                                 eventName: "testevent",
                                                 attributes: [
                                                     TriggerAttribute(name: "attributeone", value: "1100",
-                                                                     type: .timeInMilli, operator: .greaterThan)
+                                                                     type: .timeInMilliseconds, operator: .greaterThan)
                                                 ]
                                             )])
         }()
@@ -378,7 +378,7 @@ struct TestHelpers {
                                                 eventName: "testevent",
                                                 attributes: [
                                                     TriggerAttribute(name: "attributeone", value: "1100",
-                                                                     type: .timeInMilli, operator: .lessThan)
+                                                                     type: .timeInMilliseconds, operator: .lessThan)
                                                 ]
                                             )])
         }()

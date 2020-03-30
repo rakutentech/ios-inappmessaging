@@ -1,4 +1,3 @@
-/// Enum of the event types from ping response.
 internal enum EventType: Int, Codable, Equatable {
     case invalid = 0
     case appStart

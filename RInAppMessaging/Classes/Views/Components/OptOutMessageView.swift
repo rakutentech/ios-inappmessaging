@@ -44,7 +44,7 @@ internal class OptOutMessageView: UIView {
         checkbox.checkedBorderColor = .black
         checkbox.checkmarkColor = .black
         checkbox.checkmarkStyle = .tick
-        checkbox.borderWidth = 1
+        checkbox.borderLineWidth = 1
         checkbox.useHapticFeedback = false
         checkbox.accessibilityIdentifier = "optOutCheckbox"
         checkbox.translatesAutoresizingMaskIntoConstraints = false

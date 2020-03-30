@@ -67,11 +67,11 @@ extension DisplayPermissionService {
         let permissionRequest = DisplayPermissionRequest(subscriptionId: subscriptionId,
                                                          campaignId: campaignId,
                                                          userIdentifiers: preferenceRepository.getUserIdentifiers(),
-                                                         platform: PlatformEnum.ios.rawValue,
+                                                         platform: Platform.ios.rawValue,
                                                          appVersion: appVersion,
                                                          sdkVersion: sdkVersion,
                                                          locale: Locale.current.identifier,
-                                                         lastPingInMillis: campaignRepository.lastSyncInMilliseconds ?? 0)
+                                                         lastPingInMilliseconds: campaignRepository.lastSyncInMilliseconds ?? 0)
         do {
             let body = try JSONEncoder().encode(permissionRequest)
             return .success(body)
@@ -81,12 +81,12 @@ extension DisplayPermissionService {
         }
     }
 
-    private func buildRequestHeader() -> [Attribute] {
+    private func buildRequestHeader() -> [HeaderAttribute] {
         let Keys = Constants.Request.Header.self
-        var additionalHeaders: [Attribute] = []
+        var additionalHeaders: [HeaderAttribute] = []
 
         if let subId = bundleInfo.inAppSubscriptionId {
-            additionalHeaders.append(Attribute(key: Keys.subscriptionID, value: subId))
+            additionalHeaders.append(HeaderAttribute(key: Keys.subscriptionID, value: subId))
         }
 
         return additionalHeaders

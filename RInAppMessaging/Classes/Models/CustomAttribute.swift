@@ -45,6 +45,6 @@ public class CustomAttribute: NSObject {
     public init(withKeyName name: String, withTimeInMilliValue value: Int) {
         self.name = name.lowercased()
         self.value = value
-        self.type = .timeInMilli
+        self.type = .timeInMilliseconds
     }
 }

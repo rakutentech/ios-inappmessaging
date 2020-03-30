@@ -18,7 +18,6 @@ internal protocol CampaignsValidatorType {
 internal struct CampaignsValidator: CampaignsValidatorType {
     private let campaignRepository: CampaignRepositoryType
     private let eventMatcher: EventMatcherType
-    private let campaignParser = CampaignParser.self
     private let triggerValidator = TriggerAttributesValidator.self
 
     init(campaignRepository: CampaignRepositoryType,

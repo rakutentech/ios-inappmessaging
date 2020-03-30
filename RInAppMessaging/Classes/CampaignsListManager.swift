@@ -50,7 +50,7 @@ internal class CampaignsListManager: CampaignsListManagerType, TaskSchedulable {
 
         CommonUtility.lock(resourcesIn: [campaignRepository]) {
             campaignRepository.syncWith(list: decodedResponse.data,
-                                        timestampMilliseconds: decodedResponse.currentPingMillis)
+                                        timestampMilliseconds: decodedResponse.currentPingMilliseconds)
         }
         campaignsValidator.validate { campaign, events in
             campaignTriggerAgent.trigger(campaign: campaign, triggeredEvents: events)
@@ -58,7 +58,7 @@ internal class CampaignsListManager: CampaignsListManagerType, TaskSchedulable {
 
         readyCampaignDispatcher.dispatchAllIfNeeded()
 
-        scheduleNextPingCall(in: decodedResponse.nextPingMillis)
+        scheduleNextPingCall(in: decodedResponse.nextPingMilliseconds)
     }
 
     private func handleError(_ error: Error) {

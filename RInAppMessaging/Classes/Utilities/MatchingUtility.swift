@@ -2,7 +2,7 @@
 /// matching for the campaign validation process.
 internal struct MatchingUtility {
 
-    private static let timeInMillisTolerance = 1000
+    private static let timeToleranceMilliseconds = 1000
 
     static func compareValues(triggerAttributeValue: String,
                               eventAttributeValue: String,
@@ -18,9 +18,9 @@ internal struct MatchingUtility {
         case .isNotBlank:
             return !eventAttributeValue.isEmpty
         case .matchesRegex:
-            return matches(for: triggerAttributeValue, in: eventAttributeValue)
+            return matches(regex: triggerAttributeValue, in: eventAttributeValue)
         case .doesNotMatchRegex:
-            return !matches(for: triggerAttributeValue, in: eventAttributeValue)
+            return !matches(regex: triggerAttributeValue, in: eventAttributeValue)
         case .invalid,
              .greaterThan,
              .lessThan:
@@ -103,13 +103,13 @@ internal struct MatchingUtility {
         switch operatorType {
 
         case .equals:
-            return (eventAttributeValue - triggerAttributeValue).magnitude <= timeInMillisTolerance
+            return (eventAttributeValue - triggerAttributeValue).magnitude <= timeToleranceMilliseconds
         case .isNotEqual:
-            return (eventAttributeValue - triggerAttributeValue).magnitude > timeInMillisTolerance
+            return (eventAttributeValue - triggerAttributeValue).magnitude > timeToleranceMilliseconds
         case .greaterThan:
-            return (eventAttributeValue - triggerAttributeValue) > timeInMillisTolerance
+            return (eventAttributeValue - triggerAttributeValue) > timeToleranceMilliseconds
         case .lessThan:
-            return (eventAttributeValue - triggerAttributeValue) < timeInMillisTolerance
+            return (eventAttributeValue - triggerAttributeValue) < timeToleranceMilliseconds
         case .invalid,
              .isBlank,
              .isNotBlank,
@@ -124,11 +124,10 @@ internal struct MatchingUtility {
     /// - Parameter regex: The regular expression.
     /// - Parameter text: The text to apply the regex to.
     /// - Returns: `true` when the string matches the regex.
-    fileprivate static func matches(for regex: String, in text: String) -> Bool {
+    fileprivate static func matches(regex: String, in text: String) -> Bool {
         do {
             let regex = try NSRegularExpression(pattern: regex)
-            let nsString = text as NSString
-            let results = regex.matches(in: text, range: NSRange(location: 0, length: nsString.length))
+            let results = regex.matches(in: text, range: NSRange(text.startIndex..., in: text))
 
             return !results.isEmpty
         } catch {

@@ -13,9 +13,7 @@ internal protocol RouterType: AnyObject {
 /// Handles all the displaying logic of the SDK.
 internal class Router: RouterType {
 
-    private let campaignParser = CampaignParser.self
     private let dependencyManager: DependencyManager
-
     var accessibilityCompatibleDisplay = false
 
     init(dependencyManager: DependencyManager) {
@@ -23,7 +21,9 @@ internal class Router: RouterType {
     }
 
     func displayCampaign(_ campaign: Campaign, completion: @escaping () -> Void) {
-        guard let campaignViewType = campaignParser.getViewType(campaign: campaign.data) else {
+        guard let campaignViewType = CampaignDisplayType(rawValue: campaign.data.type),
+            campaignViewType != .invalid else {
+
             CommonUtility.debugPrint("Error: Campaign view type not supported")
             completion()
             return

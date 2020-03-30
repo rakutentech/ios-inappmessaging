@@ -1,3 +1,5 @@
+// https://github.com/BeauNouvelle/SimpleCheckbox
+
 import Foundation
 import UIKit
 
@@ -6,6 +8,7 @@ import UIKit
 internal class Checkbox: UIControl {
 
     // MARK: - Enums
+
     /// Shape of the center checkmark that appears when `Checkbox.isChecked == true`.
     enum CheckmarkStyle {
         /// ■
@@ -29,6 +32,7 @@ internal class Checkbox: UIControl {
     }
 
     // MARK: - Properties
+
     /// Shape of the center checkmark that appears when `Checkbox.isChecked == true`.
     ///
     /// **Default:** `CheckmarkStyle.square`
@@ -50,7 +54,7 @@ internal class Checkbox: UIControl {
     /// in order appear similar next to other border styles.
     ///
     /// **Default:** `2`
-    var borderWidth: CGFloat = 2
+    var borderLineWidth: CGFloat = 2
 
     /// Size of the center checkmark element.
     ///
@@ -83,9 +87,9 @@ internal class Checkbox: UIControl {
 
     /// Sets the corner radius for the checkbox border.
     ///
-    /// **Default:** `0.0`
+    ///**Default:** `0.0`
     /// - Note: Only applies to checkboxes with `BorderStyle.square`
-    var cornerRadius: CGFloat = 0.0
+    var borderCornerRadius: CGFloat = 0.0
 
     /// Increases the controls touch area.
     ///
@@ -117,6 +121,7 @@ internal class Checkbox: UIControl {
     private var feedbackGenerator: UIImpactFeedbackGenerator?
 
     // MARK: - Lifecycle
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupDefaults()
@@ -150,11 +155,12 @@ internal class Checkbox: UIControl {
     }
 
     // MARK: - Borders
+
     private func drawBorder(shape: BorderStyle, in rect: CGRect) {
-        let adjustedRect = CGRect(x: borderWidth/2,
-                                  y: borderWidth/2,
-                                  width: rect.width-borderWidth,
-                                  height: rect.height-borderWidth)
+        let adjustedRect = CGRect(x: borderLineWidth/2,
+                                  y: borderLineWidth/2,
+                                  width: rect.width-borderLineWidth,
+                                  height: rect.height-borderLineWidth)
 
         switch shape {
         case .circle:
@@ -165,7 +171,7 @@ internal class Checkbox: UIControl {
     }
 
     private func squareBorder(rect: CGRect) {
-        let rectanglePath = UIBezierPath(roundedRect: rect, cornerRadius: cornerRadius)
+        let rectanglePath = UIBezierPath(roundedRect: rect, cornerRadius: borderCornerRadius)
 
         if isChecked {
             checkedBorderColor.setStroke()
@@ -173,7 +179,7 @@ internal class Checkbox: UIControl {
             uncheckedBorderColor.setStroke()
         }
 
-        rectanglePath.lineWidth = borderWidth
+        rectanglePath.lineWidth = borderLineWidth
         rectanglePath.stroke()
         checkboxFillColor.setFill()
         rectanglePath.fill()
@@ -188,13 +194,14 @@ internal class Checkbox: UIControl {
             uncheckedBorderColor.setStroke()
         }
 
-        ovalPath.lineWidth = borderWidth / 2
+        ovalPath.lineWidth = borderLineWidth / 2
         ovalPath.stroke()
         checkboxFillColor.setFill()
         ovalPath.fill()
     }
 
     // MARK: - Checkmarks
+
     private func drawCheckmark(style: CheckmarkStyle, in rect: CGRect) {
         let adjustedRect = checkmarkRect(in: rect)
         switch checkmarkStyle {
@@ -243,6 +250,7 @@ internal class Checkbox: UIControl {
     }
 
     // MARK: - Size Calculations
+
     private func checkmarkRect(in rect: CGRect) -> CGRect {
         let width = rect.maxX * checkmarkSize
         let height = rect.maxY * checkmarkSize
@@ -254,6 +262,7 @@ internal class Checkbox: UIControl {
     }
 
     // MARK: - Touch
+
     @objc private func handleTapGesture(recognizer: UITapGestureRecognizer) {
         isChecked = !isChecked
         valueChanged?(isChecked)
@@ -268,7 +277,7 @@ internal class Checkbox: UIControl {
         }
     }
 
-    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+    override public func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
         let relativeFrame = self.bounds
         let hitTestEdgeInsets = UIEdgeInsets(top: -increasedTouchRadius,
                                              left: -increasedTouchRadius,
@@ -277,5 +286,4 @@ internal class Checkbox: UIControl {
         let hitFrame = relativeFrame.inset(by: hitTestEdgeInsets)
         return hitFrame.contains(point)
     }
-
 }
