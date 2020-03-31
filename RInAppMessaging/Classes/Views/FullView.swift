@@ -32,7 +32,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
     @IBOutlet private weak var backgroundView: UIView!
     @IBOutlet private weak var imageView: UIImageView!
     @IBOutlet private weak var contentView: UIView! // Wraps dialog view to allow rounded corners
-    @IBOutlet private weak var controlsView: UIView!
+    @IBOutlet private weak var controlsView: UIStackView!
     @IBOutlet private weak var dialogView: UIStackView!
     @IBOutlet private weak var headerLabel: UILabel!
     @IBOutlet private weak var bodyLabel: UILabel!
@@ -177,6 +177,10 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         bodyView.isLayoutMarginsRelativeArrangement = true
         bodyView.layoutMargins = UIEdgeInsets(top: 0, left: uiConstants.dialogViewHorizontalMargin,
                                                 bottom: 0, right: uiConstants.dialogViewHorizontalMargin)
+
+        controlsView.isLayoutMarginsRelativeArrangement = true
+        controlsView.layoutMargins = UIEdgeInsets(top: 0, left: uiConstants.dialogViewHorizontalMargin,
+                                                  bottom: 0, right: uiConstants.dialogViewHorizontalMargin)
 
         exitButton.widthAnchor.constraint(equalToConstant: uiConstants.exitButtonSize).isActive = true
         exitButton.heightAnchor.constraint(equalToConstant: uiConstants.exitButtonSize).isActive = true
