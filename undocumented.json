@@ -1,22 +1,29 @@
 {
   "warnings": [
     {
-      "file": "/Users/travis/build/rakutentech/ios-inappmessaging/RInAppMessaging/Classes/Enums/IdentificationEnum.swift",
-      "line": 3,
+      "file": "/Users/travis/build/rakutentech/ios-inappmessaging/RInAppMessaging/Classes/Enums/Public/Identification.swift",
+      "line": 1,
+      "symbol": "Identification",
+      "symbol_kind": "source.lang.swift.decl.enum",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/travis/build/rakutentech/ios-inappmessaging/RInAppMessaging/Classes/Enums/Public/Identification.swift",
+      "line": 2,
       "symbol": "Identification.rakutenId",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/travis/build/rakutentech/ios-inappmessaging/RInAppMessaging/Classes/Enums/IdentificationEnum.swift",
-      "line": 4,
+      "file": "/Users/travis/build/rakutentech/ios-inappmessaging/RInAppMessaging/Classes/Enums/Public/Identification.swift",
+      "line": 3,
       "symbol": "Identification.easyId",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/travis/build/rakutentech/ios-inappmessaging/RInAppMessaging/Classes/Enums/IdentificationEnum.swift",
-      "line": 5,
+      "file": "/Users/travis/build/rakutentech/ios-inappmessaging/RInAppMessaging/Classes/Enums/Public/Identification.swift",
+      "line": 4,
       "symbol": "Identification.userId",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
