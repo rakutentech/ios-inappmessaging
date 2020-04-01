@@ -7,25 +7,25 @@
         self.preference = IAMPreference()
     }
 
-    @objc
+    @objc @discardableResult
     public func setRakutenId(_ rakutenId: String?) -> IAMPreferenceBuilder {
         self.preference.rakutenId = rakutenId
         return self
     }
 
-    @objc
+    @objc @discardableResult
     public func setUserId(_ userId: String?) -> IAMPreferenceBuilder {
         self.preference.userId = userId
         return self
     }
 
-    @objc
+    @objc @discardableResult
     public func setAccessToken(_ accessToken: String?) -> IAMPreferenceBuilder {
         self.preference.accessToken = accessToken
         return self
     }
 
-    @objc
+    @objc @discardableResult
     public func build() -> IAMPreference {
         return self.preference
     }

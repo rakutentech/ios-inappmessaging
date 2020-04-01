@@ -34,9 +34,7 @@ internal class ImpressionService: ImpressionServiceType, HttpRequestable, Analyt
     func pingImpression(impressions: [Impression], campaignData: CampaignData) {
 
         guard let pingImpressionEndpoint = configurationRepository.getEndpoints()?.impression else {
-            let error = "InAppMessaging: Error retrieving InAppMessaging Impression URL"
-            CommonUtility.debugPrint(error)
-            reportError(description: error, data: nil)
+            reportError(description: "Error retrieving InAppMessaging Impression URL", data: nil)
             return
         }
 
@@ -59,7 +57,7 @@ internal class ImpressionService: ImpressionServiceType, HttpRequestable, Analyt
             completion: { [weak self] result in
 
                 if case .failure(let error) = result {
-                    self?.reportError(description: "InAppMessaging: Error sending impressions",
+                    self?.reportError(description: "Error sending impressions",
                                       data: error)
                 }
         })
@@ -85,11 +83,7 @@ extension ImpressionService {
             let appVersion = bundleInfo.appVersion,
             let sdkVersion = bundleInfo.inAppSdkVersion
             else {
-
-                let error = "InAppMessaging: Error building impressions request body"
-                CommonUtility.debugPrint(error)
-                reportError(description: error, data: nil)
-
+                reportError(description: "Error building impressions request body", data: nil)
                 return .failure(RequestError.unknown)
         }
 
@@ -106,9 +100,7 @@ extension ImpressionService {
             let body = try JSONEncoder().encode(impressionRequest)
             return .success(body)
         } catch {
-            let description = "InAppMessaging: Error encoding impression request"
-            CommonUtility.debugPrint("\(description): \(error)")
-            reportError(description: description, data: error)
+            reportError(description: "Error encoding impression request", data: error)
             return .failure(error)
         }
     }

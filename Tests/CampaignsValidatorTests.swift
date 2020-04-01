@@ -149,7 +149,7 @@ private enum MockedCampaigns {
             data: CampaignData(
                 campaignId: "test",
                 maxImpressions: 0,
-                type: 1,
+                type: .modal,
                 triggers: [],
                 isTest: true,
                 messagePayload: MessagePayload(
@@ -165,13 +165,13 @@ private enum MockedCampaigns {
                     resource: Resource(
                         assetsUrl: nil,
                         imageUrl: nil,
-                        cropType: 1),
+                        cropType: .fill),
                     messageSettings: MessageSettings(
                         displaySettings: DisplaySettings(
-                            orientation: 1,
+                            orientation: .portrait,
                             slideFrom: .bottom,
                             endTimeMilliseconds: 0,
-                            textAlign: 1,
+                            textAlign: .fill,
                             optOut: false,
                             html: false,
                             delay: 0),
@@ -185,7 +185,7 @@ private enum MockedCampaigns {
             data: CampaignData(
                 campaignId: "test",
                 maxImpressions: 2,
-                type: 1,
+                type: .modal,
                 triggers: [
                     Trigger(
                         type: .event,
@@ -208,13 +208,13 @@ private enum MockedCampaigns {
                     resource: Resource(
                         assetsUrl: nil,
                         imageUrl: nil,
-                        cropType: 1),
+                        cropType: .fill),
                     messageSettings: MessageSettings(
                         displaySettings: DisplaySettings(
-                            orientation: 1,
+                            orientation: .portrait,
                             slideFrom: .bottom,
                             endTimeMilliseconds: 0,
-                            textAlign: 1,
+                            textAlign: .fill,
                             optOut: false,
                             html: false,
                             delay: 0),

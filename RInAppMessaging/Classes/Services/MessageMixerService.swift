@@ -28,7 +28,7 @@ internal class MessageMixerService: MessageMixerServiceType, HttpRequestable {
     func ping() -> Result<PingResponse, MessageMixerServiceError> {
 
         guard let mixerServerUrl = configurationRepository.getEndpoints()?.ping else {
-            let error = "InAppMessaging: Error retrieving InAppMessaging Mixer Server URL"
+            let error = "Error retrieving InAppMessaging Mixer Server URL"
             CommonUtility.debugPrint(error)
             return .failure(.invalidConfiguration)
         }
@@ -54,7 +54,7 @@ internal class MessageMixerService: MessageMixerServiceType, HttpRequestable {
             let response = try JSONDecoder().decode(PingResponse.self, from: response)
             return .success(response)
         } catch {
-            let description = "InAppMessaging: Failed to parse json"
+            let description = "Failed to parse json"
             CommonUtility.debugPrint("\(description): \(error)")
             return .failure(error)
         }
@@ -67,7 +67,7 @@ extension MessageMixerService {
     func buildHttpBody(with parameters: [String: Any]?) -> Result<Data, Error> {
 
         guard let appVersion = bundleInfo.appVersion else {
-            CommonUtility.debugPrint("InAppMessaging: failed creating a request body")
+            CommonUtility.debugPrint("failed creating a request body")
             assertionFailure()
             return .failure(RequestError.unknown)
         }
@@ -80,7 +80,7 @@ extension MessageMixerService {
             let body = try JSONEncoder().encode(pingRequest)
             return .success(body)
         } catch let error {
-            CommonUtility.debugPrint("InAppMessaging: failed creating a request body - \(error)")
+            CommonUtility.debugPrint("failed creating a request body - \(error)")
             return .failure(error)
         }
     }

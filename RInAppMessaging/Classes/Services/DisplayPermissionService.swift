@@ -34,7 +34,7 @@ internal struct DisplayPermissionService: DisplayPermissionServiceType, HttpRequ
                                                         parameters: requestParams,
                                                         addtionalHeaders: buildRequestHeader()).get().data
         else {
-            CommonUtility.debugPrint("InAppMessaging: error getting a response from display permission.")
+            CommonUtility.debugPrint("error getting a response from display permission.")
             return DisplayPermissionResponse(display: true, performPing: false)
         }
 
@@ -43,7 +43,7 @@ internal struct DisplayPermissionService: DisplayPermissionServiceType, HttpRequ
                                                            from: responseFromDisplayPermission)
             return decodedResponse
         } catch {
-            CommonUtility.debugPrint("InAppMessaging: error getting a response from display permission.")
+            CommonUtility.debugPrint("error getting a response from display permission.")
         }
 
         return DisplayPermissionResponse(display: true, performPing: false)
@@ -60,14 +60,14 @@ extension DisplayPermissionService {
             let appVersion = bundleInfo.appVersion,
             let sdkVersion = bundleInfo.inAppSdkVersion
             else {
-                CommonUtility.debugPrint("InAppMessaging: error while building request body for display permssion.")
+                CommonUtility.debugPrint("error while building request body for display permssion.")
                 return .failure(RequestError.unknown)
         }
 
         let permissionRequest = DisplayPermissionRequest(subscriptionId: subscriptionId,
                                                          campaignId: campaignId,
                                                          userIdentifiers: preferenceRepository.getUserIdentifiers(),
-                                                         platform: Platform.ios.rawValue,
+                                                         platform: .ios,
                                                          appVersion: appVersion,
                                                          sdkVersion: sdkVersion,
                                                          locale: Locale.current.identifier,
@@ -76,7 +76,7 @@ extension DisplayPermissionService {
             let body = try JSONEncoder().encode(permissionRequest)
             return .success(body)
         } catch {
-            CommonUtility.debugPrint("InAppMessaging: failed creating a request body.")
+            CommonUtility.debugPrint("failed creating a request body.")
             return .failure(error)
         }
     }

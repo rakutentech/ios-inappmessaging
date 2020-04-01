@@ -1,7 +1,7 @@
-internal struct GetConfigRequest: Codable {
+internal struct GetConfigRequest: Encodable {
     let locale: String
     let appVersion: String
-    let platform: Int
+    let platform: Platform
     let appId: String
     let sdkVersion: String
 }

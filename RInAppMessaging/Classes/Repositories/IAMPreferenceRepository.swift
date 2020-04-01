@@ -21,14 +21,14 @@ internal class IAMPreferenceRepository {
         // Check if rakutenId is populated in preference.
         if let rakutenId = preference.rakutenId {
             userIdentifiers.append(
-                UserIdentifier(type: Identification.rakutenId.rawValue, identifier: rakutenId)
+                UserIdentifier(type: .rakutenId, identifier: rakutenId)
             )
         }
 
         // Check if userId is populated in preference.
         if let userId = preference.userId {
             userIdentifiers.append(
-                UserIdentifier(type: Identification.userId.rawValue, identifier: userId)
+                UserIdentifier(type: .userId, identifier: userId)
             )
         }
 

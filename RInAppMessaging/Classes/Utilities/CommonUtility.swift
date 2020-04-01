@@ -11,7 +11,7 @@ internal struct CommonUtility {
 
             return jsonData
         } catch {
-            debugPrint("InAppMessaging: Error converting data: \(error)")
+            debugPrint("Error converting data: \(error)")
             return nil
         }
     }
@@ -83,19 +83,19 @@ internal struct CommonUtility {
             return CustomAttribute(withKeyName: attribute.name, withTimeInMilliValue: value)
         }
 
-        debugPrint("InAppMessaging: Error converting value.")
+        debugPrint("Error converting value.")
         return nil
     }
 
     static func debugPrint(_ value: Any?) {
         #if DEBUG
-            print(String(describing: value))
+            print("InAppMessaging: " + String(describing: value))
         #endif
     }
 
     static func debugPrint(_ message: String) {
         #if DEBUG
-            print(message)
+            print("InAppMessaging: " + message)
         #endif
     }
 }

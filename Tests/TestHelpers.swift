@@ -32,7 +32,7 @@ struct TestHelpers {
             data: CampaignData(
                 campaignId: id,
                 maxImpressions: maxImpressions,
-                type: 1,
+                type: .modal,
                 triggers: triggers,
                 isTest: test,
                 messagePayload: MessagePayload(
@@ -48,13 +48,13 @@ struct TestHelpers {
                     resource: Resource(
                         assetsUrl: nil,
                         imageUrl: nil,
-                        cropType: 1),
+                        cropType: .fill),
                     messageSettings: MessageSettings(
                         displaySettings: DisplaySettings(
-                            orientation: 1,
+                            orientation: .portrait,
                             slideFrom: .bottom,
                             endTimeMilliseconds: Int64.max,
-                            textAlign: 1,
+                            textAlign: .fill,
                             optOut: false,
                             html: false,
                             delay: delay),
@@ -71,7 +71,7 @@ struct TestHelpers {
             data: CampaignData(
                 campaignId: id,
                 maxImpressions: 1,
-                type: 1,
+                type: .modal,
                 triggers: nil,
                 isTest: false,
                 messagePayload: MessagePayload(
@@ -87,13 +87,13 @@ struct TestHelpers {
                     resource: Resource(
                         assetsUrl: nil,
                         imageUrl: nil,
-                        cropType: 1),
+                        cropType: .fill),
                     messageSettings: MessageSettings(
                         displaySettings: DisplaySettings(
-                            orientation: 1,
+                            orientation: .portrait,
                             slideFrom: .bottom,
                             endTimeMilliseconds: Int64.max,
-                            textAlign: 1,
+                            textAlign: .fill,
                             optOut: false,
                             html: false,
                             delay: 0),

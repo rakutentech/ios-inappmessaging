@@ -8,19 +8,16 @@ internal protocol TaskSchedulable: AnyObject {
     /// - Parameter milliseconds: Delay before running the task in milliseconds.
     /// - Parameter task: A block of code to run after the delay.
     /// - Parameter wallDeadline: Set `true` to use wall time (gettimeofday) instead of absolute time to ensure execution after returning from background
-    func scheduleWorkItem(milliseconds: Int, task: DispatchWorkItem, wallDeadline: Bool)
+    func scheduleWorkItem(milliseconds: Int, wallDeadline: Bool, closure: @escaping () -> Void)
 }
 
 /// Default implementation.
 extension TaskSchedulable {
-    func scheduleWorkItem(milliseconds: Int, task: DispatchWorkItem, wallDeadline: Bool) {
+    func scheduleWorkItem(milliseconds: Int, wallDeadline: Bool, closure: @escaping () -> Void) {
 
         scheduledTask?.cancel()
-        scheduledTask = task
-        if wallDeadline {
-            DispatchQueue.main.asyncAfter(wallDeadline: .now() + .milliseconds(milliseconds), execute: task)
-        } else {
-            DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(milliseconds), execute: task)
-        }
+        scheduledTask = WorkScheduler.scheduleTask(milliseconds: milliseconds,
+                                                   closure: closure,
+                                                   wallDeadline: wallDeadline)
     }
 }

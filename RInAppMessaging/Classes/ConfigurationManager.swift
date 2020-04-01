@@ -49,9 +49,7 @@ internal class ConfigurationManager: ConfigurationManagerType, ReachabilityObser
             completion(configData)
 
         case .failure(let error):
-            let description = "InAppMessaging: Error calling config server. Retrying in \(retryDelayMS)ms"
-            CommonUtility.debugPrint(description)
-            reportError(description: description, data: error)
+            reportError(description: "Error calling config server. Retrying in \(retryDelayMS)ms", data: error)
             WorkScheduler.scheduleTask(milliseconds: Int(retryDelayMS), closure: retryHandler, wallDeadline: true)
             // Exponential backoff for pinging Configuration server.
             retryDelayMS = retryDelayMS.multipliedReportingOverflow(by: 2).partialValue

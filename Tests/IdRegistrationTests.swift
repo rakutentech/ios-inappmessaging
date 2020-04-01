@@ -49,7 +49,7 @@ class IdRegistrationTests: QuickSpec {
                         .build()
                 )
 
-                let expected = [UserIdentifier(type: 3, identifier: "whales and dolphins")]
+                let expected = [UserIdentifier(type: .userId, identifier: "whales and dolphins")]
                 expect(preferenceRepository.getUserIdentifiers()).toEventually(equal(expected), timeout: 3, pollInterval: 1)
             }
 
@@ -62,8 +62,8 @@ class IdRegistrationTests: QuickSpec {
                         .build()
                 )
 
-                let expected = [UserIdentifier(type: 1, identifier: "whales and dolphins"),
-                                UserIdentifier(type: 3, identifier: "tigers and zebras")]
+                let expected = [UserIdentifier(type: .rakutenId, identifier: "whales and dolphins"),
+                                UserIdentifier(type: .userId, identifier: "tigers and zebras")]
                 expect(preferenceRepository.getUserIdentifiers()).toEventually(equal(expected))
             }
         }

@@ -8,7 +8,7 @@ class SerializationTests: QuickSpec {
 
         context("User Identifier") {
             it("should serialize with correct property names") {
-                let identifier = UserIdentifier(type: 1, identifier: "TheUserID")
+                let identifier = UserIdentifier(type: .rakutenId, identifier: "TheUserID")
                 let encoder = JSONEncoder()
 
                 let encodedData = try? encoder.encode(identifier)

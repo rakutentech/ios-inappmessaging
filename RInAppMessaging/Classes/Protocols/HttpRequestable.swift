@@ -42,7 +42,7 @@ extension HttpRequestable {
                                addtionalHeaders: [HeaderAttribute]?) -> RequestResult {
 
         if Thread.current.isMainThread {
-            print("InAppMessaging: Performing HTTP task synchronously on main thread. This should be avoided.")
+            CommonUtility.debugPrint("Performing HTTP task synchronously on main thread. This should be avoided.")
             assertionFailure()
         }
 
@@ -127,7 +127,7 @@ extension HttpRequestable {
                 let serverResponse = response as? HTTPURLResponse else {
 
                     completion(.failure(.httpError(statusCode, response, data)))
-                    CommonUtility.debugPrint("InAppMessaging: HTTP call failed.")
+                    print("InAppMessaging: HTTP call failed (\(statusCode))")
                     return
             }
 

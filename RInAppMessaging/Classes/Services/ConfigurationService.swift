@@ -39,7 +39,7 @@ internal struct ConfigurationService: ConfigurationServiceType, HttpRequestable 
             let response = try JSONDecoder().decode(GetConfigResponse.self, from: configResponse)
             return .success(response.data)
         } catch {
-            let description = "InAppMessaging: Failed to parse json"
+            let description = "Failed to parse json"
             CommonUtility.debugPrint("\(description): \(error)")
             return .failure(error)
         }
@@ -55,7 +55,7 @@ extension ConfigurationService {
             let appId = bundleInfo.applicationId,
             let sdkVersion = bundleInfo.inAppSdkVersion else {
 
-                CommonUtility.debugPrint("InAppMessaging: failed creating a request body")
+                CommonUtility.debugPrint("failed creating a request body")
                 assertionFailure()
                 return .failure(RequestError.unknown)
         }
@@ -63,7 +63,7 @@ extension ConfigurationService {
         let getConfigRequest = GetConfigRequest(
             locale: Locale.current.identifier,
             appVersion: appVersion,
-            platform: Platform.ios.rawValue,
+            platform: .ios,
             appId: appId,
             sdkVersion: sdkVersion
         )
@@ -72,7 +72,7 @@ extension ConfigurationService {
             let body = try JSONEncoder().encode(getConfigRequest)
             return .success(body)
         } catch let error {
-            CommonUtility.debugPrint("InAppMessaging: failed creating a request body - \(error)")
+            CommonUtility.debugPrint("failed creating a request body - \(error)")
             return .failure(error)
         }
     }

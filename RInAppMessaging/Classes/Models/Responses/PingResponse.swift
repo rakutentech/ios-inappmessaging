@@ -59,7 +59,7 @@ internal struct Campaign: Decodable, Hashable {
 internal struct CampaignData: Decodable, Hashable {
     let campaignId: String
     let maxImpressions: Int
-    let type: Int
+    let type: CampaignDisplayType?
     let triggers: [Trigger]?
     let isTest: Bool
     let messagePayload: MessagePayload
@@ -101,7 +101,7 @@ internal struct MessagePayload: Decodable {
 internal struct Resource: Decodable {
     let assetsUrl: String?
     let imageUrl: String?
-    let cropType: Int
+    let cropType: CampaignCropType
 }
 
 internal struct MessageSettings: Decodable {
@@ -120,10 +120,10 @@ internal struct DisplaySettings: Decodable {
         case delay
     }
 
-    let orientation: Int
+    let orientation: CampaignOrientation
     let slideFrom: SlideDirection?
     let endTimeMilliseconds: Int64
-    let textAlign: Int
+    let textAlign: CampaignTextAlignType
     let optOut: Bool
     let html: Bool?
     let delay: Int?

@@ -43,7 +43,7 @@ internal class EventMatcher: EventMatcherType {
 
         campaignRepository.list.forEach { campaign in
             guard let campaignTriggers = campaign.data.triggers else {
-                CommonUtility.debugPrint("InAppMessaging: campaign (\(campaign.id)) has no triggers.")
+                CommonUtility.debugPrint("campaign (\(campaign.id)) has no triggers.")
                 return
             }
 

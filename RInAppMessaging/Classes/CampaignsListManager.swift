@@ -64,14 +64,10 @@ internal class CampaignsListManager: CampaignsListManagerType, TaskSchedulable {
     private func handleError(_ error: Error) {
         switch error {
         case MessageMixerServiceError.invalidConfiguration:
-            let error = "InAppMessaging: Error retrieving InAppMessaging Mixer Server URL"
-            CommonUtility.debugPrint(error)
-            reportError(description: error, data: nil)
+            reportError(description: "Error retrieving InAppMessaging Mixer Server URL", data: nil)
 
         case MessageMixerServiceError.jsonDecodingError(let decodingError):
-            let description = "InAppMessaging: Failed to parse json"
-            CommonUtility.debugPrint("\(description): \(decodingError)")
-            reportError(description: description, data: decodingError)
+            reportError(description: "Failed to parse json", data: decodingError)
 
         default:
             scheduleNextPingCall(in: Int(retryDelayMS))
@@ -81,8 +77,8 @@ internal class CampaignsListManager: CampaignsListManagerType, TaskSchedulable {
     }
 
     private func scheduleNextPingCall(in milliseconds: Int) {
-        scheduleWorkItem(milliseconds: milliseconds,
-                         task: DispatchWorkItem { self.pingMixerServer() },
-                         wallDeadline: true)
+        scheduleWorkItem(milliseconds: milliseconds, wallDeadline: true) { [weak self] in
+            self?.pingMixerServer()
+        }
     }
 }

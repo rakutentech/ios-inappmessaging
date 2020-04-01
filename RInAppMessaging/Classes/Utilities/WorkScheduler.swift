@@ -7,15 +7,18 @@ internal struct WorkScheduler {
     /// - Parameter milliseconds: Milliseconds before invoking the function.
     /// - Parameter closure: Function to be invoked.
     /// - Parameter wallDeadline: Set `true` to use wall time (gettimeofday) instead of absolute time to ensure execution after returning from background
-    static func scheduleTask(milliseconds: Int, closure: @escaping () -> Void, wallDeadline: Bool = false) {
+    /// - Returns: A `DispatchWorkItem` object created from passed closure.
+    @discardableResult
+    static func scheduleTask(milliseconds: Int,
+                             closure: @escaping () -> Void,
+                             wallDeadline: Bool = false) -> DispatchWorkItem {
+
+        let workItem = DispatchWorkItem { closure() }
         if wallDeadline {
-            inAppMessagingQueue.asyncAfter(wallDeadline: .now() + .milliseconds(milliseconds)) {
-                closure()
-            }
+            inAppMessagingQueue.asyncAfter(wallDeadline: .now() + .milliseconds(milliseconds), execute: workItem)
         } else {
-            inAppMessagingQueue.asyncAfter(deadline: .now() + .milliseconds(milliseconds)) {
-                closure()
-            }
+            inAppMessagingQueue.asyncAfter(deadline: .now() + .milliseconds(milliseconds), execute: workItem)
         }
+        return workItem
     }
 }

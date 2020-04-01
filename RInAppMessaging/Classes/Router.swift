@@ -21,9 +21,7 @@ internal class Router: RouterType {
     }
 
     func displayCampaign(_ campaign: Campaign, completion: @escaping () -> Void) {
-        guard let campaignViewType = CampaignDisplayType(rawValue: campaign.data.type),
-            campaignViewType != .invalid else {
-
+        guard let campaignViewType = campaign.data.type, campaignViewType != .invalid else {
             CommonUtility.debugPrint("Error: Campaign view type not supported")
             completion()
             return

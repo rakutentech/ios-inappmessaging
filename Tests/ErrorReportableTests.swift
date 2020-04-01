@@ -49,7 +49,7 @@ class ErrorReportableTests: QuickSpec {
 
             it("will embedd description string in the error object") {
                 reporter.reportError(description: "Error!", data: nil)
-                expect(delegate.receivedError?.localizedDescription).to(equal("Error!"))
+                expect(delegate.receivedError?.localizedDescription).to(equal("InAppMessaging: Error!"))
             }
         }
     }
