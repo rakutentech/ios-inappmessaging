@@ -89,6 +89,10 @@ extension DisplayPermissionService {
             additionalHeaders.append(HeaderAttribute(key: Keys.subscriptionID, value: subId))
         }
 
+        if let accessToken = preferenceRepository.getAccessToken() {
+            additionalHeaders.append(HeaderAttribute(key: Keys.authorization, value: "OAuth2 \(accessToken)"))
+        }
+
         return additionalHeaders
     }
 }

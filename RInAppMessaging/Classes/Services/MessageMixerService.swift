@@ -97,6 +97,10 @@ extension MessageMixerService {
             additionalHeaders.append(HeaderAttribute(key: Keys.deviceID, value: deviceId))
         }
 
+        if let accessToken = preferenceRepository.getAccessToken() {
+            additionalHeaders.append(HeaderAttribute(key: Keys.authorization, value: "OAuth2 \(accessToken)"))
+        }
+
         return additionalHeaders
     }
 }

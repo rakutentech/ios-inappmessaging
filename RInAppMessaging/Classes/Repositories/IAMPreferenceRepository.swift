@@ -18,14 +18,12 @@ internal class IAMPreferenceRepository {
 
         var userIdentifiers = [UserIdentifier]()
 
-        // Check if rakutenId is populated in preference.
         if let rakutenId = preference.rakutenId {
             userIdentifiers.append(
                 UserIdentifier(type: .rakutenId, identifier: rakutenId)
             )
         }
 
-        // Check if userId is populated in preference.
         if let userId = preference.userId {
             userIdentifiers.append(
                 UserIdentifier(type: .userId, identifier: userId)
@@ -33,5 +31,11 @@ internal class IAMPreferenceRepository {
         }
 
         return userIdentifiers
+    }
+
+    /// Method to retrieve RAE access token in preference object.
+    /// - Returns: Access token as a string (Optional).
+    func getAccessToken() -> String? {
+        return preference?.accessToken
     }
 }

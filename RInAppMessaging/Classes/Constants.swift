@@ -10,6 +10,7 @@ internal enum Constants {
         enum Header {
             static let subscriptionID = "Subscription-Id"
             static let deviceID = "device_id"
+            static let authorization = "Authorization"
         }
     }
 
