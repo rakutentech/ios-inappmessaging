@@ -4,8 +4,11 @@ internal class OptOutMessageView: UIView {
 
     private enum Constants {
         static let fontSize: CGFloat = 12
+        static let minFontSize: CGFloat = 10
         static let checkboxSize: CGFloat = 12
         static let spacing: CGFloat = 5
+        // Temporary solution for 4" devices
+        static let overflowMargin: CGFloat = 8
     }
 
     private let checkbox = Checkbox()
@@ -35,7 +38,8 @@ internal class OptOutMessageView: UIView {
         optOutMessage.textColor = .black
         optOutMessage.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapAction)))
         optOutMessage.isUserInteractionEnabled = true
-        optOutMessage.sizeToFit()
+        optOutMessage.adjustsFontSizeToFitWidth = true
+        optOutMessage.minimumScaleFactor = Constants.minFontSize/Constants.fontSize
         optOutMessage.translatesAutoresizingMaskIntoConstraints = false
         optOutMessage.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
 
@@ -62,15 +66,17 @@ internal class OptOutMessageView: UIView {
             checkbox.leadingAnchor.constraint(equalTo: container.leadingAnchor),
             checkbox.centerYAnchor.constraint(equalTo: optOutMessage.centerYAnchor),
             optOutMessage.leadingAnchor.constraint(equalTo: checkbox.trailingAnchor, constant: Constants.spacing),
-            optOutMessage.topAnchor.constraint(equalTo: container.topAnchor),
-            optOutMessage.bottomAnchor.constraint(equalTo: container.bottomAnchor),
+            optOutMessage.topAnchor.constraint(greaterThanOrEqualTo: container.topAnchor),
+            optOutMessage.bottomAnchor.constraint(greaterThanOrEqualTo: container.bottomAnchor),
             optOutMessage.trailingAnchor.constraint(equalTo: container.trailingAnchor),
 
             container.centerXAnchor.constraint(equalTo: centerXAnchor),
             container.topAnchor.constraint(equalTo: topAnchor),
             container.bottomAnchor.constraint(equalTo: bottomAnchor),
-            trailingAnchor.constraint(greaterThanOrEqualTo: trailingAnchor),
-            leadingAnchor.constraint(greaterThanOrEqualTo: leadingAnchor)
+            container.trailingAnchor.constraint(greaterThanOrEqualTo: trailingAnchor,
+                                                constant: Constants.overflowMargin),
+            container.leadingAnchor.constraint(greaterThanOrEqualTo: leadingAnchor,
+                                               constant: -Constants.overflowMargin)
         ]
         NSLayoutConstraint.activate(constraints)
     }

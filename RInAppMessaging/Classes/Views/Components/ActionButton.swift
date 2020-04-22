@@ -5,6 +5,8 @@ internal class ActionButton: UIButton {
 
     private enum Constants {
         static let fontSize: CGFloat = 14
+        static let minFontSize: CGFloat = 10
+        static let labelMargin = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
         static let cornerRadius: CGFloat = 4
         static let borderWidth: CGFloat = 1
     }
@@ -13,12 +15,15 @@ internal class ActionButton: UIButton {
     let uri: String?
     let trigger: Trigger?
 
+    private let textLabel = UILabel()
+
     init(impression: ImpressionType, uri: String?, trigger: Trigger?) {
         self.impression = impression
         self.uri = uri
         self.trigger = trigger
 
         super.init(frame: .zero)
+        addLabel()
     }
 
     required init?(coder: NSCoder) {
@@ -26,14 +31,35 @@ internal class ActionButton: UIButton {
     }
 
     func setup(viewModel: ActionButtonViewModel) {
+        textLabel.text = viewModel.text
+        textLabel.font = .boldSystemFont(ofSize: Constants.fontSize)
+        textLabel.textColor = viewModel.textColor
+        textLabel.numberOfLines = 2
+        textLabel.lineBreakMode = .byTruncatingTail
+        textLabel.textAlignment = .center
+        textLabel.adjustsFontSizeToFitWidth = true
+        textLabel.minimumScaleFactor = Constants.minFontSize/Constants.fontSize
 
-        setTitle(viewModel.text, for: .normal)
-        setTitleColor(viewModel.textColor, for: .normal)
-        titleLabel?.font = .boldSystemFont(ofSize: Constants.fontSize)
         layer.cornerRadius = Constants.cornerRadius
         self.backgroundColor = viewModel.backgroundColor
         layer.borderColor = viewModel.textColor.cgColor
         layer.borderWidth = Constants.borderWidth
+    }
+
+    private func addLabel() {
+        textLabel.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(textLabel)
+        NSLayoutConstraint.activate([
+            textLabel.leftAnchor.constraint(equalTo: leftAnchor,
+                                            constant: Constants.labelMargin.left),
+            textLabel.rightAnchor.constraint(equalTo: rightAnchor,
+                                             constant: -Constants.labelMargin.right),
+            textLabel.topAnchor.constraint(greaterThanOrEqualTo: topAnchor,
+                                           constant: Constants.labelMargin.top),
+            textLabel.bottomAnchor.constraint(greaterThanOrEqualTo: bottomAnchor,
+                                              constant: -Constants.labelMargin.bottom),
+            textLabel.centerYAnchor.constraint(equalTo: centerYAnchor)
+        ])
     }
 
     override func isEqual(_ object: Any?) -> Bool {
