@@ -26,7 +26,6 @@ internal class BaseViewPresenter: BaseViewPresenterType {
 
             return nil
         }
-
         return UIImage(data: imageData)
     }()
 

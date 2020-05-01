@@ -198,6 +198,7 @@ private class FullViewPresenterMock: FullViewPresenterType {
     private(set) var wasViewDidInitializeCalled = false
 
     func loadButtons() { }
+    func loadResources() { }
     func didClickAction(sender: ActionButton) {}
     func didClickExitButton() { }
     func viewDidInitialize() {
