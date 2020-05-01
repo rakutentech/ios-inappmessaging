@@ -67,13 +67,14 @@ internal class OptOutMessageView: UIView {
             checkbox.centerYAnchor.constraint(equalTo: optOutMessage.centerYAnchor),
             optOutMessage.leadingAnchor.constraint(equalTo: checkbox.trailingAnchor, constant: Constants.spacing),
             optOutMessage.topAnchor.constraint(greaterThanOrEqualTo: container.topAnchor),
-            optOutMessage.bottomAnchor.constraint(greaterThanOrEqualTo: container.bottomAnchor),
+            optOutMessage.bottomAnchor.constraint(lessThanOrEqualTo: container.bottomAnchor),
             optOutMessage.trailingAnchor.constraint(equalTo: container.trailingAnchor),
+            optOutMessage.centerYAnchor.constraint(equalTo: container.centerYAnchor),
 
             container.centerXAnchor.constraint(equalTo: centerXAnchor),
             container.topAnchor.constraint(equalTo: topAnchor),
             container.bottomAnchor.constraint(equalTo: bottomAnchor),
-            container.trailingAnchor.constraint(greaterThanOrEqualTo: trailingAnchor,
+            container.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor,
                                                 constant: Constants.overflowMargin),
             container.leadingAnchor.constraint(greaterThanOrEqualTo: leadingAnchor,
                                                constant: -Constants.overflowMargin)
