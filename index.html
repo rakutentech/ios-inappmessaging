@@ -85,14 +85,14 @@
 <a href="https://codecov.io/gh/rakutentech/ios-inappmessaging"><img src="https://codecov.io/gh/rakutentech/ios-inappmessaging/branch/master/graph/badge.svg" alt="codecov"></a></p>
 <h1 id='rinappmessaging' class='heading'>RInAppMessaging</h1>
 
-<p>InAppMessaging allows app developers to easily configure and display notifications within their app.</p>
+<p>In-App Messaging (IAM) module allows app developers to easily configure and display notifications within their app.</p>
 <h1 id='strong-how-to-install-strong' class='heading'><strong>How to install</strong></h1>
 
-<p>InAppMessaging SDK is distributed as a Cocoapod.<br>
+<p>RInAppMessaging SDK is distributed as a Cocoapod.<br>
 More information on installing pods: <a href="https://guides.cocoapods.org/using/getting-started.html">https://guides.cocoapods.org/using/getting-started.html</a></p>
 
 <p>1) Include the following in your application&rsquo;s Podfile</p>
-<pre class="highlight ruby"><code><span class="n">pod</span> <span class="s1">'InAppMessaging'</span> <span class="ss">:git</span> <span class="o">=&gt;</span> <span class="s1">'https://github.com/rakutentech/ios-inappmessaging.git'</span>
+<pre class="highlight ruby"><code><span class="n">pod</span> <span class="s1">'RInAppMessaging'</span> <span class="ss">:git</span> <span class="o">=&gt;</span> <span class="s1">'https://github.com/rakutentech/ios-inappmessaging.git'</span>
 </code></pre>
 
 <p>2) Run the following in the terminal</p>
@@ -111,7 +111,7 @@ More information on installing pods: <a href="https://guides.cocoapods.org/using
 </tr>
 </thead><tbody>
 <tr>
-<td style="text-align: center"><code>InAppMessagingSubscriptionID</code></td>
+<td style="text-align: center"><code>InAppMessagingAppSubscriptionID</code></td>
 <td style="text-align: center">your_subscription_key</td>
 </tr>
 <tr>
@@ -133,20 +133,20 @@ More information on installing pods: <a href="https://guides.cocoapods.org/using
 <p>This method is called to initialize the SDK and should be placed in your AppDelegate&rsquo;s <code>didFinishLaunchingWithOptions</code>.</p>
 
 <p><strong>Swift</strong></p>
-<pre class="highlight swift"><code><span class="kd">import</span> <span class="kt">InAppMessaging</span>
+<pre class="highlight swift"><code><span class="kd">import</span> <span class="kt">RInAppMessaging</span>
 
 <span class="kd">func</span> <span class="nf">application</span><span class="p">(</span><span class="n">_</span> <span class="nv">application</span><span class="p">:</span> <span class="kt">UIApplication</span><span class="p">,</span> <span class="n">didFinishLaunchingWithOptions</span> <span class="nv">launchOptions</span><span class="p">:</span> <span class="p">[</span><span class="kt">UIApplicationLaunchOptionsKey</span><span class="p">:</span> <span class="kt">Any</span><span class="p">]?)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span> <span class="p">{</span>
-    <span class="kt">InAppMessaging</span><span class="o">.</span><span class="nf">configure</span><span class="p">()</span>
+    <span class="kt">RInAppMessaging</span><span class="o">.</span><span class="nf">configure</span><span class="p">()</span>
     <span class="k">return</span> <span class="kc">true</span>
 <span class="p">}</span>
 </code></pre>
 
 <p><strong>Objective-C</strong></p>
-<pre class="highlight swift"><code><span class="kd">@import</span> <span class="kt">InAppMessaging</span><span class="p">;</span>
+<pre class="highlight swift"><code><span class="kd">@import</span> <span class="kt">RInAppMessaging</span><span class="p">;</span>
 
 <span class="o">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nv">application</span><span class="p">:(</span><span class="kt">UIApplication</span> <span class="o">*</span><span class="p">)</span><span class="n">application</span> <span class="nv">didFinishLaunchingWithOptions</span><span class="p">:(</span><span class="kt">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="n">launchOptions</span>
 <span class="p">{</span>
-    <span class="p">[</span><span class="kt">InAppMessaging</span> <span class="n">configure</span><span class="p">];</span>
+    <span class="p">[</span><span class="kt">RInAppMessaging</span> <span class="n">configure</span><span class="p">];</span>
     <span class="k">return</span> <span class="kt">YES</span><span class="p">;</span>
 <span class="p">}</span>
 </code></pre>
@@ -158,7 +158,7 @@ More information on installing pods: <a href="https://guides.cocoapods.org/using
 <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">logEvent</span><span class="p">(</span><span class="n">_</span> <span class="nv">event</span><span class="p">:</span> <span class="kt">Event</span><span class="p">)</span>
 </code></pre>
 
-<p>InAppMessaging provides three pre-defined event types and a custom event type:</p>
+<p>IAM provides three pre-defined event types and a custom event type:</p>
 
 <ol>
 <li><code><a href="Classes/AppStartEvent.html">AppStartEvent</a></code> - This event should be logged when the application is considered started by the host app. E.G AppDelegate&rsquo;s didFinishLaunchingWithOptions.</li>
@@ -169,7 +169,7 @@ More information on installing pods: <a href="https://guides.cocoapods.org/using
 
 <p><strong>Swift</strong></p>
 <pre class="highlight swift"><code><span class="c1">// App start event.</span>
-<span class="kt">InAppMessaging</span><span class="o">.</span><span class="nf">logEvent</span><span class="p">(</span><span class="kt">AppStartEvent</span><span class="p">())</span>
+<span class="kt">RInAppMessaging</span><span class="o">.</span><span class="nf">logEvent</span><span class="p">(</span><span class="kt">AppStartEvent</span><span class="p">())</span>
 
 <span class="c1">// Purchase successful event.</span>
 <span class="k">let</span> <span class="nv">purchaseEvent</span> <span class="o">=</span> <span class="kt">PurchaseSuccessfulEvent</span><span class="p">()</span>
@@ -177,10 +177,10 @@ More information on installing pods: <a href="https://guides.cocoapods.org/using
 <span class="n">purchaseEvent</span><span class="o">.</span><span class="nf">setItemList</span><span class="p">([</span><span class="s">"box"</span><span class="p">,</span> <span class="s">"hammer"</span><span class="p">])</span>
 <span class="n">purchaseEvent</span><span class="o">.</span><span class="nf">setCurrencyCode</span><span class="p">(</span><span class="s">"USD"</span><span class="p">)</span>
 
-<span class="kt">InAppMessaging</span><span class="o">.</span><span class="nf">logEvent</span><span class="p">(</span><span class="n">purchaseEvent</span><span class="p">)</span>
+<span class="kt">RInAppMessaging</span><span class="o">.</span><span class="nf">logEvent</span><span class="p">(</span><span class="n">purchaseEvent</span><span class="p">)</span>
 
 <span class="c1">// Login event.</span>
-<span class="kt">InAppMessaging</span><span class="o">.</span><span class="nf">logEvent</span><span class="p">(</span><span class="kt">LoginSuccessfulEvent</span><span class="p">())</span>
+<span class="kt">RInAppMessaging</span><span class="o">.</span><span class="nf">logEvent</span><span class="p">(</span><span class="kt">LoginSuccessfulEvent</span><span class="p">())</span>
 
 <span class="c1">// Custom event.</span>
 <span class="k">let</span> <span class="nv">stringAttribute</span> <span class="o">=</span> <span class="kt">CustomAttribute</span><span class="p">(</span><span class="nv">withKeyName</span><span class="p">:</span> <span class="s">"userResponse"</span><span class="p">,</span> <span class="nv">withStringValue</span><span class="p">:</span> <span class="s">"hi"</span><span class="p">)</span>
@@ -191,15 +191,15 @@ More information on installing pods: <a href="https://guides.cocoapods.org/using
 
 <span class="k">let</span> <span class="nv">attriList</span> <span class="o">=</span> <span class="p">[</span><span class="n">stringAttribute</span><span class="p">,</span> <span class="n">intAttribute</span><span class="p">,</span> <span class="n">boolAttribute</span><span class="p">,</span> <span class="n">doubleAttribute</span><span class="p">,</span> <span class="n">timeAttribute</span><span class="p">]</span>
 
-<span class="kt">InAppMessaging</span><span class="o">.</span><span class="nf">logEvent</span><span class="p">(</span><span class="kt">CustomEvent</span><span class="p">(</span><span class="nv">withName</span><span class="p">:</span> <span class="s">"any_event_name_here"</span><span class="p">,</span> <span class="nv">withCustomAttributes</span><span class="p">:</span> <span class="n">attriList</span><span class="p">))</span>
+<span class="kt">RInAppMessaging</span><span class="o">.</span><span class="nf">logEvent</span><span class="p">(</span><span class="kt">CustomEvent</span><span class="p">(</span><span class="nv">withName</span><span class="p">:</span> <span class="s">"any_event_name_here"</span><span class="p">,</span> <span class="nv">withCustomAttributes</span><span class="p">:</span> <span class="n">attriList</span><span class="p">))</span>
 </code></pre>
 
 <p><strong>Objective-C</strong></p>
 <pre class="highlight swift"><code><span class="c1">// App start event.</span>
-<span class="p">[</span><span class="kt">InAppMessaging</span> <span class="nv">logEvent</span><span class="p">:[[</span><span class="kt">AppStartEvent</span> <span class="n">alloc</span><span class="p">]</span> <span class="kd">init</span><span class="p">]];</span> 
+<span class="p">[</span><span class="kt">RInAppMessaging</span> <span class="nv">logEvent</span><span class="p">:[[</span><span class="kt">AppStartEvent</span> <span class="n">alloc</span><span class="p">]</span> <span class="kd">init</span><span class="p">]];</span> 
 
 <span class="c1">// Login event.</span>
-<span class="p">[</span><span class="kt">InAppMessaging</span> <span class="nv">logEvent</span><span class="p">:[[</span><span class="kt">LoginSuccessfulEvent</span> <span class="n">alloc</span><span class="p">]</span> <span class="kd">init</span><span class="p">]];</span>
+<span class="p">[</span><span class="kt">RInAppMessaging</span> <span class="nv">logEvent</span><span class="p">:[[</span><span class="kt">LoginSuccessfulEvent</span> <span class="n">alloc</span><span class="p">]</span> <span class="kd">init</span><span class="p">]];</span>
 
 <span class="c1">// Custom event.</span>
 <span class="kt">CustomAttribute</span><span class="o">*</span> <span class="n">stringAttribute</span> <span class="o">=</span> <span class="p">[[</span><span class="kt">CustomAttribute</span> <span class="n">alloc</span><span class="p">]</span> <span class="nv">initWithKeyName</span><span class="p">:</span><span class="s">@"userResponse"</span> <span class="nv">withStringValue</span><span class="p">:</span><span class="s">@"hi"</span><span class="p">];</span>
@@ -210,11 +210,11 @@ More information on installing pods: <a href="https://guides.cocoapods.org/using
 
 <span class="kt">NSArray</span><span class="o">*</span> <span class="n">attriList</span> <span class="o">=</span> <span class="err">@</span><span class="p">[</span><span class="n">stringAttribute</span><span class="p">,</span> <span class="n">intAttribute</span><span class="p">,</span> <span class="n">boolAttribute</span><span class="p">,</span> <span class="n">doubleAttribute</span><span class="p">,</span> <span class="n">timeAttribute</span><span class="p">];</span>
 <span class="kt">CustomEvent</span><span class="o">*</span> <span class="n">customEvent</span> <span class="o">=</span> <span class="p">[[</span><span class="kt">CustomEvent</span> <span class="n">alloc</span><span class="p">]</span> <span class="nv">initWithName</span><span class="p">:</span><span class="s">@"any_event_name_here"</span> <span class="nv">withCustomAttributes</span><span class="p">:</span> <span class="n">attriList</span><span class="p">];</span>
-<span class="p">[</span><span class="kt">InAppMessaging</span> <span class="nv">logEvent</span><span class="p">:</span><span class="n">customEvent</span><span class="p">];</span>
+<span class="p">[</span><span class="kt">RInAppMessaging</span> <span class="nv">logEvent</span><span class="p">:</span><span class="n">customEvent</span><span class="p">];</span>
 </code></pre>
 <h3 id='strong-registerpreference-strong' class='heading'><strong>registerPreference()</strong></h3>
 
-<p>A preference is what will allow InAppMessaging to identify users for targeting and segmentation. At the moment, IAM will take in any of the following identifiers:</p>
+<p>A preference is what will allow IAM to identify users for targeting and segmentation. At the moment, IAM will take in any of the following identifiers:</p>
 
 <ol>
 <li>RakutenID</li>
@@ -232,11 +232,11 @@ Not all identifiers have to be provided.</p>
     <span class="nv">setAccessToken</span><span class="p">:</span><span class="s">@"27364827346"</span><span class="p">]</span>
     <span class="n">build</span><span class="p">];</span>
 
-<span class="p">[</span><span class="kt">InAppMessaging</span> <span class="nv">registerPreference</span><span class="p">:</span><span class="n">preference</span><span class="p">];</span>
+<span class="p">[</span><span class="kt">RInAppMessaging</span> <span class="nv">registerPreference</span><span class="p">:</span><span class="n">preference</span><span class="p">];</span>
 </code></pre>
 <h2 id='strong-custom-events-strong' class='heading'><strong>Custom Events</strong></h2>
 
-<p>As shown in the example above for event logging, InAppMessaging also supports custom event. Custom events are events with an unique name and a list of attributes associated with them.</p>
+<p>As shown in the example above for event logging, IAM also supports custom event. Custom events are events with an unique name and a list of attributes associated with them.</p>
 
 <p>In order to properly utilize custom events, the person creating the campaign must sync up with the host app developers to ensure that both the event name and attribute name/value exactly match exactly - note that these are case-sensitive.</p>
 
@@ -253,11 +253,35 @@ Not all identifiers have to be provided.</p>
 <p><em>Note:</em> When comparing date as timeInMillis values, there will be a tolerance of 1000 milliseconds. This means that comparisons using any relevant operator types will have a leniency of 1 second e.g. comparing 300ms and 600ms with the <code>EQUALS</code> operator will return <code>true</code> and comparing 300 and 1400 will return <code>false</code>.</p>
 
 <p>From the SDK side, host app developers will be able to log custom events as shown in the examples above. When the event matching process happens, note that the attributes of the event logged by the host app will be compared against the campaign&rsquo;s trigger attribute value e.g. if the trigger attribute value is an integer of 5 with an operator type of <code>GREATER_THAN</code>, and the attribute value of the event logged is an integer 10, then the 10 will be successfully matched against the 5 with a <code>GREATER_THAN</code> operator (i.e. 10 &gt; 5).</p>
+<h2 id='strong-optional-features-strong' class='heading'><strong>Optional features</strong></h2>
+<h3 id='strong-bool-accessibilitycompatibledisplay-strong' class='heading'><strong>(BOOL)accessibilityCompatibleDisplay</strong></h3>
+
+<p>This flag can be used to support UI test automation tools like Appium. When set to <code>true</code>, the SDK will use a different display method which changes campaign messages&rsquo; view hierarchy. This can solve issues with accessibility tools having problems detecting visible items.
+ <strong>Note</strong>: There is a possibility that changing this flag will cause campaigns to display incorrectly.</p>
+
+<p><strong>Swift</strong></p>
+<pre class="highlight swift"><code><span class="kd">import</span> <span class="kt">RInAppMessaging</span>
+
+<span class="kd">func</span> <span class="nf">application</span><span class="p">(</span><span class="n">_</span> <span class="nv">application</span><span class="p">:</span> <span class="kt">UIApplication</span><span class="p">,</span> <span class="n">didFinishLaunchingWithOptions</span> <span class="nv">launchOptions</span><span class="p">:</span> <span class="p">[</span><span class="kt">UIApplicationLaunchOptionsKey</span><span class="p">:</span> <span class="kt">Any</span><span class="p">]?)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span> <span class="p">{</span>
+    <span class="kt">RInAppMessaging</span><span class="o">.</span><span class="n">accessibilityCompatibleDisplay</span> <span class="o">=</span> <span class="kc">true</span>
+    <span class="k">return</span> <span class="kc">true</span>
+<span class="p">}</span>
+</code></pre>
+
+<p><strong>Objective-C</strong></p>
+<pre class="highlight swift"><code><span class="kd">@import</span> <span class="kt">RInAppMessaging</span><span class="p">;</span>
+
+<span class="o">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nv">application</span><span class="p">:(</span><span class="kt">UIApplication</span> <span class="o">*</span><span class="p">)</span><span class="n">application</span> <span class="nv">didFinishLaunchingWithOptions</span><span class="p">:(</span><span class="kt">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="n">launchOptions</span>
+<span class="p">{</span>
+    <span class="kt">RInAppMessaging</span><span class="o">.</span><span class="n">accessibilityCompatibleDisplay</span> <span class="o">=</span> <span class="kt">YES</span><span class="p">;</span>
+    <span class="k">return</span> <span class="kt">YES</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre>
 
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2020 <a class="link" href="https://github.com/rakutentech/ios-inappmessaging" target="_blank" rel="external">Rakuten</a>. All rights reserved. (Last updated: 2020-05-11)</p>
+          <p>&copy; 2020 <a class="link" href="https://github.com/rakutentech/ios-inappmessaging" target="_blank" rel="external">Rakuten</a>. All rights reserved. (Last updated: 2020-05-12)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.3</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>
