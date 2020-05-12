@@ -17,7 +17,7 @@
 
     private override init() { super.init() }
 
-    /// If set to `true`, displayed campaigns will have different hierarchy
+    /// If set to `true`, displayed campaigns will have different view hierarchy
     /// allowing accessibility tools to see visible UI elements.
     /// If you use Appium for UI tests automation - set this property to true.
     /// Default value is `false`

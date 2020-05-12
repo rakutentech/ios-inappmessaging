@@ -4,17 +4,17 @@
 
 # RInAppMessaging
 
-InAppMessaging allows app developers to easily configure and display notifications within their app.
+In-App Messaging (IAM) module allows app developers to easily configure and display notifications within their app.
 
 # **How to install**
 
-InAppMessaging SDK is distributed as a Cocoapod.  
+RInAppMessaging SDK is distributed as a Cocoapod.  
 More information on installing pods: [https://guides.cocoapods.org/using/getting-started.html](https://guides.cocoapods.org/using/getting-started.html)
 
 1) Include the following in your application's Podfile
 
 ```ruby
-pod 'InAppMessaging' :git => 'https://github.com/rakutentech/ios-inappmessaging.git'
+pod 'RInAppMessaging' :git => 'https://github.com/rakutentech/ios-inappmessaging.git'
 ```
 
 2) Run the following in the terminal
@@ -31,7 +31,7 @@ pod install
 
 | Key     | Value     |
 | :---:   | :---:     |
-| `InAppMessagingSubscriptionID` | your_subscription_key |
+| `InAppMessagingAppSubscriptionID` | your_subscription_key |
 | `InAppMessagingConfigurationURL` | Endpoint for fetching the configuration |
 
 
@@ -49,10 +49,10 @@ This method is called to initialize the SDK and should be placed in your AppDele
 **Swift**
 
 ```swift
-import InAppMessaging
+import RInAppMessaging
 
 func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-    InAppMessaging.configure()
+    RInAppMessaging.configure()
     return true
 }
 ```
@@ -60,11 +60,11 @@ func application(_ application: UIApplication, didFinishLaunchingWithOptions lau
 **Objective-C**
 
 ```swift
-@import InAppMessaging;
+@import RInAppMessaging;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    [InAppMessaging configure];
+    [RInAppMessaging configure];
     return YES;
 }
 ```
@@ -78,7 +78,7 @@ This method is provided for the host application to log and save events. These e
 func logEvent(_ event: Event)
 ```
 
-InAppMessaging provides three pre-defined event types and a custom event type:
+IAM provides three pre-defined event types and a custom event type:
 
 1.  `AppStartEvent` - This event should be logged when the application is considered started by the host app. E.G AppDelegate's didFinishLaunchingWithOptions.
 2.  `LoginSuccessfulEvent` - This event should be logged whenever the user logs in successfully.
@@ -89,7 +89,7 @@ InAppMessaging provides three pre-defined event types and a custom event type:
 
 ```swift
 // App start event.
-InAppMessaging.logEvent(AppStartEvent())
+RInAppMessaging.logEvent(AppStartEvent())
  
 // Purchase successful event.
 let purchaseEvent = PurchaseSuccessfulEvent()
@@ -97,10 +97,10 @@ purchaseEvent.setPurchaseAmount(50)
 purchaseEvent.setItemList(["box", "hammer"])
 purchaseEvent.setCurrencyCode("USD")
 
-InAppMessaging.logEvent(purchaseEvent)
+RInAppMessaging.logEvent(purchaseEvent)
  
 // Login event.
-InAppMessaging.logEvent(LoginSuccessfulEvent())
+RInAppMessaging.logEvent(LoginSuccessfulEvent())
  
 // Custom event.
 let stringAttribute = CustomAttribute(withKeyName: "userResponse", withStringValue: "hi")
@@ -111,17 +111,17 @@ let timeAttribute = CustomAttribute(withKeyName: "timeOfCompletion", withTimeInM
  
 let attriList = [stringAttribute, intAttribute, boolAttribute, doubleAttribute, timeAttribute]
  
-InAppMessaging.logEvent(CustomEvent(withName: "any_event_name_here", withCustomAttributes: attriList))
+RInAppMessaging.logEvent(CustomEvent(withName: "any_event_name_here", withCustomAttributes: attriList))
 ```
 
 **Objective-C**
 
 ```swift
 // App start event.
-[InAppMessaging logEvent:[[AppStartEvent alloc] init]]; 
+[RInAppMessaging logEvent:[[AppStartEvent alloc] init]]; 
  
 // Login event.
-[InAppMessaging logEvent:[[LoginSuccessfulEvent alloc] init]];
+[RInAppMessaging logEvent:[[LoginSuccessfulEvent alloc] init]];
  
 // Custom event.
 CustomAttribute* stringAttribute = [[CustomAttribute alloc] initWithKeyName:@"userResponse" withStringValue:@"hi"];
@@ -132,12 +132,12 @@ CustomAttribute* timeAttribute = [[CustomAttribute alloc] initWithKeyName:@"time
  
 NSArray* attriList = @[stringAttribute, intAttribute, boolAttribute, doubleAttribute, timeAttribute];
 CustomEvent* customEvent = [[CustomEvent alloc] initWithName:@"any_event_name_here" withCustomAttributes: attriList];
-[InAppMessaging logEvent:customEvent];
+[RInAppMessaging logEvent:customEvent];
 ```
 
 ### **registerPreference()**
 
-A preference is what will allow InAppMessaging to identify users for targeting and segmentation. At the moment, IAM will take in any of the following identifiers:
+A preference is what will allow IAM to identify users for targeting and segmentation. At the moment, IAM will take in any of the following identifiers:
 
 1.  RakutenID
 2.  UserID - The ID when registering a Rakuten account. e.g. an email address
@@ -155,12 +155,12 @@ IAMPreference* preference = [[[[[[IAMPreferenceBuilder alloc] init]
     setAccessToken:@"27364827346"]
     build];
 
-[InAppMessaging registerPreference:preference];
+[RInAppMessaging registerPreference:preference];
 ```
 
 ## **Custom Events**
 
-As shown in the example above for event logging, InAppMessaging also supports custom event. Custom events are events with an unique name and a list of attributes associated with them.
+As shown in the example above for event logging, IAM also supports custom event. Custom events are events with an unique name and a list of attributes associated with them.
 
 In order to properly utilize custom events, the person creating the campaign must sync up with the host app developers to ensure that both the event name and attribute name/value exactly match exactly - note that these are case-sensitive.
 
@@ -177,3 +177,34 @@ From the dashboard side, you will have the ability to also add an operator. The 
 *Note:* When comparing date as timeInMillis values, there will be a tolerance of 1000 milliseconds. This means that comparisons using any relevant operator types will have a leniency of 1 second e.g. comparing 300ms and 600ms with the `EQUALS` operator will return `true` and comparing 300 and 1400 will return `false`.
 
 From the SDK side, host app developers will be able to log custom events as shown in the examples above. When the event matching process happens, note that the attributes of the event logged by the host app will be compared against the campaign's trigger attribute value e.g. if the trigger attribute value is an integer of 5 with an operator type of `GREATER_THAN`, and the attribute value of the event logged is an integer 10, then the 10 will be successfully matched against the 5 with a `GREATER_THAN` operator (i.e. 10 > 5).
+
+
+## **Optional features**
+
+### **(BOOL)accessibilityCompatibleDisplay**  
+
+This flag can be used to support UI test automation tools like Appium. When set to `true`, the SDK will use a different display method which changes campaign messages' view hierarchy. This can solve issues with accessibility tools having problems detecting visible items.
+ __Note__: There is a possibility that changing this flag will cause campaigns to display incorrectly.
+
+**Swift**
+
+```swift
+import RInAppMessaging
+
+func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+    RInAppMessaging.accessibilityCompatibleDisplay = true
+    return true
+}
+```
+
+**Objective-C**
+
+```swift
+@import RInAppMessaging;
+
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+{
+    RInAppMessaging.accessibilityCompatibleDisplay = YES;
+    return YES;
+}
+```
