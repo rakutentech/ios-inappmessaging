@@ -20,7 +20,7 @@ class DisplayPermissionServiceTests: QuickSpec {
         var campaignRepository: CampaignRepositoryMock!
         var httpSession: URLSessionMock!
 
-        describe("DisplayPremissionService") {
+        describe("DisplayPermissionService") {
 
             beforeEach {
                 URLSessionMock.startMockingURLSession()
@@ -149,7 +149,7 @@ class DisplayPermissionServiceTests: QuickSpec {
                     expect(request?.platform).to(equal(.ios))
                     expect(request?.appVersion).to(equal(BundleInfoMock.appVersion))
                     expect(request?.sdkVersion).to(equal(BundleInfoMock.inAppSdkVersion))
-                    expect(request?.locale).to(equal(Locale.current.identifier))
+                    expect(request?.locale).to(equal(Locale.current.normalizedIdentifier))
                     expect(request?.lastPingInMilliseconds).to(equal(111))
                 }
 

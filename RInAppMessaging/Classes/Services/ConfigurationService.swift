@@ -61,7 +61,7 @@ extension ConfigurationService {
         }
 
         let getConfigRequest = GetConfigRequest(
-            locale: Locale.current.identifier,
+            locale: Locale.current.normalizedIdentifier,
             appVersion: appVersion,
             platform: .ios,
             appId: appId,

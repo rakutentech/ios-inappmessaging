@@ -33,6 +33,7 @@
 		459B228224528A7D00D218CE /* DisplayPermissionServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459B228124528A7D00D218CE /* DisplayPermissionServiceTests.swift */; };
 		459DE86A24074F720002F451 /* EventMatcherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459DE86924074F720002F451 /* EventMatcherTests.swift */; };
 		459DE86C2407B5750002F451 /* CustomEventTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459DE86B2407B5750002F451 /* CustomEventTests.swift */; };
+		45AFB308246CFB640080D21B /* LocaleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AFB307246CFB640080D21B /* LocaleTests.swift */; };
 		45BDFD032421D311004DEA0C /* CampaignsListManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45BDFD022421D311004DEA0C /* CampaignsListManagerTests.swift */; };
 		45BDFD052421EE7B004DEA0C /* SharedMocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45BDFD042421EE7B004DEA0C /* SharedMocks.swift */; };
 		45BDFD0724232714004DEA0C /* PublicAPITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45BDFD0624232714004DEA0C /* PublicAPITests.swift */; };
@@ -90,6 +91,7 @@
 		459B228124528A7D00D218CE /* DisplayPermissionServiceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisplayPermissionServiceTests.swift; sourceTree = "<group>"; };
 		459DE86924074F720002F451 /* EventMatcherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventMatcherTests.swift; sourceTree = "<group>"; };
 		459DE86B2407B5750002F451 /* CustomEventTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomEventTests.swift; sourceTree = "<group>"; };
+		45AFB307246CFB640080D21B /* LocaleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocaleTests.swift; sourceTree = "<group>"; };
 		45BDFD022421D311004DEA0C /* CampaignsListManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CampaignsListManagerTests.swift; sourceTree = "<group>"; };
 		45BDFD042421EE7B004DEA0C /* SharedMocks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedMocks.swift; sourceTree = "<group>"; };
 		45BDFD0624232714004DEA0C /* PublicAPITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicAPITests.swift; sourceTree = "<group>"; };
@@ -225,6 +227,7 @@
 				459B227F24528A6900D218CE /* ImpressionServiceTests.swift */,
 				459B228124528A7D00D218CE /* DisplayPermissionServiceTests.swift */,
 				45357AF6245AD49E007D8FDC /* HttpRequestableTests.swift */,
+				45AFB307246CFB640080D21B /* LocaleTests.swift */,
 				607FACE91AFB9204008FA782 /* Supporting Files */,
 			);
 			path = Tests;
@@ -414,6 +417,7 @@
 				456FE1ED2429C4D200304872 /* ViewTests.swift in Sources */,
 				4534947223C6ABF700189A81 /* SerializationTests.swift in Sources */,
 				D911DC5821115B410082B950 /* IdRegistrationTests.swift in Sources */,
+				45AFB308246CFB640080D21B /* LocaleTests.swift in Sources */,
 				4516601D23CD740300310181 /* MainContainerTests.swift in Sources */,
 				459B228224528A7D00D218CE /* DisplayPermissionServiceTests.swift in Sources */,
 				45BDFD0724232714004DEA0C /* PublicAPITests.swift in Sources */,

@@ -179,7 +179,7 @@ class ConfigurationServiceTests: QuickSpec {
                     let request = httpSession.decodeSentData(modelType: GetConfigRequest.self)
 
                     expect(request).toNot(beNil())
-                    expect(request?.locale).to(equal(Locale.current.identifier))
+                    expect(request?.locale).to(equal(Locale.current.normalizedIdentifier))
                     expect(request?.appVersion).to(equal(BundleInfoMock.appVersion))
                     expect(request?.platform).to(equal(.ios))
                     expect(request?.appId).to(equal(BundleInfoMock.applicationId))

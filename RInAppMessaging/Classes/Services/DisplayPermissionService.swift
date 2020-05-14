@@ -70,7 +70,7 @@ extension DisplayPermissionService {
                                                          platform: .ios,
                                                          appVersion: appVersion,
                                                          sdkVersion: sdkVersion,
-                                                         locale: Locale.current.identifier,
+                                                         locale: Locale.current.normalizedIdentifier,
                                                          lastPingInMilliseconds: campaignRepository.lastSyncInMilliseconds ?? 0)
         do {
             let body = try JSONEncoder().encode(permissionRequest)
