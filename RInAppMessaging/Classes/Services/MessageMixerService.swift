@@ -13,7 +13,6 @@ internal class MessageMixerService: MessageMixerServiceType, HttpRequestable {
     private let preferenceRepository: IAMPreferenceRepository
     private let configurationRepository: ConfigurationRepositoryType
 
-    weak var errorDelegate: ErrorDelegate?
     private(set) var httpSession: URLSession
     var bundleInfo = BundleInfo.self
 

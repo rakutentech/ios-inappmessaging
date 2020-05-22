@@ -1,0 +1,9 @@
+{
+    "data": {
+        "enabled": true,
+        "endpoints": {
+            "ping": "https://endpoint.com/ping",
+            "impression": null
+        }
+    }
+}

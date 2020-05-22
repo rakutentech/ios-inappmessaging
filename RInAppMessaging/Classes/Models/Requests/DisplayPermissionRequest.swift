@@ -1,4 +1,4 @@
-internal struct DisplayPermissionRequest: Encodable {
+internal struct DisplayPermissionRequest: Codable {
     private enum CodingKeys: String, CodingKey {
         case subscriptionId
         case campaignId

@@ -1,0 +1,10 @@
+{
+    "data": {
+        "enabled": true,
+        "endpoints": {
+            "ping": "https://endpoint.com/ping",
+            "impression": "https://endpoint.com/impression",
+            "displayPermission": "https://endpoint.com/display_permission"
+        }
+    }
+}

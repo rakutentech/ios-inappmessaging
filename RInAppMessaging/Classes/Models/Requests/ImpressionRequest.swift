@@ -1,4 +1,4 @@
-internal struct ImpressionRequest: Encodable {
+internal struct ImpressionRequest: Codable {
     let campaignId: String
     let isTest: Bool
     let appVersion: String

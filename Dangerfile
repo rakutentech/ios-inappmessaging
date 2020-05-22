@@ -7,6 +7,6 @@ xcov.report(
   output_directory: 'artifacts/unit-tests/coverage',
   json_report: true,
   include_targets: 'RInAppMessaging.framework',
-  include_test_targets: false
-# FIXME: add `minimum_coverage_percentage: 70.0` once SDKCF-1880 is merged
+  include_test_targets: false,
+  minimum_coverage_percentage: 70.0
 )

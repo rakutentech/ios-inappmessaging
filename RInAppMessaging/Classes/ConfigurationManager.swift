@@ -30,8 +30,8 @@ internal class ConfigurationManager: ConfigurationManagerType, ReachabilityObser
     }
 
     func fetchAndSaveConfigData(completion: @escaping (ConfigData) -> Void) {
-        let retryHandler = { [unowned self] in
-            self.fetchAndSaveConfigData(completion: completion)
+        let retryHandler: () -> Void = { [weak self] in
+            self?.fetchAndSaveConfigData(completion: completion)
         }
 
         if let reachability = reachability, !reachability.connection.isAvailable {

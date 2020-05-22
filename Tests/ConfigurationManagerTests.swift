@@ -9,13 +9,13 @@ class ConfigurationManagerTests: QuickSpec {
 
             var reachability: ReachabilityMock!
             var configurationService: ConfigurationServiceMock!
-            var configurationRepository: ConfigurationRepositoryMock!
+            var configurationRepository: ConfigurationRepository!
             var configurationManager: ConfigurationManager!
 
             beforeEach {
                 reachability = ReachabilityMock()
                 configurationService = ConfigurationServiceMock()
-                configurationRepository = ConfigurationRepositoryMock()
+                configurationRepository = ConfigurationRepository()
                 configurationManager = ConfigurationManager(reachability: reachability,
                                                             configurationService: configurationService,
                                                             configurationRepository: configurationRepository)
@@ -68,9 +68,9 @@ class ConfigurationManagerTests: QuickSpec {
                 }
 
                 it("should save fetched configuration in the repository object") {
-                    expect(configurationRepository.configuration).to(beNil())
+                    expect(configurationRepository.getIsEnabledStatus()).to(beNil())
                     configurationManager.fetchAndSaveConfigData(completion: { _ in })
-                    expect(configurationRepository.configuration).toNot(beNil())
+                    expect(configurationRepository.getIsEnabledStatus()).to(beTrue())
                 }
 
                 it("should retry after request failure") {

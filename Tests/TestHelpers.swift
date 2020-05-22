@@ -1,3 +1,4 @@
+import XCTest
 @testable import RInAppMessaging
 
 class ValidatorHandler {
@@ -106,7 +107,6 @@ struct TestHelpers {
     }
 
     enum MockResponse {
-
         static func withGeneratedCampaigns(count: Int,
                                            test: Bool,
                                            delay: Int,
@@ -429,6 +429,22 @@ struct TestHelpers {
                                             )])
         }()
     }
+
+    static func getJSONData(fileName: String) -> Data! {
+        guard let bundle = Bundle.testBundle,
+            let jsonURL = bundle.url(forResource: fileName, withExtension: "json") else {
+
+            assertionFailure()
+            return nil
+        }
+
+        do {
+            return try Data(contentsOf: jsonURL)
+        } catch {
+            assertionFailure()
+            return nil
+        }
+    }
 }
 
 extension NSError {
@@ -443,5 +459,22 @@ extension UIColor {
     }
     static var whiteRGB: UIColor {
         return UIColor(red: 1, green: 1, blue: 1, alpha: 1)
+    }
+}
+
+extension Bundle {
+    static var testBundle: Bundle? {
+        return allBundles.first { $0.bundlePath.hasSuffix(".xctest") }
+    }
+}
+
+extension Result {
+    func getError() -> Failure? {
+        switch self {
+        case .failure(let error):
+            return error
+        default:
+            return nil
+        }
     }
 }

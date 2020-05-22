@@ -1,4 +1,4 @@
-internal enum ImpressionType: Int, Encodable {
+internal enum ImpressionType: Int, Codable {
     case invalid = 0
     case impression
     case actionOne
