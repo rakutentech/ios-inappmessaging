@@ -109,7 +109,7 @@ internal struct MatchingUtility {
         case .greaterThan:
             return (eventAttributeValue - triggerAttributeValue) > timeToleranceMilliseconds
         case .lessThan:
-            return (eventAttributeValue - triggerAttributeValue) < timeToleranceMilliseconds
+            return (eventAttributeValue - triggerAttributeValue) < -timeToleranceMilliseconds
         case .invalid,
              .isBlank,
              .isNotBlank,
