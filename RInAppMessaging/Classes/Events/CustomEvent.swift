@@ -46,6 +46,13 @@
         try super.encode(to: encoder)
     }
 
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let object = object as? CustomEvent else {
+            return false
+        }
+        return super.isEqual(object) && object.customAttributes == customAttributes
+    }
+
     /// Create a mapping used to return a dictionary of the customAttributes list.
     /// - Returns: A dictionary of the customAttributes list with attribute name as a key
     override func getAttributeMap() -> [String: CustomAttribute]? {

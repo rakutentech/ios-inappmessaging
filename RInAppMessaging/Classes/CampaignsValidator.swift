@@ -50,7 +50,7 @@ internal struct CampaignsValidator: CampaignsValidatorType {
 
             guard eventMatcher.containsAllMatchedEvents(for: campaign),
                 let triggeredEvents = triggerEvents(triggers: campaignTriggers,
-                                                      loggedEvents: eventMatcher.matchedEvents(for: campaign)) else {
+                                                    loggedEvents: eventMatcher.matchedEvents(for: campaign)) else {
                 continue
             }
 

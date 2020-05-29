@@ -120,6 +120,6 @@ extension Trigger {
     var matchingEventName: String {
         // If event is a custom event, search by the name provided by the host app.
         // If event is a pre-defined event, search by using the enum name.
-        return eventType == .custom ? eventName : eventType.name
+        return eventType == .custom ? eventName.lowercased() : eventType.name
     }
 }
