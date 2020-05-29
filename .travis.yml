@@ -1,7 +1,7 @@
 language: swift
 xcode_workspace: Example/InAppMessaging.xcworkspace
 xcode_scheme: InAppMessaging-Example
-osx_image: xcode11.4
+osx_image: xcode11.5
 
 script:
   - travis_wait bundle exec fastlane ci
@@ -17,15 +17,26 @@ before_install:
 
 after_success:
   - bash <(curl -s https://codecov.io/bash) -J '^RInAppMessaging$' -X gcov
-  - pod lib lint
   # generate docs (no PRs)
   - test $TRAVIS_PULL_REQUEST = "false" && bundle exec jazzy
 
 deploy:
-  provider: pages
-  edge: true
-  github_token: $PUBLISHER_GITHUB_API_TOKEN
-  keep_history: true
-  local_dir: docs
-  on:
-    branch: master
+  # When tagged with version (X.X.X)
+  # Deploy Pod spec
+  - provider: script
+    cleanup: false
+    script:
+      - bundle exec pod spec lint --allow-warnings
+      - bundle exec pod trunk push --allow-warnings --verbose
+    on:
+      tags: true
+      condition: $TRAVIS_TAG =~ ^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$
+  # Deploy Docs to Github Pages
+  - provider: pages
+    edge: true
+    github_token: $PUBLISHER_GITHUB_API_TOKEN
+    keep_history: true
+    local_dir: docs
+    on:
+      tags: true
+      condition: $TRAVIS_TAG =~ ^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$
