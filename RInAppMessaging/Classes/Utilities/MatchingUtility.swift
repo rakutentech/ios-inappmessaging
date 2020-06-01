@@ -2,7 +2,7 @@
 /// matching for the campaign validation process.
 internal struct MatchingUtility {
 
-    private static let timeToleranceMilliseconds = 1000
+    static let timeToleranceMilliseconds = 1000
 
     static func compareValues(triggerAttributeValue: String,
                               eventAttributeValue: String,

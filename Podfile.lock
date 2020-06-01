@@ -1,8 +1,8 @@
 PODS:
-  - Nimble (8.0.5)
+  - Nimble (8.0.7)
   - Quick (2.2.0)
   - RInAppMessaging (0.1.0)
-  - SwiftLint (0.39.1)
+  - SwiftLint (0.39.2)
 
 DEPENDENCIES:
   - Nimble
@@ -11,7 +11,7 @@ DEPENDENCIES:
   - SwiftLint (~> 0.39.0)
 
 SPEC REPOS:
-  https://github.com/CocoaPods/Specs.git:
+  trunk:
     - Nimble
     - Quick
     - SwiftLint
@@ -21,10 +21,10 @@ EXTERNAL SOURCES:
     :path: "."
 
 SPEC CHECKSUMS:
-  Nimble: 4ab1aeb9b45553c75b9687196b0fa0713170a332
+  Nimble: a73af6ecd4c9106f434f3d55fc54570be3739e0b
   Quick: 7fb19e13be07b5dfb3b90d4f9824c855a11af40e
   RInAppMessaging: 5d863f294d222c1f3234270572a548691fd6c602
-  SwiftLint: 55e96a4a4d537d4a3156859fc1c54bd24851a046
+  SwiftLint: 22ccbbe3b8008684be5955693bab135e0ed6a447
 
 PODFILE CHECKSUM: 020d6f19b0862ed6bbc9ea78744ff94638236a6f
 

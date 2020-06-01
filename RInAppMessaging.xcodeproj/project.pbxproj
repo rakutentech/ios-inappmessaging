@@ -33,6 +33,11 @@
 		459B228224528A7D00D218CE /* DisplayPermissionServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459B228124528A7D00D218CE /* DisplayPermissionServiceTests.swift */; };
 		459DE86A24074F720002F451 /* EventMatcherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459DE86924074F720002F451 /* EventMatcherTests.swift */; };
 		459DE86C2407B5750002F451 /* CustomEventTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459DE86B2407B5750002F451 /* CustomEventTests.swift */; };
+		45ADA53E247CFE9E00A9E2A3 /* ConfigurationRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45ADA53D247CFE9E00A9E2A3 /* ConfigurationRepositoryTests.swift */; };
+		45ADA540247D076E00A9E2A3 /* InAppMessagingModuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45ADA53F247D076E00A9E2A3 /* InAppMessagingModuleTests.swift */; };
+		45ADA542247D206B00A9E2A3 /* RouterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45ADA541247D206B00A9E2A3 /* RouterTests.swift */; };
+		45ADA544247DF5BB00A9E2A3 /* ReachabilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45ADA543247DF5BB00A9E2A3 /* ReachabilityTests.swift */; };
+		45AFB2F6245C18660080D21B /* MatchingUtilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AFB2F5245C18660080D21B /* MatchingUtilityTests.swift */; };
 		45AFB308246CFB640080D21B /* LocaleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AFB307246CFB640080D21B /* LocaleTests.swift */; };
 		45BDFD032421D311004DEA0C /* CampaignsListManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45BDFD022421D311004DEA0C /* CampaignsListManagerTests.swift */; };
 		45BDFD052421EE7B004DEA0C /* SharedMocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45BDFD042421EE7B004DEA0C /* SharedMocks.swift */; };
@@ -91,6 +96,11 @@
 		459B228124528A7D00D218CE /* DisplayPermissionServiceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisplayPermissionServiceTests.swift; sourceTree = "<group>"; };
 		459DE86924074F720002F451 /* EventMatcherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventMatcherTests.swift; sourceTree = "<group>"; };
 		459DE86B2407B5750002F451 /* CustomEventTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomEventTests.swift; sourceTree = "<group>"; };
+		45ADA53D247CFE9E00A9E2A3 /* ConfigurationRepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationRepositoryTests.swift; sourceTree = "<group>"; };
+		45ADA53F247D076E00A9E2A3 /* InAppMessagingModuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessagingModuleTests.swift; sourceTree = "<group>"; };
+		45ADA541247D206B00A9E2A3 /* RouterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouterTests.swift; sourceTree = "<group>"; };
+		45ADA543247DF5BB00A9E2A3 /* ReachabilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReachabilityTests.swift; sourceTree = "<group>"; };
+		45AFB2F5245C18660080D21B /* MatchingUtilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchingUtilityTests.swift; sourceTree = "<group>"; };
 		45AFB307246CFB640080D21B /* LocaleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocaleTests.swift; sourceTree = "<group>"; };
 		45BDFD022421D311004DEA0C /* CampaignsListManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CampaignsListManagerTests.swift; sourceTree = "<group>"; };
 		45BDFD042421EE7B004DEA0C /* SharedMocks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedMocks.swift; sourceTree = "<group>"; };
@@ -206,28 +216,33 @@
 				456FE1E824288C6500304872 /* CampaignTriggerAgentTests.swift */,
 				456FE1EA2428C51E00304872 /* CommonUtilityTests.swift */,
 				45DA01AC23D5831900A27CC6 /* ConfigurationManagerTests.swift */,
+				45ADA53D247CFE9E00A9E2A3 /* ConfigurationRepositoryTests.swift */,
+				459B227B245289F300D218CE /* ConfigurationServiceTests.swift */,
 				D9F418282110FD9F00E2158F /* ConfigurationTests.swift */,
 				459DE86B2407B5750002F451 /* CustomEventTests.swift */,
 				4516601123CD411300310181 /* DependencyManagerTests.swift */,
+				459B228124528A7D00D218CE /* DisplayPermissionServiceTests.swift */,
 				456FE1E62428513200304872 /* ErrorReportableTests.swift */,
 				459DE86924074F720002F451 /* EventMatcherTests.swift */,
+				45357AF6245AD49E007D8FDC /* HttpRequestableTests.swift */,
 				D911DC56211159DE0082B950 /* IdRegistrationTests.swift */,
+				459B227F24528A6900D218CE /* ImpressionServiceTests.swift */,
+				45ADA53F247D076E00A9E2A3 /* InAppMessagingModuleTests.swift */,
+				45AFB307246CFB640080D21B /* LocaleTests.swift */,
 				45563B0824064D98004EAFD3 /* LockableTests.swift */,
 				4516601C23CD740300310181 /* MainContainerTests.swift */,
+				45AFB2F5245C18660080D21B /* MatchingUtilityTests.swift */,
+				459B227D24528A5000D218CE /* MessageMixerServiceTests.swift */,
 				45BDFD0624232714004DEA0C /* PublicAPITests.swift */,
+				45ADA543247DF5BB00A9E2A3 /* ReachabilityTests.swift */,
 				45563B02240614AE004EAFD3 /* ReadyCampaignDispatcherTests.swift */,
+				45ADA541247D206B00A9E2A3 /* RouterTests.swift */,
 				4534947123C6ABF700189A81 /* SerializationTests.swift */,
 				45BDFD042421EE7B004DEA0C /* SharedMocks.swift */,
 				D92D1F242224A265008EA748 /* TestHelpers.swift */,
 				45BDFD08242362C3004DEA0C /* UIColorExtensionsTests.swift */,
 				45D4DA4E240F5597009B9B37 /* ViewPresenterTests.swift */,
 				456FE1EC2429C4D200304872 /* ViewTests.swift */,
-				459B227B245289F300D218CE /* ConfigurationServiceTests.swift */,
-				459B227D24528A5000D218CE /* MessageMixerServiceTests.swift */,
-				459B227F24528A6900D218CE /* ImpressionServiceTests.swift */,
-				459B228124528A7D00D218CE /* DisplayPermissionServiceTests.swift */,
-				45357AF6245AD49E007D8FDC /* HttpRequestableTests.swift */,
-				45AFB307246CFB640080D21B /* LocaleTests.swift */,
 				607FACE91AFB9204008FA782 /* Supporting Files */,
 			);
 			path = Tests;
@@ -398,6 +413,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				45ADA542247D206B00A9E2A3 /* RouterTests.swift in Sources */,
 				456FE1E72428513200304872 /* ErrorReportableTests.swift in Sources */,
 				45BDFD052421EE7B004DEA0C /* SharedMocks.swift in Sources */,
 				459B228024528A6900D218CE /* ImpressionServiceTests.swift in Sources */,
@@ -405,6 +421,8 @@
 				45563B03240614AE004EAFD3 /* ReadyCampaignDispatcherTests.swift in Sources */,
 				456FE1E924288C6500304872 /* CampaignTriggerAgentTests.swift in Sources */,
 				45D4DA4F240F5597009B9B37 /* ViewPresenterTests.swift in Sources */,
+				45AFB2F6245C18660080D21B /* MatchingUtilityTests.swift in Sources */,
+				45ADA540247D076E00A9E2A3 /* InAppMessagingModuleTests.swift in Sources */,
 				D92D1F262224A269008EA748 /* TestHelpers.swift in Sources */,
 				45BDFD09242362C3004DEA0C /* UIColorExtensionsTests.swift in Sources */,
 				D92D1F2322249853008EA748 /* CampaignsValidatorTests.swift in Sources */,
@@ -420,11 +438,13 @@
 				45AFB308246CFB640080D21B /* LocaleTests.swift in Sources */,
 				4516601D23CD740300310181 /* MainContainerTests.swift in Sources */,
 				459B228224528A7D00D218CE /* DisplayPermissionServiceTests.swift in Sources */,
+				45ADA544247DF5BB00A9E2A3 /* ReachabilityTests.swift in Sources */,
 				45BDFD0724232714004DEA0C /* PublicAPITests.swift in Sources */,
 				459DE86C2407B5750002F451 /* CustomEventTests.swift in Sources */,
 				4516601223CD411300310181 /* DependencyManagerTests.swift in Sources */,
 				45563B0724064D78004EAFD3 /* CampaignRepositoryTests.swift in Sources */,
 				456FE1EB2428C51E00304872 /* CommonUtilityTests.swift in Sources */,
+				45ADA53E247CFE9E00A9E2A3 /* ConfigurationRepositoryTests.swift in Sources */,
 				459B227E24528A5100D218CE /* MessageMixerServiceTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

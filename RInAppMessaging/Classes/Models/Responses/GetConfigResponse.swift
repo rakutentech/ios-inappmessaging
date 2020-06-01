@@ -7,7 +7,7 @@ internal struct ConfigData: Decodable {
     let endpoints: EndpointURL
 }
 
-internal struct EndpointURL: Decodable {
+internal struct EndpointURL: Decodable, Equatable {
     let ping: URL
     let displayPermission: URL?
     let impression: URL?

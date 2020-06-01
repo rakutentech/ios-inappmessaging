@@ -66,13 +66,14 @@ struct TestHelpers {
     }
 
     static func generateCampaign(id: String,
+                                 type: CampaignDisplayType = .modal,
                                  content: Content? = nil,
                                  buttons: [Button]? = nil) -> Campaign {
         return Campaign(
             data: CampaignData(
                 campaignId: id,
                 maxImpressions: 1,
-                type: .modal,
+                type: type,
                 triggers: nil,
                 isTest: false,
                 messagePayload: MessagePayload(

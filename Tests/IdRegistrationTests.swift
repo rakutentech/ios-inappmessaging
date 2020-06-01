@@ -10,7 +10,7 @@ class IdRegistrationTests: QuickSpec {
         func stubContainer() -> DependencyManager.Container {
             return DependencyManager.Container([
                 DependencyManager.ContainerElement(type: ConfigurationManagerType.self, factory: {
-                    return ConfigurationManagerStub()
+                    return ConfigurationManagerMock()
                 }),
                 DependencyManager.ContainerElement(type: MessageMixerServiceType.self, factory: {
                     return MessageMixerServiceMock()
@@ -29,7 +29,7 @@ class IdRegistrationTests: QuickSpec {
         }
 
         beforeEach {
-            RInAppMessaging.initializedModule = nil
+            RInAppMessaging.deinitializeModule()
             RInAppMessaging.configure(dependencyManager: dependencyManager)
         }
 
@@ -67,16 +67,5 @@ class IdRegistrationTests: QuickSpec {
                 expect(preferenceRepository.getUserIdentifiers()).toEventually(equal(expected))
             }
         }
-    }
-}
-
-private class ConfigurationManagerStub: ConfigurationManagerType {
-    weak var errorDelegate: ErrorDelegate?
-    func fetchAndSaveConfigData(completion: @escaping (ConfigData) -> Void) {
-        let emptyURL = URL(string: "about:blank")!
-        let emptyEndpoints = EndpointURL(ping: emptyURL,
-                                         displayPermission: emptyURL,
-                                         impression: emptyURL)
-        completion(ConfigData(enabled: true, endpoints: emptyEndpoints))
     }
 }

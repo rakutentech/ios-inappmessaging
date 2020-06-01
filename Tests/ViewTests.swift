@@ -198,7 +198,6 @@ private class FullViewPresenterMock: FullViewPresenterType {
     private(set) var wasViewDidInitializeCalled = false
 
     func loadButtons() { }
-    func loadResources() { }
     func didClickAction(sender: ActionButton) {}
     func didClickExitButton() { }
     func viewDidInitialize() {
@@ -206,6 +205,7 @@ private class FullViewPresenterMock: FullViewPresenterType {
     }
     func handleButtonTrigger(_ trigger: Trigger?) { }
     func optOutCampaign() { }
+    func loadResources() { }
 }
 
 private class SlideUpViewPresenterMock: SlideUpViewPresenterType {
@@ -217,13 +217,14 @@ private class SlideUpViewPresenterMock: SlideUpViewPresenterType {
 
     private(set) var wasViewDidInitializeCalled = false
 
-    func didClickContent() {}
-    func didClickExitButton() {}
+    func didClickContent() { }
+    func didClickExitButton() { }
     func viewDidInitialize() {
         wasViewDidInitializeCalled = true
     }
-    func handleButtonTrigger(_ trigger: Trigger?) {}
-    func optOutCampaign() {}
+    func handleButtonTrigger(_ trigger: Trigger?) { }
+    func optOutCampaign() { }
+    func loadResources() { }
 }
 
 extension FullViewModel {

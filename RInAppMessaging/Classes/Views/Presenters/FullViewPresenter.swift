@@ -4,7 +4,6 @@ internal protocol FullViewPresenterType: BaseViewPresenterType {
     func loadButtons()
     func didClickAction(sender: ActionButton)
     func didClickExitButton()
-    func loadResources()
 }
 
 internal class FullViewPresenter: BaseViewPresenter, FullViewPresenterType {
@@ -26,10 +25,6 @@ internal class FullViewPresenter: BaseViewPresenter, FullViewPresenterType {
                                       showButtons: messagePayload.messageSettings.controlSettings?.buttons?.isEmpty == false)
 
         view?.setup(viewModel: viewModel)
-    }
-
-    func loadResources() {
-        _ = associatedImage
     }
 
     func loadButtons() {

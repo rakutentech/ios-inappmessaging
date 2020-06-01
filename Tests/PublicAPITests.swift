@@ -28,10 +28,8 @@ class PublicAPITests: QuickSpec {
             ])
         }
 
-        beforeEach {
-            RInAppMessaging.initializedModule = nil
-            eventMatcher = EventMatcherMock()
-            messageMixerService = MessageMixerServiceMock()
+        func reinitializeSDK() {
+            RInAppMessaging.deinitializeModule()
             let dependencyManager = DependencyManager()
             dependencyManager.appendContainer(MainContainerFactory.create(dependencyManager: dependencyManager))
             dependencyManager.appendContainer(mockContainer())
@@ -39,6 +37,12 @@ class PublicAPITests: QuickSpec {
             router = dependencyManager.resolve(type: RouterType.self)!
             campaignsListManager = dependencyManager.resolve(type: CampaignsListManagerType.self)!
             RInAppMessaging.configure(dependencyManager: dependencyManager)
+        }
+
+        beforeEach {
+            eventMatcher = EventMatcherMock()
+            messageMixerService = MessageMixerServiceMock()
+            reinitializeSDK()
         }
 
         describe("RInAppMessaging") {
@@ -91,6 +95,16 @@ class PublicAPITests: QuickSpec {
                 expect(router.accessibilityCompatibleDisplay).to(beTrue())
                 RInAppMessaging.accessibilityCompatibleDisplay = false
                 expect(router.accessibilityCompatibleDisplay).to(beFalse())
+            }
+
+            it("won't send any events until configuration has finished") {
+                messageMixerService.delay = 3.0
+                reinitializeSDK()
+                RInAppMessaging.logEvent(LoginSuccessfulEvent())
+                expect(eventMatcher.loggedEvents.isEmpty).toEventuallyNot(beFalse(), timeout: 1)
+                expect(eventMatcher.loggedEvents).toEventually(haveCount(1),
+                                                               timeout: messageMixerService.delay + 1,
+                                                               pollInterval: 0.5)
             }
         }
     }

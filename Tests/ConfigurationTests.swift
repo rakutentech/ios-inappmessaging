@@ -27,7 +27,7 @@ class ConfigurationTests: QuickSpec {
                 mockMessageMixer = MessageMixerServiceMock()
                 dependencyManager = DependencyManager()
                 configurationManager = ConfigurationManagerMock()
-                RInAppMessaging.initializedModule = nil
+                RInAppMessaging.deinitializeModule()
                 dependencyManager.appendContainer(MainContainerFactory.create(dependencyManager: dependencyManager))
                 dependencyManager.appendContainer(mockContainer())
             }

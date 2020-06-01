@@ -2,9 +2,13 @@
 
 class CampaignsValidatorMock: CampaignsValidatorType {
     private(set) var wasValidateCalled = false
+    var campaignsToTrigger = [Campaign]()
 
     func validate(validatedCampaignHandler: (Campaign, Set<Event>) -> Void) {
         wasValidateCalled = true
+        campaignsToTrigger.forEach {
+            validatedCampaignHandler($0, [])
+        }
     }
 }
 
@@ -74,9 +78,17 @@ class MessageMixerServiceMock: MessageMixerServiceType {
     var wasPingCalled = false
     var mockedResponse: PingResponse?
     var mockedError = MessageMixerServiceError.invalidConfiguration
+    var delay: TimeInterval = 0
 
     func ping() -> Result<PingResponse, MessageMixerServiceError> {
         self.wasPingCalled = true
+        if delay > 0 {
+            guard Thread.current != .main else {
+                fatalError("Delay function shoudn't be used on the main thread")
+            }
+            usleep(UInt32(round(delay * pow(10, 6))))
+        }
+
         if let mockedResponse = mockedResponse {
             return .success(mockedResponse)
         }
@@ -131,7 +143,11 @@ class ConfigurationServiceMock: ConfigurationServiceType {
 }
 
 class CampaignTriggerAgentMock: CampaignTriggerAgentType {
-    func trigger(campaign: Campaign, triggeredEvents: Set<Event>) { }
+    private(set) var triggeredCampaigns = [Campaign]()
+
+    func trigger(campaign: Campaign, triggeredEvents: Set<Event>) {
+        triggeredCampaigns.append(campaign)
+    }
 }
 
 class ImpressionServiceMock: ImpressionServiceType {
@@ -246,6 +262,15 @@ class BundleInfoMock: BundleInfo {
 
     class override var inAppSubscriptionId: String! {
         return "sub-id"
+    }
+}
+
+class CampaignsListManagerMock: CampaignsListManagerType {
+    weak var errorDelegate: ErrorDelegate?
+    private(set) var wasRefreshListCalled = false
+
+    func refreshList() {
+        wasRefreshListCalled = true
     }
 }
 

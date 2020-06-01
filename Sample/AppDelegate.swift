@@ -4,10 +4,18 @@ import RInAppMessaging
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
+    static var isTestEnvironment: Bool {
+        return NSClassFromString("XCTest") != nil
+    }
+
     var window: UIWindow?
 
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        RInAppMessaging.configure()
+    func application(_ application: UIApplication,
+                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+
+        if !AppDelegate.isTestEnvironment {
+            RInAppMessaging.configure()
+        }
 
         return true
     }

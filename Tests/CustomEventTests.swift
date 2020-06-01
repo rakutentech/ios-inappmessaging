@@ -23,7 +23,7 @@ class CustomEventsTest: QuickSpec {
             validatorHandler = ValidatorHandler()
         }
 
-        context("CampaignsValidator") {
+        describe("CampaignsValidator") {
             it("should accept a campaign that is matched using an custom event with a STRING type and equals operator") {
                 let mockResponse = TestHelpers.MockResponse.stringTypeWithEqualsOperator
                 campaignRepository.syncWith(list: mockResponse.data, timestampMilliseconds: 0)

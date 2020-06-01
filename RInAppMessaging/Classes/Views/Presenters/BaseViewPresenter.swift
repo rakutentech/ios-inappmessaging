@@ -6,6 +6,7 @@ internal protocol BaseViewPresenterType: ImpressionTrackable {
     func viewDidInitialize()
     func handleButtonTrigger(_ trigger: Trigger?)
     func optOutCampaign()
+    func loadResources()
 }
 
 internal class BaseViewPresenter: BaseViewPresenterType {
@@ -62,5 +63,10 @@ internal class BaseViewPresenter: BaseViewPresenterType {
 
     func optOutCampaign() {
         campaign = campaignRepository.optOutCampaign(campaign)
+    }
+
+    func loadResources() {
+        // load image from imageUrl data
+        _ = associatedImage
     }
 }

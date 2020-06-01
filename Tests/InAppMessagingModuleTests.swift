@@ -1,0 +1,294 @@
+import Quick
+import Nimble
+@testable import RInAppMessaging
+
+class InAppMessagingModuleTests: QuickSpec {
+
+    override func spec() {
+
+        describe("InAppMessagingModule") {
+
+            var iamModule: InAppMessagingModule!
+            var configurationManager: ConfigurationManagerMock!
+            var campaignsListManager: CampaignsListManagerMock!
+            var impressionService: ImpressionServiceMock!
+            var preferenceRepository: IAMPreferenceRepository!
+            var campaignsValidator: CampaignsValidatorMock!
+            var eventMatcher: EventMatcherMock!
+            var readyCampaignDispatcher: ReadyCampaignDispatcherMock!
+            var campaignTriggerAgent: CampaignTriggerAgentMock!
+
+            beforeEach {
+                configurationManager = ConfigurationManagerMock()
+                campaignsListManager = CampaignsListManagerMock()
+                impressionService = ImpressionServiceMock()
+                preferenceRepository = IAMPreferenceRepository()
+                campaignsValidator = CampaignsValidatorMock()
+                eventMatcher = EventMatcherMock()
+                readyCampaignDispatcher = ReadyCampaignDispatcherMock()
+                campaignTriggerAgent = CampaignTriggerAgentMock()
+                iamModule = InAppMessagingModule(configurationManager: configurationManager,
+                                                 campaignsListManager: campaignsListManager,
+                                                 impressionService: impressionService,
+                                                 preferenceRepository: preferenceRepository,
+                                                 campaignsValidator: campaignsValidator,
+                                                 eventMatcher: eventMatcher,
+                                                 readyCampaignDispatcher: readyCampaignDispatcher,
+                                                 campaignTriggerAgent: campaignTriggerAgent)
+            }
+
+            context("when calling initialize") {
+
+                it("will call fetchAndSaveConfigData in ConfigurationManager") {
+                    var fetchCalled = false
+                    configurationManager.fetchCalledClosure = {
+                        fetchCalled = true
+                    }
+                    iamModule.initialize { }
+
+                    expect(fetchCalled).to(beTrue())
+                }
+
+                it("will not call fetchAndSaveConfigData in ConfigurationManager when initilized for the second time") {
+                    iamModule.initialize { }
+                    var fetchCalled = false
+                    configurationManager.fetchCalledClosure = {
+                        fetchCalled = true
+                    }
+                    iamModule.initialize { }
+
+                    expect(fetchCalled).to(beFalse())
+                }
+
+                context("and module is enabled") {
+                    beforeEach {
+                        configurationManager.isConfigEnabled = true
+                    }
+
+                    it("will call refreshList in CampaignsListManager") {
+                        configurationManager.isConfigEnabled = true
+                        iamModule.initialize { }
+
+                        expect(campaignsListManager.wasRefreshListCalled).to(beTrue())
+                    }
+
+                    it("will not call deinit handler") {
+                        var deinitCalled = false
+                        iamModule.initialize {
+                            deinitCalled = true
+                        }
+
+                        expect(deinitCalled).toEventuallyNot(beTrue())
+                    }
+                }
+
+                context("and module is disabled") {
+                    beforeEach {
+                        configurationManager.isConfigEnabled = false
+                    }
+
+                    it("will not call refreshList in CampaignsListManager") {
+                        iamModule.initialize { }
+
+                        expect(campaignsListManager.wasRefreshListCalled).to(beFalse())
+                    }
+
+                    it("will call deinit handler") {
+                        var deinitCalled = false
+                        iamModule.initialize {
+                            deinitCalled = true
+                        }
+
+                        expect(deinitCalled).to(beTrue())
+                    }
+                }
+
+                context("when calling logEvent") {
+
+                    context("and module is enabled") {
+                        beforeEach {
+                            configurationManager.isConfigEnabled = true
+                        }
+
+                        context("and module is initialized") {
+                            beforeEach {
+                                iamModule.initialize { }
+                            }
+
+                            it("will call EventMatcher") {
+                                iamModule.logEvent(PurchaseSuccessfulEvent())
+                                expect(eventMatcher.loggedEvents).toEventually(haveCount(1))
+                            }
+
+                            it("will validate campaigns") {
+                                iamModule.logEvent(PurchaseSuccessfulEvent())
+                                expect(campaignsValidator.wasValidateCalled).to(beTrue())
+                            }
+
+                            it("will use CampaignTriggerAgent for each campaign that should be triggered") {
+                                let campaigns = [TestHelpers.generateCampaign(id: "1"),
+                                                 TestHelpers.generateCampaign(id: "2")]
+                                campaignsValidator.campaignsToTrigger = campaigns
+                                iamModule.logEvent(PurchaseSuccessfulEvent())
+                                expect(campaignTriggerAgent.triggeredCampaigns).to(equal(campaigns))
+                            }
+
+                            it("will call dispatchAllIfNeeded") {
+                                iamModule.logEvent(PurchaseSuccessfulEvent())
+                                expect(readyCampaignDispatcher.wasDispatchCalled).to(beTrue())
+                            }
+                        }
+
+                        context("and module is not initialized") {
+
+                            it("will call EventMatcher") {
+                                iamModule.logEvent(PurchaseSuccessfulEvent())
+                                expect(eventMatcher.loggedEvents).toEventually(haveCount(1))
+                            }
+
+                            it("will not validate campaigns") {
+                                iamModule.logEvent(PurchaseSuccessfulEvent())
+                                expect(campaignsValidator.wasValidateCalled).toEventuallyNot(beTrue())
+                            }
+
+                            it("will not call dispatchAllIfNeeded") {
+                                iamModule.logEvent(PurchaseSuccessfulEvent())
+                                expect(readyCampaignDispatcher.wasDispatchCalled).toEventuallyNot(beTrue())
+                            }
+                        }
+                    }
+
+                    context("and module is disabled") {
+                        beforeEach {
+                            configurationManager.isConfigEnabled = false
+                            iamModule.initialize { }
+                        }
+
+                        it("will not call EventMatcher") {
+                            iamModule.logEvent(PurchaseSuccessfulEvent())
+                            expect(eventMatcher.loggedEvents.isEmpty).toEventuallyNot(beFalse())
+                        }
+
+                        it("will not validate campaigns") {
+                            iamModule.logEvent(PurchaseSuccessfulEvent())
+                            expect(campaignsValidator.wasValidateCalled).toEventuallyNot(beTrue())
+                        }
+
+                        it("will not call dispatchAllIfNeeded") {
+                            iamModule.logEvent(PurchaseSuccessfulEvent())
+                            expect(readyCampaignDispatcher.wasDispatchCalled).toEventuallyNot(beTrue())
+                        }
+                    }
+                }
+
+                context("when calling registerPreference") {
+
+                    context("and module is enabled") {
+                        beforeEach {
+                            configurationManager.isConfigEnabled = true
+                        }
+
+                        context("and module is initialized") {
+                            beforeEach {
+                                iamModule.initialize { }
+                            }
+
+                            it("will register preference data") {
+                                let preference = IAMPreferenceBuilder().setUserId("user").build()
+                                iamModule.registerPreference(preference)
+                                expect(preferenceRepository.preference).to(equal(preference))
+                            }
+
+                            it("will refresh list of campaigns") {
+                                iamModule.registerPreference(IAMPreference())
+                                expect(campaignsListManager.wasRefreshListCalled).to(beTrue())
+                            }
+                        }
+
+                        context("and module is not initialized") {
+
+                            it("will register preference data") {
+                                let preference = IAMPreferenceBuilder().setUserId("user").build()
+                                iamModule.registerPreference(preference)
+                                expect(preferenceRepository.preference).to(equal(preference))
+                            }
+
+                            it("will not refresh list of campaigns") {
+                                iamModule.registerPreference(IAMPreference())
+                                expect(campaignsListManager.wasRefreshListCalled).toEventuallyNot(beTrue())
+                            }
+                        }
+                    }
+
+                    context("and module is disabled") {
+                        beforeEach {
+                            configurationManager.isConfigEnabled = false
+                            iamModule.initialize { }
+                        }
+
+                        it("will not register preference data") {
+                            let preference = IAMPreferenceBuilder().setUserId("user").build()
+                            iamModule.registerPreference(preference)
+                            expect(preferenceRepository.preference == nil).toEventuallyNot(beFalse())
+                        }
+
+                        it("will not refresh list of campaigns") {
+                            iamModule.registerPreference(IAMPreference())
+                            expect(campaignsListManager.wasRefreshListCalled).toEventuallyNot(beTrue())
+                        }
+                    }
+                }
+
+                context("as ReadyCampaignDispatcherDelegate") {
+
+                    it("will refresh list of campaigns when performPing was called") {
+                        iamModule.performPing()
+                        expect(campaignsListManager.wasRefreshListCalled).to(beTrue())
+                    }
+                }
+
+                context("as ErrorDelegate") {
+
+                    var forwardedError: NSError?
+
+                    beforeEach {
+                        forwardedError = nil
+                        iamModule.aggregatedErrorHandler = { error in
+                            forwardedError = error
+                        }
+                    }
+
+                    context("when configurationManager returned an error") {
+
+                        it("will call aggregatedErrorHandler forwarding error object") {
+                            configurationManager.reportError(description: "some error", data: Data())
+                            expect(forwardedError).toNot(beNil())
+                            expect(forwardedError?.localizedDescription).to(equal("InAppMessaging: some error"))
+                            expect(forwardedError?.userInfo["data"] as? Data).to(equal(Data()))
+                        }
+                    }
+
+                    context("when campaignsListManager returned an error") {
+
+                        it("will call aggregatedErrorHandler forwarding error object") {
+                            campaignsListManager.reportError(description: "some error", data: Data())
+                            expect(forwardedError).toNot(beNil())
+                            expect(forwardedError?.localizedDescription).to(equal("InAppMessaging: some error"))
+                            expect(forwardedError?.userInfo["data"] as? Data).to(equal(Data()))
+                        }
+                    }
+
+                    context("when impressionService returned an error") {
+
+                        it("will call aggregatedErrorHandler forwarding error object") {
+                            impressionService.reportError(description: "some error", data: Data())
+                            expect(forwardedError).toNot(beNil())
+                            expect(forwardedError?.localizedDescription).to(equal("InAppMessaging: some error"))
+                            expect(forwardedError?.userInfo["data"] as? Data).to(equal(Data()))
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

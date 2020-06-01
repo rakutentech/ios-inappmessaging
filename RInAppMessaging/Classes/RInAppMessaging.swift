@@ -12,7 +12,7 @@
 @objc public class RInAppMessaging: NSObject {
 
     private static let inAppQueue = DispatchQueue(label: "IAM.Main", attributes: .concurrent)
-    internal static var initializedModule: InAppMessagingModule?
+    internal private(set) static var initializedModule: InAppMessagingModule?
     private(set) static var dependencyManager: DependencyManager?
 
     private override init() { super.init() }
@@ -98,6 +98,12 @@
     @objc public static func registerPreference(_ preference: IAMPreference?) {
         inAppQueue.async(flags: .barrier) {
             initializedModule?.registerPreference(preference)
+        }
+    }
+
+    internal static func deinitializeModule() {
+        inAppQueue.sync {
+            initializedModule = nil
         }
     }
 }
