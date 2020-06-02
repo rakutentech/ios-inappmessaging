@@ -24,10 +24,10 @@ deploy:
   # When tagged with version (X.X.X)
   # Deploy Pod spec
   - provider: script
-    cleanup: false
+    edge: true
     script:
-      - bundle exec pod spec lint --allow-warnings
-      - bundle exec pod trunk push --allow-warnings --verbose
+      bundle exec pod spec lint --allow-warnings;
+      bundle exec pod trunk push --allow-warnings --verbose
     on:
       tags: true
       condition: $TRAVIS_TAG =~ ^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$
