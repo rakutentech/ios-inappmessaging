@@ -34,9 +34,9 @@
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>InAppMessagingAppSubscriptionID</key>
-	<string>SUBSCRIPTION_KEY</string>
+	<string>$(RIAM_APP_SUBSCRIPTION_KEY)</string>
 	<key>InAppMessagingConfigurationURL</key>
-	<string></string>
+	<string>$(RIAM_CONFIG_URL)</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>rakuten</string>
