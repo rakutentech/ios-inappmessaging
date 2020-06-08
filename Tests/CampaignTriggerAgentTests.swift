@@ -11,12 +11,12 @@ class CampaignTriggerAgentTests: QuickSpec {
             let testCampaign = TestHelpers.generateCampaign(id: "test")
 
             var eventMatcher: EventMatcherMock!
-            var campaignDispatcher: ReadyCampaignDispatcherMock!
+            var campaignDispatcher: CampaignDispatcherMock!
             var campaignTriggerAgent: CampaignTriggerAgent!
 
             beforeEach {
                 eventMatcher = EventMatcherMock()
-                campaignDispatcher = ReadyCampaignDispatcherMock()
+                campaignDispatcher = CampaignDispatcherMock()
                 campaignTriggerAgent = CampaignTriggerAgent(eventMatcher: eventMatcher,
                                                             readyCampaignDispatcher: campaignDispatcher)
             }

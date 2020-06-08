@@ -65,25 +65,25 @@
         try super.encode(to: encoder)
     }
 
-    @objc
+    @objc @discardableResult
     public func setPurchaseAmount(_ purchaseAmount: Int) -> PurchaseSuccessfulEvent {
         self.purchaseAmount = purchaseAmount
         return self
     }
 
-    @objc
+    @objc @discardableResult
     public func setNumberOfItems(_ numberOfItems: Int) -> PurchaseSuccessfulEvent {
         self.numberOfItems = numberOfItems
         return self
     }
 
-    @objc
+    @objc @discardableResult
     public func setCurrencyCode(_ currencyCode: String) -> PurchaseSuccessfulEvent {
         self.currencyCode = currencyCode
         return self
     }
 
-    @objc
+    @objc @discardableResult
     public func setItemList(_ itemList: [String]) -> PurchaseSuccessfulEvent {
         self.itemList = itemList
         return self

@@ -10,7 +10,7 @@ internal class CampaignsListManager: CampaignsListManagerType, TaskSchedulable {
 
     private let campaignsValidator: CampaignsValidatorType
     private var campaignRepository: CampaignRepositoryType
-    private let readyCampaignDispatcher: ReadyCampaignDispatcherType
+    private let readyCampaignDispatcher: CampaignDispatcherType
     private let campaignTriggerAgent: CampaignTriggerAgentType
     private let messageMixerService: MessageMixerServiceType
 
@@ -20,7 +20,7 @@ internal class CampaignsListManager: CampaignsListManagerType, TaskSchedulable {
 
     init(campaignsValidator: CampaignsValidatorType,
          campaignRepository: CampaignRepositoryType,
-         readyCampaignDispatcher: ReadyCampaignDispatcherType,
+         readyCampaignDispatcher: CampaignDispatcherType,
          campaignTriggerAgent: CampaignTriggerAgentType,
          messageMixerService: MessageMixerServiceType) {
 

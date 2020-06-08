@@ -15,7 +15,7 @@ class InAppMessagingModuleTests: QuickSpec {
             var preferenceRepository: IAMPreferenceRepository!
             var campaignsValidator: CampaignsValidatorMock!
             var eventMatcher: EventMatcherMock!
-            var readyCampaignDispatcher: ReadyCampaignDispatcherMock!
+            var readyCampaignDispatcher: CampaignDispatcherMock!
             var campaignTriggerAgent: CampaignTriggerAgentMock!
 
             beforeEach {
@@ -25,7 +25,7 @@ class InAppMessagingModuleTests: QuickSpec {
                 preferenceRepository = IAMPreferenceRepository()
                 campaignsValidator = CampaignsValidatorMock()
                 eventMatcher = EventMatcherMock()
-                readyCampaignDispatcher = ReadyCampaignDispatcherMock()
+                readyCampaignDispatcher = CampaignDispatcherMock()
                 campaignTriggerAgent = CampaignTriggerAgentMock()
                 iamModule = InAppMessagingModule(configurationManager: configurationManager,
                                                  campaignsListManager: campaignsListManager,
@@ -239,7 +239,7 @@ class InAppMessagingModuleTests: QuickSpec {
                     }
                 }
 
-                context("as ReadyCampaignDispatcherDelegate") {
+                context("as CampaignDispatcherDelegate") {
 
                     it("will refresh list of campaigns when performPing was called") {
                         iamModule.performPing()

@@ -36,8 +36,8 @@ class CampaignRepositoryMock: CampaignRepositoryType {
     }
 }
 
-class ReadyCampaignDispatcherMock: ReadyCampaignDispatcherType {
-    weak var delegate: ReadyCampaignDispatcherDelegate?
+class CampaignDispatcherMock: CampaignDispatcherType {
+    weak var delegate: CampaignDispatcherDelegate?
     private(set) var wasDispatchCalled = false
     private(set) var addedCampaigns = [Campaign]()
 

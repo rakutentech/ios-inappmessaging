@@ -11,14 +11,14 @@ class CampaignsListManagerTests: QuickSpec {
             var manager: CampaignsListManager!
             var campaignsValidator: CampaignsValidatorMock!
             var campaignRepository: CampaignRepositoryMock!
-            var readyCampaignDispatcher: ReadyCampaignDispatcherMock!
+            var readyCampaignDispatcher: CampaignDispatcherMock!
             var messageMixerService: MessageMixerServiceMock!
             var errorDelegate: ErrorDelegateMock!
 
             beforeEach {
                 campaignsValidator = CampaignsValidatorMock()
                 campaignRepository = CampaignRepositoryMock()
-                readyCampaignDispatcher = ReadyCampaignDispatcherMock()
+                readyCampaignDispatcher = CampaignDispatcherMock()
                 messageMixerService = MessageMixerServiceMock()
                 errorDelegate = ErrorDelegateMock()
                 manager = CampaignsListManager(campaignsValidator: campaignsValidator,

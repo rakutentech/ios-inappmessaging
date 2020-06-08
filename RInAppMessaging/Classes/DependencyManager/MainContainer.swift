@@ -62,8 +62,8 @@ internal enum MainContainerFactory {
             ContainerElement(type: RouterType.self, factory: {
                 Router(dependencyManager: manager)
             }),
-            ContainerElement(type: ReadyCampaignDispatcherType.self, factory: {
-                ReadyCampaignDispatcher(router: manager.resolve(type: RouterType.self)!,
+            ContainerElement(type: CampaignDispatcherType.self, factory: {
+                CampaignDispatcher(router: manager.resolve(type: RouterType.self)!,
                                         permissionService: manager.resolve(type: DisplayPermissionServiceType.self)!,
                                         campaignRepository: manager.resolve(type: CampaignRepositoryType.self)!)
             }),
@@ -78,7 +78,7 @@ internal enum MainContainerFactory {
             ContainerElement(type: CampaignsListManagerType.self, factory: {
                 CampaignsListManager(campaignsValidator: manager.resolve(type: CampaignsValidatorType.self)!,
                                      campaignRepository: manager.resolve(type: CampaignRepositoryType.self)!,
-                                     readyCampaignDispatcher: manager.resolve(type: ReadyCampaignDispatcherType.self)!,
+                                     readyCampaignDispatcher: manager.resolve(type: CampaignDispatcherType.self)!,
                                      campaignTriggerAgent: manager.resolve(type: CampaignTriggerAgentType.self)!,
                                      messageMixerService: manager.resolve(type: MessageMixerServiceType.self)!)
             })]
@@ -105,7 +105,7 @@ internal enum MainContainerFactory {
             }, transient: true),
             ContainerElement(type: CampaignTriggerAgentType.self, factory: {
                 CampaignTriggerAgent(eventMatcher: manager.resolve(type: EventMatcherType.self)!,
-                                     readyCampaignDispatcher: manager.resolve(type: ReadyCampaignDispatcherType.self)!)
+                                     readyCampaignDispatcher: manager.resolve(type: CampaignDispatcherType.self)!)
             }, transient: true)
         ])
 

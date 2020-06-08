@@ -22,7 +22,7 @@ class MainContainerTests: QuickSpec {
                     dependencyManager.resolve(type: ConfigurationManagerType.self),
                     dependencyManager.resolve(type: CampaignRepositoryType.self),
                     dependencyManager.resolve(type: EventMatcherType.self),
-                    dependencyManager.resolve(type: ReadyCampaignDispatcherType.self),
+                    dependencyManager.resolve(type: CampaignDispatcherType.self),
                     dependencyManager.resolve(type: IAMPreferenceRepository.self),
                     dependencyManager.resolve(type: DisplayPermissionServiceType.self),
                     dependencyManager.resolve(type: RouterType.self),

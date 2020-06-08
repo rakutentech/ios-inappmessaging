@@ -5,8 +5,8 @@ import Nimble
 class ReadyCampaignDispatcherTests: QuickSpec {
 
     override func spec() {
-        describe("ReadyCampaignDispatcher") {
-            var dispatcher: ReadyCampaignDispatcher!
+        describe("CampaignDispatcher") {
+            var dispatcher: CampaignDispatcher!
             var permissionService: PermissionServiceMock!
             var campaignRepository: CampaignRepositoryMock!
             var delegate: Delegate!
@@ -17,7 +17,7 @@ class ReadyCampaignDispatcherTests: QuickSpec {
                 campaignRepository = CampaignRepositoryMock()
                 router = RouterMock()
                 delegate = Delegate()
-                dispatcher = ReadyCampaignDispatcher(router: router,
+                dispatcher = CampaignDispatcher(router: router,
                                                      permissionService: permissionService,
                                                      campaignRepository: campaignRepository)
                 dispatcher.delegate = delegate
@@ -161,7 +161,7 @@ private class PermissionServiceMock: DisplayPermissionServiceType {
     }
 }
 
-private class Delegate: ReadyCampaignDispatcherDelegate {
+private class Delegate: CampaignDispatcherDelegate {
     var wasPingCalled = false
 
     func performPing() {

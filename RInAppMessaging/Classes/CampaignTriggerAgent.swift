@@ -5,10 +5,10 @@ internal protocol CampaignTriggerAgentType {
 internal struct CampaignTriggerAgent: CampaignTriggerAgentType {
 
     private let eventMatcher: EventMatcherType
-    private let dispatcher: ReadyCampaignDispatcherType
+    private let dispatcher: CampaignDispatcherType
 
     init(eventMatcher: EventMatcherType,
-         readyCampaignDispatcher: ReadyCampaignDispatcherType) {
+         readyCampaignDispatcher: CampaignDispatcherType) {
 
         self.eventMatcher = eventMatcher
         self.dispatcher = readyCampaignDispatcher

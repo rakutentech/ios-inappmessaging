@@ -58,7 +58,7 @@
                 let eventMatcher = dependencyManager.resolve(type: EventMatcherType.self),
                 let preferenceRepository = dependencyManager.resolve(type: IAMPreferenceRepository.self),
                 let campaignsValidator = dependencyManager.resolve(type: CampaignsValidatorType.self),
-                let readyCampaignDispatcher = dependencyManager.resolve(type: ReadyCampaignDispatcherType.self),
+                let readyCampaignDispatcher = dependencyManager.resolve(type: CampaignDispatcherType.self),
                 let campaignTriggerAgent = dependencyManager.resolve(type: CampaignTriggerAgentType.self),
                 let router = dependencyManager.resolve(type: RouterType.self) else {
 

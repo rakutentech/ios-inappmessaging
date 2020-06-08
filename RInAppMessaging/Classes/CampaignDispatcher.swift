@@ -1,11 +1,11 @@
 import Foundation
 
-internal protocol ReadyCampaignDispatcherDelegate: AnyObject {
+internal protocol CampaignDispatcherDelegate: AnyObject {
     func performPing()
 }
 
-internal protocol ReadyCampaignDispatcherType {
-    var delegate: ReadyCampaignDispatcherDelegate? { get set }
+internal protocol CampaignDispatcherType {
+    var delegate: CampaignDispatcherDelegate? { get set }
 
     func addToQueue(campaign: Campaign)
     func dispatchAllIfNeeded()
@@ -13,7 +13,7 @@ internal protocol ReadyCampaignDispatcherType {
 
 /// Class for adding ready (validated) campaigns to a queue to be sequentially displayed.
 /// Each next campaign is scheduled after closing according to the Campaign's delay paramater.
-internal class ReadyCampaignDispatcher: ReadyCampaignDispatcherType {
+internal class CampaignDispatcher: CampaignDispatcherType {
 
     private let router: RouterType
     private let permissionService: DisplayPermissionServiceType
@@ -23,7 +23,7 @@ internal class ReadyCampaignDispatcher: ReadyCampaignDispatcherType {
     private var queuedCampaigns = [Campaign]()
     private var isDispatching = false
 
-    weak var delegate: ReadyCampaignDispatcherDelegate?
+    weak var delegate: CampaignDispatcherDelegate?
 
     init(router: RouterType,
          permissionService: DisplayPermissionServiceType,

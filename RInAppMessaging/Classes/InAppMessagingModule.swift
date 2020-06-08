@@ -1,13 +1,13 @@
 /// Class represents bootstrap behaviour and main functionality of InAppMessaging.
 internal class InAppMessagingModule: AnalyticsBroadcaster,
-    ErrorDelegate, ReadyCampaignDispatcherDelegate {
+    ErrorDelegate, CampaignDispatcherDelegate {
 
     private var configurationManager: ConfigurationManagerType
     private var campaignsListManager: CampaignsListManagerType
     private let preferenceRepository: IAMPreferenceRepository
     private let campaignsValidator: CampaignsValidatorType
     private let eventMatcher: EventMatcherType
-    private var readyCampaignDispatcher: ReadyCampaignDispatcherType
+    private var readyCampaignDispatcher: CampaignDispatcherType
     private var impressionService: ImpressionServiceType
     private let campaignTriggerAgent: CampaignTriggerAgentType
 
@@ -22,7 +22,7 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
          preferenceRepository: IAMPreferenceRepository,
          campaignsValidator: CampaignsValidatorType,
          eventMatcher: EventMatcherType,
-         readyCampaignDispatcher: ReadyCampaignDispatcherType,
+         readyCampaignDispatcher: CampaignDispatcherType,
          campaignTriggerAgent: CampaignTriggerAgentType) {
 
         self.configurationManager = configurationManager
@@ -91,7 +91,7 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
     }
 }
 
-// MARK: - ReadyCampaignDispatcherDelegate methods
+// MARK: - CampaignDispatcherDelegate methods
 extension InAppMessagingModule {
     func performPing() {
         campaignsListManager.refreshList()
