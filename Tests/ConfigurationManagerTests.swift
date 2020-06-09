@@ -45,7 +45,7 @@ class ConfigurationManagerTests: QuickSpec {
                         configurationManager.fetchAndSaveConfigData(completion: { _ in
                             wasCompletionCalled = true
                         })
-                        expect(wasCompletionCalled).toEventuallyNot(beTrue())
+                        expect(wasCompletionCalled).toAfterTimeout(beFalse())
                     }
 
                     it("should call retry handler when connection becomes available (cellular)") {

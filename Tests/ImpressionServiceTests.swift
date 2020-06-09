@@ -84,7 +84,7 @@ class ImpressionServiceTests: QuickSpec {
                             done()
                         }
                     }
-                    expect(errorDelegate.wasErrorReceived).toEventuallyNot(beTrue())
+                    expect(errorDelegate.wasErrorReceived).toAfterTimeout(beFalse())
                 }
             }
 

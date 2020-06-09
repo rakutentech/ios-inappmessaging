@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		4516601223CD411300310181 /* DependencyManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4516601123CD411300310181 /* DependencyManagerTests.swift */; };
 		4516601D23CD740300310181 /* MainContainerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4516601C23CD740300310181 /* MainContainerTests.swift */; };
+		451E93A2248E3D3D00545D6B /* NimbleExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451E93A1248E3D3D00545D6B /* NimbleExtensions.swift */; };
 		4534947223C6ABF700189A81 /* SerializationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4534947123C6ABF700189A81 /* SerializationTests.swift */; };
 		45357AE52457EBBC007D8FDC /* config_success.json in Resources */ = {isa = PBXBuildFile; fileRef = 45357AE42457EBBC007D8FDC /* config_success.json */; };
 		45357AE72458361F007D8FDC /* config_success_optional.json in Resources */ = {isa = PBXBuildFile; fileRef = 45357AE62458361F007D8FDC /* config_success_optional.json */; };
@@ -72,6 +73,7 @@
 /* Begin PBXFileReference section */
 		4516601123CD411300310181 /* DependencyManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DependencyManagerTests.swift; sourceTree = "<group>"; };
 		4516601C23CD740300310181 /* MainContainerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainContainerTests.swift; sourceTree = "<group>"; };
+		451E93A1248E3D3D00545D6B /* NimbleExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NimbleExtensions.swift; sourceTree = "<group>"; };
 		4534947123C6ABF700189A81 /* SerializationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SerializationTests.swift; sourceTree = "<group>"; };
 		45357AE42457EBBC007D8FDC /* config_success.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = config_success.json; sourceTree = "<group>"; };
 		45357AE62458361F007D8FDC /* config_success_optional.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = config_success_optional.json; sourceTree = "<group>"; };
@@ -245,6 +247,7 @@
 				45BDFD042421EE7B004DEA0C /* SharedMocks.swift */,
 				D92D1F242224A265008EA748 /* TestHelpers.swift */,
 				45BDFD08242362C3004DEA0C /* UIColorExtensionsTests.swift */,
+				451E93A1248E3D3D00545D6B /* NimbleExtensions.swift */,
 				45D4DA4E240F5597009B9B37 /* ViewPresenterTests.swift */,
 				456FE1EC2429C4D200304872 /* ViewTests.swift */,
 				607FACE91AFB9204008FA782 /* Supporting Files */,
@@ -421,6 +424,7 @@
 				456FE1E72428513200304872 /* ErrorReportableTests.swift in Sources */,
 				45BDFD052421EE7B004DEA0C /* SharedMocks.swift in Sources */,
 				459B228024528A6900D218CE /* ImpressionServiceTests.swift in Sources */,
+				451E93A2248E3D3D00545D6B /* NimbleExtensions.swift in Sources */,
 				D911DC4F211115730082B950 /* ConfigurationTests.swift in Sources */,
 				45563B03240614AE004EAFD3 /* ReadyCampaignDispatcherTests.swift in Sources */,
 				456FE1E924288C6500304872 /* CampaignTriggerAgentTests.swift in Sources */,

@@ -4,7 +4,7 @@ xcode_scheme: InAppMessaging-Example
 osx_image: xcode11.4
 
 script:
-  - travis_wait bundle exec fastlane ci
+  - bundle exec fastlane ci
   - bundle exec danger
 
 cache:

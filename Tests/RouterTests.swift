@@ -61,14 +61,14 @@ class RouterTests: QuickSpec {
                     let campaign = TestHelpers.generateCampaign(id: "test", type: .invalid)
                     router.displayCampaign(campaign, completion: {})
                     expect(UIApplication.shared.keyWindow?.subviews)
-                        .toEventuallyNot(containElementSatisfying({ $0 is BaseView }))
+                        .toAfterTimeout(allPass({ !($0 is BaseView )}))
                 }
 
                 it("will not show any view for html campaign type") {
                     let campaign = TestHelpers.generateCampaign(id: "test", type: .html)
                     router.displayCampaign(campaign, completion: {})
                     expect(UIApplication.shared.keyWindow?.subviews)
-                        .toEventuallyNot(containElementSatisfying({ $0 is BaseView }))
+                        .toAfterTimeout(allPass({ !($0 is BaseView )}))
                 }
             }
         }

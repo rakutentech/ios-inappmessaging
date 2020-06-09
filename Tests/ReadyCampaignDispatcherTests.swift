@@ -66,7 +66,7 @@ class ReadyCampaignDispatcherTests: QuickSpec {
                         dispatcher.dispatchAllIfNeeded()
                         expect(router.lastDisplayedCampaign).toEventually(equal(firstCampaign))
                         dispatcher.dispatchAllIfNeeded()
-                        expect(router.lastDisplayedCampaign).toEventuallyNot(equal(secondCampaign))
+                        expect(router.lastDisplayedCampaign).toAfterTimeout(equal(firstCampaign))
                     }
 
                     it("will perform ping if flag in the response is true") {

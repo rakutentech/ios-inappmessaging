@@ -53,7 +53,7 @@ class PublicAPITests: QuickSpec {
 
                 let expectedModule = RInAppMessaging.initializedModule
                 RInAppMessaging.configure()
-                expect(RInAppMessaging.initializedModule === expectedModule).toEventuallyNot(beFalse())
+                expect(RInAppMessaging.initializedModule).toAfterTimeout(beIdenticalTo(expectedModule))
             }
 
             it("will register preference when registerPreference() is called") {
@@ -101,7 +101,7 @@ class PublicAPITests: QuickSpec {
                 messageMixerService.delay = 3.0
                 reinitializeSDK()
                 RInAppMessaging.logEvent(LoginSuccessfulEvent())
-                expect(eventMatcher.loggedEvents.isEmpty).toEventuallyNot(beFalse(), timeout: 1)
+                expect(eventMatcher.loggedEvents).toAfterTimeout(beEmpty())
                 expect(eventMatcher.loggedEvents).toEventually(haveCount(1),
                                                                timeout: messageMixerService.delay + 1,
                                                                pollInterval: 0.5)

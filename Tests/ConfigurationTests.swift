@@ -51,7 +51,7 @@ class ConfigurationTests: QuickSpec {
                     configurationManager.isConfigEnabled = false
                     RInAppMessaging.configure(dependencyManager: dependencyManager)
 
-                    expect(mockMessageMixer.wasPingCalled).toEventuallyNot(equal(true))
+                    expect(mockMessageMixer.wasPingCalled).toAfterTimeout(beFalse())
                 }
             }
 
@@ -61,7 +61,7 @@ class ConfigurationTests: QuickSpec {
                     configurationManager.isConfigEnabled = true
                     RInAppMessaging.configure(dependencyManager: dependencyManager)
 
-                    expect(mockMessageMixer.wasPingCalled).toEventually(equal(true))
+                    expect(mockMessageMixer.wasPingCalled).toEventually(beTrue())
                 }
             }
         }

@@ -78,7 +78,7 @@ class InAppMessagingModuleTests: QuickSpec {
                             deinitCalled = true
                         }
 
-                        expect(deinitCalled).toEventuallyNot(beTrue())
+                        expect(deinitCalled).toAfterTimeout(beFalse())
                     }
                 }
 
@@ -148,12 +148,12 @@ class InAppMessagingModuleTests: QuickSpec {
 
                             it("will not validate campaigns") {
                                 iamModule.logEvent(PurchaseSuccessfulEvent())
-                                expect(campaignsValidator.wasValidateCalled).toEventuallyNot(beTrue())
+                                expect(campaignsValidator.wasValidateCalled).toAfterTimeout(beFalse())
                             }
 
                             it("will not call dispatchAllIfNeeded") {
                                 iamModule.logEvent(PurchaseSuccessfulEvent())
-                                expect(readyCampaignDispatcher.wasDispatchCalled).toEventuallyNot(beTrue())
+                                expect(readyCampaignDispatcher.wasDispatchCalled).toAfterTimeout(beFalse())
                             }
                         }
                     }
@@ -166,17 +166,17 @@ class InAppMessagingModuleTests: QuickSpec {
 
                         it("will not call EventMatcher") {
                             iamModule.logEvent(PurchaseSuccessfulEvent())
-                            expect(eventMatcher.loggedEvents.isEmpty).toEventuallyNot(beFalse())
+                            expect(eventMatcher.loggedEvents.isEmpty).toAfterTimeout(beFalse())
                         }
 
                         it("will not validate campaigns") {
                             iamModule.logEvent(PurchaseSuccessfulEvent())
-                            expect(campaignsValidator.wasValidateCalled).toEventuallyNot(beTrue())
+                            expect(campaignsValidator.wasValidateCalled).toAfterTimeout(beFalse())
                         }
 
                         it("will not call dispatchAllIfNeeded") {
                             iamModule.logEvent(PurchaseSuccessfulEvent())
-                            expect(readyCampaignDispatcher.wasDispatchCalled).toEventuallyNot(beTrue())
+                            expect(readyCampaignDispatcher.wasDispatchCalled).toAfterTimeout(beFalse())
                         }
                     }
                 }
@@ -215,7 +215,7 @@ class InAppMessagingModuleTests: QuickSpec {
 
                             it("will not refresh list of campaigns") {
                                 iamModule.registerPreference(IAMPreference())
-                                expect(campaignsListManager.wasRefreshListCalled).toEventuallyNot(beTrue())
+                                expect(campaignsListManager.wasRefreshListCalled).toAfterTimeout(beFalse())
                             }
                         }
                     }
@@ -229,12 +229,12 @@ class InAppMessagingModuleTests: QuickSpec {
                         it("will not register preference data") {
                             let preference = IAMPreferenceBuilder().setUserId("user").build()
                             iamModule.registerPreference(preference)
-                            expect(preferenceRepository.preference == nil).toEventuallyNot(beFalse())
+                            expect(preferenceRepository.preference).toAfterTimeout(beNil())
                         }
 
                         it("will not refresh list of campaigns") {
                             iamModule.registerPreference(IAMPreference())
-                            expect(campaignsListManager.wasRefreshListCalled).toEventuallyNot(beTrue())
+                            expect(campaignsListManager.wasRefreshListCalled).toAfterTimeout(beFalse())
                         }
                     }
                 }

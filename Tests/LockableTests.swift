@@ -34,8 +34,7 @@ class LockableTests: QuickSpec {
                 })
 
                 lockableObject.resourcesToLock.forEach { $0.lock() }
-                sleep(2)
-                expect(lockableObject.resource.get()).toEventuallyNot(equal([1, 2, 4]))
+                expect(lockableObject.resource.get()).toAfterTimeout(equal([1, 2]), timeout: 2.0)
             }
 
             it("will unlock provided resources when unlock is called on them") {
