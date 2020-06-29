@@ -29,9 +29,9 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         var bodyViewSafeAreaOffsetY: CGFloat = 0 // Offset for text content applied when there is no image
     }
 
+    @IBOutlet private(set) weak var contentView: UIView! // Wraps dialog view to allow rounded corners
     @IBOutlet private weak var backgroundView: UIView!
     @IBOutlet private weak var imageView: UIImageView!
-    @IBOutlet private weak var contentView: UIView! // Wraps dialog view to allow rounded corners
     @IBOutlet private weak var controlsView: UIStackView!
     @IBOutlet private weak var dialogView: UIStackView!
     @IBOutlet private weak var headerLabel: UILabel!
@@ -67,7 +67,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
     }
     var onDismiss: (() -> Void)?
 
-    private var hasImage = false {
+    private(set) var hasImage = false {
         didSet {
             exitButton.invertedColors = hasImage
             imageView.isHidden = !hasImage
@@ -148,15 +148,11 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
 
         switch mode {
         case .fullScreen:
-            let layoutGuide: UILayoutGuide
-            var topMargin: CGFloat = 0
+            var layoutGuide = layoutMarginsGuide
             if #available(iOS 11.0, *) {
                 layoutGuide = safeAreaLayoutGuide
-            } else {
-                layoutGuide = layoutMarginsGuide
-                topMargin = UIApplication.shared.statusBarFrame.height
             }
-            contentView.topAnchor.constraint(equalTo: layoutGuide.topAnchor, constant: topMargin).isActive = true
+            contentView.topAnchor.constraint(equalTo: topAnchor).isActive = true
             contentView.bottomAnchor.constraint(equalTo: layoutGuide.bottomAnchor).isActive = true
         case .modal(let maxWindowHeightPercentage):
             contentView.heightAnchor.constraint(lessThanOrEqualTo: backgroundView.heightAnchor,

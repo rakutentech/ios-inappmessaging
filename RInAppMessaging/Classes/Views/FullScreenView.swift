@@ -11,7 +11,7 @@ internal class FullScreenView: FullView {
         uiConstants.cornerRadiusForDialogView = 0
         uiConstants.dialogViewWidthOffset = 0
         uiConstants.dialogViewWidthMultiplier = 1.0
-        uiConstants.exitButtonVerticalOffset = -56
+        uiConstants.exitButtonVerticalOffset = -(36 + UIApplication.shared.statusBarFrame.height)
         uiConstants.exitButtonSize = 25
         uiConstants.exitButtonFontSize = 14
         uiConstants.bodyViewSafeAreaOffsetY =
@@ -21,5 +21,25 @@ internal class FullScreenView: FullView {
             uiConstants.exitButtonSize = 32
             uiConstants.exitButtonFontSize = 16
         }
+    }
+
+    override func setup(viewModel: FullViewModel) {
+        super.setup(viewModel: viewModel)
+
+        guard hasImage else {
+            return
+        }
+
+        let statusBarBackground = UIView()
+        statusBarBackground.translatesAutoresizingMaskIntoConstraints = false
+        statusBarBackground.backgroundColor = UIColor.white.withAlphaComponent(0.4)
+
+        contentView.addSubview(statusBarBackground)
+        NSLayoutConstraint.activate([
+            statusBarBackground.topAnchor.constraint(equalTo: contentView.topAnchor),
+            statusBarBackground.leftAnchor.constraint(equalTo: contentView.leftAnchor),
+            statusBarBackground.rightAnchor.constraint(equalTo: contentView.rightAnchor),
+            statusBarBackground.heightAnchor.constraint(equalToConstant: UIApplication.shared.statusBarFrame.height)
+        ])
     }
 }
