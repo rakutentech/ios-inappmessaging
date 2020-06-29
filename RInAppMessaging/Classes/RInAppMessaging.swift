@@ -11,7 +11,7 @@
 /// Conforms to NSObject and exposed with objc tag to make it work with Obj-c projects.
 @objc public class RInAppMessaging: NSObject {
 
-    private static let inAppQueue = DispatchQueue(label: "IAM.Main", attributes: .concurrent)
+    private static let inAppQueue = DispatchQueue(label: "IAM.Main", qos: .utility, attributes: [])
     internal private(set) static var initializedModule: InAppMessagingModule?
     private(set) static var dependencyManager: DependencyManager?
 
