@@ -93,8 +93,11 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
 
 // MARK: - CampaignDispatcherDelegate methods
 extension InAppMessagingModule {
+
     func performPing() {
-        campaignsListManager.refreshList()
+        DispatchWorkItem(qos: .utility, flags: []) {
+            self.campaignsListManager.refreshList()
+        }.perform()
     }
 }
 

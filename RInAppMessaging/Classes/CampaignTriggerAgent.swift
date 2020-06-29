@@ -15,11 +15,13 @@ internal struct CampaignTriggerAgent: CampaignTriggerAgentType {
     }
 
     func trigger(campaign: Campaign, triggeredEvents: Set<Event>) {
-        do {
-            try eventMatcher.removeSetOfMatchedEvents(triggeredEvents, for: campaign)
-            dispatcher.addToQueue(campaign: campaign)
-        } catch {
-            // Campaign is not ready to be displayed
+        CommonUtility.lock(resourcesIn: [eventMatcher]) {
+            do {
+                try eventMatcher.removeSetOfMatchedEvents(triggeredEvents, for: campaign)
+                dispatcher.addToQueue(campaign: campaign)
+            } catch {
+                // Campaign is not ready to be displayed
+            }
         }
     }
 }

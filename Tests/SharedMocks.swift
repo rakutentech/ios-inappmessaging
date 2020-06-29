@@ -53,6 +53,7 @@ class EventMatcherMock: EventMatcherType {
     private(set) var loggedEvents = [Event]()
     var simulateMatchingSuccess = true
     var simulateMatcherError: EventMatcherError?
+    var resourcesToLock: [LockableResource] = []
 
     func matchAndStore(event: Event) {
         loggedEvents.append(event)
