@@ -36,17 +36,12 @@ internal class CampaignRepository: CampaignRepositoryType {
         let oldList = self.campaigns.get()
         var newList = [Campaign]()
 
-        // Preserving information about opt out state and number of impressions left
-        // is necessary in case when server didn't process impressions sent from the SDK yet.
-        // maxImpressions value from the server will decrease (on the server) after every impression
-        // causing situation when SDK could loose track on how many more times campaign message should be displayed.
-        // In the future the number of times campaign was displayed should be stored on the server
-        // which will avoid using this logic and it will also allow updating maxImpressions in the IAM web dashboard.
+        // Preserving information about opt out state in case when server didn't process impressions sent from the SDK yet.
+        // There is an assumption that maxImpressions value from the server is the most recent one.
+        // (Considering any possible updates to the campaign in the IAM web dashboard)
         list.forEach { newCampaign in
             var updatedCampaign = newCampaign
             if let oldCampaign = oldList.first(where: { $0.id == newCampaign.id }) {
-                updatedCampaign = Campaign.updatedCampaign(updatedCampaign,
-                    withImpressionLeft: min(newCampaign.data.maxImpressions, oldCampaign.impressionsLeft))
                 updatedCampaign = Campaign.updatedCampaign(updatedCampaign,
                     asOptedOut: oldCampaign.isOptedOut)
             }
