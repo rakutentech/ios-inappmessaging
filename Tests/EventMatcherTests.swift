@@ -8,18 +8,34 @@ class EventMatcherTests: QuickSpec {
 
         describe("EventMatcher") {
 
-            let testCampaign = TestHelpers.generateCampaign(id: "test",
-                                                            test: false, delay: 0,
-                                                            maxImpressions: 1,
-                                                            triggers: [
-                                                                Trigger(type: .event,
-                                                                        eventType: .appStart,
-                                                                        eventName: "appStartTest",
-                                                                        attributes: []),
-                                                                Trigger(type: .event,
-                                                                        eventType: .loginSuccessful,
-                                                                        eventName: "loginSuccessfulTest",
-                                                                        attributes: [])
+            let testCampaign = TestHelpers.generateCampaign(
+                id: "test",
+                test: false, delay: 0,
+                maxImpressions: 1,
+                triggers: [
+                    Trigger(type: .event,
+                            eventType: .appStart,
+                            eventName: "appStartTest",
+                            attributes: []),
+                    Trigger(type: .event,
+                            eventType: .loginSuccessful,
+                            eventName: "loginSuccessfulTest",
+                            attributes: [])
+                ]
+            )
+            let testCampaignCustom = TestHelpers.generateCampaign(
+                id: "test",
+                test: false, delay: 0,
+                maxImpressions: 1,
+                triggers: [
+                    Trigger(type: .event,
+                            eventType: .custom,
+                            eventName: "customEvent",
+                            attributes: [
+                                TriggerAttribute(name: "int",
+                                                 value: "1",
+                                                 type: .integer,
+                                                 operator: .greaterThan)])
                 ]
             )
 
@@ -60,7 +76,7 @@ class EventMatcherTests: QuickSpec {
                     }.to(throwError(EventMatcherError.couldntFindRequestedSetOfEvents))
                 }
 
-                it("will succeed if all events were found") {
+                it("will succeed if all events are found") {
                     campaignRepository.list = [testCampaign]
                     eventMatcher.matchAndStore(event: LoginSuccessfulEvent())
                     eventMatcher.matchAndStore(event: AppStartEvent())
@@ -68,6 +84,57 @@ class EventMatcherTests: QuickSpec {
                         try eventMatcher.removeSetOfMatchedEvents([AppStartEvent(), LoginSuccessfulEvent()],
                                                                   for: testCampaign)
                     }.toNot(throwError())
+                }
+
+                it("will remove only one 'copy' of non-persistent event") {
+                    campaignRepository.list = [testCampaign]
+                    eventMatcher.matchAndStore(event: LoginSuccessfulEvent())
+                    eventMatcher.matchAndStore(event: LoginSuccessfulEvent())
+                    eventMatcher.matchAndStore(event: AppStartEvent())
+
+                    //swiftlint:disable:next force_try
+                    try! eventMatcher.removeSetOfMatchedEvents([AppStartEvent(), LoginSuccessfulEvent()],
+                                                                for: testCampaign)
+                    expect {
+                        try eventMatcher.removeSetOfMatchedEvents([AppStartEvent(), LoginSuccessfulEvent()],
+                                                                  for: testCampaign)
+                    }.toNot(throwError())
+                }
+
+                it("will not succeed if one of requested events doesn't match given campaign") {
+                    campaignRepository.list = [testCampaign] // requires only Login and AppStart events
+                    eventMatcher.matchAndStore(event: LoginSuccessfulEvent())
+                    eventMatcher.matchAndStore(event: AppStartEvent())
+                    eventMatcher.matchAndStore(event: PurchaseSuccessfulEvent())
+                    expect {
+                        try eventMatcher.removeSetOfMatchedEvents([AppStartEvent(), LoginSuccessfulEvent(), PurchaseSuccessfulEvent()],
+                                                                  for: testCampaign)
+                    }.to(throwError(EventMatcherError.couldntFindRequestedSetOfEvents))
+                }
+
+                it("will remove only matching custom event") {
+                    campaignRepository.list = [testCampaignCustom]
+                    eventMatcher.matchAndStore(
+                        event: CustomEvent(withName: "customEvent",
+                                           withCustomAttributes: [CustomAttribute(withKeyName: "int", withIntValue: 1)]))
+                    eventMatcher.matchAndStore(
+                        event: CustomEvent(withName: "customEvent",
+                                           withCustomAttributes: [CustomAttribute(withKeyName: "int", withIntValue: 10)]))
+                    eventMatcher.matchAndStore(
+                        event: CustomEvent(withName: "customEvent",
+                                           withCustomAttributes: [CustomAttribute(withKeyName: "int", withIntValue: 1)]))
+                    expect {
+                        try eventMatcher.removeSetOfMatchedEvents([
+                            CustomEvent(withName: "customEvent",
+                                        withCustomAttributes: [CustomAttribute(withKeyName: "int", withIntValue: 10)])],
+                            for: testCampaignCustom)
+                    }.toNot(throwError(EventMatcherError.couldntFindRequestedSetOfEvents))
+
+                    expect(eventMatcher.matchedEvents(for: testCampaignCustom))
+                        .toNot(containElementSatisfying({
+                            ($0 as? CustomEvent)?.customAttributes?.first?.value as? Int == 10
+                        })
+                    )
                 }
 
                 it("will succeed again without need for persistent event to be logged") {

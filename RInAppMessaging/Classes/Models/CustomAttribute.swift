@@ -47,4 +47,18 @@ public class CustomAttribute: NSObject {
         self.value = value
         self.type = .timeInMilliseconds
     }
+
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let object = object as? CustomAttribute else {
+            return false
+        }
+
+        // casting to NSObject to make comparison possible (workaround)
+        guard let selfValue = value as? NSObject,
+            let objectValue = object.value as? NSObject else {
+                return false
+        }
+
+        return selfValue == objectValue && object.type == type && object.name == name
+    }
 }

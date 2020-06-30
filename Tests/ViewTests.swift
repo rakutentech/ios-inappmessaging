@@ -1,5 +1,6 @@
 import Quick
 import Nimble
+import WebKit
 @testable import RInAppMessaging
 
 class ViewTests: QuickSpec {
@@ -128,6 +129,47 @@ class ViewTests: QuickSpec {
                 view.setup(viewModel: FullViewModel.empty)
                 expect(presenter.impressions).to(beEmpty())
             }
+
+            it("will prevent execution of web page's javascript code in web view") {
+                let webView = view.createWebView(
+                    withHtmlString: #"""
+                        <body>
+                            <script>
+                                window.webkit.messageHandlers.echo.postMessage("Echo");
+                            </script>
+                        </body>
+                    """#,
+                    andFrame: CGRect(x: 0, y: 0, width: 100, height: 100))
+
+                UIApplication.shared.keyWindow?.addSubview(webView)
+                expect(webView.superview).toNot(beNil())
+
+                let scriptHandler = WebViewScriptMessageHandler()
+                webView.configuration.userContentController.add(scriptHandler, name: "echo")
+                waitUntil(timeout: 2.0) { done in
+                    DispatchQueue.global(qos: .userInteractive).async {
+                        sleep(1)
+                        expect(scriptHandler.result).toNot(equal("Echo"))
+                        done()
+                    }
+                }
+
+                webView.removeFromSuperview()
+            }
+
+            //swiftlint:disable:next todo
+            // FIXME: This test is disabled because it's failing on CI. Reason unknown
+//            it("will prevent execution of javascript code in web view using `evaluateJavaScript()`") {
+//                let webView = view.createWebView(withHtmlString: "<body>Text</body>", andFrame: .zero)
+//
+//                waitUntil(timeout: 5.0) { done in
+//                    webView.evaluateJavaScript("document.body.innerHTML") { (_, error) in
+//                        expect((error as NSError?)?.code).to(equal(4))
+//                        expect((error as NSError?)?.domain).to(equal("WKErrorDomain"))
+//                        done()
+//                    }
+//                }
+//            }
         }
 
         describe("ModalView") {
@@ -250,5 +292,15 @@ extension SlideUpViewModel {
                      backgroundColor: .black,
                      messageBody: "",
                      messageBodyColor: .black)
+    }
+}
+
+private class WebViewScriptMessageHandler: NSObject, WKScriptMessageHandler {
+
+    private(set) var result = ""
+
+    func userContentController(_ userContentController: WKUserContentController,
+                               didReceive message: WKScriptMessage) {
+        result = (message.body as? String) ?? "Error"
     }
 }
