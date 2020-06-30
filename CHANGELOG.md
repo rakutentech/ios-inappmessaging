@@ -1,6 +1,6 @@
 ## Changelog
 
-### 2.0.0 (2020-06-11)
+### 2.0.0 (2020-06-30)
 - Initial open sourced release
 - This version is a major refactor. Highlights include:
     - Improved maintainability, testability and error handling
