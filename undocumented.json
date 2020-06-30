@@ -71,6 +71,13 @@
       "warning": "undocumented"
     },
     {
+      "file": "/Users/travis/build/rakutentech/ios-inappmessaging/RInAppMessaging/Classes/Events/CustomEvent.swift",
+      "line": 49,
+      "symbol": "CustomEvent.isEqual(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
       "file": "/Users/travis/build/rakutentech/ios-inappmessaging/RInAppMessaging/Classes/Events/Event.swift",
       "line": 28,
       "symbol": "Event.isEqual(_:)",
@@ -221,6 +228,13 @@
       "file": "/Users/travis/build/rakutentech/ios-inappmessaging/RInAppMessaging/Classes/Models/CustomAttribute.swift",
       "line": 45,
       "symbol": "CustomAttribute.init(withKeyName:withTimeInMilliValue:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/travis/build/rakutentech/ios-inappmessaging/RInAppMessaging/Classes/Models/CustomAttribute.swift",
+      "line": 51,
+      "symbol": "CustomAttribute.isEqual(_:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     }
