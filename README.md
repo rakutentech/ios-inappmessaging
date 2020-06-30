@@ -14,7 +14,7 @@ More information on installing pods: [https://guides.cocoapods.org/using/getting
 1) Include the following in your application's Podfile
 
 ```ruby
-pod 'RInAppMessaging' :git => 'https://github.com/rakutentech/ios-inappmessaging.git'
+pod 'RInAppMessaging'
 ```
 
 2) Run the following in the terminal
@@ -31,7 +31,7 @@ pod install
 
 | Key     | Value     |
 | :---:   | :---:     |
-| `InAppMessagingAppSubscriptionID` | Your subscription key |
+| `InAppMessagingAppSubscriptionID` | your_subscription_key |
 | `InAppMessagingConfigurationURL` | Endpoint for fetching the configuration |
 
 

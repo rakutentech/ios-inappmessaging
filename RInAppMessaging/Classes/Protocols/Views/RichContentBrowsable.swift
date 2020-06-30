@@ -14,6 +14,8 @@ extension RichContentBrowsable {
         webView.loadHTMLString(headerString + htmlString, baseURL: nil)
         webView.frame = frame
         webView.contentMode = .scaleAspectFit
+        webView.configuration.preferences.javaScriptEnabled = false
+        webView.configuration.userContentController.removeAllUserScripts()
 
         return webView
     }
