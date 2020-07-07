@@ -1,7 +1,7 @@
 clean: true
 author: Rakuten
 github_url: https://github.com/rakutentech/ios-inappmessaging
-module_version: 0.1.0
+module_version: 2.0.0
 module: RInAppMessaging
 xcodebuild_arguments:
   - -workspace
@@ -10,3 +10,5 @@ xcodebuild_arguments:
   - RInAppMessaging-Example
 podspec: RInAppMessaging.podspec
 readme: README.md
+documentation: "*.md"
+hide_documentation_coverage: true
