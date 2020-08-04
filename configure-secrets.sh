@@ -1,8 +1,17 @@
 #!/bin/sh -e
 
+#In order to have the // in https://, we need to split it with an empty variable substitution via $()
+secureDoubleSlashForXCConfig() {
+	ENDPOINT=$1
+	URL_DOUBLE_SLASH_TO_BE_REPLACED="\/\/"
+	BY_2_SLASHES_SPLITTED_BY_EMPTY_VARIABLE="/\$()/"
+
+	SECURE_DOUBLE_SLASH_FOR_XCCONFIG_RESULT="${ENDPOINT/$URL_DOUBLE_SLASH_TO_BE_REPLACED/$BY_2_SLASHES_SPLITTED_BY_EMPTY_VARIABLE}" 
+}
+
 NOCOLOR='\033[0m'
 RED='\033[0;31m'
-SECRETS_FILE=Sample/Example-Secrets.xcconfig
+SECRETS_FILE=../InAppMessaging-Secrets.xcconfig
 
 echo "Configuring project's build secrets in $SECRETS_FILE..."
 
@@ -17,7 +26,8 @@ do
   fi
 done
 
-CONFIG_URL=${RIAM_CONFIG_URL}
+secureDoubleSlashForXCConfig ${RIAM_CONFIG_URL:=https://www.example.com}
+CONFIG_URL=$SECURE_DOUBLE_SLASH_FOR_XCCONFIG_RESULT
 SUBSCRIPTION_KEY=${RIAM_APP_SUBSCRIPTION_KEY}
 
 # Overwrite secrets xcconfig and add file header
