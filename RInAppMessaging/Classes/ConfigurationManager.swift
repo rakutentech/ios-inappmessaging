@@ -4,7 +4,7 @@ internal protocol ConfigurationManagerType: AnyObject, ErrorReportable {
     func fetchAndSaveConfigData(completion: @escaping (ConfigData) -> Void)
 }
 
-internal class ConfigurationManager: ConfigurationManagerType, ReachabilityObserver {
+internal class ConfigurationManager: ConfigurationManagerType {
 
     private enum Constants {
         static let initialRetryDelayMS = Int32(10000)
@@ -13,6 +13,7 @@ internal class ConfigurationManager: ConfigurationManagerType, ReachabilityObser
     private let configurationService: ConfigurationServiceType
     private let configurationRepository: ConfigurationRepositoryType
     private let reachability: ReachabilityType?
+    private let resumeQueue: DispatchQueue
 
     private var retryDelayMS = Constants.initialRetryDelayMS
     private var lastRequestTime: TimeInterval = 0
@@ -22,11 +23,13 @@ internal class ConfigurationManager: ConfigurationManagerType, ReachabilityObser
 
     init(reachability: ReachabilityType?,
          configurationService: ConfigurationServiceType,
-         configurationRepository: ConfigurationRepositoryType) {
+         configurationRepository: ConfigurationRepositoryType,
+         resumeQueue: DispatchQueue) {
 
         self.reachability = reachability
         self.configurationService = configurationService
         self.configurationRepository = configurationRepository
+        self.resumeQueue = resumeQueue
     }
 
     func fetchAndSaveConfigData(completion: @escaping (ConfigData) -> Void) {
@@ -55,9 +58,11 @@ internal class ConfigurationManager: ConfigurationManagerType, ReachabilityObser
             retryDelayMS = retryDelayMS.multipliedReportingOverflow(by: 2).partialValue
         }
     }
+}
 
-    // MARK: - ReachabilityObserver
+// MARK: - ReachabilityObserver
 
+extension ConfigurationManager: ReachabilityObserver {
     func reachabilityChanged(_ reachability: ReachabilityType) {
         guard let onConnectionResumed = onConnectionResumed,
             reachability.connection.isAvailable else {
@@ -66,6 +71,9 @@ internal class ConfigurationManager: ConfigurationManagerType, ReachabilityObser
 
         reachability.removeObserver(self)
         self.onConnectionResumed = nil
-        onConnectionResumed()
+
+        resumeQueue.async(flags: .barrier) {
+            onConnectionResumed()
+        }
     }
 }
