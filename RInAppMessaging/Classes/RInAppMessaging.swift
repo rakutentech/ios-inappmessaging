@@ -49,7 +49,7 @@
     static func configure(dependencyManager: DependencyManager) {
         self.dependencyManager = dependencyManager
 
-        dependencyManager.resolve(type: DispatchQueue.self)?.async(flags: .barrier) {
+        inAppQueue?.async(flags: .barrier) {
             guard initializedModule == nil else {
                 return
             }
