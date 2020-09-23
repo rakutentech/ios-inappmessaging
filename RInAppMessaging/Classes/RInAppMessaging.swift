@@ -13,6 +13,9 @@
 
     internal private(set) static var initializedModule: InAppMessagingModule?
     private(set) static var dependencyManager: DependencyManager?
+    private static var inAppQueue: DispatchQueue? {
+        dependencyManager?.resolve(type: DispatchQueue.self)
+    }
 
     private override init() { super.init() }
 
@@ -87,7 +90,7 @@
     /// Log the event name passed in and also pass the event name to the view controller to display a matching campaign.
     /// - Parameter event: The Event object to log.
     @objc public static func logEvent(_ event: Event) {
-        dependencyManager?.resolve(type: DispatchQueue.self)?.async(flags: .barrier) {
+        inAppQueue?.async(flags: .barrier) {
             initializedModule?.logEvent(event)
         }
     }
@@ -95,13 +98,13 @@
     /// Register user preference to the IAM SDK.
     /// - Parameter preference: Preferences of the user.
     @objc public static func registerPreference(_ preference: IAMPreference?) {
-        dependencyManager?.resolve(type: DispatchQueue.self)?.async(flags: .barrier) {
+        inAppQueue?.async(flags: .barrier) {
             initializedModule?.registerPreference(preference)
         }
     }
 
     internal static func deinitializeModule() {
-        dependencyManager?.resolve(type: DispatchQueue.self)?.sync {
+        inAppQueue?.sync {
             initializedModule = nil
         }
     }

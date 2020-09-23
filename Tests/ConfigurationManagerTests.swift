@@ -18,7 +18,8 @@ class ConfigurationManagerTests: QuickSpec {
                 configurationRepository = ConfigurationRepository()
                 configurationManager = ConfigurationManager(reachability: reachability,
                                                             configurationService: configurationService,
-                                                            configurationRepository: configurationRepository)
+                                                            configurationRepository: configurationRepository,
+                                                            resumeQueue: DispatchQueue(label: "iam.test.request"))
             }
 
             context("fetchAndSaveConfigData") {
