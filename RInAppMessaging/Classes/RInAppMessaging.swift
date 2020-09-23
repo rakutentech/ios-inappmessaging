@@ -11,9 +11,11 @@
 /// Conforms to NSObject and exposed with objc tag to make it work with Obj-c projects.
 @objc public class RInAppMessaging: NSObject {
 
-    private static let inAppQueue = DispatchQueue(label: "IAM.Main", qos: .utility, attributes: [])
     internal private(set) static var initializedModule: InAppMessagingModule?
     private(set) static var dependencyManager: DependencyManager?
+    private static var inAppQueue: DispatchQueue? {
+        dependencyManager?.resolve(type: DispatchQueue.self)
+    }
 
     private override init() { super.init() }
 
@@ -47,7 +49,7 @@
     static func configure(dependencyManager: DependencyManager) {
         self.dependencyManager = dependencyManager
 
-        inAppQueue.async(flags: .barrier) {
+        inAppQueue?.async(flags: .barrier) {
             guard initializedModule == nil else {
                 return
             }
@@ -88,7 +90,7 @@
     /// Log the event name passed in and also pass the event name to the view controller to display a matching campaign.
     /// - Parameter event: The Event object to log.
     @objc public static func logEvent(_ event: Event) {
-        inAppQueue.async(flags: .barrier) {
+        inAppQueue?.async(flags: .barrier) {
             initializedModule?.logEvent(event)
         }
     }
@@ -96,13 +98,13 @@
     /// Register user preference to the IAM SDK.
     /// - Parameter preference: Preferences of the user.
     @objc public static func registerPreference(_ preference: IAMPreference?) {
-        inAppQueue.async(flags: .barrier) {
+        inAppQueue?.async(flags: .barrier) {
             initializedModule?.registerPreference(preference)
         }
     }
 
     internal static func deinitializeModule() {
-        inAppQueue.sync {
+        inAppQueue?.sync {
             initializedModule = nil
         }
     }
