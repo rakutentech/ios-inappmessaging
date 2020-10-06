@@ -33,6 +33,19 @@ internal extension BaseView {
         onDismiss?()
     }
 
+    private func getKeyWindow() -> UIWindow? {
+        var keySceneWindow: UIWindow?
+        if #available(iOS 13.0, *) {
+            keySceneWindow = UIApplication.shared.connectedScenes
+                .filter({ $0.activationState == .foregroundActive })
+                .compactMap({ $0 as? UIWindowScene })
+                .first?.windows
+                .first(where: { $0.isKeyWindow })
+        }
+
+        return keySceneWindow ?? UIApplication.shared.keyWindow
+    }
+
     /// Find the presented view controller and add the `BaseView` on top.
     private func displayView(accessibilityCompatible: Bool) {
         self.accessibilityIdentifier = viewIdentifier
@@ -49,7 +62,7 @@ internal extension BaseView {
             return nil
         }
 
-        guard let window =  UIApplication.shared.keyWindow,
+        guard let window = getKeyWindow(),
             findPresentedIAMView(from: window) == nil else {
                 return
         }
