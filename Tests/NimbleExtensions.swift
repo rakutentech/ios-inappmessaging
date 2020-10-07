@@ -6,9 +6,10 @@ extension Expectation {
                         timeout: TimeInterval = 1.0) {
 
         let timeForExecution: TimeInterval = 1.0
-        waitUntil(timeout: timeout + timeForExecution) { done in
+        let totalTimeoutMS = Int((timeout + timeForExecution) * TimeInterval(USEC_PER_SEC))
+        waitUntil(timeout: .microseconds(totalTimeoutMS)) { done in
             DispatchQueue.global(qos: .userInteractive).async {
-                usleep(useconds_t(timeout * pow(10, 6)))
+                usleep(useconds_t(timeout * TimeInterval(USEC_PER_SEC)))
 
                 DispatchQueue.main.async {
                     expect {

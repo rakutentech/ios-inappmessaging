@@ -50,7 +50,7 @@ class IdRegistrationTests: QuickSpec {
                 )
 
                 let expected = [UserIdentifier(type: .userId, identifier: "whales and dolphins")]
-                expect(preferenceRepository.getUserIdentifiers()).toEventually(equal(expected), timeout: 3, pollInterval: 1)
+                expect(preferenceRepository.getUserIdentifiers()).toEventually(equal(expected), timeout: .seconds(3), pollInterval: .seconds(1))
             }
 
             it("should have two matching id type and id value") {

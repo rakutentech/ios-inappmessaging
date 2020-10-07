@@ -1,14 +1,14 @@
 PODS:
-  - Nimble (8.0.7)
-  - Quick (2.2.0)
+  - Nimble (9.0.0)
+  - Quick (3.0.0)
   - RInAppMessaging (2.0.0)
-  - SwiftLint (0.39.1)
+  - SwiftLint (0.40.3)
 
 DEPENDENCIES:
   - Nimble
   - Quick
   - RInAppMessaging (from `.`)
-  - SwiftLint (~> 0.39.0)
+  - SwiftLint (~> 0.40.0)
 
 SPEC REPOS:
   trunk:
@@ -21,11 +21,11 @@ EXTERNAL SOURCES:
     :path: "."
 
 SPEC CHECKSUMS:
-  Nimble: a73af6ecd4c9106f434f3d55fc54570be3739e0b
-  Quick: 7fb19e13be07b5dfb3b90d4f9824c855a11af40e
+  Nimble: 3b4ec3fd40f1dc178058e0981107721c615643d8
+  Quick: 6d9559f40647bc4d510103842ef2fdd882d753e2
   RInAppMessaging: 16c9fe8e28be1d03aa5208b38a13dbf5f6c282fd
-  SwiftLint: 55e96a4a4d537d4a3156859fc1c54bd24851a046
+  SwiftLint: dfd554ff0dff17288ee574814ccdd5cea85d76f7
 
-PODFILE CHECKSUM: cade48b594a1c0fe3ab3d602967297325f383b44
+PODFILE CHECKSUM: 28dc4c45502f0ab0cc2a5647a7de9aa8747d072b
 
 COCOAPODS: 1.9.3

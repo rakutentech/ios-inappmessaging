@@ -205,8 +205,8 @@ class URLSessionMock: URLSession {
             #selector(dummyObject.dataTask(with:completionHandler:)
                 as (URLRequest, @escaping SessionTaskCompletion) -> URLSessionDataTask))!
 
-        method_exchangeImplementations(originalMethod, swizzledMethod)
         swizzledMethods = (originalMethod, swizzledMethod)
+        method_exchangeImplementations(originalMethod, swizzledMethod)
     }
 
     static func stopMockingURLSession() {
@@ -235,8 +235,9 @@ class URLSessionMock: URLSession {
             mockedSession = URLSessionMock.mockSessionLinks[self]
         }
 
+        let originalSession = mockedSession?.originalInstance ?? URLSession(configuration: .default)
         guard let mockContainer = mockedSession else {
-            return URLSessionDataTask()
+            return originalSession.dataTask(with: request)
         }
 
         mockContainer.sentRequest = request
@@ -244,7 +245,8 @@ class URLSessionMock: URLSession {
                           mockContainer.httpResponse,
                           mockContainer.responseError)
 
-        return URLSessionDataTask()
+        // URLSessionDataTask object must be created by URLSession object
+        return originalSession.dataTask(with: request)
     }
 }
 

@@ -54,7 +54,7 @@ class ReadyCampaignDispatcherTests: QuickSpec {
                         dispatcher.addToQueue(campaign: firstCampaign)
                         dispatcher.dispatchAllIfNeeded()
                         dispatcher.addToQueue(campaign: secondCampaign)
-                        expect(router.lastDisplayedCampaign).toEventually(equal(secondCampaign), timeout: 2)
+                        expect(router.lastDisplayedCampaign).toEventually(equal(secondCampaign), timeout: .seconds(2))
                     }
 
                     it("won't start another dispatch procedure if one has already started") {

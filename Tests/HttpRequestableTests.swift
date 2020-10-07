@@ -213,7 +213,7 @@ class HttpRequestableTests: QuickSpec {
                             let error = result.getError()
                             expect(error).to(matchError(RequestError.self))
 
-                            guard case .httpError(_, _, _) = error else {
+                            guard case .httpError = error else {
                                 fail("Unexpected error type \(String(describing: error)). Expected .httpError")
                                 done()
                                 return
@@ -243,7 +243,7 @@ class HttpRequestableTests: QuickSpec {
                             let error = result.getError()
                             expect(error).to(matchError(RequestError.self))
 
-                            guard case .httpError(_, _, _) = error else {
+                            guard case .httpError = error else {
                                 fail("Unexpected error type \(String(describing: error)). Expected .httpError")
                                 done()
                                 return
@@ -505,7 +505,7 @@ class HttpRequestableTests: QuickSpec {
                     let error = result?.getError()
                     expect(error).to(matchError(RequestError.self))
 
-                    guard case .httpError(_, _, _) = error else {
+                    guard case .httpError = error else {
                         fail("Unexpected error type \(String(describing: error)). Expected .httpError")
                         return
                     }
@@ -536,7 +536,7 @@ class HttpRequestableTests: QuickSpec {
                     let error = result?.getError()
                     expect(error).to(matchError(RequestError.self))
 
-                    guard case .httpError(_, _, _) = error else {
+                    guard case .httpError = error else {
                         fail("Unexpected error type \(String(describing: error)). Expected .httpError")
                         return
                     }

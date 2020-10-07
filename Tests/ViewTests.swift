@@ -146,7 +146,7 @@ class ViewTests: QuickSpec {
 
                 let scriptHandler = WebViewScriptMessageHandler()
                 webView.configuration.userContentController.add(scriptHandler, name: "echo")
-                waitUntil(timeout: 2.0) { done in
+                waitUntil(timeout: .seconds(2)) { done in
                     DispatchQueue.global(qos: .userInteractive).async {
                         sleep(1)
                         expect(scriptHandler.result).toNot(equal("Echo"))
@@ -183,7 +183,7 @@ class ViewTests: QuickSpec {
             }
 
             it("will have .modal mode set") {
-                if case .modal(_) = view.mode {
+                if case .modal = view.mode {
                     // expected
                 } else {
                     fail("Expected ModalView to have .modal mode. Actual: \(view.mode)")
