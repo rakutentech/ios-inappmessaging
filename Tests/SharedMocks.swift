@@ -39,10 +39,10 @@ class CampaignRepositoryMock: CampaignRepositoryType {
 class CampaignDispatcherMock: CampaignDispatcherType {
     weak var delegate: CampaignDispatcherDelegate?
     private(set) var wasDispatchCalled = false
-    private(set) var addedCampaigns = [Campaign]()
+    private(set) var addedCampaignsWithContexts = [(campaign: Campaign, contexts: [EventContext])]()
 
-    func addToQueue(campaign: Campaign) {
-        addedCampaigns.append(campaign)
+    func addToQueue(campaign: Campaign, contexts: [EventContext]) {
+        addedCampaignsWithContexts.append((campaign, contexts))
     }
     func dispatchAllIfNeeded() {
         wasDispatchCalled = true
@@ -87,7 +87,7 @@ class MessageMixerServiceMock: MessageMixerServiceType {
             guard Thread.current != .main else {
                 fatalError("Delay function shoudn't be used on the main thread")
             }
-            usleep(UInt32(round(delay * pow(10, 6))))
+            usleep(UInt32(UInt64(delay) * USEC_PER_SEC))
         }
 
         if let mockedResponse = mockedResponse {

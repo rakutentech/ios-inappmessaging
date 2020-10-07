@@ -1,3 +1,10 @@
+/// Protocol for optional delagate
+@objc public protocol RInAppMessagingDelegate: AnyObject {
+    /// Method will be called just before displaying each campaign message.
+    /// By default all messages will be displayed.
+    func inAppMessagingShouldShowCampaignMessage(title: String, contexts: [EventContext]) -> Bool
+}
+
 /// Protocol for optional error delegate of InAppMessaging module
 @objc public protocol RInAppMessagingErrorDelegate {
     /// Method will be called whenever any internal error occurs.
@@ -32,6 +39,13 @@
 
     /// Optional error delegate for debugging purposes
     @objc public static weak var errorDelegate: RInAppMessagingErrorDelegate?
+
+    /// Optional delegate for advanced features
+    @objc public static weak var delegate: RInAppMessagingDelegate? {
+        didSet {
+            initializedModule?.delegate = delegate
+        }
+    }
 
     /// Function to be called by host application to start a new thread that
     /// configures Rakuten InAppMessaging SDK.
@@ -80,6 +94,7 @@
             initializedModule?.aggregatedErrorHandler = { error in
                 errorDelegate?.inAppMessagingDidReturnError(error)
             }
+            initializedModule?.delegate = delegate
             initializedModule?.initialize(deinitHandler: {
                 self.initializedModule = nil
                 self.dependencyManager = nil
@@ -89,8 +104,10 @@
 
     /// Log the event name passed in and also pass the event name to the view controller to display a matching campaign.
     /// - Parameter event: The Event object to log.
-    @objc public static func logEvent(_ event: Event) {
+    /// - Parameter context: The Context object to be attached to matching campaigns (optional).
+    @objc public static func logEvent(_ event: Event, context: EventContext? = nil) {
         inAppQueue?.async(flags: .barrier) {
+            event.context = context
             initializedModule?.logEvent(event)
         }
     }

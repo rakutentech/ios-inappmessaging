@@ -6,8 +6,11 @@ internal protocol RouterType: AnyObject {
     /// Contains logic to display the correct view type and create
     /// a view controller to present a single campaign.
     /// - Parameter campaign: The campaign object to display.
+    /// - Parameter confirmation: A handler called just before displaying.
     /// - Parameter completion: Completion handler called once displaying has finished.
-    func displayCampaign(_ campaign: Campaign, completion: @escaping () -> Void)
+    func displayCampaign(_ campaign: Campaign,
+                         confirmation: @escaping () -> Bool,
+                         completion: @escaping () -> Void)
 }
 
 /// Handles all the displaying logic of the SDK.
@@ -20,7 +23,10 @@ internal class Router: RouterType {
         self.dependencyManager = dependencyManager
     }
 
-    func displayCampaign(_ campaign: Campaign, completion: @escaping () -> Void) {
+    func displayCampaign(_ campaign: Campaign,
+                         confirmation: @escaping () -> Bool,
+                         completion: @escaping () -> Void) {
+
         guard let campaignViewType = campaign.data.type, campaignViewType != .invalid else {
             CommonUtility.debugPrint("Error: Campaign view type not supported")
             completion()
@@ -64,7 +70,7 @@ internal class Router: RouterType {
             }
 
             DispatchQueue.main.async {
-                guard let view = viewConstructor?() else {
+                guard let view = viewConstructor?(), confirmation() else {
                     completion()
                     return
                 }

@@ -113,13 +113,16 @@ struct TestHelpers {
                                            delay: Int,
                                            triggers: [Trigger]? = nil) -> PingResponse {
             var campaigns = [Campaign]()
-            for i in 1...count {
-                campaigns.append(generateCampaign(
-                    id: "testCampaignId\(i)",
-                    test: test,
-                    delay: delay,
-                    maxImpressions: 2,
-                    triggers: triggers))
+            //swiftlint:disable:next empty_count
+            if count > 0 {
+                for i in 1...count {
+                    campaigns.append(generateCampaign(
+                        id: "testCampaignId\(i)",
+                        test: test,
+                        delay: delay,
+                        maxImpressions: 2,
+                        triggers: triggers))
+                }
             }
 
             return PingResponse(

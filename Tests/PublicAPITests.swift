@@ -6,11 +6,12 @@ class PublicAPITests: QuickSpec {
 
     override func spec() {
 
-        var eventMatcher: EventMatcherMock!
+        var eventMatcher: EventMatcherSpy!
         var preferenceRepository: IAMPreferenceRepository!
         var router: RouterType!
         var messageMixerService: MessageMixerServiceMock!
         var campaignsListManager: CampaignsListManagerType!
+        var delegate: Delegate!
 
         func mockContainer() -> DependencyManager.Container {
             return DependencyManager.Container([
@@ -29,9 +30,11 @@ class PublicAPITests: QuickSpec {
         }
 
         func reinitializeSDK() {
-            RInAppMessaging.deinitializeModule()
             let dependencyManager = DependencyManager()
             dependencyManager.appendContainer(MainContainerFactory.create(dependencyManager: dependencyManager))
+            messageMixerService = MessageMixerServiceMock()
+            eventMatcher = EventMatcherSpy(
+                campaignRepository: dependencyManager.resolve(type: CampaignRepositoryType.self)!)
             dependencyManager.appendContainer(mockContainer())
             preferenceRepository = dependencyManager.resolve(type: IAMPreferenceRepository.self)!
             router = dependencyManager.resolve(type: RouterType.self)!
@@ -40,17 +43,20 @@ class PublicAPITests: QuickSpec {
         }
 
         beforeEach {
-            eventMatcher = EventMatcherMock()
-            messageMixerService = MessageMixerServiceMock()
             reinitializeSDK()
+            delegate = Delegate()
+            RInAppMessaging.delegate = delegate
+            // wait for initialization to finish
+            expect(RInAppMessaging.initializedModule).toEventuallyNot(beNil())
+        }
+
+        afterEach {
+            RInAppMessaging.deinitializeModule()
         }
 
         describe("RInAppMessaging") {
 
             it("won't reinitialize module if config was called more than once") {
-                // wait for beforeEach configuration to finish
-                expect(RInAppMessaging.initializedModule).toEventuallyNot(beNil())
-
                 let expectedModule = RInAppMessaging.initializedModule
                 RInAppMessaging.configure()
                 expect(RInAppMessaging.initializedModule).toAfterTimeout(beIdenticalTo(expectedModule))
@@ -99,12 +105,94 @@ class PublicAPITests: QuickSpec {
 
             it("won't send any events until configuration has finished") {
                 messageMixerService.delay = 3.0
+                RInAppMessaging.deinitializeModule()
                 reinitializeSDK()
                 RInAppMessaging.logEvent(LoginSuccessfulEvent())
-                expect(eventMatcher.loggedEvents).toAfterTimeout(beEmpty())
+                expect(eventMatcher.loggedEvents).toAfterTimeout(beEmpty(), timeout: 1)
                 expect(eventMatcher.loggedEvents).toEventually(haveCount(1),
                                                                timeout: .seconds(Int(messageMixerService.delay + 1)),
                                                                pollInterval: .milliseconds(500))
+            }
+
+            context("delegate") {
+                afterEach {
+                    UIApplication.shared.keyWindow?.subviews
+                        .filter { $0 is BaseView }
+                        .forEach { $0.removeFromSuperview() }
+                }
+
+                it("will call the method just before showing a message") {
+                    messageMixerService.mockedResponse = TestHelpers.MockResponse.withGeneratedCampaigns(
+                        count: 1, test: false, delay: 0,
+                        triggers: [Trigger(type: .event,
+                                           eventType: .loginSuccessful,
+                                           eventName: "e1",
+                                           attributes: [])])
+                    campaignsListManager.refreshList()
+                    RInAppMessaging.logEvent(LoginSuccessfulEvent())
+                    
+                    expect(delegate.shouldShowCampaignCallCount).toEventually(equal(1))
+                }
+
+                it("will show a message if the method returned true") {
+                    delegate.shouldShowCampaignResult = true
+                    messageMixerService.mockedResponse = TestHelpers.MockResponse.withGeneratedCampaigns(
+                        count: 2, test: false, delay: 100,
+                        triggers: [Trigger(type: .event,
+                                           eventType: .loginSuccessful,
+                                           eventName: "e1",
+                                           attributes: [])])
+                    campaignsListManager.refreshList()
+                    RInAppMessaging.logEvent(LoginSuccessfulEvent())
+
+                    expect(UIApplication.shared.keyWindow?.subviews).toEventually(containElementSatisfying({
+                        if let view = $0 as? BaseView {
+                            view.dismiss()
+                            return true
+                        }
+                        return false
+                    }))
+                    expect(delegate.shouldShowCampaignCallCount).toEventually(equal(2))
+                }
+
+                it("will not show a message if the method returned false") {
+                    delegate.shouldShowCampaignResult = false
+                    messageMixerService.mockedResponse = TestHelpers.MockResponse.withGeneratedCampaigns(
+                        count: 2, test: false, delay: 100,
+                        triggers: [Trigger(type: .event,
+                                           eventType: .loginSuccessful,
+                                           eventName: "e1",
+                                           attributes: [])])
+                    campaignsListManager.refreshList()
+                    RInAppMessaging.logEvent(LoginSuccessfulEvent())
+
+                    expect(UIApplication.shared.keyWindow?.subviews)
+                        .toAfterTimeout(allPass({ !($0 is BaseView) }))
+                    expect(delegate.shouldShowCampaignCallCount).toAfterTimeout(equal(0))
+                }
+
+                it("will call the method before showing a message with proper parameters") {
+                    delegate.shouldShowCampaignResult = true
+                    messageMixerService.mockedResponse = TestHelpers.MockResponse.withGeneratedCampaigns(
+                        count: 1, test: false, delay: 100,
+                        triggers: [Trigger(type: .event,
+                                           eventType: .loginSuccessful,
+                                           eventName: "e1",
+                                           attributes: []),
+                                   Trigger(type: .event,
+                                                      eventType: .purchaseSuccessful,
+                                                      eventName: "e2",
+                                                      attributes: [])])
+                    campaignsListManager.refreshList()
+                    let context1 = EventContext(id: "1")
+                    let context2 = EventContext(id: "2", userInfo: ["info": "info"])
+                    RInAppMessaging.logEvent(LoginSuccessfulEvent(), context: context1)
+                    RInAppMessaging.logEvent(PurchaseSuccessfulEvent(), context: context2)
+
+                    expect(delegate.shouldShowCampaignCallParameters?.title).toEventually(equal("testTitle"), timeout: .seconds(2))
+                    expect(delegate.shouldShowCampaignCallParameters?.contexts)
+                        .toEventually(contain([context1, context2]), timeout: .seconds(2))
+                }
             }
         }
     }
@@ -114,5 +202,26 @@ private class ErrorDelegate: RInAppMessagingErrorDelegate {
     private(set) var returnedError: NSError?
     func inAppMessagingDidReturnError(_ error: NSError) {
         returnedError = error
+    }
+}
+
+private class Delegate: RInAppMessagingDelegate {
+    var shouldShowCampaignCallCount = 0
+    var shouldShowCampaignResult = true
+    var shouldShowCampaignCallParameters: (title: String, contexts: [EventContext])?
+
+    func inAppMessagingShouldShowCampaignMessage(title: String, contexts: [EventContext]) -> Bool {
+        shouldShowCampaignCallCount += 1
+        shouldShowCampaignCallParameters = (title, contexts)
+        return shouldShowCampaignResult
+    }
+}
+
+private class EventMatcherSpy: EventMatcher {
+    private(set) var loggedEvents = [Event]()
+
+    override func matchAndStore(event: Event) {
+        loggedEvents.append(event)
+        super.matchAndStore(event: event)
     }
 }

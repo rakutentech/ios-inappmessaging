@@ -14,10 +14,11 @@ internal protocol TaskSchedulable: AnyObject {
 /// Default implementation.
 extension TaskSchedulable {
     func scheduleWorkItem(milliseconds: Int, wallDeadline: Bool, closure: @escaping () -> Void) {
-
-        scheduledTask?.cancel()
-        scheduledTask = WorkScheduler.scheduleTask(milliseconds: milliseconds,
-                                                   closure: closure,
-                                                   wallDeadline: wallDeadline)
+        DispatchQueue.main.async {
+            self.scheduledTask?.cancel()
+            self.scheduledTask = WorkScheduler.scheduleTask(milliseconds: milliseconds,
+                                                            closure: closure,
+                                                            wallDeadline: wallDeadline)
+        }
     }
 }

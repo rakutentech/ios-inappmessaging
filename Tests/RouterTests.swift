@@ -35,40 +35,52 @@ class RouterTests: QuickSpec {
             }
 
             context("when calling displayCampaign") {
+                context("and display is not confirmed") {
 
-                it("will show ModalView for modal campaign type") {
-                    let campaign = TestHelpers.generateCampaign(id: "test", type: .modal)
-                    router.displayCampaign(campaign, completion: {})
-                    expect(UIApplication.shared.keyWindow?.subviews)
-                        .toEventually(containElementSatisfying({ $0 is ModalView }))
+                    it("will not show campaign message") {
+                        let campaign = TestHelpers.generateCampaign(id: "test", type: .modal)
+                        router.displayCampaign(campaign, confirmation: { false }, completion: {})
+                        expect(UIApplication.shared.keyWindow?.subviews)
+                            .toAfterTimeout(allPass({ !($0 is BaseView )}))
+                    }
                 }
 
-                it("will show FullScreenView for full campaign type") {
-                    let campaign = TestHelpers.generateCampaign(id: "test", type: .full)
-                    router.displayCampaign(campaign, completion: {})
-                    expect(UIApplication.shared.keyWindow?.subviews)
-                        .toEventually(containElementSatisfying({ $0 is FullScreenView }))
-                }
+                context("and display is confirmed") {
 
-                it("will show SlideUpView for slide campaign type") {
-                    let campaign = TestHelpers.generateCampaign(id: "test", type: .slide)
-                    router.displayCampaign(campaign, completion: {})
-                    expect(UIApplication.shared.keyWindow?.subviews)
-                        .toEventually(containElementSatisfying({ $0 is SlideUpView }))
-                }
+                    it("will show ModalView for modal campaign type") {
+                        let campaign = TestHelpers.generateCampaign(id: "test", type: .modal)
+                        router.displayCampaign(campaign, confirmation: { true }, completion: {})
+                        expect(UIApplication.shared.keyWindow?.subviews)
+                            .toEventually(containElementSatisfying({ $0 is ModalView }))
+                    }
 
-                it("will not show any view for invalid campaign type") {
-                    let campaign = TestHelpers.generateCampaign(id: "test", type: .invalid)
-                    router.displayCampaign(campaign, completion: {})
-                    expect(UIApplication.shared.keyWindow?.subviews)
-                        .toAfterTimeout(allPass({ !($0 is BaseView )}))
-                }
+                    it("will show FullScreenView for full campaign type") {
+                        let campaign = TestHelpers.generateCampaign(id: "test", type: .full)
+                        router.displayCampaign(campaign, confirmation: { true }, completion: {})
+                        expect(UIApplication.shared.keyWindow?.subviews)
+                            .toEventually(containElementSatisfying({ $0 is FullScreenView }))
+                    }
 
-                it("will not show any view for html campaign type") {
-                    let campaign = TestHelpers.generateCampaign(id: "test", type: .html)
-                    router.displayCampaign(campaign, completion: {})
-                    expect(UIApplication.shared.keyWindow?.subviews)
-                        .toAfterTimeout(allPass({ !($0 is BaseView )}))
+                    it("will show SlideUpView for slide campaign type") {
+                        let campaign = TestHelpers.generateCampaign(id: "test", type: .slide)
+                        router.displayCampaign(campaign, confirmation: { true }, completion: {})
+                        expect(UIApplication.shared.keyWindow?.subviews)
+                            .toEventually(containElementSatisfying({ $0 is SlideUpView }))
+                    }
+
+                    it("will not show any view for invalid campaign type") {
+                        let campaign = TestHelpers.generateCampaign(id: "test", type: .invalid)
+                        router.displayCampaign(campaign, confirmation: { true }, completion: {})
+                        expect(UIApplication.shared.keyWindow?.subviews)
+                            .toAfterTimeout(allPass({ !($0 is BaseView )}))
+                    }
+
+                    it("will not show any view for html campaign type") {
+                        let campaign = TestHelpers.generateCampaign(id: "test", type: .html)
+                        router.displayCampaign(campaign, confirmation: { true }, completion: {})
+                        expect(UIApplication.shared.keyWindow?.subviews)
+                            .toAfterTimeout(allPass({ !($0 is BaseView )}))
+                    }
                 }
             }
         }

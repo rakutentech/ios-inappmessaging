@@ -18,7 +18,8 @@ internal struct CampaignTriggerAgent: CampaignTriggerAgentType {
         CommonUtility.lock(resourcesIn: [eventMatcher]) {
             do {
                 try eventMatcher.removeSetOfMatchedEvents(triggeredEvents, for: campaign)
-                dispatcher.addToQueue(campaign: campaign)
+                dispatcher.addToQueue(campaign: campaign,
+                                      contexts: triggeredEvents.compactMap({ $0.context }))
             } catch {
                 // Campaign is not ready to be displayed
             }

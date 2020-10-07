@@ -15,6 +15,7 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
     private var isEnabled = true
 
     var aggregatedErrorHandler: ((NSError) -> Void)?
+    weak var delegate: RInAppMessagingDelegate?
 
     init(configurationManager: ConfigurationManagerType,
          campaignsListManager: CampaignsListManagerType,
@@ -98,6 +99,14 @@ extension InAppMessagingModule {
         DispatchWorkItem(qos: .utility, flags: []) {
             self.campaignsListManager.refreshList()
         }.perform()
+    }
+
+    func shouldShowCampaignMessage(title: String, contexts: [EventContext]) -> Bool {
+        guard let delegate = delegate else {
+            return true
+        }
+        return delegate.inAppMessagingShouldShowCampaignMessage(title: title,
+                                                                contexts: contexts)
     }
 }
 

@@ -17,6 +17,7 @@ class InAppMessagingModuleTests: QuickSpec {
             var eventMatcher: EventMatcherMock!
             var readyCampaignDispatcher: CampaignDispatcherMock!
             var campaignTriggerAgent: CampaignTriggerAgentMock!
+            var delegate: Delegate!
 
             beforeEach {
                 configurationManager = ConfigurationManagerMock()
@@ -27,6 +28,7 @@ class InAppMessagingModuleTests: QuickSpec {
                 eventMatcher = EventMatcherMock()
                 readyCampaignDispatcher = CampaignDispatcherMock()
                 campaignTriggerAgent = CampaignTriggerAgentMock()
+                delegate = Delegate()
                 iamModule = InAppMessagingModule(configurationManager: configurationManager,
                                                  campaignsListManager: campaignsListManager,
                                                  impressionService: impressionService,
@@ -35,6 +37,7 @@ class InAppMessagingModuleTests: QuickSpec {
                                                  eventMatcher: eventMatcher,
                                                  readyCampaignDispatcher: readyCampaignDispatcher,
                                                  campaignTriggerAgent: campaignTriggerAgent)
+                iamModule.delegate = delegate
             }
 
             context("when calling initialize") {
@@ -289,6 +292,25 @@ class InAppMessagingModuleTests: QuickSpec {
                     }
                 }
             }
+
+            it("will return true for shouldShowCampaignMessage if delegate is nil") {
+                iamModule.delegate = nil
+                expect(iamModule.shouldShowCampaignMessage(title: "", contexts: [])).to(beTrue())
+            }
+
+            it("will call delegate method if shouldShowCampaignMessage was called") {
+                _ = iamModule.shouldShowCampaignMessage(title: "", contexts: [])
+                expect(delegate.wasShouldShowCampaignCalled).to(beTrue())
+            }
         }
+    }
+}
+
+private class Delegate: RInAppMessagingDelegate {
+    var wasShouldShowCampaignCalled = false
+
+    func inAppMessagingShouldShowCampaignMessage(title: String, contexts: [EventContext]) -> Bool {
+        wasShouldShowCampaignCalled = true
+        return true
     }
 }
