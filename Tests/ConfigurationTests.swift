@@ -36,7 +36,7 @@ class ConfigurationTests: QuickSpec {
 
                 it("will disable module") {
                     configurationManager.isConfigEnabled = false
-                    waitUntil(timeout: 1) { done in
+                    waitUntil { done in
                         configurationManager.fetchCalledClosure = {
                             expect(RInAppMessaging.initializedModule).toNot(beNil())
                             done()

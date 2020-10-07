@@ -50,7 +50,7 @@ class ConfigurationManagerTests: QuickSpec {
                     }
 
                     it("should call retry handler when connection becomes available (cellular)") {
-                        waitUntil(timeout: 1) { done in
+                        waitUntil { done in
                             configurationManager.fetchAndSaveConfigData(completion: { _ in
                                 done()
                             })
@@ -59,7 +59,7 @@ class ConfigurationManagerTests: QuickSpec {
                     }
 
                     it("should call retry handler when connection becomes available (wifi)") {
-                        waitUntil(timeout: 1) { done in
+                        waitUntil { done in
                             configurationManager.fetchAndSaveConfigData(completion: { _ in
                                 done()
                             })
@@ -78,11 +78,11 @@ class ConfigurationManagerTests: QuickSpec {
                     configurationService.simulateRequestFailure = true
                     configurationManager.fetchAndSaveConfigData(completion: { _ in })
                     expect(configurationService.getConfigDataCallCount).to(equal(1))
-                    expect(configurationService.getConfigDataCallCount).toEventually(equal(2), timeout: 11)
+                    expect(configurationService.getConfigDataCallCount).toEventually(equal(2), timeout: .seconds(11))
                 }
 
                 it("should call completion after retry attempt was successful") {
-                    waitUntil(timeout: 11) { done in
+                    waitUntil(timeout: .seconds(11)) { done in
                         configurationService.simulateRequestFailure = true
                         configurationManager.fetchAndSaveConfigData(completion: { _ in
                             done()

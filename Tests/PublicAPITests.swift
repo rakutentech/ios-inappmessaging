@@ -103,8 +103,8 @@ class PublicAPITests: QuickSpec {
                 RInAppMessaging.logEvent(LoginSuccessfulEvent())
                 expect(eventMatcher.loggedEvents).toAfterTimeout(beEmpty())
                 expect(eventMatcher.loggedEvents).toEventually(haveCount(1),
-                                                               timeout: messageMixerService.delay + 1,
-                                                               pollInterval: 0.5)
+                                                               timeout: .seconds(Int(messageMixerService.delay + 1)),
+                                                               pollInterval: .milliseconds(500))
             }
         }
     }

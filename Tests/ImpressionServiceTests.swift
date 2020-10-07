@@ -42,7 +42,7 @@ class ImpressionServiceTests: QuickSpec {
             it("will use provided URL in a request") {
                 waitUntil { done in
                     requestQueue.async {
-                        _ = service.pingImpression(impressions: [], campaignData: campaign.data)
+                        service.pingImpression(impressions: [], campaignData: campaign.data)
                         done()
                     }
                 }
