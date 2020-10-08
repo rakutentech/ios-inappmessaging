@@ -101,12 +101,12 @@ extension InAppMessagingModule {
         }.perform()
     }
 
-    func shouldShowCampaignMessage(title: String, contexts: [EventContext]) -> Bool {
+    func shouldShowCampaignMessage(title: String, contexts: [String]) -> Bool {
         guard let delegate = delegate else {
             return true
         }
-        return delegate.inAppMessagingShouldShowCampaignMessage(title: title,
-                                                                contexts: contexts)
+        return delegate.inAppMessagingShouldShowCampaignsWithContexts(contexts: contexts,
+                                                                      campaignTitle: title)
     }
 }
 

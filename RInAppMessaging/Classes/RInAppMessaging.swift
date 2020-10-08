@@ -1,8 +1,7 @@
 /// Protocol for optional delagate
 @objc public protocol RInAppMessagingDelegate: AnyObject {
-    /// Method will be called just before displaying each campaign message.
-    /// By default all messages will be displayed.
-    func inAppMessagingShouldShowCampaignMessage(title: String, contexts: [EventContext]) -> Bool
+    /// Method called only for campaigns with context just before displaying its message
+    func inAppMessagingShouldShowCampaignsWithContexts(contexts: [String], campaignTitle: String) -> Bool
 }
 
 /// Protocol for optional error delegate of InAppMessaging module
@@ -104,10 +103,8 @@
 
     /// Log the event name passed in and also pass the event name to the view controller to display a matching campaign.
     /// - Parameter event: The Event object to log.
-    /// - Parameter context: The Context object to be attached to matching campaigns (optional).
-    @objc public static func logEvent(_ event: Event, context: EventContext? = nil) {
+    @objc public static func logEvent(_ event: Event) {
         inAppQueue?.async(flags: .barrier) {
-            event.context = context
             initializedModule?.logEvent(event)
         }
     }

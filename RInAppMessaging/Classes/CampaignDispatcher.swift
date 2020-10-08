@@ -2,13 +2,13 @@ import Foundation
 
 internal protocol CampaignDispatcherDelegate: AnyObject {
     func performPing()
-    func shouldShowCampaignMessage(title: String, contexts: [EventContext]) -> Bool
+    func shouldShowCampaignMessage(title: String, contexts: [String]) -> Bool
 }
 
 internal protocol CampaignDispatcherType {
     var delegate: CampaignDispatcherDelegate? { get set }
 
-    func addToQueue(campaign: Campaign, contexts: [EventContext])
+    func addToQueue(campaign: Campaign)
     func dispatchAllIfNeeded()
 }
 
@@ -21,7 +21,7 @@ internal class CampaignDispatcher: CampaignDispatcherType {
     private let campaignRepository: CampaignRepositoryType
 
     private let dispatchQueue = DispatchQueue(label: "IAM.Campaign", attributes: .concurrent)
-    private var queuedCampaigns = [(campaign: Campaign, contexts: [EventContext])]()
+    private var queuedCampaigns = [Campaign]()
     private var isDispatching = false
 
     weak var delegate: CampaignDispatcherDelegate?
@@ -35,9 +35,9 @@ internal class CampaignDispatcher: CampaignDispatcherType {
         self.campaignRepository = campaignRepository
     }
 
-    func addToQueue(campaign: Campaign, contexts: [EventContext]) {
+    func addToQueue(campaign: Campaign) {
         dispatchQueue.async(flags: .barrier) {
-            self.queuedCampaigns.append((campaign, contexts))
+            self.queuedCampaigns.append(campaign)
         }
     }
 
@@ -58,8 +58,7 @@ internal class CampaignDispatcher: CampaignDispatcherType {
                 return
             }
 
-            let queuedElement = self.queuedCampaigns.removeFirst()
-            var campaign = queuedElement.campaign
+            var campaign = self.queuedCampaigns.removeFirst()
 
             let permissionResponse = self.permissionService.checkPermission(forCampaign: campaign.data)
             if permissionResponse.performPing {
@@ -80,12 +79,13 @@ internal class CampaignDispatcher: CampaignDispatcherType {
 
             let campaignTitle = campaign.data.messagePayload.title
             self.router.displayCampaign(campaign, confirmation: {
-                guard let delegate = self.delegate, !campaign.data.isTest else {
+                let contexts = campaign.contexts
+                guard let delegate = self.delegate, !contexts.isEmpty, !campaign.data.isTest else {
                     return true
                 }
-                // validate contexts
+
                 return delegate.shouldShowCampaignMessage(title: campaignTitle,
-                                                          contexts: queuedElement.contexts)
+                                                          contexts: contexts)
             }, completion: { [weak self] in
                 guard let strongSelf = self else {
                     return

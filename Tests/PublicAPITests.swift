@@ -121,23 +121,36 @@ class PublicAPITests: QuickSpec {
                         .forEach { $0.removeFromSuperview() }
                 }
 
-                it("will call the method just before showing a message") {
+                it("will not call the method if there are no contexts") {
                     messageMixerService.mockedResponse = TestHelpers.MockResponse.withGeneratedCampaigns(
-                        count: 1, test: false, delay: 0,
+                        count: 1, test: false, delay: 0, addContexts: false,
                         triggers: [Trigger(type: .event,
                                            eventType: .loginSuccessful,
                                            eventName: "e1",
                                            attributes: [])])
                     campaignsListManager.refreshList()
                     RInAppMessaging.logEvent(LoginSuccessfulEvent())
-                    
+
+                    expect(delegate.shouldShowCampaignCallCount).toAfterTimeout(equal(0))
+                }
+
+                it("will call the method just before showing a message") {
+                    messageMixerService.mockedResponse = TestHelpers.MockResponse.withGeneratedCampaigns(
+                        count: 1, test: false, delay: 0, addContexts: true,
+                        triggers: [Trigger(type: .event,
+                                           eventType: .loginSuccessful,
+                                           eventName: "e1",
+                                           attributes: [])])
+                    campaignsListManager.refreshList()
+                    RInAppMessaging.logEvent(LoginSuccessfulEvent())
+
                     expect(delegate.shouldShowCampaignCallCount).toEventually(equal(1))
                 }
 
                 it("will show a message if the method returned true") {
                     delegate.shouldShowCampaignResult = true
                     messageMixerService.mockedResponse = TestHelpers.MockResponse.withGeneratedCampaigns(
-                        count: 2, test: false, delay: 100,
+                        count: 2, test: false, delay: 100, addContexts: true,
                         triggers: [Trigger(type: .event,
                                            eventType: .loginSuccessful,
                                            eventName: "e1",
@@ -158,7 +171,7 @@ class PublicAPITests: QuickSpec {
                 it("will not show a message if the method returned false") {
                     delegate.shouldShowCampaignResult = false
                     messageMixerService.mockedResponse = TestHelpers.MockResponse.withGeneratedCampaigns(
-                        count: 2, test: false, delay: 100,
+                        count: 2, test: false, delay: 100, addContexts: true,
                         triggers: [Trigger(type: .event,
                                            eventType: .loginSuccessful,
                                            eventName: "e1",
@@ -173,25 +186,26 @@ class PublicAPITests: QuickSpec {
 
                 it("will call the method before showing a message with proper parameters") {
                     delegate.shouldShowCampaignResult = true
-                    messageMixerService.mockedResponse = TestHelpers.MockResponse.withGeneratedCampaigns(
-                        count: 1, test: false, delay: 100,
-                        triggers: [Trigger(type: .event,
-                                           eventType: .loginSuccessful,
-                                           eventName: "e1",
-                                           attributes: []),
-                                   Trigger(type: .event,
-                                                      eventType: .purchaseSuccessful,
-                                                      eventName: "e2",
-                                                      attributes: [])])
+                    messageMixerService.mockedResponse = PingResponse(
+                        nextPingMilliseconds: 0,
+                        currentPingMilliseconds: 0,
+                        data: [
+                            TestHelpers.generateCampaign(id: "1",
+                                                         test: false,
+                                                         delay: 0,
+                                                         maxImpressions: 1,
+                                                         title: "[ctx1][ctx2] title",
+                                                         triggers: [
+                                                            Trigger(type: .event,
+                                                                    eventType: .loginSuccessful,
+                                                                    eventName: "e1",
+                                                                    attributes: [])])])
                     campaignsListManager.refreshList()
-                    let context1 = EventContext(id: "1")
-                    let context2 = EventContext(id: "2", userInfo: ["info": "info"])
-                    RInAppMessaging.logEvent(LoginSuccessfulEvent(), context: context1)
-                    RInAppMessaging.logEvent(PurchaseSuccessfulEvent(), context: context2)
+                    RInAppMessaging.logEvent(LoginSuccessfulEvent())
 
-                    expect(delegate.shouldShowCampaignCallParameters?.title).toEventually(equal("testTitle"), timeout: .seconds(2))
+                    expect(delegate.shouldShowCampaignCallParameters?.title).toEventually(equal("[ctx1][ctx2] title"), timeout: .seconds(2))
                     expect(delegate.shouldShowCampaignCallParameters?.contexts)
-                        .toEventually(contain([context1, context2]), timeout: .seconds(2))
+                        .toEventually(contain(["ctx1", "ctx2"]), timeout: .seconds(2))
                 }
             }
         }
@@ -208,11 +222,11 @@ private class ErrorDelegate: RInAppMessagingErrorDelegate {
 private class Delegate: RInAppMessagingDelegate {
     var shouldShowCampaignCallCount = 0
     var shouldShowCampaignResult = true
-    var shouldShowCampaignCallParameters: (title: String, contexts: [EventContext])?
+    var shouldShowCampaignCallParameters: (title: String, contexts: [String])?
 
-    func inAppMessagingShouldShowCampaignMessage(title: String, contexts: [EventContext]) -> Bool {
+    func inAppMessagingShouldShowCampaignsWithContexts(contexts: [String], campaignTitle: String) -> Bool {
         shouldShowCampaignCallCount += 1
-        shouldShowCampaignCallParameters = (title, contexts)
+        shouldShowCampaignCallParameters = (campaignTitle, contexts)
         return shouldShowCampaignResult
     }
 }

@@ -29,7 +29,7 @@ class ReadyCampaignDispatcherTests: QuickSpec {
                     permissionService.shouldGrantPermission = true
                     let testCampaigns = TestHelpers.MockResponse.withGeneratedCampaigns(count: 3, test: false, delay: 0).data
                     testCampaigns.forEach {
-                        dispatcher.addToQueue(campaign: $0, contexts: [])
+                        dispatcher.addToQueue(campaign: $0)
                     }
                     expect(router.lastDisplayedCampaign).toAfterTimeout(beNil(), timeout: 0.1)
                 }
@@ -52,25 +52,9 @@ class ReadyCampaignDispatcherTests: QuickSpec {
                             let testCampaigns = TestHelpers.MockResponse.withGeneratedCampaigns(count: 2, test: false, delay: 1000).data
                             let firstCampaign = testCampaigns[0]
                             let secondCampaign = testCampaigns[1]
-                            dispatcher.addToQueue(campaign: firstCampaign, contexts: [])
+                            dispatcher.addToQueue(campaign: firstCampaign)
                             dispatcher.dispatchAllIfNeeded()
-                            dispatcher.addToQueue(campaign: secondCampaign, contexts: [])
-                            expect(router.lastDisplayedCampaign).toEventually(equal(secondCampaign), timeout: .seconds(2))
-                        }
-                    }
-
-                    context("and contexts are approved") {
-                        beforeEach {
-                            delegate.shouldShowCampaign = true
-                        }
-
-                        it("will display newly added campaigns") {
-                            let testCampaigns = TestHelpers.MockResponse.withGeneratedCampaigns(count: 2, test: false, delay: 1000).data
-                            let firstCampaign = testCampaigns[0]
-                            let secondCampaign = testCampaigns[1]
-                            dispatcher.addToQueue(campaign: firstCampaign, contexts: [])
-                            dispatcher.dispatchAllIfNeeded()
-                            dispatcher.addToQueue(campaign: secondCampaign, contexts: [])
+                            dispatcher.addToQueue(campaign: secondCampaign)
                             expect(router.lastDisplayedCampaign).toEventually(equal(secondCampaign), timeout: .seconds(2))
                         }
 
@@ -78,44 +62,80 @@ class ReadyCampaignDispatcherTests: QuickSpec {
                             let testCampaigns = TestHelpers.MockResponse.withGeneratedCampaigns(count: 2, test: false, delay: 8000).data
                             let firstCampaign = testCampaigns[0]
                             let secondCampaign = testCampaigns[1]
-                            dispatcher.addToQueue(campaign: firstCampaign, contexts: [])
-                            dispatcher.addToQueue(campaign: secondCampaign, contexts: [])
+                            dispatcher.addToQueue(campaign: firstCampaign)
+                            dispatcher.addToQueue(campaign: secondCampaign)
                             dispatcher.dispatchAllIfNeeded()
                             expect(router.lastDisplayedCampaign).toEventually(equal(firstCampaign))
                             dispatcher.dispatchAllIfNeeded()
                             expect(router.lastDisplayedCampaign).toAfterTimeout(equal(firstCampaign))
                         }
-
-                        it("will perform ping if flag in the response is true") {
-                            permissionService.shouldPerformPing = true
-                            let testCampaign = TestHelpers.generateCampaign(id: "test")
-                            dispatcher.addToQueue(campaign: testCampaign, contexts: [])
-                            dispatcher.dispatchAllIfNeeded()
-                            expect(delegate.wasPingCalled).toEventually(beTrue())
-                        }
                     }
 
-                    context("and contexts are not approved") {
-                        beforeEach {
-                            delegate.shouldShowCampaign = false
+                    context("delegate is not nil") {
+
+                        it("will call delegate if contexts are present") {
+                            let campaign = TestHelpers.generateCampaign(id: "test", title: "[ctx] title")
+                            dispatcher.addToQueue(campaign: campaign)
+                            dispatcher.dispatchAllIfNeeded()
+                            expect(delegate.wasShouldShowCalled).toEventually(beTrue())
                         }
 
-                        it("will not display newly added campaigns") {
-                            let testCampaigns = TestHelpers.MockResponse.withGeneratedCampaigns(count: 2, test: false, delay: 100).data
-                            let firstCampaign = testCampaigns[0]
-                            let secondCampaign = testCampaigns[1]
-                            dispatcher.addToQueue(campaign: firstCampaign, contexts: [])
-                            dispatcher.addToQueue(campaign: secondCampaign, contexts: [])
+                        it("will not call delegate if contexts are not present") {
+                            let campaign = TestHelpers.generateCampaign(id: "test", title: "title")
+                            dispatcher.addToQueue(campaign: campaign)
                             dispatcher.dispatchAllIfNeeded()
-                            expect(router.lastDisplayedCampaign).toAfterTimeout(beNil())
+                            expect(delegate.wasShouldShowCalled).toAfterTimeout(beFalse())
                         }
 
-                        it("will perform ping if flag in the response is true") {
-                            permissionService.shouldPerformPing = true
-                            let testCampaign = TestHelpers.generateCampaign(id: "test")
-                            dispatcher.addToQueue(campaign: testCampaign, contexts: [])
+                        it("will display campaign normally if contexts are not present") {
+                            let campaign = TestHelpers.generateCampaign(id: "test", title: "title")
+                            dispatcher.addToQueue(campaign: campaign)
                             dispatcher.dispatchAllIfNeeded()
-                            expect(delegate.wasPingCalled).toEventually(beTrue())
+                            expect(router.lastDisplayedCampaign).toEventually(equal(campaign))
+                        }
+
+                        context("and contexts are approved") {
+                            beforeEach {
+                                delegate.shouldShowCampaign = true
+                            }
+
+                            it("will display newly added campaigns") {
+                                let firstCampaign = TestHelpers.generateCampaign(id: "test", title: "[ctx1] title")
+                                let secondCampaign = TestHelpers.generateCampaign(id: "test", title: "[ctx2] title")
+                                dispatcher.addToQueue(campaign: firstCampaign)
+                                dispatcher.addToQueue(campaign: secondCampaign)
+                                dispatcher.dispatchAllIfNeeded()
+                                expect(router.lastDisplayedCampaign).toEventually(equal(firstCampaign))
+                                expect(router.lastDisplayedCampaign).toEventually(equal(secondCampaign))
+                            }
+                        }
+
+                        context("and contexts are not approved") {
+                            beforeEach {
+                                delegate.shouldShowCampaign = false
+                            }
+
+                            it("will not display campaigns with context") {
+                                let campaign = TestHelpers.generateCampaign(id: "test", title: "[ctx] title")
+                                dispatcher.addToQueue(campaign: campaign)
+                                dispatcher.dispatchAllIfNeeded()
+                                expect(router.lastDisplayedCampaign).toAfterTimeout(beNil())
+                            }
+
+                            it("will always dispatch test campaigns") {
+                                let campaign = TestHelpers.generateCampaign(id: "test", title: "[ctx] title", isTest: true)
+                                dispatcher.addToQueue(campaign: campaign)
+                                dispatcher.dispatchAllIfNeeded()
+                                expect(router.lastDisplayedCampaign).toEventually(equal(campaign))
+                            }
+
+                            it("will perform ping if flag in the response is true") {
+                                permissionService.shouldPerformPing = true
+                                let testCampaign = TestHelpers.generateCampaign(id: "test", title: "[ctx] title")
+                                dispatcher.addToQueue(campaign: testCampaign)
+                                dispatcher.dispatchAllIfNeeded()
+                                expect(delegate.wasPingCalled).toEventually(beTrue())
+                            }
                         }
                     }
                 }
@@ -129,8 +149,8 @@ class ReadyCampaignDispatcherTests: QuickSpec {
                         let testCampaigns = TestHelpers.MockResponse.withGeneratedCampaigns(count: 2, test: true, delay: 500).data
                         let firstCampaign = testCampaigns[0]
                         let secondCampaign = testCampaigns[1]
-                        dispatcher.addToQueue(campaign: firstCampaign, contexts: [])
-                        dispatcher.addToQueue(campaign: secondCampaign, contexts: [])
+                        dispatcher.addToQueue(campaign: firstCampaign)
+                        dispatcher.addToQueue(campaign: secondCampaign)
                         dispatcher.dispatchAllIfNeeded()
                         expect(router.lastDisplayedCampaign).toEventually(equal(firstCampaign))
                         expect(router.lastDisplayedCampaign).toEventually(equal(secondCampaign))
@@ -138,7 +158,7 @@ class ReadyCampaignDispatcherTests: QuickSpec {
 
                     it("won't dispatch non-test campaigns") {
                         let campaign = TestHelpers.MockResponse.withGeneratedCampaigns(count: 1, test: false, delay: 0).data[0]
-                        dispatcher.addToQueue(campaign: campaign, contexts: [])
+                        dispatcher.addToQueue(campaign: campaign)
                         dispatcher.dispatchAllIfNeeded()
                         expect(router.lastDisplayedCampaign).toAfterTimeout(beNil(), timeout: 0.1)
                     }
@@ -146,21 +166,21 @@ class ReadyCampaignDispatcherTests: QuickSpec {
                     it("will perform ping if flag in the response is true") {
                         permissionService.shouldPerformPing = true
                         let testCampaign = TestHelpers.generateCampaign(id: "test")
-                        dispatcher.addToQueue(campaign: testCampaign, contexts: [])
+                        dispatcher.addToQueue(campaign: testCampaign)
                         dispatcher.dispatchAllIfNeeded()
                         expect(delegate.wasPingCalled).toEventually(beTrue())
                     }
 
                     it("won't call shouldShowCampaignMessage delegate method for non-test campaigns") {
-                        let campaign = TestHelpers.MockResponse.withGeneratedCampaigns(count: 1, test: false, delay: 0).data[0]
-                        dispatcher.addToQueue(campaign: campaign, contexts: [])
+                        let campaign = TestHelpers.generateCampaign(id: "test", title: "[ctx] title")
+                        dispatcher.addToQueue(campaign: campaign)
                         dispatcher.dispatchAllIfNeeded()
                         expect(delegate.wasShouldShowCalled).toAfterTimeout(beFalse())
                     }
 
                     it("won't call shouldShowCampaignMessage delegate method for test campaigns") {
-                        let campaign = TestHelpers.MockResponse.withGeneratedCampaigns(count: 1, test: true, delay: 0).data[0]
-                        dispatcher.addToQueue(campaign: campaign, contexts: [])
+                        let campaign = TestHelpers.generateCampaign(id: "test", title: "[ctx] title")
+                        dispatcher.addToQueue(campaign: campaign)
                         dispatcher.dispatchAllIfNeeded()
                         expect(delegate.wasShouldShowCalled).toAfterTimeout(beFalse())
                     }
@@ -172,7 +192,7 @@ class ReadyCampaignDispatcherTests: QuickSpec {
                 it("will decrement impressions left in campaign") {
                     permissionService.shouldGrantPermission = true
                     let campaign = TestHelpers.MockResponse.withGeneratedCampaigns(count: 1, test: false, delay: 0).data[0]
-                    dispatcher.addToQueue(campaign: campaign, contexts: [])
+                    dispatcher.addToQueue(campaign: campaign)
                     dispatcher.dispatchAllIfNeeded()
                     expect(campaignRepository.wasDecrementImpressionsCalled).toEventually(beTrue())
                 }
@@ -180,7 +200,7 @@ class ReadyCampaignDispatcherTests: QuickSpec {
                 it("will dispatch all campaigns") {
                     permissionService.shouldGrantPermission = true
                     TestHelpers.MockResponse.withGeneratedCampaigns(count: 10, test: false, delay: 10).data.forEach {
-                        dispatcher.addToQueue(campaign: $0, contexts: [])
+                        dispatcher.addToQueue(campaign: $0)
                     }
                     dispatcher.dispatchAllIfNeeded()
                     expect(router.displayedCampaignsCount).toEventually(equal(10))
@@ -226,7 +246,7 @@ private class Delegate: CampaignDispatcherDelegate {
         wasPingCalled = true
     }
 
-    func shouldShowCampaignMessage(title: String, contexts: [EventContext]) -> Bool {
+    func shouldShowCampaignMessage(title: String, contexts: [String]) -> Bool {
         wasShouldShowCalled = true
         return shouldShowCampaign
     }

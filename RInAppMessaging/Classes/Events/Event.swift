@@ -10,7 +10,6 @@
     var type: EventType
     var timestamp: Int64
     var name: String
-    var context: EventContext?
 
     var analyticsParameters: [String: Any] {
         return [:]

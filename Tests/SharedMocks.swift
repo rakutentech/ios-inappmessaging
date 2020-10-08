@@ -39,10 +39,10 @@ class CampaignRepositoryMock: CampaignRepositoryType {
 class CampaignDispatcherMock: CampaignDispatcherType {
     weak var delegate: CampaignDispatcherDelegate?
     private(set) var wasDispatchCalled = false
-    private(set) var addedCampaignsWithContexts = [(campaign: Campaign, contexts: [EventContext])]()
+    private(set) var addedCampaigns = [Campaign]()
 
-    func addToQueue(campaign: Campaign, contexts: [EventContext]) {
-        addedCampaignsWithContexts.append((campaign, contexts))
+    func addToQueue(campaign: Campaign) {
+        addedCampaigns.append(campaign)
     }
     func dispatchAllIfNeeded() {
         wasDispatchCalled = true

@@ -309,7 +309,7 @@ class InAppMessagingModuleTests: QuickSpec {
 private class Delegate: RInAppMessagingDelegate {
     var wasShouldShowCampaignCalled = false
 
-    func inAppMessagingShouldShowCampaignMessage(title: String, contexts: [EventContext]) -> Bool {
+    func inAppMessagingShouldShowCampaignsWithContexts(contexts: [String], campaignTitle: String) -> Bool {
         wasShouldShowCampaignCalled = true
         return true
     }

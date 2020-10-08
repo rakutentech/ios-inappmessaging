@@ -28,6 +28,7 @@ struct TestHelpers {
                                  test: Bool,
                                  delay: Int,
                                  maxImpressions: Int,
+                                 title: String = "testTitle",
                                  triggers: [Trigger]? = nil) -> Campaign {
         return Campaign(
             data: CampaignData(
@@ -37,7 +38,7 @@ struct TestHelpers {
                 triggers: triggers,
                 isTest: test,
                 messagePayload: MessagePayload(
-                    title: "testTitle",
+                    title: title,
                     messageBody: "testBody",
                     messageLowerBody: "testLowerBody",
                     header: "testHeader",
@@ -66,7 +67,9 @@ struct TestHelpers {
     }
 
     static func generateCampaign(id: String,
+                                 title: String = "testTitle",
                                  type: CampaignDisplayType = .modal,
+                                 isTest: Bool = false,
                                  content: Content? = nil,
                                  buttons: [Button]? = nil) -> Campaign {
         return Campaign(
@@ -75,9 +78,9 @@ struct TestHelpers {
                 maxImpressions: 1,
                 type: type,
                 triggers: nil,
-                isTest: false,
+                isTest: isTest,
                 messagePayload: MessagePayload(
-                    title: "testTitle",
+                    title: title,
                     messageBody: "testBody",
                     messageLowerBody: "testLowerBody",
                     header: "testHeader",
@@ -111,16 +114,19 @@ struct TestHelpers {
         static func withGeneratedCampaigns(count: Int,
                                            test: Bool,
                                            delay: Int,
+                                           addContexts: Bool = false,
                                            triggers: [Trigger]? = nil) -> PingResponse {
             var campaigns = [Campaign]()
             //swiftlint:disable:next empty_count
             if count > 0 {
+                let title = addContexts ? "[ctx] testTitle" : "testTitle"
                 for i in 1...count {
                     campaigns.append(generateCampaign(
                         id: "testCampaignId\(i)",
                         test: test,
                         delay: delay,
                         maxImpressions: 2,
+                        title: title,
                         triggers: triggers))
                 }
             }
