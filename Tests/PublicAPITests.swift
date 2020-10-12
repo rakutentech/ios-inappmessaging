@@ -224,7 +224,7 @@ private class Delegate: RInAppMessagingDelegate {
     var shouldShowCampaignResult = true
     var shouldShowCampaignCallParameters: (title: String, contexts: [String])?
 
-    func inAppMessagingShouldShowCampaignsWithContexts(contexts: [String], campaignTitle: String) -> Bool {
+    func inAppMessagingShouldShowCampaignWithContexts(contexts: [String], campaignTitle: String) -> Bool {
         shouldShowCampaignCallCount += 1
         shouldShowCampaignCallParameters = (campaignTitle, contexts)
         return shouldShowCampaignResult

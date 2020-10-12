@@ -1,7 +1,7 @@
 /// Protocol for optional delagate
 @objc public protocol RInAppMessagingDelegate: AnyObject {
     /// Method called only for campaigns with context just before displaying its message
-    func inAppMessagingShouldShowCampaignsWithContexts(contexts: [String], campaignTitle: String) -> Bool
+    func inAppMessagingShouldShowCampaignWithContexts(contexts: [String], campaignTitle: String) -> Bool
 }
 
 /// Protocol for optional error delegate of InAppMessaging module

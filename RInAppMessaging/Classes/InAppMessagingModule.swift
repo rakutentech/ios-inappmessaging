@@ -105,8 +105,8 @@ extension InAppMessagingModule {
         guard let delegate = delegate else {
             return true
         }
-        return delegate.inAppMessagingShouldShowCampaignsWithContexts(contexts: contexts,
-                                                                      campaignTitle: title)
+        return delegate.inAppMessagingShouldShowCampaignWithContexts(contexts: contexts,
+                                                                     campaignTitle: title)
     }
 }
 

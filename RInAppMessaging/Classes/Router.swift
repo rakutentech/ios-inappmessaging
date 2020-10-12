@@ -70,7 +70,7 @@ internal class Router: RouterType {
             }
 
             DispatchQueue.main.async {
-                guard let view = viewConstructor?(), confirmation() else {
+                guard let view = viewConstructor?(), confirmation() == true else {
                     completion()
                     return
                 }

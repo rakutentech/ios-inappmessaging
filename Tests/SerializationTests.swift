@@ -26,7 +26,7 @@ class SerializationTests: QuickSpec {
                     expect(campaign.contexts).to(beEmpty())
                 }
 
-                it("will properly read context if there's nothing beside it") {
+                it("will properly read context when it is the only string content") {
                     let campaign = TestHelpers.generateCampaign(id: "id", title: "[ctx]")
                     expect(campaign.contexts).to(elementsEqual(["ctx"]))
                 }
