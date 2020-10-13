@@ -86,13 +86,13 @@ internal class CampaignDispatcher: CampaignDispatcherType {
 
                 return delegate.shouldShowCampaignMessage(title: campaignTitle,
                                                           contexts: contexts)
-            }, completion: { [weak self] in
-                guard let strongSelf = self else {
+            }(), completion: { [weak self] in
+                guard let self = self else {
                     return
                 }
                 WorkScheduler.scheduleTask(
-                    milliseconds: strongSelf.delayBeforeNextMessage(for: campaign.data),
-                    closure: strongSelf.dispatchNext)
+                    milliseconds: self.delayBeforeNextMessage(for: campaign.data),
+                    closure: self.dispatchNext)
             })
         }
     }

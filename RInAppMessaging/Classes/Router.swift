@@ -9,7 +9,7 @@ internal protocol RouterType: AnyObject {
     /// - Parameter confirmation: A handler called just before displaying.
     /// - Parameter completion: Completion handler called once displaying has finished.
     func displayCampaign(_ campaign: Campaign,
-                         confirmation: @escaping () -> Bool,
+                         confirmation: @escaping @autoclosure () -> Bool,
                          completion: @escaping () -> Void)
 }
 
@@ -24,7 +24,7 @@ internal class Router: RouterType {
     }
 
     func displayCampaign(_ campaign: Campaign,
-                         confirmation: @escaping () -> Bool,
+                         confirmation: @escaping @autoclosure () -> Bool,
                          completion: @escaping () -> Void) {
 
         guard let campaignViewType = campaign.data.type, campaignViewType != .invalid else {

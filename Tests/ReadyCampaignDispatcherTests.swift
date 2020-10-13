@@ -216,7 +216,7 @@ private class RouterMock: RouterType {
     var displayedCampaignsCount = 0
 
     func displayCampaign(_ campaign: Campaign,
-                         confirmation: @escaping () -> Bool,
+                         confirmation: @escaping @autoclosure () -> Bool,
                          completion: @escaping () -> Void) {
         defer { completion() }
         guard confirmation() else {
