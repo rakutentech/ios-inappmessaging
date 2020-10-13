@@ -27,6 +27,11 @@ internal struct Campaign: Decodable, Hashable {
         let endTimeMilliseconds = data.messagePayload.messageSettings.displaySettings.endTimeMilliseconds
         return endTimeMilliseconds < Date().millisecondsSince1970
     }
+    var contexts: [String] {
+        data.messagePayload.title.components(separatedBy: "]").dropLast().map { substring in
+            String(substring.drop(while: { $0 != "["}).dropFirst())
+        }.filter { !$0.isEmpty }
+    }
 
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)

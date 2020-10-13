@@ -3,6 +3,10 @@
 /// as a data type and store/load from a property list.
 @objc public class Event: NSObject, Codable {
 
+    private enum CodingKeys: String, CodingKey {
+        case type, timestamp, name
+    }
+
     var type: EventType
     var timestamp: Int64
     var name: String

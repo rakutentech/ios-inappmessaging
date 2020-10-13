@@ -21,23 +21,26 @@ class CampaignTriggerAgentTests: QuickSpec {
                                                             readyCampaignDispatcher: campaignDispatcher)
             }
 
-            it("will add campaign to the queue when events match") {
-                eventMatcher.simulateMatchingSuccess = true
-                campaignTriggerAgent.trigger(campaign: testCampaign,
-                                             triggeredEvents: [])
-                expect(campaignDispatcher.addedCampaigns).to(elementsEqual([testCampaign]))
+            context("when events match") {
+                beforeEach {
+                    eventMatcher.simulateMatchingSuccess = true
+                }
+                it("will add campaign to the queue when events match") {
+                    campaignTriggerAgent.trigger(campaign: testCampaign,
+                                                 triggeredEvents: [])
+                    expect(campaignDispatcher.addedCampaigns).to(elementsEqual([testCampaign]))
+                }
+
+                it("will not dispatch campaign when events coulnd't be triggered") {
+                    eventMatcher.simulateMatcherError = .providedSetOfEventsHaveAlreadyBeenUsed
+                    campaignTriggerAgent.trigger(campaign: testCampaign,
+                                                 triggeredEvents: [])
+                    expect(campaignDispatcher.addedCampaigns).to(beEmpty())
+                }
             }
 
             it("will not dispatch campaign when events don't match") {
                 eventMatcher.simulateMatchingSuccess = false
-                campaignTriggerAgent.trigger(campaign: testCampaign,
-                                             triggeredEvents: [])
-                expect(campaignDispatcher.addedCampaigns).to(beEmpty())
-            }
-
-            it("will not dispatch campaign when events coulnd't be triggered") {
-                eventMatcher.simulateMatchingSuccess = true
-                eventMatcher.simulateMatcherError = .providedSetOfEventsHaveAlreadyBeenUsed
                 campaignTriggerAgent.trigger(campaign: testCampaign,
                                              triggeredEvents: [])
                 expect(campaignDispatcher.addedCampaigns).to(beEmpty())

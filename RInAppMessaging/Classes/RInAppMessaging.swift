@@ -1,3 +1,9 @@
+/// Protocol for optional delagate
+@objc public protocol RInAppMessagingDelegate: AnyObject {
+    /// Method called only for campaigns with context just before displaying its message
+    func inAppMessagingShouldShowCampaignWithContexts(contexts: [String], campaignTitle: String) -> Bool
+}
+
 /// Protocol for optional error delegate of InAppMessaging module
 @objc public protocol RInAppMessagingErrorDelegate {
     /// Method will be called whenever any internal error occurs.
@@ -32,6 +38,13 @@
 
     /// Optional error delegate for debugging purposes
     @objc public static weak var errorDelegate: RInAppMessagingErrorDelegate?
+
+    /// Optional delegate for advanced features
+    @objc public static weak var delegate: RInAppMessagingDelegate? {
+        didSet {
+            initializedModule?.delegate = delegate
+        }
+    }
 
     /// Function to be called by host application to start a new thread that
     /// configures Rakuten InAppMessaging SDK.
@@ -80,6 +93,7 @@
             initializedModule?.aggregatedErrorHandler = { error in
                 errorDelegate?.inAppMessagingDidReturnError(error)
             }
+            initializedModule?.delegate = delegate
             initializedModule?.initialize(deinitHandler: {
                 self.initializedModule = nil
                 self.dependencyManager = nil

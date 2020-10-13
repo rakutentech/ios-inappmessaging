@@ -64,7 +64,7 @@ class CampaignsListManagerTests: QuickSpec {
                     it("will retry for .requestError error") {
                         messageMixerService.mockedError = .requestError(.unknown)
                         manager.refreshList()
-                        expect(manager.scheduledTask).toNot(beNil())
+                        expect(manager.scheduledTask).toEventuallyNot(beNil())
                     }
 
                     it("will not report .requestError error") {

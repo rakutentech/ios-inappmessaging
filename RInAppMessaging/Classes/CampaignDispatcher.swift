@@ -2,6 +2,7 @@ import Foundation
 
 internal protocol CampaignDispatcherDelegate: AnyObject {
     func performPing()
+    func shouldShowCampaignMessage(title: String, contexts: [String]) -> Bool
 }
 
 internal protocol CampaignDispatcherType {
@@ -75,14 +76,24 @@ internal class CampaignDispatcher: CampaignDispatcherType {
                     Error: Campaign (\(campaign.id)) does not exist in the repository anymore (race condition?). Proceeding with old data...
                     """)
             }
-            self.router.displayCampaign(campaign) { [weak self] in
-                guard let strongSelf = self else {
+
+            let campaignTitle = campaign.data.messagePayload.title
+            self.router.displayCampaign(campaign, confirmation: {
+                let contexts = campaign.contexts
+                guard let delegate = self.delegate, !contexts.isEmpty, !campaign.data.isTest else {
+                    return true
+                }
+
+                return delegate.shouldShowCampaignMessage(title: campaignTitle,
+                                                          contexts: contexts)
+            }(), completion: { [weak self] in
+                guard let self = self else {
                     return
                 }
                 WorkScheduler.scheduleTask(
-                    milliseconds: strongSelf.delayBeforeNextMessage(for: campaign.data),
-                    closure: strongSelf.dispatchNext)
-            }
+                    milliseconds: self.delayBeforeNextMessage(for: campaign.data),
+                    closure: self.dispatchNext)
+            })
         }
     }
 

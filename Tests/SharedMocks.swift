@@ -87,7 +87,7 @@ class MessageMixerServiceMock: MessageMixerServiceType {
             guard Thread.current != .main else {
                 fatalError("Delay function shoudn't be used on the main thread")
             }
-            usleep(UInt32(round(delay * pow(10, 6))))
+            usleep(UInt32(UInt64(delay) * USEC_PER_SEC))
         }
 
         if let mockedResponse = mockedResponse {
