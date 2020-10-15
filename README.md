@@ -181,6 +181,29 @@ From the SDK side, host app developers will be able to log custom events as show
 
 ## **Optional features**
 
+### **RInAppMessagingDelegate**
+
+An optional delegate. Set the `RInAppMessaging.delegate` and implement the protocol method `inAppMessagingShouldShowCampaignWithContexts(contexts:campaignTitle:)` in order to be called before a message is displayed when a campaign title contains one or more contexts. A context is defined as the text inside "[]" within an IAM portal "Campaign Name" e.g. the campaign name is "[ctx1] title" so the context is "ctx1".
+
+**Swift**
+
+```swift
+func inAppMessagingShouldShowCampaignWithContexts(contexts: [String], campaignTitle: String) -> Bool {
+    guard campaignTitle == "[context1] campaign-title-1", contexts.contains("context1") else {
+        return true
+    }
+    if /* check your condition e.g. are you on the correct screen to display this message? */ {
+        return true
+    } else {
+        return false
+    }
+}
+```
+
+### **RInAppMessagingErrorDelegate**
+
+An optional error delegate. Set the `RInAppMessaging.errorDelegate` and implement the protocol method `inAppMessagingDidReturnError(error:)` to receive an `NSError` object whenever an internal SDK error occurs. This allows you to log the errors somewhere, e.g. a 3rd party analytics service, for later troubleshooting.
+
 ### **(BOOL)accessibilityCompatibleDisplay**  
 
 This flag can be used to support UI test automation tools like Appium. When set to `true`, the SDK will use a different display method which changes campaign messages' view hierarchy. This can solve issues with accessibility tools having problems detecting visible items.
