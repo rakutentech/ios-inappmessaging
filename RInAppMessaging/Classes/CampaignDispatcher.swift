@@ -22,7 +22,7 @@ internal class CampaignDispatcher: CampaignDispatcherType {
 
     private let dispatchQueue = DispatchQueue(label: "IAM.Campaign", attributes: .concurrent)
     private var queuedCampaigns = [Campaign]()
-    private var isDispatching = false
+    private(set) var isDispatching = false
 
     weak var delegate: CampaignDispatcherDelegate?
 
@@ -42,59 +42,65 @@ internal class CampaignDispatcher: CampaignDispatcherType {
     }
 
     func dispatchAllIfNeeded() {
-        guard !isDispatching else {
-            return
-        }
 
-        isDispatching = true
-        dispatchNext()
+        dispatchQueue.async(flags: .barrier) {
+            guard !self.isDispatching else {
+                return
+            }
+
+            self.isDispatching = true
+            self.dispatchNext()
+        }
     }
 
     private func dispatchNext() {
 
-        dispatchQueue.async(flags: .barrier) {
-            guard !self.queuedCampaigns.isEmpty else {
-                self.isDispatching = false
-                return
+        guard !queuedCampaigns.isEmpty else {
+            isDispatching = false
+            return
+        }
+
+        let campaign = queuedCampaigns.removeFirst()
+        let permissionResponse = permissionService.checkPermission(forCampaign: campaign.data)
+        if permissionResponse.performPing {
+            delegate?.performPing()
+        }
+
+        guard campaign.data.isTest || permissionResponse.display else {
+            dispatchNext()
+            return
+        }
+
+        let campaignTitle = campaign.data.messagePayload.title
+        router.displayCampaign(campaign, confirmation: {
+            let contexts = campaign.contexts
+            guard let delegate = self.delegate, !contexts.isEmpty, !campaign.data.isTest else {
+                self.campaignRepository.decrementImpressionsLeftInCampaign(campaign)
+                return true
             }
-
-            var campaign = self.queuedCampaigns.removeFirst()
-
-            let permissionResponse = self.permissionService.checkPermission(forCampaign: campaign.data)
-            if permissionResponse.performPing {
-                self.delegate?.performPing()
+            let shouldShow = delegate.shouldShowCampaignMessage(title: campaignTitle,
+                                                              contexts: contexts)
+            if shouldShow {
+                self.campaignRepository.decrementImpressionsLeftInCampaign(campaign)
             }
-            guard campaign.data.isTest || permissionResponse.display else {
-                self.dispatchNext()
-                return
-            }
+            return shouldShow
+        }(), completion: { [weak weakSelf = self] in
+            self.dispatchQueue.async(flags: .barrier) {
 
-            if let updatedCampaign = self.campaignRepository.decrementImpressionsLeftInCampaign(campaign) {
-                campaign = updatedCampaign
-            } else {
-                CommonUtility.debugPrint("""
-                    Error: Campaign (\(campaign.id)) does not exist in the repository anymore (race condition?). Proceeding with old data...
-                    """)
-            }
-
-            let campaignTitle = campaign.data.messagePayload.title
-            self.router.displayCampaign(campaign, confirmation: {
-                let contexts = campaign.contexts
-                guard let delegate = self.delegate, !contexts.isEmpty, !campaign.data.isTest else {
-                    return true
-                }
-
-                return delegate.shouldShowCampaignMessage(title: campaignTitle,
-                                                          contexts: contexts)
-            }(), completion: { [weak self] in
-                guard let self = self else {
+                guard let self = weakSelf, !self.queuedCampaigns.isEmpty else {
+                    weakSelf?.isDispatching = false
                     return
                 }
                 WorkScheduler.scheduleTask(
                     milliseconds: self.delayBeforeNextMessage(for: campaign.data),
-                    closure: self.dispatchNext)
-            })
-        }
+                    closure: {
+                        self.dispatchQueue.async(flags: .barrier) {
+                            self.dispatchNext()
+                        }
+                    }
+                )
+            }
+        })
     }
 
     private func delayBeforeNextMessage(for campaignData: CampaignData) -> Int {

@@ -16,6 +16,7 @@ internal protocol CampaignRepositoryType: AnyObject, Lockable {
     /// - Parameter campaign: The campaign to update impressionsLeft value.
     /// - Returns: A new campaign structure with updated impressionsLeft value
     /// or `nil` if campaign couldn't be found in the repository.
+    @discardableResult
     func decrementImpressionsLeftInCampaign(_ campaign: Campaign) -> Campaign?
 }
 
@@ -63,6 +64,7 @@ internal class CampaignRepository: CampaignRepositoryType {
         return updatedCampaign
     }
 
+    @discardableResult
     func decrementImpressionsLeftInCampaign(_ campaign: Campaign) -> Campaign? {
         var list = self.campaigns.get()
         guard let index = list.firstIndex(where: { $0.id == campaign.id }) else {
@@ -70,7 +72,7 @@ internal class CampaignRepository: CampaignRepositoryType {
             return nil
         }
 
-        let updatedCampaign = Campaign.updatedCampaign(campaign, withImpressionLeft: campaign.impressionsLeft - 1)
+        let updatedCampaign = Campaign.updatedCampaign(campaign, withImpressionLeft: max(0, campaign.impressionsLeft - 1))
         list[index] = updatedCampaign
         self.campaigns.set(value: list)
         return updatedCampaign

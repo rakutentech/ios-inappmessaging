@@ -18,8 +18,8 @@ class ReadyCampaignDispatcherTests: QuickSpec {
                 router = RouterMock()
                 delegate = Delegate()
                 dispatcher = CampaignDispatcher(router: router,
-                                                     permissionService: permissionService,
-                                                     campaignRepository: campaignRepository)
+                                                permissionService: permissionService,
+                                                campaignRepository: campaignRepository)
                 dispatcher.delegate = delegate
             }
 
@@ -49,13 +49,15 @@ class ReadyCampaignDispatcherTests: QuickSpec {
                         }
 
                         it("will display newly added campaigns") {
-                            let testCampaigns = TestHelpers.MockResponse.withGeneratedCampaigns(count: 2, test: false, delay: 1000).data
+                            let testCampaigns = TestHelpers.MockResponse.withGeneratedCampaigns(count: 3, test: false, delay: 500).data
                             let firstCampaign = testCampaigns[0]
                             let secondCampaign = testCampaigns[1]
+                            let thirdCampaign = testCampaigns[2]
                             dispatcher.addToQueue(campaign: firstCampaign)
-                            dispatcher.dispatchAllIfNeeded()
                             dispatcher.addToQueue(campaign: secondCampaign)
-                            expect(router.lastDisplayedCampaign).toEventually(equal(secondCampaign), timeout: .seconds(2))
+                            dispatcher.dispatchAllIfNeeded()
+                            dispatcher.addToQueue(campaign: thirdCampaign)
+                            expect(router.lastDisplayedCampaign).toEventually(equal(thirdCampaign), timeout: .seconds(2))
                         }
 
                         it("won't start another dispatch procedure if one has already started") {
@@ -197,13 +199,33 @@ class ReadyCampaignDispatcherTests: QuickSpec {
                     expect(campaignRepository.wasDecrementImpressionsCalled).toEventually(beTrue())
                 }
 
-                it("will dispatch all campaigns") {
+                it("will dispatch remaining campaigns") {
                     permissionService.shouldGrantPermission = true
                     TestHelpers.MockResponse.withGeneratedCampaigns(count: 10, test: false, delay: 10).data.forEach {
                         dispatcher.addToQueue(campaign: $0)
                     }
                     dispatcher.dispatchAllIfNeeded()
                     expect(router.displayedCampaignsCount).toEventually(equal(10))
+                }
+
+                it("will schedule next dispatch after a delay defined in campaign data") {
+                    permissionService.shouldGrantPermission = true
+                    TestHelpers.MockResponse.withGeneratedCampaigns(count: 2, test: false, delay: 1000).data.forEach {
+                        dispatcher.addToQueue(campaign: $0)
+                    }
+                    dispatcher.dispatchAllIfNeeded()
+                    expect(router.displayedCampaignsCount).toEventually(equal(1))
+                    expect(router.displayedCampaignsCount).toAfterTimeout(equal(1), timeout: 0.5)
+                    expect(router.displayedCampaignsCount).toAfterTimeout(equal(2), timeout: 0.5)
+                }
+
+                it("won't schedule next dispatch if there are no queued campaigns") {
+                    permissionService.shouldGrantPermission = true
+                    let campaign = TestHelpers.MockResponse.withGeneratedCampaigns(count: 1, test: false, delay: 0).data[0]
+                    dispatcher.addToQueue(campaign: campaign)
+                    dispatcher.dispatchAllIfNeeded()
+                    expect(router.displayedCampaignsCount).toEventually(equal(1))
+                    expect(dispatcher.isDispatching).to(beFalse())
                 }
             }
         }
