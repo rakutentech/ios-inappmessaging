@@ -117,6 +117,19 @@ class ReadyCampaignDispatcherTests: QuickSpec {
                                 delegate.shouldShowCampaign = false
                             }
 
+                            it("will dispatch next campaign immediately") {
+                                let firstCampaign = TestHelpers.generateCampaign(
+                                    id: "test1", test: false, delay: 10000, maxImpressions: 1,
+                                    title: "[ctx] title")
+                                let secondCampaign = TestHelpers.generateCampaign(
+                                    id: "test2", test: false, delay: 10000, maxImpressions: 1,
+                                    title: "title")
+                                dispatcher.addToQueue(campaign: firstCampaign)
+                                dispatcher.addToQueue(campaign: secondCampaign)
+                                dispatcher.dispatchAllIfNeeded()
+                                expect(router.lastDisplayedCampaign).toEventually(equal(secondCampaign), timeout: .milliseconds(500))
+                            }
+
                             it("will not display campaigns with context") {
                                 let campaign = TestHelpers.generateCampaign(id: "test", title: "[ctx] title")
                                 dispatcher.addToQueue(campaign: campaign)
@@ -156,6 +169,17 @@ class ReadyCampaignDispatcherTests: QuickSpec {
                         dispatcher.dispatchAllIfNeeded()
                         expect(router.lastDisplayedCampaign).toEventually(equal(firstCampaign))
                         expect(router.lastDisplayedCampaign).toEventually(equal(secondCampaign))
+                    }
+
+                    it("will dispatch next campaign immediately") {
+                        let firstCampaign = TestHelpers.generateCampaign(
+                            id: "test1", test: false, delay: 10000, maxImpressions: 1)
+                        let secondCampaign = TestHelpers.generateCampaign(
+                            id: "test2", test: true, delay: 10000, maxImpressions: 1)
+                        dispatcher.addToQueue(campaign: firstCampaign)
+                        dispatcher.addToQueue(campaign: secondCampaign)
+                        dispatcher.dispatchAllIfNeeded()
+                        expect(router.lastDisplayedCampaign).toEventually(equal(secondCampaign), timeout: .milliseconds(500))
                     }
 
                     it("won't dispatch non-test campaigns") {
@@ -227,6 +251,15 @@ class ReadyCampaignDispatcherTests: QuickSpec {
                     expect(router.displayedCampaignsCount).toEventually(equal(1))
                     expect(dispatcher.isDispatching).to(beFalse())
                 }
+
+                it("won't schedule next dispatch if there are no queued campaigns") {
+                    permissionService.shouldGrantPermission = true
+                    let campaign = TestHelpers.MockResponse.withGeneratedCampaigns(count: 1, test: false, delay: 0).data[0]
+                    dispatcher.addToQueue(campaign: campaign)
+                    dispatcher.dispatchAllIfNeeded()
+                    expect(router.displayedCampaignsCount).toEventually(equal(1))
+                    expect(dispatcher.isDispatching).to(beFalse())
+                }
             }
         }
     }
@@ -239,13 +272,14 @@ private class RouterMock: RouterType {
 
     func displayCampaign(_ campaign: Campaign,
                          confirmation: @escaping @autoclosure () -> Bool,
-                         completion: @escaping () -> Void) {
-        defer { completion() }
+                         completion: @escaping (_ cancelled: Bool) -> Void) {
         guard confirmation() else {
+            completion(true)
             return
         }
         lastDisplayedCampaign = campaign
         displayedCampaignsCount += 1
+        completion(false)
     }
 }
 

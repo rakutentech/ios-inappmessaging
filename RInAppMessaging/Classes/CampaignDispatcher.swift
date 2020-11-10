@@ -55,52 +55,55 @@ internal class CampaignDispatcher: CampaignDispatcherType {
 
     private func dispatchNext() {
 
-        guard !queuedCampaigns.isEmpty else {
-            isDispatching = false
-            return
-        }
-
-        let campaign = queuedCampaigns.removeFirst()
-        let permissionResponse = permissionService.checkPermission(forCampaign: campaign.data)
-        if permissionResponse.performPing {
-            delegate?.performPing()
-        }
-
-        guard campaign.data.isTest || permissionResponse.display else {
-            dispatchNext()
-            return
-        }
-
-        let campaignTitle = campaign.data.messagePayload.title
-        router.displayCampaign(campaign, confirmation: {
-            let contexts = campaign.contexts
-            guard let delegate = self.delegate, !contexts.isEmpty, !campaign.data.isTest else {
-                self.campaignRepository.decrementImpressionsLeftInCampaign(campaign)
-                return true
+        dispatchQueue.async(flags: .barrier) {
+            guard !self.queuedCampaigns.isEmpty else {
+                self.isDispatching = false
+                return
             }
-            let shouldShow = delegate.shouldShowCampaignMessage(title: campaignTitle,
-                                                              contexts: contexts)
-            if shouldShow {
-                self.campaignRepository.decrementImpressionsLeftInCampaign(campaign)
-            }
-            return shouldShow
-        }(), completion: { [weak weakSelf = self] in
-            self.dispatchQueue.async(flags: .barrier) {
 
-                guard let self = weakSelf, !self.queuedCampaigns.isEmpty else {
-                    weakSelf?.isDispatching = false
-                    return
+            let campaign = self.queuedCampaigns.removeFirst()
+            let permissionResponse = self.permissionService.checkPermission(forCampaign: campaign.data)
+            if permissionResponse.performPing {
+                self.delegate?.performPing()
+            }
+
+            guard campaign.data.isTest || permissionResponse.display else {
+                self.dispatchNext()
+                return
+            }
+
+            let campaignTitle = campaign.data.messagePayload.title
+            self.router.displayCampaign(campaign, confirmation: {
+                let contexts = campaign.contexts
+                guard let delegate = self.delegate, !contexts.isEmpty, !campaign.data.isTest else {
+                    self.campaignRepository.decrementImpressionsLeftInCampaign(campaign)
+                    return true
                 }
-                WorkScheduler.scheduleTask(
-                    milliseconds: self.delayBeforeNextMessage(for: campaign.data),
-                    closure: {
-                        self.dispatchQueue.async(flags: .barrier) {
-                            self.dispatchNext()
-                        }
+                let shouldShow = delegate.shouldShowCampaignMessage(title: campaignTitle,
+                                                                    contexts: contexts)
+                if shouldShow {
+                    self.campaignRepository.decrementImpressionsLeftInCampaign(campaign)
+                }
+                return shouldShow
+
+            }(), completion: { cancelled in
+                self.dispatchQueue.async(flags: .barrier) {
+
+                    guard !self.queuedCampaigns.isEmpty else {
+                        self.isDispatching = false
+                        return
                     }
-                )
-            }
-        })
+                    if cancelled {
+                        self.dispatchNext()
+                    } else {
+                        WorkScheduler.scheduleTask(
+                            milliseconds: self.delayBeforeNextMessage(for: campaign.data),
+                            closure: self.dispatchNext
+                        )
+                    }
+                }
+            })
+        }
     }
 
     private func delayBeforeNextMessage(for campaignData: CampaignData) -> Int {

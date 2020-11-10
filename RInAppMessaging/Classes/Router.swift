@@ -8,9 +8,10 @@ internal protocol RouterType: AnyObject {
     /// - Parameter campaign: The campaign object to display.
     /// - Parameter confirmation: A handler called just before displaying.
     /// - Parameter completion: Completion handler called once displaying has finished.
+    /// - Parameter cancelled: true when message display was cancelled
     func displayCampaign(_ campaign: Campaign,
                          confirmation: @escaping @autoclosure () -> Bool,
-                         completion: @escaping () -> Void)
+                         completion: @escaping (_ cancelled: Bool) -> Void)
 }
 
 /// Handles all the displaying logic of the SDK.
@@ -25,11 +26,11 @@ internal class Router: RouterType {
 
     func displayCampaign(_ campaign: Campaign,
                          confirmation: @escaping @autoclosure () -> Bool,
-                         completion: @escaping () -> Void) {
+                         completion: @escaping (_ cancelled: Bool) -> Void) {
 
         guard let campaignViewType = campaign.data.type, campaignViewType != .invalid else {
             CommonUtility.debugPrint("Error: Campaign view type not supported")
-            completion()
+            completion(true)
             return
         }
 
@@ -71,11 +72,11 @@ internal class Router: RouterType {
 
             DispatchQueue.main.async {
                 guard let view = viewConstructor?(), confirmation() == true else {
-                    completion()
+                    completion(true)
                     return
                 }
                 view.show(accessibilityCompatible: self.accessibilityCompatibleDisplay, onDismiss: {
-                    completion()
+                    completion(false)
                 })
             }
         }
