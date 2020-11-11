@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Identification Enumeration Reference</title>
+    <title>RInAppMessagingDelegate Protocol Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset='utf-8'>
@@ -13,8 +13,8 @@
     <script src="../js/jazzy.search.js" defer></script>
   </head>
   <body>
-    <a name="//apple_ref/swift/Enum/Identification" class="dashAnchor"></a>
-    <a title="Identification Enumeration Reference"></a>
+    <a name="//apple_ref/swift/Protocol/RInAppMessagingDelegate" class="dashAnchor"></a>
+    <a title="RInAppMessagingDelegate Protocol Reference"></a>
     <header>
       <div class="content-wrapper">
         <p><a href="../index.html">RInAppMessaging 2.1.0 Docs</a></p>
@@ -30,7 +30,7 @@
       <p id="breadcrumbs">
         <a href="../index.html">RInAppMessaging Reference</a>
         <img id="carat" src="../img/carat.png" />
-        Identification Enumeration Reference
+        RInAppMessagingDelegate Protocol Reference
       </p>
     </div>
     <div class="content-wrapper">
@@ -103,16 +103,16 @@
       <article class="main-content">
         <section>
           <section class="section">
-            <h1>Identification</h1>
+            <h1>RInAppMessagingDelegate</h1>
               <div class="declaration">
                 <div class="language">
                   
                   <pre class="highlight swift"><code><span class="kd">@objc</span>
-<span class="kd">public</span> <span class="kd">enum</span> <span class="kt">Identification</span> <span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="kt">Codable</span></code></pre>
+<span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">RInAppMessagingDelegate</span> <span class="p">:</span> <span class="kt">AnyObject</span></code></pre>
 
                 </div>
               </div>
-            <p>Undocumented</p>
+            <p>Protocol for optional delagate</p>
 
           </section>
           <section class="section task-group-section">
@@ -121,9 +121,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@RInAppMessaging@E@Identification@IdentificationRakutenId"></a>
-                    <a name="//apple_ref/swift/Element/rakutenId" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@RInAppMessaging@E@Identification@IdentificationRakutenId">rakutenId</a>
+                    <a name="/c:@M@RInAppMessaging@objc(pl)RInAppMessagingDelegate(im)inAppMessagingShouldShowCampaignWithContextsWithContexts:campaignTitle:"></a>
+                    <a name="//apple_ref/swift/Method/inAppMessagingShouldShowCampaignWithContexts(contexts:campaignTitle:)" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@M@RInAppMessaging@objc(pl)RInAppMessagingDelegate(im)inAppMessagingShouldShowCampaignWithContextsWithContexts:campaignTitle:">inAppMessagingShouldShowCampaignWithContexts(contexts:<wbr>campaignTitle:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -131,68 +131,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Method called only for campaigns with context just before displaying its message</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">rakutenId</span> <span class="o">=</span> <span class="mi">1</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/c:@M@RInAppMessaging@E@Identification@IdentificationEasyId"></a>
-                    <a name="//apple_ref/swift/Element/easyId" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@RInAppMessaging@E@Identification@IdentificationEasyId">easyId</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">easyId</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/c:@M@RInAppMessaging@E@Identification@IdentificationUserId"></a>
-                    <a name="//apple_ref/swift/Element/userId" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@RInAppMessaging@E@Identification@IdentificationUserId">userId</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">userId</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">inAppMessagingShouldShowCampaignWithContexts</span><span class="p">(</span><span class="nv">contexts</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">],</span> <span class="nv">campaignTitle</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
 
                         </div>
                       </div>

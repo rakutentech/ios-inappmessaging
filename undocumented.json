@@ -79,14 +79,14 @@
     },
     {
       "file": "/Users/travis/build/rakutentech/ios-inappmessaging/RInAppMessaging/Classes/Events/Event.swift",
-      "line": 28,
+      "line": 32,
       "symbol": "Event.isEqual(_:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/travis/build/rakutentech/ios-inappmessaging/RInAppMessaging/Classes/Events/Event.swift",
-      "line": 36,
+      "line": 40,
       "symbol": "Event.hash",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
