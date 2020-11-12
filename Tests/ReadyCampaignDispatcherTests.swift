@@ -217,10 +217,28 @@ class ReadyCampaignDispatcherTests: QuickSpec {
 
                 it("will decrement impressions left in campaign") {
                     permissionService.shouldGrantPermission = true
-                    let campaign = TestHelpers.MockResponse.withGeneratedCampaigns(count: 1, test: false, delay: 0).data[0]
+                    let campaign = TestHelpers.generateCampaign(id: "test")
                     dispatcher.addToQueue(campaign: campaign)
                     dispatcher.dispatchAllIfNeeded()
                     expect(campaignRepository.wasDecrementImpressionsCalled).toEventually(beTrue())
+                }
+
+                it("will restore impressions left value if contexts were rejected") {
+                    permissionService.shouldGrantPermission = true
+                    delegate.shouldShowCampaign = false
+                    let campaign = TestHelpers.generateCampaign(id: "test", title: "[ctx] title")
+                    dispatcher.addToQueue(campaign: campaign)
+                    dispatcher.dispatchAllIfNeeded()
+                    expect(campaignRepository.wasIncrementImpressionsCalled).toEventually(beTrue())
+                }
+
+                it("will not increment impressions left value if contexts were approved") {
+                    permissionService.shouldGrantPermission = true
+                    delegate.shouldShowCampaign = true
+                    let campaign = TestHelpers.generateCampaign(id: "test", title: "[ctx] title")
+                    dispatcher.addToQueue(campaign: campaign)
+                    dispatcher.dispatchAllIfNeeded()
+                    expect(campaignRepository.wasIncrementImpressionsCalled).toAfterTimeout(beFalse())
                 }
 
                 it("will dispatch remaining campaigns") {
@@ -241,15 +259,6 @@ class ReadyCampaignDispatcherTests: QuickSpec {
                     expect(router.displayedCampaignsCount).toEventually(equal(1))
                     expect(router.displayedCampaignsCount).toAfterTimeout(equal(1), timeout: 0.5)
                     expect(router.displayedCampaignsCount).toAfterTimeout(equal(2), timeout: 0.5)
-                }
-
-                it("won't schedule next dispatch if there are no queued campaigns") {
-                    permissionService.shouldGrantPermission = true
-                    let campaign = TestHelpers.MockResponse.withGeneratedCampaigns(count: 1, test: false, delay: 0).data[0]
-                    dispatcher.addToQueue(campaign: campaign)
-                    dispatcher.dispatchAllIfNeeded()
-                    expect(router.displayedCampaignsCount).toEventually(equal(1))
-                    expect(dispatcher.isDispatching).to(beFalse())
                 }
 
                 it("won't schedule next dispatch if there are no queued campaigns") {

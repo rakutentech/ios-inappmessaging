@@ -71,18 +71,18 @@ internal class CampaignDispatcher: CampaignDispatcherType {
                 self.dispatchNext()
                 return
             }
-
+            self.campaignRepository.decrementImpressionsLeftInCampaign(campaign)
             let campaignTitle = campaign.data.messagePayload.title
+
             self.router.displayCampaign(campaign, confirmation: {
                 let contexts = campaign.contexts
                 guard let delegate = self.delegate, !contexts.isEmpty, !campaign.data.isTest else {
-                    self.campaignRepository.decrementImpressionsLeftInCampaign(campaign)
                     return true
                 }
                 let shouldShow = delegate.shouldShowCampaignMessage(title: campaignTitle,
                                                                     contexts: contexts)
-                if shouldShow {
-                    self.campaignRepository.decrementImpressionsLeftInCampaign(campaign)
+                if !shouldShow {
+                    self.campaignRepository.incrementImpressionsLeftInCampaign(campaign)
                 }
                 return shouldShow
 

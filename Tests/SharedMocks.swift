@@ -18,12 +18,18 @@ class CampaignRepositoryMock: CampaignRepositoryType {
     var resourcesToLock: [LockableResource] = []
 
     private(set) var wasDecrementImpressionsCalled = false
+    private(set) var wasIncrementImpressionsCalled = false
     private(set) var wasOptOutCalled = false
     private(set) var lastSyncCampaigns = [Campaign]()
 
     func decrementImpressionsLeftInCampaign(_ campaign: Campaign) -> Campaign? {
         wasDecrementImpressionsCalled = true
         return Campaign.updatedCampaign(campaign, withImpressionLeft: campaign.impressionsLeft - 1)
+    }
+
+    func incrementImpressionsLeftInCampaign(_ campaign: Campaign) -> Campaign? {
+        wasIncrementImpressionsCalled = true
+        return Campaign.updatedCampaign(campaign, withImpressionLeft: campaign.impressionsLeft + 1)
     }
 
     func optOutCampaign(_ campaign: Campaign) -> Campaign? {
