@@ -22,7 +22,7 @@ internal class CampaignDispatcher: CampaignDispatcherType {
 
     private let dispatchQueue = DispatchQueue(label: "IAM.Campaign", attributes: .concurrent)
     private var queuedCampaigns = [Campaign]()
-    private var isDispatching = false
+    private(set) var isDispatching = false
 
     weak var delegate: CampaignDispatcherDelegate?
 
@@ -42,12 +42,15 @@ internal class CampaignDispatcher: CampaignDispatcherType {
     }
 
     func dispatchAllIfNeeded() {
-        guard !isDispatching else {
-            return
-        }
 
-        isDispatching = true
-        dispatchNext()
+        dispatchQueue.async(flags: .barrier) {
+            guard !self.isDispatching else {
+                return
+            }
+
+            self.isDispatching = true
+            self.dispatchNext()
+        }
     }
 
     private func dispatchNext() {
@@ -58,41 +61,47 @@ internal class CampaignDispatcher: CampaignDispatcherType {
                 return
             }
 
-            var campaign = self.queuedCampaigns.removeFirst()
-
+            let campaign = self.queuedCampaigns.removeFirst()
             let permissionResponse = self.permissionService.checkPermission(forCampaign: campaign.data)
             if permissionResponse.performPing {
                 self.delegate?.performPing()
             }
+
             guard campaign.data.isTest || permissionResponse.display else {
                 self.dispatchNext()
                 return
             }
-
-            if let updatedCampaign = self.campaignRepository.decrementImpressionsLeftInCampaign(campaign) {
-                campaign = updatedCampaign
-            } else {
-                CommonUtility.debugPrint("""
-                    Error: Campaign (\(campaign.id)) does not exist in the repository anymore (race condition?). Proceeding with old data...
-                    """)
-            }
-
+            self.campaignRepository.decrementImpressionsLeftInCampaign(campaign)
             let campaignTitle = campaign.data.messagePayload.title
+
             self.router.displayCampaign(campaign, confirmation: {
                 let contexts = campaign.contexts
                 guard let delegate = self.delegate, !contexts.isEmpty, !campaign.data.isTest else {
                     return true
                 }
-
-                return delegate.shouldShowCampaignMessage(title: campaignTitle,
-                                                          contexts: contexts)
-            }(), completion: { [weak self] in
-                guard let self = self else {
-                    return
+                let shouldShow = delegate.shouldShowCampaignMessage(title: campaignTitle,
+                                                                    contexts: contexts)
+                if !shouldShow {
+                    self.campaignRepository.incrementImpressionsLeftInCampaign(campaign)
                 }
-                WorkScheduler.scheduleTask(
-                    milliseconds: self.delayBeforeNextMessage(for: campaign.data),
-                    closure: self.dispatchNext)
+                return shouldShow
+
+            }(), completion: { cancelled in
+                self.dispatchQueue.async(flags: .barrier) {
+
+                    guard !self.queuedCampaigns.isEmpty else {
+                        self.isDispatching = false
+                        return
+                    }
+                    if cancelled {
+                        self.dispatchNext()
+                    } else {
+                        WorkScheduler.scheduleTask(
+                            milliseconds: self.delayBeforeNextMessage(for: campaign.data),
+                            closure: self.dispatchNext
+                        )
+                    }
+                }
             })
         }
     }

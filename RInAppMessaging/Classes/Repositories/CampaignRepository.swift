@@ -10,13 +10,22 @@ internal protocol CampaignRepositoryType: AnyObject, Lockable {
     /// - Parameter campaign: The campaign to opt out.
     /// - Returns: A new campaign structure with updated opt out status
     /// or `nil` if campaign couldn't be found in the repository.
+    @discardableResult
     func optOutCampaign(_ campaign: Campaign) -> Campaign?
 
     /// Decrements number of impressionsLeft for provided campaign in the repository.
     /// - Parameter campaign: The campaign to update impressionsLeft value.
     /// - Returns: A new campaign structure with updated impressionsLeft value
     /// or `nil` if campaign couldn't be found in the repository.
+    @discardableResult
     func decrementImpressionsLeftInCampaign(_ campaign: Campaign) -> Campaign?
+
+    /// Increments number of impressionsLeft for provided campaign in the repository.
+    /// - Parameter campaign: The campaign to update impressionsLeft value.
+    /// - Returns: A new campaign structure with updated impressionsLeft value
+    /// or `nil` if campaign couldn't be found in the repository.
+    @discardableResult
+    func incrementImpressionsLeftInCampaign(_ campaign: Campaign) -> Campaign?
 }
 
 /// Repository to store campaigns retrieved from ping request.
@@ -50,6 +59,7 @@ internal class CampaignRepository: CampaignRepositoryType {
         self.campaigns.set(value: newList)
     }
 
+    @discardableResult
     func optOutCampaign(_ campaign: Campaign) -> Campaign? {
         var list = self.campaigns.get()
         guard let index = list.firstIndex(where: { $0.id == campaign.id }) else {
@@ -63,16 +73,26 @@ internal class CampaignRepository: CampaignRepositoryType {
         return updatedCampaign
     }
 
+    @discardableResult
     func decrementImpressionsLeftInCampaign(_ campaign: Campaign) -> Campaign? {
-        var list = self.campaigns.get()
+        let updatedCampaign = Campaign.updatedCampaign(campaign, withImpressionLeft: max(0, campaign.impressionsLeft - 1))
+        return updateCampaignInTheList(updatedCampaign) ? updatedCampaign : nil
+    }
+
+    @discardableResult
+    func incrementImpressionsLeftInCampaign(_ campaign: Campaign) -> Campaign? {
+        let updatedCampaign = Campaign.updatedCampaign(campaign, withImpressionLeft: campaign.impressionsLeft + 1)
+        return updateCampaignInTheList(updatedCampaign) ? updatedCampaign : nil
+    }
+
+    private func updateCampaignInTheList(_ campaign: Campaign) -> Bool {
+        var list = campaigns.get()
         guard let index = list.firstIndex(where: { $0.id == campaign.id }) else {
             CommonUtility.debugPrint("Campaign \(campaign.id) cannot be updated - not found in repository")
-            return nil
+            return false
         }
-
-        let updatedCampaign = Campaign.updatedCampaign(campaign, withImpressionLeft: campaign.impressionsLeft - 1)
-        list[index] = updatedCampaign
-        self.campaigns.set(value: list)
-        return updatedCampaign
+        list[index] = campaign
+        campaigns.set(value: list)
+        return true
     }
 }

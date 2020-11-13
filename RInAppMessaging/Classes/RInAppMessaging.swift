@@ -117,6 +117,7 @@
         }
     }
 
+    /// For testing purposes
     internal static func deinitializeModule() {
         inAppQueue?.sync {
             initializedModule = nil
