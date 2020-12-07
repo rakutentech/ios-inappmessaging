@@ -57,6 +57,7 @@ class CampaignDispatcherMock: CampaignDispatcherType {
 
 class EventMatcherMock: EventMatcherType {
     private(set) var loggedEvents = [Event]()
+    private(set) var wasClearStoredDataCalled = false
     var simulateMatchingSuccess = true
     var simulateMatcherError: EventMatcherError?
     var resourcesToLock: [LockableResource] = []
@@ -78,6 +79,10 @@ class EventMatcherMock: EventMatcherType {
         if !simulateMatchingSuccess {
             throw EventMatcherError.couldntFindRequestedSetOfEvents
         }
+    }
+
+    func clearStoredData() {
+        wasClearStoredDataCalled = true
     }
 }
 

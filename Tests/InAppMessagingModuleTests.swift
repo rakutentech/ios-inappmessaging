@@ -206,6 +206,44 @@ class InAppMessagingModuleTests: QuickSpec {
                                 iamModule.registerPreference(IAMPreference())
                                 expect(campaignsListManager.wasRefreshListCalled).to(beTrue())
                             }
+
+                            it("will clear stored data if one of IDs is updated") {
+                                let preference = IAMPreferenceBuilder().setUserId("user1").build()
+                                iamModule.registerPreference(preference)
+                                let newPreference = IAMPreferenceBuilder().setUserId("user2").build()
+                                iamModule.registerPreference(newPreference)
+                                expect(eventMatcher.wasClearStoredDataCalled).to(beTrue())
+                            }
+
+                            it("will clear stored data if user logs out") {
+                                let preference = IAMPreferenceBuilder().setUserId("user1").build()
+                                iamModule.registerPreference(preference)
+                                iamModule.registerPreference(nil)
+                                expect(eventMatcher.wasClearStoredDataCalled).to(beTrue())
+                            }
+
+                            it("will not clear stored data if only access token was updated") {
+                                let preference = IAMPreferenceBuilder().setAccessToken("token1").build()
+                                iamModule.registerPreference(preference)
+                                let newPreference = IAMPreferenceBuilder().setAccessToken("token2").build()
+                                iamModule.registerPreference(newPreference)
+                                expect(eventMatcher.wasClearStoredDataCalled).to(beFalse())
+                            }
+
+                            it("will not clear stored data if updated data is the same") {
+                                let preference = IAMPreferenceBuilder().setUserId("user1").build()
+                                iamModule.registerPreference(preference)
+                                let newPreference = IAMPreferenceBuilder().setUserId("user1").build()
+                                iamModule.registerPreference(newPreference)
+                                expect(eventMatcher.wasClearStoredDataCalled).to(beFalse())
+                            }
+
+                            it("will not clear stored data if previous preference was nil") {
+                                iamModule.registerPreference(nil) // default state when the SDK is initialized
+                                let preference = IAMPreferenceBuilder().setUserId("user1").build()
+                                iamModule.registerPreference(preference)
+                                expect(eventMatcher.wasClearStoredDataCalled).to(beFalse())
+                            }
                         }
 
                         context("and module is not initialized") {

@@ -15,6 +15,10 @@ internal protocol EventMatcherType: AnyObject, Lockable {
     /// Function can be used with persistent events - they won't be removed.
     /// - Throws: Can throw EventMatcherError when records of requested events cannot be found
     func removeSetOfMatchedEvents(_ eventsToRemove: Set<Event>, for campaign: Campaign) throws
+
+    /// Removes all stored events and campaign data.
+    /// The list of logged persistent events is not cleared.
+    func clearStoredData()
 }
 
 internal enum EventMatcherError: Error {
@@ -28,7 +32,7 @@ internal class EventMatcher: EventMatcherType {
 
     private let campaignRepository: CampaignRepositoryType
     private var matchedEvents = LockableObject([String: [Event]]())
-    private var usedPersistentEventOnlyCampaigns = Set<String>()
+    private var triggeredPersistentEventOnlyCampaigns = Set<String>()
     private var persistentEvents = Set<Event>()
     var resourcesToLock: [LockableResource] {
         return [matchedEvents]
@@ -81,7 +85,7 @@ internal class EventMatcher: EventMatcherType {
         }
 
         let persistentEventsOnlyCampaign = campaignEvents.isEmpty
-        guard !(persistentEventsOnlyCampaign && usedPersistentEventOnlyCampaigns.contains(campaign.id)) else {
+        guard !(persistentEventsOnlyCampaign && triggeredPersistentEventOnlyCampaigns.contains(campaign.id)) else {
             throw EventMatcherError.providedSetOfEventsHaveAlreadyBeenUsed
         }
 
@@ -96,12 +100,17 @@ internal class EventMatcher: EventMatcherType {
         }
 
         if persistentEventsOnlyCampaign {
-            usedPersistentEventOnlyCampaigns.insert(campaign.id)
+            triggeredPersistentEventOnlyCampaigns.insert(campaign.id)
         } else {
             var events = matchedEvents.get()
             events[campaign.id] = campaignEvents
             matchedEvents.set(value: events)
         }
+    }
+
+    func clearStoredData() {
+        matchedEvents.set(value: [:])
+        triggeredPersistentEventOnlyCampaigns.removeAll()
     }
 
     private func isEventMatchingOneOfTriggers(event: Event, triggers: [Trigger]) -> Bool {
