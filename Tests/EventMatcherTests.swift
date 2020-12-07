@@ -2,6 +2,7 @@ import Quick
 import Nimble
 @testable import RInAppMessaging
 
+//swiftlint:disable force_try
 class EventMatcherTests: QuickSpec {
 
     override func spec() {
@@ -38,6 +39,16 @@ class EventMatcherTests: QuickSpec {
                                                  operator: .greaterThan)])
                 ]
             )
+            let persistentEventOnlyCampaign = TestHelpers.generateCampaign(id: "test",
+                                                                           test: false, delay: 0,
+                                                                           maxImpressions: 2,
+                                                                           triggers: [
+                                                                            Trigger(type: .event,
+                                                                                    eventType: .appStart,
+                                                                                    eventName: "appStartTest",
+                                                                                    attributes: [])
+                ]
+            )
 
             var campaignRepository: CampaignRepositoryMock!
             var eventMatcher: EventMatcher!
@@ -68,7 +79,7 @@ class EventMatcherTests: QuickSpec {
                     campaignRepository.list = [testCampaign]
                     eventMatcher.matchAndStore(event: LoginSuccessfulEvent())
                     eventMatcher.matchAndStore(event: AppStartEvent())
-                    try? eventMatcher.removeSetOfMatchedEvents([AppStartEvent(), LoginSuccessfulEvent()],
+                    try! eventMatcher.removeSetOfMatchedEvents([AppStartEvent(), LoginSuccessfulEvent()],
                                                                for: testCampaign)
                     expect {
                         try eventMatcher.removeSetOfMatchedEvents([AppStartEvent(), LoginSuccessfulEvent()],
@@ -92,7 +103,6 @@ class EventMatcherTests: QuickSpec {
                     eventMatcher.matchAndStore(event: LoginSuccessfulEvent())
                     eventMatcher.matchAndStore(event: AppStartEvent())
 
-                    //swiftlint:disable:next force_try
                     try! eventMatcher.removeSetOfMatchedEvents([AppStartEvent(), LoginSuccessfulEvent()],
                                                                 for: testCampaign)
                     expect {
@@ -141,7 +151,7 @@ class EventMatcherTests: QuickSpec {
                     campaignRepository.list = [testCampaign]
                     eventMatcher.matchAndStore(event: LoginSuccessfulEvent())
                     eventMatcher.matchAndStore(event: AppStartEvent())
-                    try? eventMatcher.removeSetOfMatchedEvents([AppStartEvent(), LoginSuccessfulEvent()],
+                    try! eventMatcher.removeSetOfMatchedEvents([AppStartEvent(), LoginSuccessfulEvent()],
                                                                for: testCampaign)
                     eventMatcher.matchAndStore(event: LoginSuccessfulEvent())
                     expect {
@@ -151,39 +161,19 @@ class EventMatcherTests: QuickSpec {
                 }
 
                 it("will succeed if only persistent events are required") {
-                    let campaign = TestHelpers.generateCampaign(id: "test",
-                                                                test: false, delay: 0,
-                                                                maxImpressions: 1,
-                                                                triggers: [
-                                                                    Trigger(type: .event,
-                                                                            eventType: .appStart,
-                                                                            eventName: "appStartTest",
-                                                                            attributes: [])
-                        ]
-                    )
-                    campaignRepository.list = [campaign]
+                    campaignRepository.list = [persistentEventOnlyCampaign]
                     eventMatcher.matchAndStore(event: AppStartEvent())
                     expect {
-                        try eventMatcher.removeSetOfMatchedEvents([AppStartEvent()], for: campaign)
+                        try eventMatcher.removeSetOfMatchedEvents([AppStartEvent()], for: persistentEventOnlyCampaign)
                     }.toNot(throwError())
                 }
 
                 it("will succeed only once if only persistent events are required") {
-                    let campaign = TestHelpers.generateCampaign(id: "test",
-                                                                test: false, delay: 0,
-                                                                maxImpressions: 1,
-                                                                triggers: [
-                                                                    Trigger(type: .event,
-                                                                            eventType: .appStart,
-                                                                            eventName: "appStartTest",
-                                                                            attributes: [])
-                        ]
-                    )
-                    campaignRepository.list = [campaign]
+                    campaignRepository.list = [persistentEventOnlyCampaign]
                     eventMatcher.matchAndStore(event: AppStartEvent())
-                    try? eventMatcher.removeSetOfMatchedEvents([AppStartEvent()], for: campaign)
+                    try! eventMatcher.removeSetOfMatchedEvents([AppStartEvent()], for: persistentEventOnlyCampaign)
                     expect {
-                        try eventMatcher.removeSetOfMatchedEvents([AppStartEvent()], for: campaign)
+                        try eventMatcher.removeSetOfMatchedEvents([AppStartEvent()], for: persistentEventOnlyCampaign)
                     }.to(throwError(EventMatcherError.providedSetOfEventsHaveAlreadyBeenUsed))
                 }
 
@@ -256,6 +246,39 @@ class EventMatcherTests: QuickSpec {
                     eventMatcher.matchAndStore(event: AppStartEvent())
                     eventMatcher.matchAndStore(event: LoginSuccessfulEvent())
                     expect(eventMatcher.containsAllMatchedEvents(for: campaign)).to(beFalse())
+                }
+            }
+
+            context("when calling clearStoredData()") {
+
+                it("will clear triggeredPersistentEventOnlyCampaigns list allowing persistent event only campaigns to be shown again") {
+                    campaignRepository.list = [persistentEventOnlyCampaign]
+                    eventMatcher.matchAndStore(event: AppStartEvent())
+                    try! eventMatcher.removeSetOfMatchedEvents([AppStartEvent()], for: persistentEventOnlyCampaign)
+                    eventMatcher.clearStoredData()
+                    expect {
+                        try eventMatcher.removeSetOfMatchedEvents([AppStartEvent()], for: persistentEventOnlyCampaign)
+                    }.toNot(throwError())
+                }
+
+                it("will not clear list of logged persistent events") {
+                    campaignRepository.list = [persistentEventOnlyCampaign]
+                    eventMatcher.matchAndStore(event: AppStartEvent())
+                    eventMatcher.clearStoredData()
+                    expect {
+                        try eventMatcher.removeSetOfMatchedEvents([AppStartEvent()], for: persistentEventOnlyCampaign)
+                    }.toNot(throwError())
+                }
+
+                it("will clear stored [campaign - logged events] mapping") {
+                    campaignRepository.list = [testCampaign]
+                    eventMatcher.matchAndStore(event: LoginSuccessfulEvent())
+                    eventMatcher.matchAndStore(event: AppStartEvent())
+                    eventMatcher.clearStoredData()
+                    expect {
+                        try eventMatcher.removeSetOfMatchedEvents([AppStartEvent(), LoginSuccessfulEvent()],
+                                                                  for: testCampaign)
+                    }.to(throwError(EventMatcherError.couldntFindRequestedSetOfEvents))
                 }
             }
         }

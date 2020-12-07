@@ -82,12 +82,17 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
             return
         }
 
+        let diff = preferenceRepository.preference?.diff(preference)
         preferenceRepository.setPreference(preference)
 
         guard isInitialized else {
             return
         }
 
+        // clear data only if there was a change in user ids
+        if !(diff == nil || diff == [] || diff == [.accessToken]) {
+            eventMatcher.clearStoredData()
+        }
         campaignsListManager.refreshList()
     }
 }
