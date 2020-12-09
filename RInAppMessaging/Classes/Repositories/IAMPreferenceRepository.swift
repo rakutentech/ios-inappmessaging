@@ -33,7 +33,7 @@ internal class IAMPreferenceRepository {
         return userIdentifiers
     }
 
-    /// Method to retrieve RAE access token in preference object.
+    /// Method to retrieve access token in preference object.
     /// - Returns: Access token as a string (Optional).
     func getAccessToken() -> String? {
         return preference?.accessToken

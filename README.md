@@ -11,13 +11,13 @@ In-App Messaging (IAM) module allows app developers to easily configure and disp
 RInAppMessaging SDK is distributed as a Cocoapod.  
 More information on installing pods: [https://guides.cocoapods.org/using/getting-started.html](https://guides.cocoapods.org/using/getting-started.html)
 
-1) Include the following in your application's Podfile
+1. Include the following in your application's Podfile
 
 ```ruby
 pod 'RInAppMessaging'
 ```
 
-2) Run the following in the terminal
+2. Run the following in the terminal
 
 ```
 pod install
@@ -27,7 +27,7 @@ pod install
 
 **Note:** Currently we do not host any public APIs but you can create your own APIs and configure the SDK to use those.
 
-1)  To use the module you must set the following values in your app's `Info.plist`:
+To use the module you must set the following values in your app's `Info.plist`:
 
 | Key     | Value     |
 | :---:   | :---:     |
@@ -59,7 +59,7 @@ func application(_ application: UIApplication, didFinishLaunchingWithOptions lau
 
 **Objective-C**
 
-```swift
+```objectivec
 @import RInAppMessaging;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -80,7 +80,7 @@ func logEvent(_ event: Event)
 
 IAM provides three pre-defined event types and a custom event type:
 
-1.  `AppStartEvent` - This event should be logged when the application is considered started by the host app. E.G AppDelegate's didFinishLaunchingWithOptions.
+1.  `AppStartEvent` - This event should be logged when the application is considered started by the host app. E.G AppDelegate's didFinishLaunchingWithOptions. It is persistent, meaning, once it's logged it will always satisfy corresponding trigger in a campaign. All subsequent logs of this event are ignored. Campaigns that require only AppStartEvent are shown once per app session.
 2.  `LoginSuccessfulEvent` - This event should be logged whenever the user logs in successfully.
 3.  `PurchaseSuccessfulEvent` - This event should be logged whenever a successful purchase occurs and has several pre-defined properties – purchase amount, number of items, currency code and item list.
 4.  `CustomEvent` - This event is created by the host app developers and can take in any event name and a list of custom attributes.
@@ -116,7 +116,7 @@ RInAppMessaging.logEvent(CustomEvent(withName: "any_event_name_here", withCustom
 
 **Objective-C**
 
-```swift
+```objectivec
 // App start event.
 [RInAppMessaging logEvent:[[AppStartEvent alloc] init]]; 
  
@@ -144,11 +144,13 @@ A preference is what will allow IAM to identify users for targeting and segmenta
 3.  AccessToken - This is the token provided by the internal RAuthentication SDK as the "accessToken" value
 
 To help IAM identify users, please set a new preference every time a user changes their login state i.e. when they log in or log out.  
-Not all identifiers have to be provided.
+During log out please call  `registerPreference()` with nil parameter instead of  `IAMPreference` object with nil properties.  
+Not all identifiers have to be provided*.  
+**NOTE**: *For our internal users - for user targeting you must provide an accessToken. If you are setting an accessToken you must also provide associated userId in `IAMPreference`.
 
 **Objective-C**
 
-```swift
+```objectivec
 IAMPreference* preference = [[[[[[IAMPreferenceBuilder alloc] init]
     setUserId:@"testaccount@gmail.com"]
     setRakutenId:@"testaccount"]
@@ -222,7 +224,7 @@ func application(_ application: UIApplication, didFinishLaunchingWithOptions lau
 
 **Objective-C**
 
-```swift
+```objectivec
 @import RInAppMessaging;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -241,3 +243,8 @@ func application(_ application: UIApplication, didFinishLaunchingWithOptions lau
 * Run `bundle install` then run `bundle exec pod install`
 * Open `RInAppMessaging.xcworkspace` in Xcode then build/run
 * To run the tests press key shortcut command-U
+
+## **Troubleshooting**
+
+* (For our internal users) Getting error 401 when calling ping/impression endpoint - check your app's scopes list if it contains all required entries OR stop putting accessToken in `IAMPreference` (breaks user targeting)
+

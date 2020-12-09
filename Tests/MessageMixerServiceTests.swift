@@ -178,7 +178,7 @@ class MessageMixerServiceTests: QuickSpec {
 
                 it("will send required headers") {
                     preferenceRepository.setPreference(IAMPreferenceBuilder()
-                        .setAccessToken("rae-token")
+                        .setAccessToken("token")
                         .build())
 
                     waitUntil { done in
@@ -193,7 +193,7 @@ class MessageMixerServiceTests: QuickSpec {
                     expect(headers).toNot(beEmpty())
                     expect(headers?[Keys.subscriptionID]).to(equal(BundleInfoMock.inAppSubscriptionId))
                     expect(headers?[Keys.deviceID]).toNot(beEmpty())
-                    expect(headers?[Keys.authorization]).to(equal("OAuth2 rae-token"))
+                    expect(headers?[Keys.authorization]).to(equal("OAuth2 token"))
                 }
             }
         }
