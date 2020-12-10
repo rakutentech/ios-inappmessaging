@@ -27,6 +27,10 @@
 
     @objc @discardableResult
     public func build() -> IAMPreference {
+        if BundleInfo.applicationId?.starts(with: "jp.co.rakuten") == true, Bundle.tests == nil {
+            assert(preference.accessToken == nil || preference.accessToken != nil && preference.userId != nil,
+                   "userId must be present when accessToken is specified")
+        }
         return self.preference
     }
 }

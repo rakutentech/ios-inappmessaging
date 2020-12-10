@@ -26,4 +26,7 @@ internal extension Bundle {
     static var sdk: Bundle? {
         return Bundle(identifier: "org.cocoapods.RInAppMessaging")
     }
+    static var tests: Bundle? {
+        return Bundle(identifier: "org.cocoapods.Tests")
+    }
 }

@@ -11,13 +11,13 @@ In-App Messaging (IAM) module allows app developers to easily configure and disp
 RInAppMessaging SDK is distributed as a Cocoapod.  
 More information on installing pods: [https://guides.cocoapods.org/using/getting-started.html](https://guides.cocoapods.org/using/getting-started.html)
 
-1) Include the following in your application's Podfile
+1. Include the following in your application's Podfile
 
 ```ruby
 pod 'RInAppMessaging'
 ```
 
-2) Run the following in the terminal
+2. Run the following in the terminal
 
 ```
 pod install
@@ -27,7 +27,7 @@ pod install
 
 **Note:** Currently we do not host any public APIs but you can create your own APIs and configure the SDK to use those.
 
-1)  To use the module you must set the following values in your app's `Info.plist`:
+To use the module you must set the following values in your app's `Info.plist`:
 
 | Key     | Value     |
 | :---:   | :---:     |
@@ -46,26 +46,12 @@ The SDK provides 3 public methods for the host applications to use:
 ### **configure()**  
 This method is called to initialize the SDK and should be placed in your AppDelegate's `didFinishLaunchingWithOptions`.
 
-**Swift**
-
 ```swift
 import RInAppMessaging
 
 func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
     RInAppMessaging.configure()
     return true
-}
-```
-
-**Objective-C**
-
-```swift
-@import RInAppMessaging;
-
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
-{
-    [RInAppMessaging configure];
-    return YES;
 }
 ```
 
@@ -80,12 +66,10 @@ func logEvent(_ event: Event)
 
 IAM provides three pre-defined event types and a custom event type:
 
-1.  `AppStartEvent` - This event should be logged when the application is considered started by the host app. E.G AppDelegate's didFinishLaunchingWithOptions.
+1.  `AppStartEvent` - This event should be logged when the application is considered started by the host app. E.G AppDelegate's didFinishLaunchingWithOptions. It is persistent, meaning, once it's logged it will always satisfy corresponding trigger in a campaign. All subsequent logs of this event are ignored. Campaigns that require only AppStartEvent are shown once per app launch.
 2.  `LoginSuccessfulEvent` - This event should be logged whenever the user logs in successfully.
 3.  `PurchaseSuccessfulEvent` - This event should be logged whenever a successful purchase occurs and has several pre-defined properties – purchase amount, number of items, currency code and item list.
 4.  `CustomEvent` - This event is created by the host app developers and can take in any event name and a list of custom attributes.
-
-**Swift**
 
 ```swift
 // App start event.
@@ -114,27 +98,6 @@ let attriList = [stringAttribute, intAttribute, boolAttribute, doubleAttribute, 
 RInAppMessaging.logEvent(CustomEvent(withName: "any_event_name_here", withCustomAttributes: attriList))
 ```
 
-**Objective-C**
-
-```swift
-// App start event.
-[RInAppMessaging logEvent:[[AppStartEvent alloc] init]]; 
- 
-// Login event.
-[RInAppMessaging logEvent:[[LoginSuccessfulEvent alloc] init]];
- 
-// Custom event.
-CustomAttribute* stringAttribute = [[CustomAttribute alloc] initWithKeyName:@"userResponse" withStringValue:@"hi"];
-CustomAttribute* intAttribute = [[CustomAttribute alloc] initWithKeyName:@"numberOfClicks" withIntValue:100];
-CustomAttribute* boolAttribute = [[CustomAttribute alloc] initWithKeyName:@"didUserNavigateToPage" withBoolValue:NO];
-CustomAttribute* doubleAttribute = [[CustomAttribute alloc] initWithKeyName:@"percentageOfCompletion" withDoubleValue:55.0];
-CustomAttribute* timeAttribute = [[CustomAttribute alloc] initWithKeyName:@"timeOfCompletion" withTimeInMilliValue:23424141];
- 
-NSArray* attriList = @[stringAttribute, intAttribute, boolAttribute, doubleAttribute, timeAttribute];
-CustomEvent* customEvent = [[CustomEvent alloc] initWithName:@"any_event_name_here" withCustomAttributes: attriList];
-[RInAppMessaging logEvent:customEvent];
-```
-
 ### **registerPreference()**
 
 A preference is what will allow IAM to identify users for targeting and segmentation. At the moment, IAM will take in any of the following identifiers:
@@ -144,18 +107,18 @@ A preference is what will allow IAM to identify users for targeting and segmenta
 3.  AccessToken - This is the token provided by the internal RAuthentication SDK as the "accessToken" value
 
 To help IAM identify users, please set a new preference every time a user changes their login state i.e. when they log in or log out.  
-Not all identifiers have to be provided.
-
-**Objective-C**
+After logout is complete please call  `registerPreference()` with nil parameter.  
+Not all identifiers have to be provided*.  
+**NOTE**: *For our internal users - for user targeting you must provide an accessToken. If you are setting an accessToken you must also provide associated userId in `IAMPreference`.
 
 ```swift
-IAMPreference* preference = [[[[[[IAMPreferenceBuilder alloc] init]
-    setUserId:@"testaccount@gmail.com"]
-    setRakutenId:@"testaccount"]
-    setAccessToken:@"27364827346"]
-    build];
+let preference = IAMPreferenceBuilder()
+    .setUserId("testaccount@gmail.com")
+    .setRakutenId("testaccount")
+    .setAccessToken("27364827346")
+    .build()
 
-[RInAppMessaging registerPreference:preference];
+RInAppMessaging.registerPreference(preference)
 ```
 
 ## **Custom Events**
@@ -185,8 +148,6 @@ From the SDK side, host app developers will be able to log custom events as show
 
 An optional delegate. Set the `RInAppMessaging.delegate` and implement the protocol method `inAppMessagingShouldShowCampaignWithContexts(contexts:campaignTitle:)` in order to be called before a message is displayed when a campaign title contains one or more contexts. A context is defined as the text inside "[]" within an IAM portal "Campaign Name" e.g. the campaign name is "[ctx1] title" so the context is "ctx1".
 
-**Swift**
-
 ```swift
 func inAppMessagingShouldShowCampaignWithContexts(contexts: [String], campaignTitle: String) -> Bool {
     guard campaignTitle == "[context1] campaign-title-1", contexts.contains("context1") else {
@@ -209,26 +170,12 @@ An optional error delegate. Set the `RInAppMessaging.errorDelegate` and implemen
 This flag can be used to support UI test automation tools like Appium. When set to `true`, the SDK will use a different display method which changes campaign messages' view hierarchy. This can solve issues with accessibility tools having problems detecting visible items.
  __Note__: There is a possibility that changing this flag will cause campaigns to display incorrectly.
 
-**Swift**
-
 ```swift
 import RInAppMessaging
 
 func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
     RInAppMessaging.accessibilityCompatibleDisplay = true
     return true
-}
-```
-
-**Objective-C**
-
-```swift
-@import RInAppMessaging;
-
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
-{
-    RInAppMessaging.accessibilityCompatibleDisplay = YES;
-    return YES;
 }
 ```
 
@@ -241,3 +188,7 @@ func application(_ application: UIApplication, didFinishLaunchingWithOptions lau
 * Run `bundle install` then run `bundle exec pod install`
 * Open `RInAppMessaging.xcworkspace` in Xcode then build/run
 * To run the tests press key shortcut command-U
+
+## **Troubleshooting**
+
+* Rakuten developers experiencing problems should refer to the Troubleshooting Guide on the internal developer documentation portal.

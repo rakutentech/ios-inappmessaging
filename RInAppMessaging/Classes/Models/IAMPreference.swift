@@ -1,5 +1,5 @@
 /// Struct for `InAppMessagingPreference` object that holds user related
-/// identifiers such as RakutenID, UserID, and RAE access token.
+/// identifiers such as RakutenID, UserID, and access token.
 @objc public class IAMPreference: NSObject {
     internal enum Field {
         case rakutenId, userId, accessToken
