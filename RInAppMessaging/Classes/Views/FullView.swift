@@ -116,7 +116,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
 
     func updateUIConstants() { }
 
-    func animateOnShow() { }
+    func animateOnShow(completion: @escaping () -> Void) { completion() }
 
     func constraintsForParent(_ parent: UIView) -> [NSLayoutConstraint] {
         return constraintsFilling(parent: parent, activate: false)

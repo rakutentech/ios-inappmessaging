@@ -52,10 +52,11 @@ internal class SlideUpView: UIView, SlideUpViewType {
         presenter.logImpression(type: .impression)
     }
 
-    func animateOnShow() {
+    func animateOnShow(completion: @escaping () -> Void) {
         guard [leftConstraint, bottomConstraint, rightConstraint].allSatisfy({ $0 != nil }) else {
             CommonUtility.debugPrint("Error: Constraints not set up. Cancelling animation")
             assertionFailure()
+            completion()
             return
         }
 
@@ -76,13 +77,15 @@ internal class SlideUpView: UIView, SlideUpViewType {
 
         self.superview?.layoutIfNeeded()
 
-        UIView.animate(withDuration: UIConstants.slideAnimationDuration) {
+        UIView.animate(withDuration: UIConstants.slideAnimationDuration, animations: {
             self.leftConstraint.constant = 0
             self.rightConstraint.constant = 0
             self.bottomConstraint.constant = 0
 
             self.superview?.layoutIfNeeded()
-        }
+        }, completion: { _ in
+            completion()
+        })
     }
 
     func constraintsForParent(_ parent: UIView) -> [NSLayoutConstraint] {
