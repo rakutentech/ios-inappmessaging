@@ -52,6 +52,13 @@ class ViewTests: QuickSpec {
                     expect(view.wasAnimateOnShowCalled).to(beTrue())
                 }
 
+                it("will disable user interaction in parent view for the time of animation") {
+                    view.show(accessibilityCompatible: false, onDismiss: {})
+                    expect(view.superview?.isUserInteractionEnabled).to(beFalse())
+                    expect(view.wasAnimationCompletionCalled).toEventually(beTrue())
+                    expect(view.superview?.isUserInteractionEnabled).to(beTrue())
+                }
+
                 it("will not show when another one is still displayed") {
                     let window = UIApplication.shared.keyWindow
                     let anotherView = BaseViewTestObject()
@@ -223,9 +230,14 @@ class ViewTests: QuickSpec {
 private class BaseViewTestObject: UIView, BaseView {
     var onDismiss: (() -> Void)?
     private(set) var wasAnimateOnShowCalled = false
+    private(set) var wasAnimationCompletionCalled = false
 
-    func animateOnShow() {
+    func animateOnShow(completion: @escaping () -> Void) {
         wasAnimateOnShowCalled = true
+        DispatchQueue.main.async {
+            self.wasAnimationCompletionCalled = true
+            completion()
+        }
     }
     func constraintsForParent(_ parent: UIView) -> [NSLayoutConstraint] { [] }
 }

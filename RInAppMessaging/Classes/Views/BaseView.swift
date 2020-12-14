@@ -10,7 +10,7 @@ internal protocol BaseView: UIView {
     func show(accessibilityCompatible: Bool, onDismiss: @escaping () -> Void)
 
     /// Handle animation just after `show(accessibilityCompatible:onDismiss:)` call
-    func animateOnShow()
+    func animateOnShow(completion: @escaping () -> Void)
 
     /// Dismiss the presented IAM view
     func dismiss()
@@ -83,6 +83,9 @@ internal extension BaseView {
         NSLayoutConstraint.activate(constraintsForParent(parentView))
 
         parentView.layoutIfNeeded()
-        animateOnShow()
+        parentView.isUserInteractionEnabled = false
+        animateOnShow(completion: {
+            parentView.isUserInteractionEnabled = true
+        })
     }
 }

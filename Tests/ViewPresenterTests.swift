@@ -355,7 +355,7 @@ private class FullViewMock: UIView, FullViewType {
         addedButtons = buttons
     }
 
-    func animateOnShow() { }
+    func animateOnShow(completion: @escaping () -> Void) { completion() }
     func constraintsForParent(_ parent: UIView) -> [NSLayoutConstraint] { [] }
 }
 
@@ -373,6 +373,6 @@ private class SlideUpViewMock: UIView, SlideUpViewType {
         wasDismissCalled = true
     }
 
-    func animateOnShow() { }
+    func animateOnShow(completion: @escaping () -> Void) { completion() }
     func constraintsForParent(_ parent: UIView) -> [NSLayoutConstraint] { [] }
 }
