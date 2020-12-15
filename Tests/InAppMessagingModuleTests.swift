@@ -207,19 +207,21 @@ class InAppMessagingModuleTests: QuickSpec {
                                 expect(campaignsListManager.wasRefreshListCalled).to(beTrue())
                             }
 
-                            it("will clear stored data if one of IDs is updated") {
+                            it("will clear stored data with nonPersistentEventsOnly set to false if one of IDs is updated") {
                                 let preference = IAMPreferenceBuilder().setUserId("user1").build()
                                 iamModule.registerPreference(preference)
                                 let newPreference = IAMPreferenceBuilder().setUserId("user2").build()
                                 iamModule.registerPreference(newPreference)
                                 expect(eventMatcher.wasClearStoredDataCalled).to(beTrue())
+                                expect(eventMatcher.clearStoredDataCallArguments).to(equal((false)))
                             }
 
-                            it("will clear stored data if user logs out") {
+                            it("will clear stored data with nonPersistentEventsOnly set to true if user logs out") {
                                 let preference = IAMPreferenceBuilder().setUserId("user1").build()
                                 iamModule.registerPreference(preference)
                                 iamModule.registerPreference(nil)
                                 expect(eventMatcher.wasClearStoredDataCalled).to(beTrue())
+                                expect(eventMatcher.clearStoredDataCallArguments).to(equal((true)))
                             }
 
                             it("will not clear stored data if only access token was updated") {
