@@ -251,34 +251,68 @@ class EventMatcherTests: QuickSpec {
 
             context("when calling clearStoredData()") {
 
-                it("will clear triggeredPersistentEventOnlyCampaigns list allowing persistent event only campaigns to be shown again") {
-                    campaignRepository.list = [persistentEventOnlyCampaign]
-                    eventMatcher.matchAndStore(event: AppStartEvent())
-                    try! eventMatcher.removeSetOfMatchedEvents([AppStartEvent()], for: persistentEventOnlyCampaign)
-                    eventMatcher.clearStoredData()
-                    expect {
-                        try eventMatcher.removeSetOfMatchedEvents([AppStartEvent()], for: persistentEventOnlyCampaign)
-                    }.toNot(throwError())
+                context("and nonPersistentEventsOnly is set to true") {
+                    it("will not clear triggeredPersistentEventOnlyCampaigns list") {
+                        campaignRepository.list = [persistentEventOnlyCampaign]
+                        eventMatcher.matchAndStore(event: AppStartEvent())
+                        try! eventMatcher.removeSetOfMatchedEvents([AppStartEvent()], for: persistentEventOnlyCampaign)
+                        eventMatcher.clearStoredData(nonPersistentEventsOnly: true)
+                        expect {
+                            try eventMatcher.removeSetOfMatchedEvents([AppStartEvent()], for: persistentEventOnlyCampaign)
+                        }.to(throwError(EventMatcherError.providedSetOfEventsHaveAlreadyBeenUsed))
+                    }
+
+                    it("will not clear list of logged persistent events") {
+                        campaignRepository.list = [persistentEventOnlyCampaign]
+                        eventMatcher.matchAndStore(event: AppStartEvent())
+                        eventMatcher.clearStoredData(nonPersistentEventsOnly: true)
+                        expect {
+                            try eventMatcher.removeSetOfMatchedEvents([AppStartEvent()], for: persistentEventOnlyCampaign)
+                        }.toNot(throwError())
+                    }
+
+                    it("will clear stored [campaign - logged events] mapping") {
+                        campaignRepository.list = [testCampaign]
+                        eventMatcher.matchAndStore(event: LoginSuccessfulEvent())
+                        eventMatcher.matchAndStore(event: AppStartEvent())
+                        eventMatcher.clearStoredData(nonPersistentEventsOnly: true)
+                        expect {
+                            try eventMatcher.removeSetOfMatchedEvents([AppStartEvent(), LoginSuccessfulEvent()],
+                                                                      for: testCampaign)
+                        }.to(throwError(EventMatcherError.couldntFindRequestedSetOfEvents))
+                    }
                 }
 
-                it("will not clear list of logged persistent events") {
-                    campaignRepository.list = [persistentEventOnlyCampaign]
-                    eventMatcher.matchAndStore(event: AppStartEvent())
-                    eventMatcher.clearStoredData()
-                    expect {
-                        try eventMatcher.removeSetOfMatchedEvents([AppStartEvent()], for: persistentEventOnlyCampaign)
-                    }.toNot(throwError())
-                }
+                context("and nonPersistentEventsOnly is set to false") {
+                    it("will clear triggeredPersistentEventOnlyCampaigns list when nonPersistentEventsOnly is false") {
+                        campaignRepository.list = [persistentEventOnlyCampaign]
+                        eventMatcher.matchAndStore(event: AppStartEvent())
+                        try! eventMatcher.removeSetOfMatchedEvents([AppStartEvent()], for: persistentEventOnlyCampaign)
+                        eventMatcher.clearStoredData(nonPersistentEventsOnly: false)
+                        expect {
+                            try eventMatcher.removeSetOfMatchedEvents([AppStartEvent()], for: persistentEventOnlyCampaign)
+                        }.toNot(throwError())
+                    }
 
-                it("will clear stored [campaign - logged events] mapping") {
-                    campaignRepository.list = [testCampaign]
-                    eventMatcher.matchAndStore(event: LoginSuccessfulEvent())
-                    eventMatcher.matchAndStore(event: AppStartEvent())
-                    eventMatcher.clearStoredData()
-                    expect {
-                        try eventMatcher.removeSetOfMatchedEvents([AppStartEvent(), LoginSuccessfulEvent()],
-                                                                  for: testCampaign)
-                    }.to(throwError(EventMatcherError.couldntFindRequestedSetOfEvents))
+                    it("will not clear list of logged persistent events") {
+                        campaignRepository.list = [persistentEventOnlyCampaign]
+                        eventMatcher.matchAndStore(event: AppStartEvent())
+                        eventMatcher.clearStoredData(nonPersistentEventsOnly: false)
+                        expect {
+                            try eventMatcher.removeSetOfMatchedEvents([AppStartEvent()], for: persistentEventOnlyCampaign)
+                        }.toNot(throwError())
+                    }
+
+                    it("will clear stored [campaign - logged events] mapping") {
+                        campaignRepository.list = [testCampaign]
+                        eventMatcher.matchAndStore(event: LoginSuccessfulEvent())
+                        eventMatcher.matchAndStore(event: AppStartEvent())
+                        eventMatcher.clearStoredData(nonPersistentEventsOnly: false)
+                        expect {
+                            try eventMatcher.removeSetOfMatchedEvents([AppStartEvent(), LoginSuccessfulEvent()],
+                                                                      for: testCampaign)
+                        }.to(throwError(EventMatcherError.couldntFindRequestedSetOfEvents))
+                    }
                 }
             }
         }

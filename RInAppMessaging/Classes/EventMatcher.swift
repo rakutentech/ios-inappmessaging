@@ -18,7 +18,8 @@ internal protocol EventMatcherType: AnyObject, Lockable {
 
     /// Removes all stored events and campaign data.
     /// The list of logged persistent events is not cleared.
-    func clearStoredData()
+    /// - Parameter nonPersistentEventsOnly: if set to `true`, the list of triggered persistent event only campaigns won't be cleared
+    func clearStoredData(nonPersistentEventsOnly: Bool)
 }
 
 internal enum EventMatcherError: Error {
@@ -108,9 +109,11 @@ internal class EventMatcher: EventMatcherType {
         }
     }
 
-    func clearStoredData() {
+    func clearStoredData(nonPersistentEventsOnly: Bool) {
         matchedEvents.set(value: [:])
-        triggeredPersistentEventOnlyCampaigns.removeAll()
+        if !nonPersistentEventsOnly {
+            triggeredPersistentEventOnlyCampaigns.removeAll()
+        }
     }
 
     private func isEventMatchingOneOfTriggers(event: Event, triggers: [Trigger]) -> Bool {
