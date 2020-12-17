@@ -15,7 +15,7 @@ usage: $0 param1 param[n]...
    - param[n]: a list of secrets environment variables to put in secret config file
 
   Example usage:
-    $0 MiniApp RMA_API_ENDPOINT RAS_PROJECT_SUBSCRIPTION_KEY RAS_PROJECT_IDENTIFIER
+    $0 InAppMessaging RIAM_CONFIG_URL RIAM_APP_SUBSCRIPTION_KEY
 HELP_USAGE
 }
 
