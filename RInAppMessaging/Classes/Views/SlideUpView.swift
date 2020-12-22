@@ -60,8 +60,8 @@ internal class SlideUpView: UIView, SlideUpViewType {
             return
         }
 
-        //swiftlint:disable:next todo
-        //TODO: (Daniel Tam) - Support TOP direction for slide-up
+        // swiftlint:disable:next todo
+        // TODO: (Daniel Tam) - Support TOP direction for slide-up
         switch self.slideFromDirection {
         case .bottom:
             bottomConstraint.constant = -frame.height

@@ -21,7 +21,7 @@ class ValidatorHandler {
     }
 }
 
-//swiftlint:disable:next type_body_length
+// swiftlint:disable:next type_body_length
 struct TestHelpers {
 
     static func generateCampaign(id: String,
@@ -117,7 +117,7 @@ struct TestHelpers {
                                            addContexts: Bool = false,
                                            triggers: [Trigger]? = nil) -> PingResponse {
             var campaigns = [Campaign]()
-            //swiftlint:disable:next empty_count
+            // swiftlint:disable:next empty_count
             if count > 0 {
                 let title = addContexts ? "[ctx] testTitle" : "testTitle"
                 for i in 1...count {

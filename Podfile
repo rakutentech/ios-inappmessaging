@@ -5,7 +5,7 @@ secrets = ["RIAM_CONFIG_URL", "RIAM_APP_SUBSCRIPTION_KEY"]
 
 target 'RInAppMessaging_Example' do
   pod 'RInAppMessaging', :path => '.'
-  pod 'SwiftLint', '~> 0.40.0'
+  pod 'SwiftLint', '~> 0.42'
 
   target 'Tests' do
     pod 'RInAppMessaging', :path => '.'

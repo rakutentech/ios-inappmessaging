@@ -4,9 +4,9 @@ import Nimble
 
 /// Tests for campaign validation logic when provided with different custom events
 class CustomEventsTest: QuickSpec {
-//swiftlint:disable:previous type_body_length
+// swiftlint:disable:previous type_body_length
 
-    //swiftlint:disable:next function_body_length
+    // swiftlint:disable:next function_body_length
     override func spec() {
 
         var campaignsValidator: CampaignsValidator!
