@@ -9,7 +9,7 @@ internal protocol AlertPresentable {
                    actions: [UIAlertAction])
 }
 
-//Default implementation
+// Default implementation
 extension AlertPresentable {
 
     func showAlert(title: String,

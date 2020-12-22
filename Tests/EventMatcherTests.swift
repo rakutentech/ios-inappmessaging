@@ -2,7 +2,7 @@ import Quick
 import Nimble
 @testable import RInAppMessaging
 
-//swiftlint:disable force_try
+// swiftlint:disable force_try
 class EventMatcherTests: QuickSpec {
 
     override func spec() {

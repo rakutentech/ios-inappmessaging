@@ -243,7 +243,7 @@ class URLSessionMock: URLSession {
 
         let mockedSession: URLSessionMock?
         if self.responds(to: #selector(getter: sentRequest)) {
-            mockedSession = self //not swizzled
+            mockedSession = self // not swizzled
         } else {
             mockedSession = URLSessionMock.mockSessionLinks[self]
         }

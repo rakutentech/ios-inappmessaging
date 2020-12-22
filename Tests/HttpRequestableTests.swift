@@ -2,10 +2,10 @@ import Quick
 import Nimble
 @testable import RInAppMessaging
 
-//swiftlint:disable:next type_body_length
+// swiftlint:disable:next type_body_length
 class HttpRequestableTests: QuickSpec {
 
-    //swiftlint:disable:next function_body_length
+    // swiftlint:disable:next function_body_length
     override func spec() {
 
         describe("HttpRequestable objects") {
@@ -614,7 +614,7 @@ enum HttpRequestableObjectError: Error {
 private class HttpRequestableObject: HttpRequestable {
     private(set) var httpSession: URLSession = URLSessionMock(originalInstance: nil)
     var httpSessionMock: URLSessionMock {
-        //swiftlint:disable:next force_cast
+        // swiftlint:disable:next force_cast
         return httpSession as! URLSessionMock
     }
     var bodyError: HttpRequestableObjectError?

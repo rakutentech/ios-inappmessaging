@@ -164,19 +164,17 @@ class ViewTests: QuickSpec {
                 webView.removeFromSuperview()
             }
 
-            //swiftlint:disable:next todo
-            // FIXME: This test is disabled because it's failing on CI. Reason unknown
-//            it("will prevent execution of javascript code in web view using `evaluateJavaScript()`") {
-//                let webView = view.createWebView(withHtmlString: "<body>Text</body>", andFrame: .zero)
-//
-//                waitUntil(timeout: 5.0) { done in
-//                    webView.evaluateJavaScript("document.body.innerHTML") { (_, error) in
-//                        expect((error as NSError?)?.code).to(equal(4))
-//                        expect((error as NSError?)?.domain).to(equal("WKErrorDomain"))
-//                        done()
-//                    }
-//                }
-//            }
+            it("will prevent execution of javascript code in web view using `evaluateJavaScript()`") {
+                let webView = view.createWebView(withHtmlString: "<body>Text</body>", andFrame: .zero)
+
+                waitUntil(timeout: .seconds(5)) { done in
+                    webView.evaluateJavaScript("document.body.innerHTML") { (_, error) in
+                        expect((error as NSError?)?.code).to(equal(4))
+                        expect((error as NSError?)?.domain).to(equal("WKErrorDomain"))
+                        done()
+                    }
+                }
+            }
         }
 
         describe("ModalView") {

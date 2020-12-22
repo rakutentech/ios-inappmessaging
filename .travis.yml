@@ -1,7 +1,7 @@
 language: swift
 xcode_workspace: Example/InAppMessaging.xcworkspace
 xcode_scheme: InAppMessaging-Example
-osx_image: xcode11.7
+osx_image: xcode12.3
 
 script:
   - bundle exec fastlane ci
