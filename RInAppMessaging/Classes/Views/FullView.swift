@@ -132,7 +132,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
     }
 
     private func setupMainView() {
-        let nib = UINib(nibName: "FullView", bundle: Bundle.sdk)
+        let nib = UINib(nibName: "FullView", bundle: Bundle.sdkAssets)
         guard let containerView = nib.instantiate(withOwner: self, options: nil).first as? UIView else {
             assertionFailure("Couldn't load view from FullView.xib")
             return

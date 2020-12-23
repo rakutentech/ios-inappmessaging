@@ -26,6 +26,12 @@ internal extension Bundle {
     static var sdk: Bundle? {
         return Bundle(identifier: "org.cocoapods.RInAppMessaging")
     }
+    static var sdkAssets: Bundle? {
+        guard let sdkBundlePath = sdk?.resourcePath else {
+            return nil
+        }
+        return Bundle(path: sdkBundlePath.appending("/RInAppMessagingAssets.bundle"))
+    }
     static var tests: Bundle? {
         return Bundle(identifier: "org.cocoapods.Tests")
     }

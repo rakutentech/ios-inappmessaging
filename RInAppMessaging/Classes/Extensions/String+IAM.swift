@@ -5,7 +5,7 @@ internal extension String {
     /// Provided value is used to match the keys in resource file.
     /// - Returns: The localized string.
     var localized: String {
-        guard let bundle = Bundle.sdk else {
+        guard let bundle = Bundle.sdkAssets else {
             return self
         }
 
