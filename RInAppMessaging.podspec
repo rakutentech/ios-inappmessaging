@@ -10,5 +10,5 @@ Pod::Spec.new do |s|
   s.swift_version = '5.1'
 
   s.source_files = 'RInAppMessaging/Classes/**/*.{swift,h,m}'
-  s.resources = 'RInAppMessaging/Assets/**/*.{lproj,strings,xib}'
+  s.resource_bundles = { 'RInAppMessagingAssets' => ['RInAppMessaging/Assets/*'] }
 end
