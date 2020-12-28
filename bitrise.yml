@@ -127,12 +127,3 @@ app:
   - opts:
       is_expand: false
     BITRISE_SCHEME: RInAppMessaging-Example
-  - opts:
-      is_expand: false
-    BITRISE_EXPORT_METHOD: ad-hoc
-  - opts:
-      is_expand: false
-    CODECOV_TOKEN: 4144ada4-65b7-44bd-b478-48e3583a55cd
-  - opts:
-      is_expand: false
-    DANGER_GITHUB_API_TOKEN: 78fb7ddf8a020d492ed125f3277d631b3a5b7e6c
