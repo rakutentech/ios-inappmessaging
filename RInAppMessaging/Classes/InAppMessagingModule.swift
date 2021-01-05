@@ -10,6 +10,7 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
     private var readyCampaignDispatcher: CampaignDispatcherType
     private var impressionService: ImpressionServiceType
     private let campaignTriggerAgent: CampaignTriggerAgentType
+    private let router: RouterType
 
     private var isInitialized = false
     private var isEnabled = true
@@ -24,7 +25,8 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
          campaignsValidator: CampaignsValidatorType,
          eventMatcher: EventMatcherType,
          readyCampaignDispatcher: CampaignDispatcherType,
-         campaignTriggerAgent: CampaignTriggerAgentType) {
+         campaignTriggerAgent: CampaignTriggerAgentType,
+         router: RouterType) {
 
         self.configurationManager = configurationManager
         self.campaignsListManager = campaignsListManager
@@ -34,6 +36,7 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
         self.readyCampaignDispatcher = readyCampaignDispatcher
         self.impressionService = impressionService
         self.campaignTriggerAgent = campaignTriggerAgent
+        self.router = router
 
         self.configurationManager.errorDelegate = self
         self.campaignsListManager.errorDelegate = self
@@ -95,6 +98,7 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
             // we leave triggered persistent event only campaigns untouched
             // so they won't be displayed again immediately after logout (only after login)
             eventMatcher.clearStoredData(nonPersistentEventsOnly: isLogout)
+            router.discardDisplayedCampaign()
         }
         campaignsListManager.refreshList()
     }

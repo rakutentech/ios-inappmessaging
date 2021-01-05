@@ -4,6 +4,7 @@ import Foundation
 internal class DependencyManager {
 
     typealias Container = [DependencyManager.ContainerElement]
+    typealias Resolver = [(type: Any.Type, sharedInstance: Any)]
 
     struct ContainerElement {
         let type: Any.Type
@@ -17,7 +18,7 @@ internal class DependencyManager {
         }
     }
 
-    private var resolver = [(type: Any.Type, sharedInstance: Any)]()
+    @AtomicGetSet private var resolver = Resolver()
     private var container = Container()
 
     /// Adds new container to be used when resolving for the type enclosed in this container

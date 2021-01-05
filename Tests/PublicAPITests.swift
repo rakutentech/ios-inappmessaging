@@ -104,9 +104,9 @@ class PublicAPITests: QuickSpec {
             }
 
             it("won't send any events until configuration has finished") {
-                messageMixerService.delay = 3.0
                 RInAppMessaging.deinitializeModule()
                 reinitializeSDK()
+                messageMixerService.delay = 3.0
                 RInAppMessaging.logEvent(LoginSuccessfulEvent())
                 expect(eventMatcher.loggedEvents).toAfterTimeout(beEmpty(), timeout: 1)
                 expect(eventMatcher.loggedEvents).toEventually(haveCount(1),
@@ -181,7 +181,7 @@ class PublicAPITests: QuickSpec {
 
                     expect(UIApplication.shared.keyWindow?.subviews)
                         .toAfterTimeout(allPass({ !($0 is BaseView) }))
-                    expect(delegate.shouldShowCampaignCallCount).toAfterTimeout(equal(0))
+                    expect(delegate.shouldShowCampaignCallCount).toAfterTimeout(equal(2))
                 }
 
                 it("will call the method before showing a message with proper parameters") {

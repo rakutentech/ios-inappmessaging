@@ -81,6 +81,62 @@ class RouterTests: QuickSpec {
                         expect(UIApplication.shared.keyWindow?.subviews)
                             .toAfterTimeout(allPass({ !($0 is BaseView )}))
                     }
+
+                    it("will not show any view when another one is still displayed") {
+                        let campaign1 = TestHelpers.generateCampaign(id: "test", type: .modal)
+                        let campaign2 = TestHelpers.generateCampaign(id: "test", type: .full)
+                        router.displayCampaign(campaign1, confirmation: true, completion: { _ in })
+                        expect(UIApplication.shared.keyWindow?.subviews)
+                            .toEventually(containElementSatisfying({ $0 is ModalView })) // wait
+                        router.displayCampaign(campaign2, confirmation: true, completion: { _ in })
+                        expect(UIApplication.shared.keyWindow?.subviews)
+                            .toAfterTimeoutNot(containElementSatisfying({ $0 is FullScreenView }))
+                        expect(UIApplication.shared.keyWindow?.subviews)
+                            .to(containElementSatisfying({ $0 is ModalView }))
+                    }
+
+                    it("will add a view to the UIWindow's view when `accessibilityCompatible` is false") {
+                        router.accessibilityCompatibleDisplay = false
+                        let campaign = TestHelpers.generateCampaign(id: "test", type: .modal)
+                        router.displayCampaign(campaign, confirmation: true, completion: { _ in })
+                        expect(UIApplication.shared.keyWindow?.subviews).toEventually(containElementSatisfying({ $0 is BaseView }))
+                    }
+
+                    it("will add a view to the UIWindow's view main subview when `accessibilityCompatible` is true") {
+                        router.accessibilityCompatibleDisplay = true
+                        let rootView = UIView()
+                        UIApplication.shared.keyWindow?.addSubview(rootView)
+
+                        let campaign = TestHelpers.generateCampaign(id: "test", type: .modal)
+                        router.displayCampaign(campaign, confirmation: true, completion: { _ in })
+                        expect(rootView.subviews).toEventually(containElementSatisfying({ $0 is BaseView }))
+                        rootView.removeFromSuperview()
+                    }
+                }
+            }
+
+            context("when calling displayCampaign") {
+
+                it("will remove displayed campaign view") {
+                    let campaign = TestHelpers.generateCampaign(id: "test", type: .modal)
+                    router.displayCampaign(campaign, confirmation: true, completion: { _ in })
+                    expect(UIApplication.shared.keyWindow?.subviews)
+                        .toEventually(containElementSatisfying({ $0 is BaseView }))
+                    router.discardDisplayedCampaign()
+                    expect(UIApplication.shared.keyWindow?.subviews)
+                        .toEventuallyNot(containElementSatisfying({ $0 is BaseView }))
+                }
+
+                it("will not call onDismiss/completion callback") {
+                    let campaign = TestHelpers.generateCampaign(id: "test", type: .modal)
+                    var completionCalled = false
+                    router.displayCampaign(campaign, confirmation: true, completion: { _ in
+                        completionCalled = true
+                    })
+                    expect(UIApplication.shared.keyWindow?.subviews)
+                        .toEventually(containElementSatisfying({ $0 is BaseView }))
+                    router.discardDisplayedCampaign()
+                    expect(completionCalled).toAfterTimeout(beFalse())
                 }
             }
         }

@@ -10,15 +10,15 @@ class ViewTests: QuickSpec {
         describe("BaseView default implementation") {
 
             var view: BaseViewTestObject!
+            var parentView: UIView!
 
             beforeEach {
                 view = BaseViewTestObject()
+                parentView = UIView()
+                UIApplication.shared.keyWindow?.addSubview(parentView)
             }
             afterEach {
-                // Clean up UIWindow. (first subview is UITransitionView)
-                UIApplication.shared.keyWindow?.subviews.dropFirst().forEach {
-                    $0.removeFromSuperview()
-                }
+                parentView.removeFromSuperview()
             }
 
             context("when show is called") {
@@ -26,47 +26,22 @@ class ViewTests: QuickSpec {
                 it("will save onDismiss action") {
                     waitUntil { done in
                         let onDismiss = { done() }
-                        view.show(accessibilityCompatible: false, onDismiss: onDismiss)
+                        view.show(accessibilityCompatible: false, parentView: parentView, onDismiss: onDismiss)
                         expect(view.onDismiss).toNot(beNil())
                         view.onDismiss?()
                     }
                 }
 
-                it("will add itself to the UIWindow's view when `accessibilityCompatible` is false") {
-                    let window = UIApplication.shared.keyWindow
-                    view.show(accessibilityCompatible: false, onDismiss: {})
-                    expect(window?.subviews).to(containElementSatisfying({ $0 is BaseView }))
-                }
-
-                it("will add itself to the UIWindow's view main subview when `accessibilityCompatible` is true") {
-                    let window = UIApplication.shared.keyWindow
-                    let rootView = UIView()
-                    window?.addSubview(rootView)
-
-                    view.show(accessibilityCompatible: true, onDismiss: {})
-                    expect(rootView.subviews).to(containElementSatisfying({ $0 is BaseView }))
-                }
-
                 it("will call animateOnShow") {
-                    view.show(accessibilityCompatible: false, onDismiss: {})
+                    view.show(accessibilityCompatible: false, parentView: parentView, onDismiss: {})
                     expect(view.wasAnimateOnShowCalled).to(beTrue())
                 }
 
                 it("will disable user interaction in parent view for the time of animation") {
-                    view.show(accessibilityCompatible: false, onDismiss: {})
+                    view.show(accessibilityCompatible: false, parentView: parentView, onDismiss: {})
                     expect(view.superview?.isUserInteractionEnabled).to(beFalse())
                     expect(view.wasAnimationCompletionCalled).toEventually(beTrue())
                     expect(view.superview?.isUserInteractionEnabled).to(beTrue())
-                }
-
-                it("will not show when another one is still displayed") {
-                    let window = UIApplication.shared.keyWindow
-                    let anotherView = BaseViewTestObject()
-                    anotherView.show(accessibilityCompatible: false, onDismiss: {})
-                    expect(window?.subviews).to(contain(anotherView))
-
-                    view.show(accessibilityCompatible: false, onDismiss: {})
-                    expect(window?.subviews).toNot(contain(view))
                 }
             }
 
@@ -74,13 +49,13 @@ class ViewTests: QuickSpec {
 
                 it("will call onDismiss closure") {
                     waitUntil { done in
-                        view.show(accessibilityCompatible: false, onDismiss: { done() })
+                        view.show(accessibilityCompatible: false, parentView: parentView, onDismiss: { done() })
                         view.dismiss()
                     }
                 }
 
                 it("will remove itself from superview") {
-                    view.show(accessibilityCompatible: false, onDismiss: { })
+                    view.show(accessibilityCompatible: false, parentView: parentView, onDismiss: { })
                     expect(view.superview).toNot(beNil())
                     view.dismiss()
                     expect(view.superview).to(beNil())
