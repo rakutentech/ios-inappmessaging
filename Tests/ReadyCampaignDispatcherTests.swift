@@ -258,7 +258,7 @@ class ReadyCampaignDispatcherTests: QuickSpec {
                     dispatcher.dispatchAllIfNeeded()
                     expect(router.displayedCampaignsCount).toEventually(equal(1))
                     expect(router.displayedCampaignsCount).toAfterTimeout(equal(1), timeout: 0.5)
-                    expect(router.displayedCampaignsCount).toAfterTimeout(equal(2), timeout: 0.5)
+                    expect(router.displayedCampaignsCount).toAfterTimeout(equal(2), timeout: 1.0)
                 }
 
                 it("won't schedule next dispatch if there are no queued campaigns") {
@@ -271,24 +271,6 @@ class ReadyCampaignDispatcherTests: QuickSpec {
                 }
             }
         }
-    }
-}
-
-private class RouterMock: RouterType {
-    var accessibilityCompatibleDisplay = false
-    var lastDisplayedCampaign: Campaign?
-    var displayedCampaignsCount = 0
-
-    func displayCampaign(_ campaign: Campaign,
-                         confirmation: @escaping @autoclosure () -> Bool,
-                         completion: @escaping (_ cancelled: Bool) -> Void) {
-        guard confirmation() else {
-            completion(true)
-            return
-        }
-        lastDisplayedCampaign = campaign
-        displayedCampaignsCount += 1
-        completion(false)
     }
 }
 

@@ -290,6 +290,29 @@ class CampaignsListManagerMock: CampaignsListManagerType {
     }
 }
 
+class RouterMock: RouterType {
+    var accessibilityCompatibleDisplay = false
+    var lastDisplayedCampaign: Campaign?
+    var displayedCampaignsCount = 0
+    var wasDiscardCampaignCalled = false
+
+    func displayCampaign(_ campaign: Campaign,
+                         confirmation: @escaping @autoclosure () -> Bool,
+                         completion: @escaping (_ cancelled: Bool) -> Void) {
+        guard confirmation() else {
+            completion(true)
+            return
+        }
+        lastDisplayedCampaign = campaign
+        displayedCampaignsCount += 1
+        completion(false)
+    }
+
+    func discardDisplayedCampaign() {
+        wasDiscardCampaignCalled = true
+    }
+}
+
 extension EndpointURL {
     static var empty: Self {
         let emptyURL = URL(string: "about:blank")!

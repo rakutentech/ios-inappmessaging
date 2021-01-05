@@ -89,7 +89,8 @@
                                                      campaignsValidator: campaignsValidator,
                                                      eventMatcher: eventMatcher,
                                                      readyCampaignDispatcher: readyCampaignDispatcher,
-                                                     campaignTriggerAgent: campaignTriggerAgent)
+                                                     campaignTriggerAgent: campaignTriggerAgent,
+                                                     router: router)
             initializedModule?.aggregatedErrorHandler = { error in
                 errorDelegate?.inAppMessagingDidReturnError(error)
             }

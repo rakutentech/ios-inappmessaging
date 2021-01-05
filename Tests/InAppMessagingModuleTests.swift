@@ -17,6 +17,7 @@ class InAppMessagingModuleTests: QuickSpec {
             var eventMatcher: EventMatcherMock!
             var readyCampaignDispatcher: CampaignDispatcherMock!
             var campaignTriggerAgent: CampaignTriggerAgentMock!
+            var router: RouterMock!
             var delegate: Delegate!
 
             beforeEach {
@@ -28,6 +29,7 @@ class InAppMessagingModuleTests: QuickSpec {
                 eventMatcher = EventMatcherMock()
                 readyCampaignDispatcher = CampaignDispatcherMock()
                 campaignTriggerAgent = CampaignTriggerAgentMock()
+                router = RouterMock()
                 delegate = Delegate()
                 iamModule = InAppMessagingModule(configurationManager: configurationManager,
                                                  campaignsListManager: campaignsListManager,
@@ -36,7 +38,8 @@ class InAppMessagingModuleTests: QuickSpec {
                                                  campaignsValidator: campaignsValidator,
                                                  eventMatcher: eventMatcher,
                                                  readyCampaignDispatcher: readyCampaignDispatcher,
-                                                 campaignTriggerAgent: campaignTriggerAgent)
+                                                 campaignTriggerAgent: campaignTriggerAgent,
+                                                 router: router)
                 iamModule.delegate = delegate
             }
 
@@ -169,7 +172,7 @@ class InAppMessagingModuleTests: QuickSpec {
 
                         it("will not call EventMatcher") {
                             iamModule.logEvent(PurchaseSuccessfulEvent())
-                            expect(eventMatcher.loggedEvents.isEmpty).toAfterTimeout(beFalse())
+                            expect(eventMatcher.loggedEvents.isEmpty).toAfterTimeout(beTrue())
                         }
 
                         it("will not validate campaigns") {
@@ -245,6 +248,33 @@ class InAppMessagingModuleTests: QuickSpec {
                                 let preference = IAMPreferenceBuilder().setUserId("user1").build()
                                 iamModule.registerPreference(preference)
                                 expect(eventMatcher.wasClearStoredDataCalled).to(beFalse())
+                            }
+
+                            it("will discard displayed campaign if user logs out") {
+                                let preference = IAMPreferenceBuilder().setUserId("user1").build()
+                                iamModule.registerPreference(preference)
+                                iamModule.registerPreference(nil)
+                                expect(router.wasDiscardCampaignCalled).to(beTrue())
+                            }
+
+                            it("will discard displayed campaign if user's changed") {
+                                let preference = IAMPreferenceBuilder().setUserId("user1").build()
+                                iamModule.registerPreference(preference)
+                                let newPreference = IAMPreferenceBuilder().setUserId("user2").build()
+                                iamModule.registerPreference(newPreference)
+                                expect(router.wasDiscardCampaignCalled).to(beTrue())
+                            }
+
+                            it("will not discard displayed campaign if user hasn't changed") {
+                                let preference = IAMPreferenceBuilder().setUserId("user1").setAccessToken("token1").build()
+                                iamModule.registerPreference(preference)
+                                let newPreference = IAMPreferenceBuilder().setUserId("user1").setAccessToken("token1").build()
+                                iamModule.registerPreference(newPreference)
+                                expect(router.wasDiscardCampaignCalled).toAfterTimeout(beFalse())
+
+                                let newPreferenceToken = IAMPreferenceBuilder().setUserId("user1").setAccessToken("token2").build()
+                                iamModule.registerPreference(newPreferenceToken)
+                                expect(router.wasDiscardCampaignCalled).toAfterTimeout(beFalse())
                             }
                         }
 

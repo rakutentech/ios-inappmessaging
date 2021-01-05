@@ -12,6 +12,9 @@ internal protocol RouterType: AnyObject {
     func displayCampaign(_ campaign: Campaign,
                          confirmation: @escaping @autoclosure () -> Bool,
                          completion: @escaping (_ cancelled: Bool) -> Void)
+
+    /// Removes displayed campaign view from the stack
+    func discardDisplayedCampaign()
 }
 
 /// Handles all the displaying logic of the SDK.
@@ -22,6 +25,17 @@ internal class Router: RouterType {
 
     init(dependencyManager: DependencyManager) {
         self.dependencyManager = dependencyManager
+    }
+
+    func discardDisplayedCampaign() {
+        DispatchQueue.main.async {
+            guard let rootView = self.getKeyWindow() else {
+                return
+            }
+
+            let presentedView = self.findPresentedIAMView(from: rootView)
+            presentedView?.removeFromSuperview()
+        }
     }
 
     func displayCampaign(_ campaign: Campaign,
@@ -75,10 +89,57 @@ internal class Router: RouterType {
                     completion(true)
                     return
                 }
-                view.show(accessibilityCompatible: self.accessibilityCompatibleDisplay, onDismiss: {
+                guard let rootView = self.getKeyWindow(),
+                      self.findPresentedIAMView(from: rootView) == nil else {
+                    return
+                }
+
+                var parentView: UIView = rootView
+
+                // For accessibilityCompatible option, campaign view must be inserted to
+                // UIWindow's main subview. Private instance of UITransitionView
+                // shouldn't be used for that - that's why it's omitted.
+                if self.accessibilityCompatibleDisplay,
+                    let mainSubview = rootView.subviews.first(
+                        where: { !$0.isKind(of: NSClassFromString("UITransitionView")!) }) {
+                    parentView = mainSubview
+                }
+
+                view.show(accessibilityCompatible: self.accessibilityCompatibleDisplay,
+                          parentView: parentView,
+                          onDismiss: {
                     completion(false)
                 })
             }
         }
+    }
+
+    private func findPresentedIAMView(from parentView: UIView) -> UIView? {
+        for subview in parentView.subviews {
+            let accessibilityIdentifier = subview.accessibilityIdentifier ?? ""
+            if [FullScreenView.viewIdentifier,
+                ModalView.viewIdentifier,
+                SlideUpView.viewIdentifier].contains(accessibilityIdentifier) {
+                return subview
+
+            } else if let iamView = findPresentedIAMView(from: subview) {
+                return iamView
+            }
+        }
+
+        return nil
+    }
+
+    private func getKeyWindow() -> UIWindow? {
+        var keySceneWindow: UIWindow?
+        if #available(iOS 13.0, *) {
+            keySceneWindow = UIApplication.shared.connectedScenes
+                .filter({ $0.activationState == .foregroundActive })
+                .compactMap({ $0 as? UIWindowScene })
+                .first?.windows
+                .first(where: { $0.isKeyWindow })
+        }
+
+        return keySceneWindow ?? UIApplication.shared.keyWindow
     }
 }
