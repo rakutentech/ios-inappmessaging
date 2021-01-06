@@ -15,11 +15,6 @@ internal protocol EventMatcherType: AnyObject, Lockable {
     /// Function can be used with persistent events - they won't be removed.
     /// - Throws: Can throw EventMatcherError when records of requested events cannot be found
     func removeSetOfMatchedEvents(_ eventsToRemove: Set<Event>, for campaign: Campaign) throws
-
-    /// Removes all stored events and campaign data.
-    /// The list of logged persistent events is not cleared.
-    /// - Parameter nonPersistentEventsOnly: if set to `true`, the list of triggered persistent event only campaigns won't be cleared
-    func clearStoredData(nonPersistentEventsOnly: Bool)
 }
 
 internal enum EventMatcherError: Error {
@@ -106,13 +101,6 @@ internal class EventMatcher: EventMatcherType {
             var events = matchedEvents.get()
             events[campaign.id] = campaignEvents
             matchedEvents.set(value: events)
-        }
-    }
-
-    func clearStoredData(nonPersistentEventsOnly: Bool) {
-        matchedEvents.set(value: [:])
-        if !nonPersistentEventsOnly {
-            triggeredPersistentEventOnlyCampaigns.removeAll()
         }
     }
 
