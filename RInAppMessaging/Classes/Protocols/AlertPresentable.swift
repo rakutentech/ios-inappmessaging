@@ -21,6 +21,6 @@ extension AlertPresentable {
                                       message: message,
                                       preferredStyle: style)
         actions.forEach { alert.addAction($0) }
-        UIApplication.shared.keyWindow?.rootViewController?.present(alert, animated: true)
+        UIApplication.shared.getKeyWindow()?.rootViewController?.present(alert, animated: true)
     }
 }
