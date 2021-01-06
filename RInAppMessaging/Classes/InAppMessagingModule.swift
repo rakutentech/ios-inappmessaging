@@ -92,12 +92,8 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
             return
         }
 
-        // clear data only if there was a change in user ids
+        // close campaign only if there was a change in user ids
         if !(diff == nil || diff == [] || diff == [.accessToken]) {
-            let isLogout = preference == nil
-            // we leave triggered persistent event only campaigns untouched
-            // so they won't be displayed again immediately after logout (only after login)
-            eventMatcher.clearStoredData(nonPersistentEventsOnly: isLogout)
             router.discardDisplayedCampaign()
         }
         campaignsListManager.refreshList()
