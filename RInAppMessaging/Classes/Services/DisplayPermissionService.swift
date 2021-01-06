@@ -56,12 +56,15 @@ extension DisplayPermissionService {
     func buildHttpBody(with parameters: [String: Any]?) -> Result<Data, Error> {
 
         guard let subscriptionId = bundleInfo.inAppSubscriptionId,
-            let campaignId = parameters?[Constants.Request.campaignID] as? String,
-            let appVersion = bundleInfo.appVersion,
-            let sdkVersion = bundleInfo.inAppSdkVersion
-            else {
-                CommonUtility.debugPrint("error while building request body for display permssion.")
-                return .failure(RequestError.unknown)
+              let appVersion = bundleInfo.appVersion,
+              let sdkVersion = bundleInfo.inAppSdkVersion
+        else {
+            CommonUtility.debugPrint("error while building request body for display permssion.")
+            return .failure(RequestError.missingMetadata)
+        }
+        guard let campaignId = parameters?[Constants.Request.campaignID] as? String else {
+            CommonUtility.debugPrint("error while building request body for display permssion.")
+            return .failure(RequestError.missingParameters)
         }
 
         let permissionRequest = DisplayPermissionRequest(subscriptionId: subscriptionId,

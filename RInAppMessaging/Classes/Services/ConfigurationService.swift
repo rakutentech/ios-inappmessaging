@@ -57,7 +57,7 @@ extension ConfigurationService {
 
                 CommonUtility.debugPrint("failed creating a request body")
                 assertionFailure()
-                return .failure(RequestError.unknown)
+                return .failure(RequestError.missingMetadata)
         }
 
         let getConfigRequest = GetConfigRequest(

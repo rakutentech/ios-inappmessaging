@@ -8,6 +8,8 @@ internal enum HttpMethod: String {
 
 internal enum RequestError: Error {
     case unknown
+    case missingMetadata
+    case missingParameters
     case taskFailed(Error)
     case httpError(Int, URLResponse?, Data?)
     case bodyEncodingError(Error?)
@@ -123,12 +125,13 @@ extension HttpRequestable {
             let statusCode = (response as? HTTPURLResponse)?.statusCode ?? 0
 
             guard 100..<400 ~= statusCode,
-                let dataToReturn = data,
-                let serverResponse = response as? HTTPURLResponse else {
+                  let dataToReturn = data,
+                  let serverResponse = response as? HTTPURLResponse else {
 
-                    completion(.failure(.httpError(statusCode, response, data)))
-                    print("InAppMessaging: HTTP call failed (\(statusCode))")
-                    return
+                completion(.failure(.httpError(statusCode, response, data)))
+                let errorMessage = data != nil ? String(data: data!, encoding: .utf8) : ""
+                print("InAppMessaging: HTTP call failed (\(statusCode))\n\(errorMessage ?? "")")
+                return
             }
 
             completion(.success((dataToReturn, serverResponse)))

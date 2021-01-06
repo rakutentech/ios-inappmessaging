@@ -68,7 +68,7 @@ extension MessageMixerService {
         guard let appVersion = bundleInfo.appVersion else {
             CommonUtility.debugPrint("failed creating a request body")
             assertionFailure()
-            return .failure(RequestError.unknown)
+            return .failure(RequestError.missingMetadata)
         }
 
         let pingRequest = PingRequest(
