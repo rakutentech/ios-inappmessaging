@@ -23,9 +23,9 @@ extension UIApplication {
                 .first {
             return keyScene.statusBarManager?.statusBarStyle
 
-        } else {
-            // Not supported
         }
+
+        // Only iOS 13+ is supported
         return nil
     }
 }
