@@ -20,6 +20,15 @@ class DisplayPermissionServiceTests: QuickSpec {
         var campaignRepository: CampaignRepositoryMock!
         var httpSession: URLSessionMock!
 
+        func sendRequestAndWaitForResponse() {
+            waitUntil { done in
+                requestQueue.async {
+                    _ = service.checkPermission(forCampaign: campaign.data)
+                    done()
+                }
+            }
+        }
+
         describe("DisplayPermissionService") {
 
             beforeEach {
@@ -40,12 +49,7 @@ class DisplayPermissionServiceTests: QuickSpec {
             }
 
             it("will use provided URL in a request") {
-                waitUntil { done in
-                    requestQueue.async {
-                        _ = service.checkPermission(forCampaign: campaign.data)
-                        done()
-                    }
-                }
+                sendRequestAndWaitForResponse()
                 expect(httpSession.sentRequest).toNot(beNil())
                 expect(httpSession.sentRequest?.url).to(equal(configData.endpoints.displayPermission))
             }
@@ -129,17 +133,13 @@ class DisplayPermissionServiceTests: QuickSpec {
 
             context("when making a request") {
                 beforeEach {
+                    BundleInfoMock.reset()
                     service.bundleInfo = BundleInfoMock.self
                 }
 
                 it("will send a valid data object") {
                     campaignRepository.lastSyncInMilliseconds = 111
-                    waitUntil { done in
-                        requestQueue.async {
-                            _ = service.checkPermission(forCampaign: campaign.data)
-                            done()
-                        }
-                    }
+                    sendRequestAndWaitForResponse()
 
                     let request = httpSession.decodeSentData(modelType: DisplayPermissionRequest.self)
 
@@ -159,12 +159,7 @@ class DisplayPermissionServiceTests: QuickSpec {
                         .setUserId("userId")
                         .build())
 
-                    waitUntil { done in
-                        requestQueue.async {
-                            _ = service.checkPermission(forCampaign: campaign.data)
-                            done()
-                        }
-                    }
+                    sendRequestAndWaitForResponse()
 
                     let request = httpSession.decodeSentData(modelType: DisplayPermissionRequest.self)
 
@@ -178,18 +173,80 @@ class DisplayPermissionServiceTests: QuickSpec {
                         .setAccessToken("token")
                         .build())
 
-                    waitUntil { done in
-                        requestQueue.async {
-                            _ = service.checkPermission(forCampaign: campaign.data)
-                            done()
-                        }
-                    }
+                    sendRequestAndWaitForResponse()
 
                     let Keys = Constants.Request.Header.self
                     let headers = httpSession.sentRequest?.allHTTPHeaderFields
                     expect(headers).toNot(beEmpty())
                     expect(headers?[Keys.subscriptionID]).to(equal(BundleInfoMock.inAppSubscriptionId))
                     expect(headers?[Keys.authorization]).to(equal("OAuth2 token"))
+                }
+
+                context("and required data is missing") {
+
+                    func evaluateMetadataError(_ error: RequestError?) {
+                        expect(error).toNot(beNil())
+
+                        guard case .bodyEncodingError(let enclosedError) = error,
+                            case .missingMetadata = enclosedError as? RequestError else {
+
+                            fail("Unexpected error type \(String(describing: error)). Expected .bodyEncodingError(.missingMetadata)")
+                            return
+                        }
+                    }
+
+                    it("will return RequestError.missingMetadata error if subscription id is missing") {
+                        BundleInfoMock.inAppSubscriptionIdMock = nil
+
+                        sendRequestAndWaitForResponse()
+
+                        let error = service.lastResponse?.getError()
+                        evaluateMetadataError(error)
+                    }
+
+                    it("will return RequestError.missingMetadata error if host app version is missing") {
+                        BundleInfoMock.appVersionMock = nil
+
+                        sendRequestAndWaitForResponse()
+
+                        let error = service.lastResponse?.getError()
+                        evaluateMetadataError(error)
+                    }
+
+                    it("will return RequestError.missingMetadata error if sdk version is missing") {
+                        BundleInfoMock.inAppSdkVersionMock = nil
+
+                        sendRequestAndWaitForResponse()
+
+                        let error = service.lastResponse?.getError()
+                        evaluateMetadataError(error)
+                    }
+                    context("when building request body") {
+
+                        func evaluateParametersError(_ error: RequestError?) {
+                            expect(error).toNot(beNil())
+
+                            guard case .missingParameters = error else {
+
+                                fail("Unexpected error type \(String(describing: error)). Expected .missingParameters)")
+                                return
+                            }
+                        }
+
+                        it("will return RequestError.missingParameters error if parameters is nil") {
+                            let result = service.buildHttpBody(with: nil)
+                            let error = result.getError() as? RequestError
+
+                            evaluateParametersError(error)
+                        }
+
+                        it("will return RequestError.missingParameters error if required parameters are missing") {
+                            let result = service.buildHttpBody(with: ["notCampaignId": "definitelyNotAValue"])
+                            let error = result.getError() as? RequestError
+
+                            evaluateParametersError(error)
+                        }
+                    }
                 }
             }
         }

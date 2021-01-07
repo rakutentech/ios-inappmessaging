@@ -110,7 +110,7 @@ class ConfigurationServiceTests: QuickSpec {
                                 expect(error).toNot(beNil())
 
                                 guard case .jsonDecodingError = error else {
-                                    fail("Unexpected error type \(String(describing: error)). Expected .requestError")
+                                    fail("Unexpected error type \(String(describing: error)). Expected .jsonDecodingError")
                                     done()
                                     return
                                 }
@@ -129,7 +129,7 @@ class ConfigurationServiceTests: QuickSpec {
                                 expect(error).toNot(beNil())
 
                                 guard case .jsonDecodingError = error else {
-                                    fail("Unexpected error type \(String(describing: error)). Expected .requestError")
+                                    fail("Unexpected error type \(String(describing: error)). Expected .jsonDecodingError")
                                     done()
                                     return
                                 }
@@ -165,6 +165,7 @@ class ConfigurationServiceTests: QuickSpec {
 
             context("when making a request") {
                 beforeEach {
+                    BundleInfoMock.reset()
                     service.bundleInfo = BundleInfoMock.self
                 }
 
@@ -184,6 +185,43 @@ class ConfigurationServiceTests: QuickSpec {
                     expect(request?.platform).to(equal(.ios))
                     expect(request?.appId).to(equal(BundleInfoMock.applicationId))
                     expect(request?.sdkVersion).to(equal(BundleInfoMock.inAppSdkVersion))
+                }
+
+                context("and required data is missing") {
+
+                    func makeRequestAndEvaluateError() {
+                        waitUntil { done in
+                            requestQueue.async {
+                                let result = service.getConfigData()
+                                let error = result.getError()
+                                expect(error).toNot(beNil())
+
+                                guard case .requestError(let requestError) = error,
+                                      case .bodyEncodingError(let encodingError) = requestError,
+                                      case .missingMetadata = encodingError as? RequestError else {
+                                    fail("Unexpected error type \(String(describing: error)). Expected .requestError(.missingMetadata)")
+                                    done()
+                                    return
+                                }
+                                done()
+                            }
+                        }
+                    }
+
+                    it("will return RequestError.missingMetadata error if application id is missing") {
+                        BundleInfoMock.applicationIdMock = nil
+                        makeRequestAndEvaluateError()
+                    }
+
+                    it("will return RequestError.missingMetadata error if sdk version is missing") {
+                        BundleInfoMock.inAppSdkVersionMock = nil
+                        makeRequestAndEvaluateError()
+                    }
+
+                    it("will return RequestError.missingMetadata error if host app version is missing") {
+                        BundleInfoMock.appVersionMock = nil
+                        makeRequestAndEvaluateError()
+                    }
                 }
             }
         }

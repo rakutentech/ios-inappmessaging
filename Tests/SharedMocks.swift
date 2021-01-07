@@ -264,20 +264,32 @@ class URLSessionMock: URLSession {
 }
 
 class BundleInfoMock: BundleInfo {
-    class override var applicationId: String! {
-        return "app.id"
+    static var applicationIdMock: String? = "app.id"
+    static var appVersionMock: String? = "1.2.3"
+    static var inAppSdkVersionMock: String? = "0.0.5"
+    static var inAppSubscriptionIdMock: String? = "sub-id"
+
+    static func reset() {
+        applicationIdMock = "app.id"
+        appVersionMock = "1.2.3"
+        inAppSdkVersionMock = "0.0.5"
+        inAppSubscriptionIdMock = "sub-id"
     }
 
-    class override var appVersion: String! {
-        return "1.2.3"
+    override class var applicationId: String? {
+        return applicationIdMock
     }
 
-    class override var inAppSdkVersion: String! {
-        return "0.0.5"
+    override class var appVersion: String? {
+        return appVersionMock
     }
 
-    class override var inAppSubscriptionId: String! {
-        return "sub-id"
+    override class var inAppSdkVersion: String? {
+        return inAppSdkVersionMock
+    }
+
+    override class var inAppSubscriptionId: String? {
+        return inAppSubscriptionIdMock
     }
 }
 

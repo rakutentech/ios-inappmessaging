@@ -20,6 +20,15 @@ class ImpressionServiceTests: QuickSpec {
         var httpSession: URLSessionMock!
         var errorDelegate: ErrorDelegateMock!
 
+        func sendRequestAndWaitForResponse() {
+            waitUntil { done in
+                requestQueue.async {
+                    service.pingImpression(impressions: [], campaignData: campaign.data)
+                    done()
+                }
+            }
+        }
+
         describe("ImpressionService") {
 
             beforeEach {
@@ -40,12 +49,7 @@ class ImpressionServiceTests: QuickSpec {
             }
 
             it("will use provided URL in a request") {
-                waitUntil { done in
-                    requestQueue.async {
-                        service.pingImpression(impressions: [], campaignData: campaign.data)
-                        done()
-                    }
-                }
+                sendRequestAndWaitForResponse()
                 expect(httpSession.sentRequest).toNot(beNil())
                 expect(httpSession.sentRequest?.url).to(equal(configData.endpoints.impression))
             }
@@ -58,12 +62,7 @@ class ImpressionServiceTests: QuickSpec {
                                 displayPermission: nil,
                                 impression: nil)))
 
-                waitUntil { done in
-                    requestQueue.async {
-                        service.pingImpression(impressions: [], campaignData: campaign.data)
-                        done()
-                    }
-                }
+                sendRequestAndWaitForResponse()
                 expect(errorDelegate.wasErrorReceived).toEventually(beTrue())
             }
 
@@ -78,12 +77,7 @@ class ImpressionServiceTests: QuickSpec {
                 }
 
                 it("will not report any error") {
-                    waitUntil { done in
-                        requestQueue.async {
-                            service.pingImpression(impressions: [], campaignData: campaign.data)
-                            done()
-                        }
-                    }
+                    sendRequestAndWaitForResponse()
                     expect(errorDelegate.wasErrorReceived).toAfterTimeout(beFalse())
                 }
             }
@@ -94,12 +88,7 @@ class ImpressionServiceTests: QuickSpec {
                 }
 
                 it("will report an error") {
-                    waitUntil { done in
-                        requestQueue.async {
-                            service.pingImpression(impressions: [], campaignData: campaign.data)
-                            done()
-                        }
-                    }
+                    sendRequestAndWaitForResponse()
                     expect(errorDelegate.wasErrorReceived).toEventually(beTrue())
                 }
             }
@@ -110,12 +99,7 @@ class ImpressionServiceTests: QuickSpec {
                 }
 
                 it("will send a valid data object") {
-                    waitUntil { done in
-                        requestQueue.async {
-                            service.pingImpression(impressions: [], campaignData: campaign.data)
-                            done()
-                        }
-                    }
+                    sendRequestAndWaitForResponse()
 
                     expect(httpSession.decodeSentData(modelType: ImpressionRequest.self))
                         .toEventuallyNot(beNil())
@@ -147,12 +131,7 @@ class ImpressionServiceTests: QuickSpec {
                         .setUserId("userId")
                         .build())
 
-                    waitUntil { done in
-                        requestQueue.async {
-                            service.pingImpression(impressions: [], campaignData: campaign.data)
-                            done()
-                        }
-                    }
+                    sendRequestAndWaitForResponse()
 
                     expect(httpSession.decodeSentData(modelType: ImpressionRequest.self))
                         .toEventuallyNot(beNil())
@@ -167,12 +146,7 @@ class ImpressionServiceTests: QuickSpec {
                         .setAccessToken("token")
                         .build())
 
-                    waitUntil { done in
-                        requestQueue.async {
-                            service.pingImpression(impressions: [], campaignData: campaign.data)
-                            done()
-                        }
-                    }
+                    sendRequestAndWaitForResponse()
 
                     let Keys = Constants.Request.Header.self
                     expect(httpSession.sentRequest?.allHTTPHeaderFields).toEventuallyNot(beEmpty())
@@ -180,6 +154,75 @@ class ImpressionServiceTests: QuickSpec {
                     expect(headers?[Keys.subscriptionID]).to(equal(BundleInfoMock.inAppSubscriptionId))
                     expect(headers?[Keys.deviceID]).toNot(beEmpty())
                     expect(headers?[Keys.authorization]).to(equal("OAuth2 token"))
+                }
+            }
+
+            context("when building a request body") {
+                beforeEach {
+                    BundleInfoMock.reset()
+                    service.bundleInfo = BundleInfoMock.self
+                }
+
+                func evaluateMetadataError(_ error: RequestError?) {
+                    expect(error).toNot(beNil())
+
+                    guard case .missingMetadata = error else {
+
+                        fail("Unexpected error type \(String(describing: error)). Expected .missingMetadata)")
+                        return
+                    }
+                }
+
+                func evaluateParametersError(_ error: RequestError?) {
+                    expect(error).toNot(beNil())
+
+                    guard case .missingParameters = error else {
+
+                        fail("Unexpected error type \(String(describing: error)). Expected .missingParameters)")
+                        return
+                    }
+                }
+
+                it("will return RequestError.missingMetadata error if host app version is missing") {
+                    BundleInfoMock.appVersionMock = nil
+
+                    let error = service.buildHttpBody(with: nil).getError() as? RequestError
+                    evaluateMetadataError(error)
+                }
+
+                it("will return RequestError.missingMetadata error if sdk version is missing") {
+                    BundleInfoMock.inAppSdkVersionMock = nil
+
+                    let error = service.buildHttpBody(with: nil).getError() as? RequestError
+                    evaluateMetadataError(error)
+                }
+
+                it("will return RequestError.missingParameters error if parameters is nil") {
+                    let result = service.buildHttpBody(with: nil)
+                    let error = result.getError() as? RequestError
+
+                    evaluateParametersError(error)
+                }
+
+                it("will return RequestError.missingParameters error if parameters is empty") {
+                    let result = service.buildHttpBody(with: [:])
+                    let error = result.getError() as? RequestError
+
+                    evaluateParametersError(error)
+                }
+
+                it("will return RequestError.missingParameters error if impressions parameters is missing") {
+                    let result = service.buildHttpBody(with: ["campaign": campaign.data])
+                    let error = result.getError() as? RequestError
+
+                    evaluateParametersError(error)
+                }
+
+                it("will return RequestError.missingParameters error if campaign parameters is missing") {
+                    let result = service.buildHttpBody(with: ["impressions": [Impression(type: .exit, timestamp: 2)]])
+                    let error = result.getError() as? RequestError
+
+                    evaluateParametersError(error)
                 }
             }
         }

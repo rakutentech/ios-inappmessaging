@@ -24,11 +24,9 @@ internal class BundleInfo {
 internal extension Bundle {
 
     static var sdk: Bundle? {
-        if let defaultBundle = self.init(identifier: "org.cocoapods.RInAppMessaging") {
-            return defaultBundle
-        } else {
-            return (allBundles + allFrameworks).first(where: { $0.bundleIdentifier?.contains("RInAppMessaging") == true })
-        }
+        let defaultBundle = self.init(identifier: "org.cocoapods.RInAppMessaging") ?? .bundle(bundleIdSubstring: "RInAppMessaging")
+        assert(defaultBundle != nil, "In-App Messaging SDK is not integrated properly - framework bundle not found")
+        return defaultBundle
     }
     static var sdkAssets: Bundle? {
         guard let sdkBundlePath = sdk?.resourcePath else {
@@ -38,5 +36,9 @@ internal extension Bundle {
     }
     static var tests: Bundle? {
         return self.init(identifier: "org.cocoapods.Tests")
+    }
+
+    static func bundle(bundleIdSubstring: String) -> Bundle? {
+        return (allBundles + allFrameworks).first(where: { $0.bundleIdentifier?.contains(bundleIdSubstring) == true })
     }
 }

@@ -56,7 +56,6 @@ extension ConfigurationService {
             let sdkVersion = bundleInfo.inAppSdkVersion else {
 
                 CommonUtility.debugPrint("failed creating a request body")
-                assertionFailure()
                 return .failure(RequestError.missingMetadata)
         }
 
