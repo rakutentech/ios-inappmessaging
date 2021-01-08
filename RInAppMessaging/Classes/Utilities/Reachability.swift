@@ -65,7 +65,7 @@ internal class Reachability: ReachabilityType {
     /// - Returns: new Reachability instance or `nil` if hostname is invalid
     init?(hostname: String) {
         guard let ref = SCNetworkReachabilityCreateWithName(nil, hostname) else {
-            CommonUtility.debugPrint("Reachability couldn't be set up with host:\(hostname)")
+            Logger.debug("Reachability couldn't be set up with host:\(hostname)")
             return nil
         }
         self.reachabilityRef = ref
@@ -80,7 +80,7 @@ internal class Reachability: ReachabilityType {
     /// - Returns: new Reachability instance or `nil` if hostname couldn't be extracted
     convenience init?(url: URL) {
         guard let hostname = url.host else {
-            CommonUtility.debugPrint("Reachability couldn't be set up with url:\(url)")
+            Logger.debug("Reachability couldn't be set up with url:\(url)")
             return nil
         }
         self.init(hostname: hostname)
@@ -133,19 +133,19 @@ internal class Reachability: ReachabilityType {
         )
 
         guard SCNetworkReachabilitySetCallback(reachabilityRef, callback, &context) else {
-            CommonUtility.debugPrint("Reachability was unable to set callback. Stopping notifier...")
+            Logger.debug("Reachability was unable to set callback. Stopping notifier...")
             stopNotifier()
             return
         }
 
         guard SCNetworkReachabilitySetDispatchQueue(reachabilityRef, reachabilitySerialQueue) else {
-            CommonUtility.debugPrint("Reachability was unable to set dispatch queue. Stopping notifier...")
+            Logger.debug("Reachability was unable to set dispatch queue. Stopping notifier...")
             stopNotifier()
             return
         }
 
         guard updateReachabilityFlags() else {
-            CommonUtility.debugPrint("Reachability was unable set flags. Stopping notifier...")
+            Logger.debug("Reachability was unable set flags. Stopping notifier...")
             stopNotifier()
             return
         }
@@ -173,7 +173,7 @@ internal class Reachability: ReachabilityType {
     }
 
     private func notifyReachabilityChanged() {
-        CommonUtility.debugPrint("Reachability: \(connection)")
+        Logger.debug("Reachability: \(connection)")
         notificationQueue.async { [weak self] in
             guard let weakSelf = self else {
                 return

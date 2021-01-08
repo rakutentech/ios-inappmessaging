@@ -54,7 +54,7 @@ internal class SlideUpView: UIView, SlideUpViewType {
 
     func animateOnShow(completion: @escaping () -> Void) {
         guard [leftConstraint, bottomConstraint, rightConstraint].allSatisfy({ $0 != nil }) else {
-            CommonUtility.debugPrint("Error: Constraints not set up. Cancelling animation")
+            Logger.debug("Error: Constraints not set up. Cancelling animation")
             assertionFailure()
             completion()
             return

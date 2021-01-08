@@ -25,9 +25,9 @@ extension ErrorReportable {
         errorDelegate?.didReceiveError(sender: self, error: error)
 
         if let unwrappedData = data {
-            CommonUtility.debugPrint(description + " (\(String(describing: unwrappedData))")
+            Logger.debug(description + " (\(String(describing: unwrappedData))")
         } else {
-            CommonUtility.debugPrint(description)
+            Logger.debug(description)
         }
     }
 }

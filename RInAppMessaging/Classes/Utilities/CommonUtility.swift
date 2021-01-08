@@ -83,19 +83,21 @@ internal struct CommonUtility {
             return CustomAttribute(withKeyName: attribute.name, withTimeInMilliValue: value)
         }
 
-        debugPrint("Error converting value.")
+        Logger.debug("Failed converting value \(attribute.value) to \(attribute.type)")
         return nil
     }
+}
 
-    static func debugPrint(_ value: Any?) {
+internal enum Logger {
+    static func debug(_ value: Any) {
         #if DEBUG
-            print("InAppMessaging: " + String(describing: value))
+        print("InAppMessaging: " + String(describing: value))
         #endif
     }
 
-    static func debugPrint(_ message: String) {
+    static func debug(_ message: String) {
         #if DEBUG
-            print("InAppMessaging: " + message)
+        print("InAppMessaging: " + message)
         #endif
     }
 }

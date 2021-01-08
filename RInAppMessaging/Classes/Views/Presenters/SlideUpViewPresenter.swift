@@ -17,7 +17,7 @@ internal class SlideUpViewPresenter: BaseViewPresenter, SlideUpViewPresenterType
         guard let messageBody = messagePayload.messageBody,
             let direction = campaign.data.messagePayload.messageSettings.displaySettings.slideFrom else {
 
-            CommonUtility.debugPrint("Error constructing a SlideUpView.")
+            Logger.debug("Error constructing a SlideUpView.")
             view?.dismiss()
             return
         }

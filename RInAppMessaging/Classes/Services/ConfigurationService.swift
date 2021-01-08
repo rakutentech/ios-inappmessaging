@@ -40,7 +40,7 @@ internal struct ConfigurationService: ConfigurationServiceType, HttpRequestable 
             return .success(response.data)
         } catch {
             let description = "Failed to parse json"
-            CommonUtility.debugPrint("\(description): \(error)")
+            Logger.debug("\(description): \(error)")
             return .failure(error)
         }
     }
@@ -55,7 +55,7 @@ extension ConfigurationService {
             let appId = bundleInfo.applicationId,
             let sdkVersion = bundleInfo.inAppSdkVersion else {
 
-                CommonUtility.debugPrint("failed creating a request body")
+                Logger.debug("failed creating a request body")
                 return .failure(RequestError.missingMetadata)
         }
 
@@ -71,7 +71,7 @@ extension ConfigurationService {
             let body = try JSONEncoder().encode(getConfigRequest)
             return .success(body)
         } catch let error {
-            CommonUtility.debugPrint("failed creating a request body - \(error)")
+            Logger.debug("failed creating a request body - \(error)")
             return .failure(error)
         }
     }

@@ -30,7 +30,7 @@ internal class DisplayPermissionService: DisplayPermissionServiceType, HttpReque
         ]
 
         guard let displayPermissionUrl = configurationRepository.getEndpoints()?.displayPermission else {
-            CommonUtility.debugPrint("error: missing endpoint for DisplayPermissionService")
+            Logger.debug("error: missing endpoint for DisplayPermissionService")
             return fallbackResponse
         }
 
@@ -41,7 +41,7 @@ internal class DisplayPermissionService: DisplayPermissionServiceType, HttpReque
         lastResponse = responseData
 
         guard let responseFromDisplayPermission = try? responseData.get() else {
-            CommonUtility.debugPrint("error getting a response from display permission.")
+            Logger.debug("error getting a response from display permission.")
             return fallbackResponse
         }
 
@@ -50,7 +50,7 @@ internal class DisplayPermissionService: DisplayPermissionServiceType, HttpReque
                                                            from: responseFromDisplayPermission.data)
             return decodedResponse
         } catch {
-            CommonUtility.debugPrint("error getting a response from display permission.")
+            Logger.debug("error getting a response from display permission.")
         }
 
         return fallbackResponse
@@ -66,11 +66,11 @@ extension DisplayPermissionService {
               let appVersion = bundleInfo.appVersion,
               let sdkVersion = bundleInfo.inAppSdkVersion
         else {
-            CommonUtility.debugPrint("error while building request body for display permssion - missing metadata")
+            Logger.debug("error while building request body for display permssion - missing metadata")
             return .failure(RequestError.missingMetadata)
         }
         guard let campaignId = parameters?[Constants.Request.campaignID] as? String else {
-            CommonUtility.debugPrint("error while building request body for display permssion - unexpected parameters")
+            Logger.debug("error while building request body for display permssion - unexpected parameters")
             return .failure(RequestError.missingParameters)
         }
 
@@ -86,7 +86,7 @@ extension DisplayPermissionService {
             let body = try JSONEncoder().encode(permissionRequest)
             return .success(body)
         } catch {
-            CommonUtility.debugPrint("failed creating a request body.")
+            Logger.debug("failed creating a request body.")
             return .failure(error)
         }
     }

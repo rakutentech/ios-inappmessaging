@@ -43,7 +43,7 @@ internal class Router: RouterType {
                          completion: @escaping (_ cancelled: Bool) -> Void) {
 
         guard let campaignViewType = campaign.data.type, campaignViewType != .invalid else {
-            CommonUtility.debugPrint("Error: Campaign view type not supported")
+            Logger.debug("Error: Campaign view type not supported")
             completion(true)
             return
         }
@@ -52,7 +52,7 @@ internal class Router: RouterType {
 
             func getPresenter<T>(type: T.Type) -> T? {
                 guard let presenter = self.dependencyManager.resolve(type: type) else {
-                    CommonUtility.debugPrint("Error: \(type) couldn't be resolved")
+                    Logger.debug("Error: \(type) couldn't be resolved")
                     return nil
                 }
                 return presenter
@@ -81,7 +81,7 @@ internal class Router: RouterType {
                 presenter.campaign = campaign
                 viewConstructor = { SlideUpView(presenter: presenter) }
             case .invalid, .html:
-                CommonUtility.debugPrint("Error: Campaign view type not supported")
+                Logger.debug("Error: Campaign view type not supported")
             }
 
             DispatchQueue.main.async {
