@@ -8,6 +8,8 @@ internal enum HttpMethod: String {
 
 internal enum RequestError: Error {
     case unknown
+    case missingMetadata
+    case missingParameters
     case taskFailed(Error)
     case httpError(Int, URLResponse?, Data?)
     case bodyEncodingError(Error?)
@@ -42,7 +44,7 @@ extension HttpRequestable {
                                addtionalHeaders: [HeaderAttribute]?) -> RequestResult {
 
         if Thread.current.isMainThread {
-            CommonUtility.debugPrint("Performing HTTP task synchronously on main thread. This should be avoided.")
+            Logger.debug("Performing HTTP task synchronously on main thread. This should be avoided.")
             assertionFailure()
         }
 
@@ -57,7 +59,7 @@ extension HttpRequestable {
             completion: { result = $0 })
 
         guard let unwrappedResult = result else {
-            CommonUtility.debugPrint("Error: Didn't get any result - completion handler not called!")
+            Logger.debug("Error: Didn't get any result - completion handler not called!")
             assertionFailure()
             return .failure(.unknown)
         }
@@ -116,19 +118,20 @@ extension HttpRequestable {
 
             if let error = error {
                 completion(.failure(.taskFailed(error)))
-                print("InAppMessaging: \(error)")
+                Logger.debug(error)
                 return
             }
 
             let statusCode = (response as? HTTPURLResponse)?.statusCode ?? 0
 
             guard 100..<400 ~= statusCode,
-                let dataToReturn = data,
-                let serverResponse = response as? HTTPURLResponse else {
+                  let dataToReturn = data,
+                  let serverResponse = response as? HTTPURLResponse else {
 
-                    completion(.failure(.httpError(statusCode, response, data)))
-                    print("InAppMessaging: HTTP call failed (\(statusCode))")
-                    return
+                completion(.failure(.httpError(statusCode, response, data)))
+                let errorMessage = data != nil ? String(data: data!, encoding: .utf8) : ""
+                Logger.debug("HTTP call failed (\(statusCode))\n\(errorMessage ?? "")")
+                return
             }
 
             completion(.success((dataToReturn, serverResponse)))

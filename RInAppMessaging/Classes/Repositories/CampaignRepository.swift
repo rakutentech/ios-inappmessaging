@@ -63,7 +63,7 @@ internal class CampaignRepository: CampaignRepositoryType {
     func optOutCampaign(_ campaign: Campaign) -> Campaign? {
         var list = self.campaigns.get()
         guard let index = list.firstIndex(where: { $0.id == campaign.id }) else {
-            CommonUtility.debugPrint("Campaign \(campaign.id) cannot be updated - not found in repository")
+            Logger.debug("Campaign \(campaign.id) cannot be updated - not found in repository")
             return nil
         }
 
@@ -88,7 +88,7 @@ internal class CampaignRepository: CampaignRepositoryType {
     private func updateCampaignInTheList(_ campaign: Campaign) -> Bool {
         var list = campaigns.get()
         guard let index = list.firstIndex(where: { $0.id == campaign.id }) else {
-            CommonUtility.debugPrint("Campaign \(campaign.id) cannot be updated - not found in repository")
+            Logger.debug("Campaign \(campaign.id) cannot be updated - not found in repository")
             return false
         }
         list[index] = campaign

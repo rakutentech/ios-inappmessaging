@@ -2,13 +2,14 @@ internal protocol DisplayPermissionServiceType {
     func checkPermission(forCampaign campaign: CampaignData) -> DisplayPermissionResponse
 }
 
-internal struct DisplayPermissionService: DisplayPermissionServiceType, HttpRequestable {
+internal class DisplayPermissionService: DisplayPermissionServiceType, HttpRequestable {
 
     private let campaignRepository: CampaignRepositoryType
     private let preferenceRepository: IAMPreferenceRepository
     private let configurationRepository: ConfigurationRepositoryType
 
     private(set) var httpSession: URLSession
+    private(set) var lastResponse: RequestResult?
     var bundleInfo = BundleInfo.self
 
     init(campaignRepository: CampaignRepositoryType,
@@ -23,30 +24,36 @@ internal struct DisplayPermissionService: DisplayPermissionServiceType, HttpRequ
 
     func checkPermission(forCampaign campaign: CampaignData) -> DisplayPermissionResponse {
         // In case of error allow campaigns to be displayed anyway
+        let fallbackResponse = DisplayPermissionResponse(display: true, performPing: false)
         let requestParams = [
             Constants.Request.campaignID: campaign.campaignId
         ]
 
-        guard let displayPermissionUrl = configurationRepository.getEndpoints()?.displayPermission,
-            let responseFromDisplayPermission = try? requestFromServerSync(
-                                                        url: displayPermissionUrl,
-                                                        httpMethod: .post,
-                                                        parameters: requestParams,
-                                                        addtionalHeaders: buildRequestHeader()).get().data
-        else {
-            CommonUtility.debugPrint("error getting a response from display permission.")
-            return DisplayPermissionResponse(display: true, performPing: false)
+        guard let displayPermissionUrl = configurationRepository.getEndpoints()?.displayPermission else {
+            Logger.debug("error: missing endpoint for DisplayPermissionService")
+            return fallbackResponse
+        }
+
+        let responseData = requestFromServerSync(url: displayPermissionUrl,
+                                                 httpMethod: .post,
+                                                 parameters: requestParams,
+                                                 addtionalHeaders: buildRequestHeader())
+        lastResponse = responseData
+
+        guard let responseFromDisplayPermission = try? responseData.get() else {
+            Logger.debug("error getting a response from display permission.")
+            return fallbackResponse
         }
 
         do {
             let decodedResponse = try JSONDecoder().decode(DisplayPermissionResponse.self,
-                                                           from: responseFromDisplayPermission)
+                                                           from: responseFromDisplayPermission.data)
             return decodedResponse
         } catch {
-            CommonUtility.debugPrint("error getting a response from display permission.")
+            Logger.debug("error getting a response from display permission.")
         }
 
-        return DisplayPermissionResponse(display: true, performPing: false)
+        return fallbackResponse
     }
 }
 
@@ -56,12 +63,15 @@ extension DisplayPermissionService {
     func buildHttpBody(with parameters: [String: Any]?) -> Result<Data, Error> {
 
         guard let subscriptionId = bundleInfo.inAppSubscriptionId,
-            let campaignId = parameters?[Constants.Request.campaignID] as? String,
-            let appVersion = bundleInfo.appVersion,
-            let sdkVersion = bundleInfo.inAppSdkVersion
-            else {
-                CommonUtility.debugPrint("error while building request body for display permssion.")
-                return .failure(RequestError.unknown)
+              let appVersion = bundleInfo.appVersion,
+              let sdkVersion = bundleInfo.inAppSdkVersion
+        else {
+            Logger.debug("error while building request body for display permssion - missing metadata")
+            return .failure(RequestError.missingMetadata)
+        }
+        guard let campaignId = parameters?[Constants.Request.campaignID] as? String else {
+            Logger.debug("error while building request body for display permssion - unexpected parameters")
+            return .failure(RequestError.missingParameters)
         }
 
         let permissionRequest = DisplayPermissionRequest(subscriptionId: subscriptionId,
@@ -76,7 +86,7 @@ extension DisplayPermissionService {
             let body = try JSONEncoder().encode(permissionRequest)
             return .success(body)
         } catch {
-            CommonUtility.debugPrint("failed creating a request body.")
+            Logger.debug("failed creating a request body.")
             return .failure(error)
         }
     }

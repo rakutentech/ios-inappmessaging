@@ -18,6 +18,15 @@ class MessageMixerServiceTests: QuickSpec {
         var configurationRepository: ConfigurationRepository!
         var httpSession: URLSessionMock!
 
+        func sendRequestAndWaitForResponse() {
+            waitUntil { done in
+                requestQueue.async {
+                    _ = service.ping()
+                    done()
+                }
+            }
+        }
+
         describe("MessageMixerService") {
 
             beforeEach {
@@ -36,12 +45,7 @@ class MessageMixerServiceTests: QuickSpec {
             }
 
             it("will use provided URL in a request") {
-                waitUntil { done in
-                    requestQueue.async {
-                        _ = service.ping()
-                        done()
-                    }
-                }
+                sendRequestAndWaitForResponse()
                 expect(httpSession.sentRequest).toNot(beNil())
                 expect(httpSession.sentRequest?.url).to(equal(configData.endpoints.ping))
             }
@@ -139,16 +143,12 @@ class MessageMixerServiceTests: QuickSpec {
 
             context("when making a request") {
                 beforeEach {
+                    BundleInfoMock.reset()
                     service.bundleInfo = BundleInfoMock.self
                 }
 
                 it("will send a valid data object") {
-                    waitUntil { done in
-                        requestQueue.async {
-                            _ = service.ping()
-                            done()
-                        }
-                    }
+                    sendRequestAndWaitForResponse()
 
                     let request = httpSession.decodeSentData(modelType: PingRequest.self)
 
@@ -162,12 +162,7 @@ class MessageMixerServiceTests: QuickSpec {
                         .setUserId("userId")
                         .build())
 
-                    waitUntil { done in
-                        requestQueue.async {
-                            _ = service.ping()
-                            done()
-                        }
-                    }
+                    sendRequestAndWaitForResponse()
 
                     let request = httpSession.decodeSentData(modelType: PingRequest.self)
 
@@ -181,12 +176,7 @@ class MessageMixerServiceTests: QuickSpec {
                         .setAccessToken("token")
                         .build())
 
-                    waitUntil { done in
-                        requestQueue.async {
-                            _ = service.ping()
-                            done()
-                        }
-                    }
+                    sendRequestAndWaitForResponse()
 
                     let Keys = Constants.Request.Header.self
                     let headers = httpSession.sentRequest?.allHTTPHeaderFields
@@ -194,6 +184,30 @@ class MessageMixerServiceTests: QuickSpec {
                     expect(headers?[Keys.subscriptionID]).to(equal(BundleInfoMock.inAppSubscriptionId))
                     expect(headers?[Keys.deviceID]).toNot(beEmpty())
                     expect(headers?[Keys.authorization]).to(equal("OAuth2 token"))
+                }
+
+                context("and required data is missing") {
+
+                    it("will return RequestError.missingMetadata error if host app version is missing") {
+                        BundleInfoMock.appVersionMock = nil
+
+                        waitUntil { done in
+                            requestQueue.async {
+                                let result = service.ping()
+                                let error = result.getError()
+                                expect(error).toNot(beNil())
+
+                                guard case .requestError(let requestError) = error,
+                                      case .bodyEncodingError(let enclosedError) = requestError,
+                                      case .missingMetadata = enclosedError as? RequestError else {
+                                    fail("Unexpected error type \(String(describing: error)). Expected .requestError(.missingMetadata)")
+                                    done()
+                                    return
+                                }
+                                done()
+                            }
+                        }
+                    }
                 }
             }
         }
