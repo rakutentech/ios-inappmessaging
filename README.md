@@ -6,6 +6,8 @@
 
 In-App Messaging (IAM) module allows app developers to easily configure and display notifications within their app.
 
+⚠️ This module supports iOS 10.0 and above in line with internal GMD recommendations. It has been tested with iOS 11.0 and above.
+
 # **How to install**
 
 RInAppMessaging SDK is distributed as a Cocoapod.  
@@ -16,6 +18,7 @@ More information on installing pods: [https://guides.cocoapods.org/using/getting
 ```ruby
 pod 'RInAppMessaging'
 ```
+**Note:** RInAppMessaging SDK requires `use_frameworks!` to be present in the Podfile.
 
 2. Run the following in the terminal
 
