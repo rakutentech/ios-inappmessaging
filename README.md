@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/rakutentech/ios-inappmessaging.svg?branch=master)](https://travis-ci.org/rakutentech/ios-inappmessaging)
+[![Build Status](https://app.bitrise.io/app/ffc79d919e1efa04/status.svg?token=xJsKB2zDU77urYIJlqlKZg&branch=master)]
 [![codecov](https://codecov.io/gh/rakutentech/ios-inappmessaging/branch/master/graph/badge.svg)](https://codecov.io/gh/rakutentech/ios-inappmessaging)
 
 
