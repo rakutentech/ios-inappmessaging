@@ -22,7 +22,6 @@ extension UIApplication {
                 .compactMap({ $0 as? UIWindowScene })
                 .first {
             return keyScene.statusBarManager?.statusBarStyle
-
         }
 
         // Only iOS 13+ is supported
