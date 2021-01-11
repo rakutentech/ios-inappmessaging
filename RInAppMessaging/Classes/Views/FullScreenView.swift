@@ -1,14 +1,6 @@
 /// Class that initializes the modal view using the passed in campaign information to build the UI.
 internal class FullScreenView: FullView {
 
-    private var statusBarOverlayColor: UIColor {
-        if UIApplication.shared.getCurrentStatusBarStyle() == .lightContent {
-            return UIColor.black.withAlphaComponent(0.4)
-        } else {
-            return UIColor.white.withAlphaComponent(0.4)
-        }
-    }
-
     override var mode: FullViewMode {
         return .fullScreen
     }
@@ -40,7 +32,7 @@ internal class FullScreenView: FullView {
 
         let statusBarBackground = UIView()
         statusBarBackground.translatesAutoresizingMaskIntoConstraints = false
-        statusBarBackground.backgroundColor = statusBarOverlayColor
+        statusBarBackground.backgroundColor = UIColor.statusBarOverlayColor
 
         contentView.addSubview(statusBarBackground)
         NSLayoutConstraint.activate([
