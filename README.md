@@ -1,4 +1,4 @@
-[![Build Status](https://app.bitrise.io/app/ffc79d919e1efa04/status.svg?token=xJsKB2zDU77urYIJlqlKZg&branch=master)]
+![Build Status](https://app.bitrise.io/app/ffc79d919e1efa04/status.svg?token=xJsKB2zDU77urYIJlqlKZg&branch=master)
 [![codecov](https://codecov.io/gh/rakutentech/ios-inappmessaging/branch/master/graph/badge.svg)](https://codecov.io/gh/rakutentech/ios-inappmessaging)
 
 
@@ -6,7 +6,7 @@
 
 In-App Messaging (IAM) module allows app developers to easily configure and display notifications within their app.
 
-⚠️ This module supports iOS 10.0 and above in line with internal GMD recommendations. It has been tested with iOS 11.0 and above.
+This module supports iOS 10.0 and above. It has been tested with iOS 11.0 and above.
 
 # **How to install**
 
