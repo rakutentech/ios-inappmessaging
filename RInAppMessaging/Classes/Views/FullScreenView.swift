@@ -32,7 +32,7 @@ internal class FullScreenView: FullView {
 
         let statusBarBackground = UIView()
         statusBarBackground.translatesAutoresizingMaskIntoConstraints = false
-        statusBarBackground.backgroundColor = UIColor.white.withAlphaComponent(0.4)
+        statusBarBackground.backgroundColor = .statusBarOverlayColor
 
         contentView.addSubview(statusBarBackground)
         NSLayoutConstraint.activate([

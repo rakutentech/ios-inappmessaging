@@ -10,8 +10,8 @@ internal class SlideUpView: UIView, SlideUpViewType {
         static var messageBodyPadding: UIEdgeInsets {
             var bottomSafeArea = CGFloat(0)
 
-            if #available(iOS 11.0, *) {
-                bottomSafeArea = UIApplication.shared.keyWindow!.safeAreaInsets.bottom
+            if #available(iOS 11.0, *), let keyWindow = UIApplication.shared.getKeyWindow() {
+                bottomSafeArea = keyWindow.safeAreaInsets.bottom
             }
             return UIEdgeInsets(top: 16,
                                 left: 24,

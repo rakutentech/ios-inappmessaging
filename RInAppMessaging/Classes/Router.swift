@@ -29,7 +29,7 @@ internal class Router: RouterType {
 
     func discardDisplayedCampaign() {
         DispatchQueue.main.async {
-            guard let rootView = self.getKeyWindow() else {
+            guard let rootView = UIApplication.shared.getKeyWindow() else {
                 return
             }
 
@@ -89,7 +89,7 @@ internal class Router: RouterType {
                     completion(true)
                     return
                 }
-                guard let rootView = self.getKeyWindow(),
+                guard let rootView = UIApplication.shared.getKeyWindow(),
                       self.findPresentedIAMView(from: rootView) == nil else {
                     return
                 }
@@ -128,18 +128,5 @@ internal class Router: RouterType {
         }
 
         return nil
-    }
-
-    private func getKeyWindow() -> UIWindow? {
-        var keySceneWindow: UIWindow?
-        if #available(iOS 13.0, *) {
-            keySceneWindow = UIApplication.shared.connectedScenes
-                .filter({ $0.activationState == .foregroundActive })
-                .compactMap({ $0 as? UIWindowScene })
-                .first?.windows
-                .first(where: { $0.isKeyWindow })
-        }
-
-        return keySceneWindow ?? UIApplication.shared.keyWindow
     }
 }
