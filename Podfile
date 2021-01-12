@@ -8,9 +8,11 @@ target 'RInAppMessaging_Example' do
   pod 'SwiftLint', '~> 0.42'
 
   target 'Tests' do
-    pod 'RInAppMessaging', :path => '.'
     pod 'Quick'
     pod 'Nimble'
+  end
+
+  target 'IntegrationTests' do
   end
 end
 

@@ -35,7 +35,7 @@ internal extension Bundle {
         return self.init(path: sdkBundlePath.appending("/RInAppMessagingAssets.bundle"))
     }
     static var tests: Bundle? {
-        return self.init(identifier: "org.cocoapods.Tests")
+        return self.init(identifier: "jp.co.rakuten.inappmessaging.Tests")
     }
 
     static func bundle(bundleIdSubstring: String) -> Bundle? {
