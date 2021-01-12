@@ -6,18 +6,17 @@ internal enum MainContainerFactory {
     private typealias ContainerElement = DependencyManager.ContainerElement
 
     private static var isTestEnvironment: Bool {
-        return NSClassFromString("XCTest") != nil
+        return Bundle.tests != nil
     }
 
     private static func getValidConfigURL() -> URL? {
-        if isTestEnvironment {
+        guard !isTestEnvironment else {
             return URL(string: "config.com")
-        } else {
-            guard let configURLString = BundleInfo.inAppConfigurationURL, !configURLString.isEmpty else {
-                return nil
-            }
-            return URL(string: configURLString)
         }
+        guard let configURLString = BundleInfo.inAppConfigurationURL, !configURLString.isEmpty else {
+            return nil
+        }
+        return URL(string: configURLString)
     }
 
     static func create(dependencyManager manager: DependencyManager) -> DependencyManager.Container {

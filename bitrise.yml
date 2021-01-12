@@ -71,6 +71,17 @@ workflows:
             git subtree push --prefix docs origin gh-pages
             git config --global --unset url."https://github.com".insteadOf
 
+  integration_tests:
+    before_run:
+    - _setup
+    after_run:
+    - _report
+    steps:
+    - xcode-test@2:
+        inputs:
+        - simulator_device: iPhone 8
+        - scheme: IntegrationTests
+
   _setup:
     steps:
     - git-clone@4:
