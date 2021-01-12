@@ -74,14 +74,51 @@ workflows:
   integration_tests:
     before_run:
     - _setup
-    after_run:
-    - _report
     steps:
     - xcode-test@2:
         inputs:
         - simulator_device: iPhone 8
         - scheme: IntegrationTests
-
+        - should_build_before_test: 'no'
+    - cache-push@2:
+        inputs:
+        - cache_paths: |-
+            $BITRISE_CACHE_DIR
+            $GEM_CACHE_PATH
+    - build-status-change@0:
+        inputs:
+        - access_token: "$BITRISE_ACCESS_TOKEN"
+    - slack@3:
+        run_if: |-
+          {{if .IsBuildFailed}}
+          true
+          {{else}}
+          {{enveq "BUILD_STATUS_CHANGED" "true"}}
+          {{end}}
+        inputs:
+        - channel: "$SLACK_CHANNEL"
+        - webhook_url: "$SLACK_URL"
+        - text: ''
+        - title: ''
+        - author_name: ''
+        - channel_on_error: ''
+        - pretext: ''
+        - pretext_on_error: ''
+        - message_on_error: |+
+            $BITRISE_APP_TITLE » $BITRISE_TRIGGERED_WORKFLOW_TITLE - #$BITRISE_BUILD_NUMBER *Failure*
+            <$BITRISE_BUILD_URL|Open>
+        - message: |+
+            $BITRISE_APP_TITLE » $BITRISE_TRIGGERED_WORKFLOW_TITLE - #$BITRISE_BUILD_NUMBER *Back to normal*
+            <$BITRISE_BUILD_URL|Open>
+        - fields: ''
+        - buttons: ''
+        - footer: ''
+        - footer_icon: ''
+        - timestamp: 'no'
+        - icon_url_on_error: ''
+        - from_username_on_error: ''
+        - color_on_error: "#d10b20"
+        
   _setup:
     steps:
     - git-clone@4:
