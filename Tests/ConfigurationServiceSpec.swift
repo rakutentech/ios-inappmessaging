@@ -19,7 +19,7 @@ class ConfigurationServiceSpec: QuickSpec {
 
                 service = ConfigurationService(configURL: configURL,
                                                sessionConfiguration: .default)
-                httpSession = URLSessionMock(originalInstance: service.httpSession)
+                httpSession = URLSessionMock.mock(originalInstance: service.httpSession)
             }
 
             afterEach {
