@@ -41,7 +41,7 @@ class DisplayPermissionServiceSpec: QuickSpec {
                 service = DisplayPermissionService(campaignRepository: campaignRepository,
                                                    preferenceRepository: preferenceRepository,
                                                    configurationRepository: configurationRepository)
-                httpSession = URLSessionMock(originalInstance: service.httpSession)
+                httpSession = URLSessionMock.mock(originalInstance: service.httpSession)
             }
 
             afterEach {

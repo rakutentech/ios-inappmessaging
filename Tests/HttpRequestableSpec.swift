@@ -17,6 +17,10 @@ class HttpRequestableSpec: QuickSpec {
                 httpRequestable = HttpRequestableObject()
             }
 
+            afterEach {
+                httpRequestable = nil // force deallocation of .httpSessionMock
+            }
+
             context("when calling requestFromServerSync") {
 
                 it("will send a reqest using provided URL") {
@@ -612,7 +616,7 @@ enum HttpRequestableObjectError: Error {
 }
 
 private class HttpRequestableObject: HttpRequestable {
-    private(set) var httpSession: URLSession = URLSessionMock(originalInstance: nil)
+    private(set) var httpSession: URLSession = URLSessionMock.mock(originalInstance: .shared)
     var httpSessionMock: URLSessionMock {
         // swiftlint:disable:next force_cast
         return httpSession as! URLSessionMock

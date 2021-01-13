@@ -37,7 +37,7 @@ class MessageMixerServiceSpec: QuickSpec {
                 configurationRepository.saveConfiguration(configData)
                 service = MessageMixerService(preferenceRepository: preferenceRepository,
                                               configurationRepository: configurationRepository)
-                httpSession = URLSessionMock(originalInstance: service.httpSession)
+                httpSession = URLSessionMock.mock(originalInstance: service.httpSession)
             }
 
             afterEach {

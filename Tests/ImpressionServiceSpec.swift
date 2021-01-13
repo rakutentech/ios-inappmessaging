@@ -41,7 +41,7 @@ class ImpressionServiceSpec: QuickSpec {
                 service = ImpressionService(preferenceRepository: preferenceRepository,
                                             configurationRepository: configurationRepository)
                 service.errorDelegate = errorDelegate
-                httpSession = URLSessionMock(originalInstance: service.httpSession)
+                httpSession = URLSessionMock.mock(originalInstance: service.httpSession)
             }
 
             afterEach {
