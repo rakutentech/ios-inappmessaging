@@ -96,8 +96,8 @@ workflows:
           {{enveq "BUILD_STATUS_CHANGED" "true"}}
           {{end}}
         inputs:
-        - channel: "$SLACK_CHANNEL"
-        - webhook_url: "$SLACK_URL"
+        - channel: ''
+        - webhook_url: "$SLACK_CHANNEL_WEBHOOK"
         - text: ''
         - title: ''
         - author_name: ''
