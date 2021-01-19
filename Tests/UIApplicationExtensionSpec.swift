@@ -2,7 +2,7 @@ import Quick
 import Nimble
 @testable import RInAppMessaging
 
-class UIApplicationExtensionsTests: QuickSpec {
+class UIApplicationExtensionsSpec: QuickSpec {
 
     override func spec() {
 

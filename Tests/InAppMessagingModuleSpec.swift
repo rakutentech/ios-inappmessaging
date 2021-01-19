@@ -217,7 +217,7 @@ class InAppMessagingModuleSpec: QuickSpec {
                                 expect(router.wasDiscardCampaignCalled).to(beTrue())
                             }
 
-                            it("will discard displayed campaign if user's changed") {
+                            it("will discard displayed campaign if user is changed") {
                                 let preference = IAMPreferenceBuilder().setUserId("user1").build()
                                 iamModule.registerPreference(preference)
                                 let newPreference = IAMPreferenceBuilder().setUserId("user2").build()

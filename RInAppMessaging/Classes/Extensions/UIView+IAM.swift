@@ -20,6 +20,18 @@ extension UIView {
     func removeAllSubviews() {
         subviews.forEach { $0.removeFromSuperview() }
     }
+
+    func findIAMViewSubview() -> UIView? {
+        for subview in subviews {
+            if subview is BaseView {
+                return subview
+            } else if let iamView = subview.findIAMViewSubview() {
+                return iamView
+            }
+        }
+
+        return nil
+    }
 }
 
 extension NSLayoutConstraint {
