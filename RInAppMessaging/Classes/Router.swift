@@ -33,7 +33,7 @@ internal class Router: RouterType {
                 return
             }
 
-            let presentedView = self.findPresentedIAMView(from: rootView)
+            let presentedView = rootView.findIAMViewSubview()
             presentedView?.removeFromSuperview()
         }
     }
@@ -90,21 +90,11 @@ internal class Router: RouterType {
                     return
                 }
                 guard let rootView = UIApplication.shared.getKeyWindow(),
-                      self.findPresentedIAMView(from: rootView) == nil else {
+                      rootView.findIAMViewSubview() == nil else {
                     return
                 }
 
-                var parentView: UIView = rootView
-
-                // For accessibilityCompatible option, campaign view must be inserted to
-                // UIWindow's main subview. Private instance of UITransitionView
-                // shouldn't be used for that - that's why it's omitted.
-                if self.accessibilityCompatibleDisplay,
-                    let mainSubview = rootView.subviews.first(
-                        where: { !$0.isKind(of: NSClassFromString("UITransitionView")!) }) {
-                    parentView = mainSubview
-                }
-
+                let parentView = self.findParentView(rootView: rootView)
                 view.show(accessibilityCompatible: self.accessibilityCompatibleDisplay,
                           parentView: parentView,
                           onDismiss: {
@@ -114,19 +104,17 @@ internal class Router: RouterType {
         }
     }
 
-    private func findPresentedIAMView(from parentView: UIView) -> UIView? {
-        for subview in parentView.subviews {
-            let accessibilityIdentifier = subview.accessibilityIdentifier ?? ""
-            if [FullScreenView.viewIdentifier,
-                ModalView.viewIdentifier,
-                SlideUpView.viewIdentifier].contains(accessibilityIdentifier) {
-                return subview
+    private func findParentView(rootView: UIView) -> UIView {
+        // For accessibilityCompatible option, campaign view must be inserted to
+        // UIWindow's main subview. Private instance of UITransitionView
+        // shouldn't be used for that - that's why it's omitted.
+        if self.accessibilityCompatibleDisplay,
+           let transitionViewClass = NSClassFromString("UITransitionView"),
+           let mainSubview = rootView.subviews.first(where: { !$0.isKind(of: transitionViewClass) }) {
 
-            } else if let iamView = findPresentedIAMView(from: subview) {
-                return iamView
-            }
+            return mainSubview
+        } else {
+            return rootView
         }
-
-        return nil
     }
 }

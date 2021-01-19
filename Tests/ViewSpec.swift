@@ -200,7 +200,7 @@ class ViewSpec: QuickSpec {
     }
 }
 
-private class BaseViewTestObject: UIView, BaseView {
+class BaseViewTestObject: UIView, BaseView {
     var onDismiss: (() -> Void)?
     private(set) var wasAnimateOnShowCalled = false
     private(set) var wasAnimationCompletionCalled = false
@@ -215,7 +215,7 @@ private class BaseViewTestObject: UIView, BaseView {
     func constraintsForParent(_ parent: UIView) -> [NSLayoutConstraint] { [] }
 }
 
-private class FullViewPresenterMock: FullViewPresenterType {
+class FullViewPresenterMock: FullViewPresenterType {
     var view: FullViewType?
     var campaign: Campaign!
     var impressions: [Impression] = []
@@ -235,7 +235,7 @@ private class FullViewPresenterMock: FullViewPresenterType {
     func loadResources() { }
 }
 
-private class SlideUpViewPresenterMock: SlideUpViewPresenterType {
+class SlideUpViewPresenterMock: SlideUpViewPresenterType {
     var view: SlideUpViewType?
     var campaign: Campaign!
     var impressions: [Impression] = []

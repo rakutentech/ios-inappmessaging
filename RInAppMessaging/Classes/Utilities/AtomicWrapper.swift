@@ -20,7 +20,7 @@ struct AtomicGetSet<Value> {
 }
 
 private struct PropertyQueueGenerator {
-    private static var lastQueueNumber = 0
+    private static var lastQueueNumber = UInt(0)
 
     static func spawnQueue(domain: String) -> DispatchQueue {
         lastQueueNumber += 1

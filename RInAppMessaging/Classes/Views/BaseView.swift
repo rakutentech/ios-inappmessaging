@@ -22,6 +22,7 @@ internal extension BaseView {
     func show(accessibilityCompatible: Bool,
               parentView: UIView,
               onDismiss: @escaping () -> Void) {
+
         self.onDismiss = onDismiss
         displayView(accessibilityCompatible: accessibilityCompatible, parentView: parentView)
     }
