@@ -8,11 +8,8 @@ internal class SlideUpView: UIView, SlideUpViewType {
         static let exitButtonRightMargin: CGFloat = 16
         static let slideAnimationDuration: TimeInterval = 0.4
         static var messageBodyPadding: UIEdgeInsets {
-            var bottomSafeArea = CGFloat(0)
+            let bottomSafeArea = UIApplication.shared.getKeyWindow()?.safeAreaInsets.bottom ?? CGFloat(0)
 
-            if #available(iOS 11.0, *), let keyWindow = UIApplication.shared.getKeyWindow() {
-                bottomSafeArea = keyWindow.safeAreaInsets.bottom
-            }
             return UIEdgeInsets(top: 16,
                                 left: 24,
                                 bottom: 12 + bottomSafeArea,
