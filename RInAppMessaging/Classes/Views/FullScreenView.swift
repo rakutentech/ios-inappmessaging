@@ -26,10 +26,6 @@ internal class FullScreenView: FullView {
     override func setup(viewModel: FullViewModel) {
         super.setup(viewModel: viewModel)
 
-        guard hasImage else {
-            return
-        }
-
         let statusBarBackground = UIView()
         statusBarBackground.translatesAutoresizingMaskIntoConstraints = false
         statusBarBackground.backgroundColor = .statusBarOverlayColor
