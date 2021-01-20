@@ -42,6 +42,17 @@ class PublicAPISpec: QuickSpec {
             RInAppMessaging.configure(dependencyManager: dependencyManager)
         }
 
+        func generateAndDisplayLoginCampaigns(count: Int, addContexts: Bool) {
+            messageMixerService.mockedResponse = TestHelpers.MockResponse.withGeneratedCampaigns(
+                count: count, test: false, delay: 100, addContexts: addContexts,
+                triggers: [Trigger(type: .event,
+                                   eventType: .loginSuccessful,
+                                   eventName: "e1",
+                                   attributes: [])])
+            campaignsListManager.refreshList()
+            RInAppMessaging.logEvent(LoginSuccessfulEvent())
+        }
+
         beforeEach {
             reinitializeSDK()
             delegate = Delegate()
@@ -114,6 +125,21 @@ class PublicAPISpec: QuickSpec {
                                                                pollInterval: .milliseconds(500))
             }
 
+            context("when calling closeMessage") {
+
+                it("will remove displayed campaign's view from hierarchy") {
+                    generateAndDisplayLoginCampaigns(count: 1, addContexts: false)
+
+                    expect(UIApplication.shared.keyWindow?.subviews).toEventually(containElementSatisfying({
+                        $0 is BaseView
+                    }))
+                    RInAppMessaging.closeMessage()
+                    expect(UIApplication.shared.keyWindow?.subviews).toEventuallyNot(containElementSatisfying({
+                        $0 is BaseView
+                    }))
+                }
+            }
+
             context("delegate") {
                 afterEach {
                     UIApplication.shared.keyWindow?.subviews
@@ -122,41 +148,20 @@ class PublicAPISpec: QuickSpec {
                 }
 
                 it("will not call the method if there are no contexts") {
-                    messageMixerService.mockedResponse = TestHelpers.MockResponse.withGeneratedCampaigns(
-                        count: 1, test: false, delay: 0, addContexts: false,
-                        triggers: [Trigger(type: .event,
-                                           eventType: .loginSuccessful,
-                                           eventName: "e1",
-                                           attributes: [])])
-                    campaignsListManager.refreshList()
-                    RInAppMessaging.logEvent(LoginSuccessfulEvent())
+                    generateAndDisplayLoginCampaigns(count: 1, addContexts: false)
 
                     expect(delegate.shouldShowCampaignCallCount).toAfterTimeout(equal(0))
                 }
 
                 it("will call the method just before showing a message") {
-                    messageMixerService.mockedResponse = TestHelpers.MockResponse.withGeneratedCampaigns(
-                        count: 1, test: false, delay: 0, addContexts: true,
-                        triggers: [Trigger(type: .event,
-                                           eventType: .loginSuccessful,
-                                           eventName: "e1",
-                                           attributes: [])])
-                    campaignsListManager.refreshList()
-                    RInAppMessaging.logEvent(LoginSuccessfulEvent())
+                    generateAndDisplayLoginCampaigns(count: 1, addContexts: true)
 
                     expect(delegate.shouldShowCampaignCallCount).toEventually(equal(1))
                 }
 
                 it("will show a message if the method returned true") {
-                    delegate.shouldShowCampaignResult = true
-                    messageMixerService.mockedResponse = TestHelpers.MockResponse.withGeneratedCampaigns(
-                        count: 2, test: false, delay: 100, addContexts: true,
-                        triggers: [Trigger(type: .event,
-                                           eventType: .loginSuccessful,
-                                           eventName: "e1",
-                                           attributes: [])])
-                    campaignsListManager.refreshList()
-                    RInAppMessaging.logEvent(LoginSuccessfulEvent())
+                    delegate.shouldShowCampaign = true
+                    generateAndDisplayLoginCampaigns(count: 2, addContexts: true)
 
                     expect(UIApplication.shared.keyWindow?.subviews).toEventually(containElementSatisfying({
                         if let view = $0 as? BaseView {
@@ -169,15 +174,8 @@ class PublicAPISpec: QuickSpec {
                 }
 
                 it("will not show a message if the method returned false") {
-                    delegate.shouldShowCampaignResult = false
-                    messageMixerService.mockedResponse = TestHelpers.MockResponse.withGeneratedCampaigns(
-                        count: 2, test: false, delay: 100, addContexts: true,
-                        triggers: [Trigger(type: .event,
-                                           eventType: .loginSuccessful,
-                                           eventName: "e1",
-                                           attributes: [])])
-                    campaignsListManager.refreshList()
-                    RInAppMessaging.logEvent(LoginSuccessfulEvent())
+                    delegate.shouldShowCampaign = false
+                    generateAndDisplayLoginCampaigns(count: 2, addContexts: true)
 
                     expect(UIApplication.shared.keyWindow?.subviews)
                         .toAfterTimeout(allPass({ !($0 is BaseView) }))
@@ -185,7 +183,7 @@ class PublicAPISpec: QuickSpec {
                 }
 
                 it("will call the method before showing a message with proper parameters") {
-                    delegate.shouldShowCampaignResult = true
+                    delegate.shouldShowCampaign = true
                     messageMixerService.mockedResponse = PingResponse(
                         nextPingMilliseconds: 0,
                         currentPingMilliseconds: 0,
@@ -221,13 +219,13 @@ private class ErrorDelegate: RInAppMessagingErrorDelegate {
 
 private class Delegate: RInAppMessagingDelegate {
     var shouldShowCampaignCallCount = 0
-    var shouldShowCampaignResult = true
+    var shouldShowCampaign = true
     var shouldShowCampaignCallParameters: (title: String, contexts: [String])?
 
     func inAppMessagingShouldShowCampaignWithContexts(contexts: [String], campaignTitle: String) -> Bool {
         shouldShowCampaignCallCount += 1
         shouldShowCampaignCallParameters = (campaignTitle, contexts)
-        return shouldShowCampaignResult
+        return shouldShowCampaign
     }
 }
 

@@ -45,6 +45,7 @@ The SDK provides 3 public methods for the host applications to use:
 1. `configure()`
 2. `logEvent()`
 3. `registerPreference()`
+4. `closeMessage()`
 
 ### **configure()**  
 This method is called to initialize the SDK and should be placed in your AppDelegate's `didFinishLaunchingWithOptions`.
@@ -111,8 +112,8 @@ A preference is what will allow IAM to identify users for targeting and segmenta
 
 To help IAM identify users, please set a new preference every time a user changes their login state i.e. when they log in or log out.  
 After logout is complete please call  `registerPreference()` with nil parameter.  
-Not all identifiers have to be provided*.  
-**NOTE**: *For our internal users - for user targeting you must provide an accessToken. If you are setting an accessToken you must also provide associated userId in `IAMPreference`.
+Not all identifiers have to be provided.  
+**NOTE:** For our internal users - for user targeting you must provide an accessToken. If you are setting an accessToken you must also provide associated userId in `IAMPreference`.
 
 ```swift
 let preference = IAMPreferenceBuilder()
@@ -123,6 +124,19 @@ let preference = IAMPreferenceBuilder()
 
 RInAppMessaging.registerPreference(preference)
 ```
+
+### **closeMessage()**
+
+In certain cases there might be a need to manually close a campaign's message without user interaction.
+An example is when a different user logs in and the currently displayed campaign does not target the new user.
+(Or when a campaign's message appears after login process has started).
+In that case, to avoid user's confusion, host app can force-close the campaign by calling `closeMessage()` API method.
+
+```swift
+RInAppMessaging.closeMessage()
+```
+**Note:** Calling this API will not increment the campaign's impression (i.e. not counted as displayed).
+
 
 ## **Custom Events**
 

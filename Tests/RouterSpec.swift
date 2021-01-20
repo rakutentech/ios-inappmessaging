@@ -115,7 +115,7 @@ class RouterSpec: QuickSpec {
                 }
             }
 
-            context("when calling displayCampaign") {
+            context("when calling discardDisplayedCampaign") {
 
                 it("will remove displayed campaign view") {
                     let campaign = TestHelpers.generateCampaign(id: "test", type: .modal)
