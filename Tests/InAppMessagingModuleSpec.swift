@@ -209,33 +209,6 @@ class InAppMessagingModuleSpec: QuickSpec {
                                 iamModule.registerPreference(IAMPreference())
                                 expect(campaignsListManager.wasRefreshListCalled).to(beTrue())
                             }
-
-                            it("will discard displayed campaign if user logs out") {
-                                let preference = IAMPreferenceBuilder().setUserId("user1").build()
-                                iamModule.registerPreference(preference)
-                                iamModule.registerPreference(nil)
-                                expect(router.wasDiscardCampaignCalled).to(beTrue())
-                            }
-
-                            it("will discard displayed campaign if user is changed") {
-                                let preference = IAMPreferenceBuilder().setUserId("user1").build()
-                                iamModule.registerPreference(preference)
-                                let newPreference = IAMPreferenceBuilder().setUserId("user2").build()
-                                iamModule.registerPreference(newPreference)
-                                expect(router.wasDiscardCampaignCalled).to(beTrue())
-                            }
-
-                            it("will not discard displayed campaign if user hasn't changed") {
-                                let preference = IAMPreferenceBuilder().setUserId("user1").setAccessToken("token1").build()
-                                iamModule.registerPreference(preference)
-                                let newPreference = IAMPreferenceBuilder().setUserId("user1").setAccessToken("token1").build()
-                                iamModule.registerPreference(newPreference)
-                                expect(router.wasDiscardCampaignCalled).toAfterTimeout(beFalse())
-
-                                let newPreferenceToken = IAMPreferenceBuilder().setUserId("user1").setAccessToken("token2").build()
-                                iamModule.registerPreference(newPreferenceToken)
-                                expect(router.wasDiscardCampaignCalled).toAfterTimeout(beFalse())
-                            }
                         }
 
                         context("and module is not initialized") {
@@ -269,6 +242,14 @@ class InAppMessagingModuleSpec: QuickSpec {
                             iamModule.registerPreference(IAMPreference())
                             expect(campaignsListManager.wasRefreshListCalled).toAfterTimeout(beFalse())
                         }
+                    }
+                }
+
+                context("when calling closeMessage") {
+
+                    it("will discard displayed campaign even if module is not initialized") {
+                        iamModule.closeMessage()
+                        expect(router.wasDiscardCampaignCalled).to(beTrue())
                     }
                 }
 

@@ -118,6 +118,15 @@
         }
     }
 
+    /// Close currently displayed campaign's message.
+    /// This method should be called when app needs to force-close the displayed message without user action.
+    /// Campaign's impressions won't be sent (i.e. the message won't be counted as displayed)
+    @objc public static func closeMessage() {
+        inAppQueue?.async(flags: .barrier) {
+            initializedModule?.closeMessage()
+        }
+    }
+
     /// For testing purposes
     internal static func deinitializeModule() {
         inAppQueue?.sync {

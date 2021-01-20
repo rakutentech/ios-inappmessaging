@@ -84,19 +84,16 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
         guard isEnabled else {
             return
         }
-
-        let diff = preferenceRepository.preference?.diff(preference)
         preferenceRepository.setPreference(preference)
 
         guard isInitialized else {
             return
         }
-
-        // close campaign only if there was a change in user ids
-        if !(diff == nil || diff == [] || diff == [.accessToken]) {
-            router.discardDisplayedCampaign()
-        }
         campaignsListManager.refreshList()
+    }
+
+    func closeMessage() {
+        router.discardDisplayedCampaign()
     }
 }
 
