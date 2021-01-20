@@ -1,5 +1,5 @@
 use_frameworks!
-platform :ios, '10.0'
+platform :ios, '11.0'
 
 secrets = ["RIAM_CONFIG_URL", "RIAM_APP_SUBSCRIPTION_KEY"]
 

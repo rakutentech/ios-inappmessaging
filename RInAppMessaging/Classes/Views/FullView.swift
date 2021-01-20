@@ -148,12 +148,8 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
 
         switch mode {
         case .fullScreen:
-            var layoutGuide = layoutMarginsGuide
-            if #available(iOS 11.0, *) {
-                layoutGuide = safeAreaLayoutGuide
-            }
             contentView.topAnchor.constraint(equalTo: topAnchor).isActive = true
-            contentView.bottomAnchor.constraint(equalTo: layoutGuide.bottomAnchor).isActive = true
+            contentView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor).isActive = true
         case .modal(let maxWindowHeightPercentage):
             contentView.heightAnchor.constraint(lessThanOrEqualTo: backgroundView.heightAnchor,
                                                 multiplier: maxWindowHeightPercentage).isActive = true
