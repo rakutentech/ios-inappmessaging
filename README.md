@@ -62,7 +62,7 @@ func application(_ application: UIApplication, didFinishLaunchingWithOptions lau
 ### **logEvent()**  
 This method is provided for the host application to log and save events. These events will be used to match campaign triggers.
 
-**The method signature is**
+**The method signature is:**
 
 ```swift
 func logEvent(_ event: Event)
@@ -97,9 +97,9 @@ let boolAttribute = CustomAttribute(withKeyName: "didNavigateToPage", withBoolVa
 let doubleAttribute = CustomAttribute(withKeyName: "percentageOfCompletion", withDoubleValue: 55.0)
 let timeAttribute = CustomAttribute(withKeyName: "timeOfCompletion", withTimeInMilliValue: 32423424)
  
-let attriList = [stringAttribute, intAttribute, boolAttribute, doubleAttribute, timeAttribute]
+let attributesList = [stringAttribute, intAttribute, boolAttribute, doubleAttribute, timeAttribute]
  
-RInAppMessaging.logEvent(CustomEvent(withName: "any_event_name_here", withCustomAttributes: attriList))
+RInAppMessaging.logEvent(CustomEvent(withName: "any_event_name_here", withCustomAttributes: attributesList))
 ```
 
 ### **registerPreference()**
@@ -154,7 +154,7 @@ From the dashboard side, you will have the ability to also add an operator. The 
 7) `MATCHES_REGEX` - The attribute value matches the regular expression. Applies to only String type.  
 8) `DOES_NOT_MATCH_REGEX` - The attribute value does not match the regular expression. Applies to only String type string.
 
-*Note:* When comparing date as timeInMillis values, there will be a tolerance of 1000 milliseconds. This means that comparisons using any relevant operator types will have a leniency of 1 second e.g. comparing 300ms and 600ms with the `EQUALS` operator will return `true` and comparing 300 and 1400 will return `false`.
+*Note:* When comparing date as timeInMillis values, there is a tolerance of 1000 milliseconds. This means that comparisons using any relevant operator types will have a leniency of 1 second. E.g. comparing 300ms and 600ms with the `EQUALS` operator will return `true`, while comparing 300 and 1400 will return `false`.
 
 From the SDK side, host app developers will be able to log custom events as shown in the examples above. When the event matching process happens, note that the attributes of the event logged by the host app will be compared against the campaign's trigger attribute value e.g. if the trigger attribute value is an integer of 5 with an operator type of `GREATER_THAN`, and the attribute value of the event logged is an integer 10, then the 10 will be successfully matched against the 5 with a `GREATER_THAN` operator (i.e. 10 > 5).
 
@@ -206,6 +206,16 @@ func application(_ application: UIApplication, didFinishLaunchingWithOptions lau
 * Open `RInAppMessaging.xcworkspace` in Xcode then build/run
 * To run the tests press key shortcut command-U
 
-## **Troubleshooting**
+# **Troubleshooting & F.A.Q.**
 
-* Rakuten developers experiencing problems should refer to the Troubleshooting Guide on the internal developer documentation portal.
+* Configuration service returns `RequestError.missingMetadata` error
+ * Ensure that IAM SDK is integrated properly (not as a static library)
+* Getting HTTP error 401
+ * If you are providing an access token in `IAMPreference` make sure that it comes from PROD endpoint. (this applies only to Rakuten developers)
+* User targeting is not working
+ * For user targeting to work you must provide *userId* or *rakutenId* in `IAMPreference`.
+ * If you are setting an *accessToken* you must also provide associated *userId*. (Rakuten developers only)
+* Status bar characters and icons are not visible when Full-Screen campaign is presented
+ * If your app is running on iOS version below 13.0 you need to either change background color of the campaign or set proper `preferredStatusbarStyle` in the top-most view controller. (for iOS versions above 13.0 this issue is handled internally by the SDK)
+
+#### For other issues and more detailed information, Rakuten developers should refer to the Troubleshooting Guide on the internal developer documentation portal.
