@@ -8,5 +8,6 @@ xcov.report(
   json_report: true,
   include_targets: 'RInAppMessaging.framework',
   include_test_targets: false,
-  minimum_coverage_percentage: 70.0
+  minimum_coverage_percentage: 70.0,
+  skip_slack: true
 )
