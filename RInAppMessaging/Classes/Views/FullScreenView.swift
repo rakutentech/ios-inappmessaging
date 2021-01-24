@@ -1,6 +1,8 @@
 /// Class that initializes the modal view using the passed in campaign information to build the UI.
 internal class FullScreenView: FullView {
 
+    private weak var statusBarBackgroundHeightConstraint: NSLayoutConstraint?
+
     override var mode: FullViewMode {
         return .fullScreen
     }
@@ -30,12 +32,22 @@ internal class FullScreenView: FullView {
         statusBarBackground.translatesAutoresizingMaskIntoConstraints = false
         statusBarBackground.backgroundColor = .statusBarOverlayColor
 
+        let heightConstraint = statusBarBackground.heightAnchor.constraint(
+            equalToConstant: UIApplication.shared.statusBarFrame.height)
+        statusBarBackgroundHeightConstraint = heightConstraint
+
         contentView.addSubview(statusBarBackground)
         NSLayoutConstraint.activate([
             statusBarBackground.topAnchor.constraint(equalTo: contentView.topAnchor),
             statusBarBackground.leftAnchor.constraint(equalTo: contentView.leftAnchor),
             statusBarBackground.rightAnchor.constraint(equalTo: contentView.rightAnchor),
-            statusBarBackground.heightAnchor.constraint(equalToConstant: UIApplication.shared.statusBarFrame.height)
+            heightConstraint
         ])
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        // statusBarFrame.height is 0 when status bar is hidden
+        statusBarBackgroundHeightConstraint?.constant = UIApplication.shared.statusBarFrame.height
     }
 }
