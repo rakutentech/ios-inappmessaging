@@ -85,6 +85,14 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         fatalError("init(coder:) has not been implemented")
     }
 
+    override func layoutSubviews() {
+        super.layoutSubviews()
+
+        updateUIConstants()
+        exitButtonYPositionConstraint.constant = uiConstants.exitButtonVerticalOffset
+        bodyViewOffsetYConstraint.constant = hasImage ? 0 : uiConstants.bodyViewSafeAreaOffsetY
+    }
+
     func setup(viewModel: FullViewModel) {
 
         removeAllSubviews()
