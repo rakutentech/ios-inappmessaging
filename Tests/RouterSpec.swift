@@ -122,21 +122,23 @@ class RouterSpec: QuickSpec {
                     router.displayCampaign(campaign, confirmation: true, completion: { _ in })
                     expect(UIApplication.shared.keyWindow?.subviews)
                         .toEventually(containElementSatisfying({ $0 is BaseView }))
-                    router.discardDisplayedCampaign()
+                    let closedCampaignView = router.discardDisplayedCampaign()
+                    expect(closedCampaignView).toNot(beNil())
                     expect(UIApplication.shared.keyWindow?.subviews)
                         .toEventuallyNot(containElementSatisfying({ $0 is BaseView }))
                 }
 
-                it("will not call onDismiss/completion callback") {
+                it("will call onDismiss/completion callback with cancelled flag") {
                     let campaign = TestHelpers.generateCampaign(id: "test", type: .modal)
                     var completionCalled = false
-                    router.displayCampaign(campaign, confirmation: true, completion: { _ in
+                    router.displayCampaign(campaign, confirmation: true, completion: { cancelled in
                         completionCalled = true
+                        expect(cancelled).to(beTrue())
                     })
                     expect(UIApplication.shared.keyWindow?.subviews)
                         .toEventually(containElementSatisfying({ $0 is BaseView }))
-                    router.discardDisplayedCampaign()
-                    expect(completionCalled).toAfterTimeout(beFalse())
+                    _ = router.discardDisplayedCampaign()
+                    expect(completionCalled).toEventually(beTrue())
                 }
             }
         }

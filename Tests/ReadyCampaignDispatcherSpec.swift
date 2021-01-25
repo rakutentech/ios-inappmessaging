@@ -211,6 +211,32 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
                         expect(delegate.wasShouldShowCalled).toAfterTimeout(beFalse())
                     }
                 }
+
+                context("and resetQueue is called") {
+
+                    let testCampaigns = TestHelpers.MockResponse.withGeneratedCampaigns(count: 3, test: true, delay: 1000).data
+
+                    beforeEach {
+                        dispatcher.addToQueue(campaign: testCampaigns[0])
+                        dispatcher.addToQueue(campaign: testCampaigns[1])
+                        dispatcher.dispatchAllIfNeeded()
+                    }
+
+                    it("will stop dispatching") {
+                        expect(dispatcher.isDispatching).toEventually(beTrue())
+                        dispatcher.resetQueue()
+                        expect(dispatcher.isDispatching).toEventually(beFalse())
+                    }
+
+                    it("will remove all queued campaigns") {
+                        expect(dispatcher.isDispatching).toEventually(beTrue()) // wait
+                        dispatcher.resetQueue()
+                        dispatcher.addToQueue(campaign: testCampaigns[2])
+                        dispatcher.dispatchAllIfNeeded()
+                        expect(router.lastDisplayedCampaign).toEventually(equal(testCampaigns[2]))
+                        expect(router.displayedCampaignsCount).to(equal(2))
+                    }
+                }
             }
 
             context("after dispatching") {

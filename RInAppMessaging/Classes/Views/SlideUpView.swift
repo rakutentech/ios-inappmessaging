@@ -17,7 +17,10 @@ internal class SlideUpView: UIView, SlideUpViewType {
         }
     }
 
-    var onDismiss: (() -> Void)?
+    var onDismiss: ((_ cancelled: Bool) -> Void)?
+    var basePresenter: BaseViewPresenterType {
+        return presenter
+    }
 
     private let presenter: SlideUpViewPresenterType
     private let dialogView = UIView()

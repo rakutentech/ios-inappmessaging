@@ -10,6 +10,7 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
     private var readyCampaignDispatcher: CampaignDispatcherType
     private var impressionService: ImpressionServiceType
     private let campaignTriggerAgent: CampaignTriggerAgentType
+    private let campaignRepository: CampaignRepositoryType
     private let router: RouterType
 
     private var isInitialized = false
@@ -26,6 +27,7 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
          eventMatcher: EventMatcherType,
          readyCampaignDispatcher: CampaignDispatcherType,
          campaignTriggerAgent: CampaignTriggerAgentType,
+         campaignRepository: CampaignRepositoryType,
          router: RouterType) {
 
         self.configurationManager = configurationManager
@@ -36,6 +38,7 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
         self.readyCampaignDispatcher = readyCampaignDispatcher
         self.impressionService = impressionService
         self.campaignTriggerAgent = campaignTriggerAgent
+        self.campaignRepository = campaignRepository
         self.router = router
 
         self.configurationManager.errorDelegate = self
@@ -92,8 +95,13 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
         campaignsListManager.refreshList()
     }
 
-    func closeMessage() {
-        router.discardDisplayedCampaign()
+    func closeMessage(clearQueuedCampaigns: Bool) {
+        if clearQueuedCampaigns {
+            readyCampaignDispatcher.resetQueue()
+        }
+        if let campaign = router.discardDisplayedCampaign() {
+            campaignRepository.incrementImpressionsLeftInCampaign(campaign)
+        }
     }
 }
 

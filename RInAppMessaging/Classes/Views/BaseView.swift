@@ -5,11 +5,12 @@ import func Foundation.NSClassFromString
 internal protocol BaseView: UIView {
 
     static var viewIdentifier: String { get }
-    var onDismiss: (() -> Void)? { get set }
+    var onDismiss: ((_ cancelled: Bool) -> Void)? { get set }
+    var basePresenter: BaseViewPresenterType { get }
 
     func show(accessibilityCompatible: Bool,
               parentView: UIView,
-              onDismiss: @escaping () -> Void)
+              onDismiss: @escaping (_ cancelled: Bool) -> Void)
     func animateOnShow(completion: @escaping () -> Void)
     func dismiss()
     func constraintsForParent(_ parent: UIView) -> [NSLayoutConstraint]
@@ -21,7 +22,7 @@ internal extension BaseView {
 
     func show(accessibilityCompatible: Bool,
               parentView: UIView,
-              onDismiss: @escaping () -> Void) {
+              onDismiss: @escaping ((_ cancelled: Bool) -> Void)) {
 
         self.onDismiss = onDismiss
         displayView(accessibilityCompatible: accessibilityCompatible, parentView: parentView)
@@ -29,7 +30,7 @@ internal extension BaseView {
 
     func dismiss() {
         removeFromSuperview()
-        onDismiss?()
+        onDismiss?(false)
     }
 
     private func displayView(accessibilityCompatible: Bool, parentView: UIView) {

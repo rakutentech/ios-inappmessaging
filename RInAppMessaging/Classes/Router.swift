@@ -14,27 +14,36 @@ internal protocol RouterType: AnyObject {
                          completion: @escaping (_ cancelled: Bool) -> Void)
 
     /// Removes displayed campaign view from the stack
-    func discardDisplayedCampaign()
+    /// - Returns: a campaign associated with displayed message or nil if no message was displayed
+    func discardDisplayedCampaign() -> Campaign?
 }
 
 /// Handles all the displaying logic of the SDK.
 internal class Router: RouterType {
 
     private let dependencyManager: DependencyManager
+    private let displayQueue = DispatchQueue(label: "IAM.MessageLoader")
     var accessibilityCompatibleDisplay = false
 
     init(dependencyManager: DependencyManager) {
         self.dependencyManager = dependencyManager
     }
 
-    func discardDisplayedCampaign() {
-        DispatchQueue.main.async {
-            guard let rootView = UIApplication.shared.getKeyWindow() else {
-                return
+    func discardDisplayedCampaign() -> Campaign? {
+        return displayQueue.sync {
+            let discard: () -> Campaign? = {
+                guard let rootView = UIApplication.shared.getKeyWindow() else {
+                    return nil
+                }
+
+                let presentedView = rootView.findIAMViewSubview()
+                presentedView?.onDismiss?(true)
+                presentedView?.removeFromSuperview()
+
+                return presentedView?.basePresenter.campaign
             }
 
-            let presentedView = rootView.findIAMViewSubview()
-            presentedView?.removeFromSuperview()
+            return Thread.isMainThread ? discard() : DispatchQueue.main.sync(execute: discard)
         }
     }
 
@@ -48,7 +57,7 @@ internal class Router: RouterType {
             return
         }
 
-        DispatchQueue.global(qos: .userInteractive).async {
+        displayQueue.async {
 
             func getPresenter<T>(type: T.Type) -> T? {
                 guard let presenter = self.dependencyManager.resolve(type: type) else {
@@ -85,20 +94,20 @@ internal class Router: RouterType {
             }
 
             DispatchQueue.main.async {
-                guard let view = viewConstructor?(), confirmation() == true else {
+                guard let view = viewConstructor?(),
+                      let rootView = UIApplication.shared.getKeyWindow(),
+                      rootView.findIAMViewSubview() == nil,
+                      confirmation() == true else {
+
                     completion(true)
-                    return
-                }
-                guard let rootView = UIApplication.shared.getKeyWindow(),
-                      rootView.findIAMViewSubview() == nil else {
                     return
                 }
 
                 let parentView = self.findParentView(rootView: rootView)
                 view.show(accessibilityCompatible: self.accessibilityCompatibleDisplay,
                           parentView: parentView,
-                          onDismiss: {
-                    completion(false)
+                          onDismiss: { cancelled in
+                    completion(cancelled)
                 })
             }
         }

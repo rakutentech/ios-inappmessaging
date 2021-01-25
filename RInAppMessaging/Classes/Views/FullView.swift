@@ -65,7 +65,10 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
     var isOptOutChecked: Bool {
         return !optOutView.isHidden && optOutView.isChecked
     }
-    var onDismiss: (() -> Void)?
+    var onDismiss: ((_ cancelled: Bool) -> Void)?
+    var basePresenter: BaseViewPresenterType {
+        return presenter
+    }
 
     private(set) var hasImage = false {
         didSet {
