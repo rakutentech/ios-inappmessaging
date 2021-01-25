@@ -25,20 +25,20 @@ class ViewSpec: QuickSpec {
 
                 it("will save onDismiss action") {
                     waitUntil { done in
-                        let onDismiss = { done() }
+                        let onDismiss: (Bool) -> Void = { _ in done() }
                         view.show(accessibilityCompatible: false, parentView: parentView, onDismiss: onDismiss)
                         expect(view.onDismiss).toNot(beNil())
-                        view.onDismiss?()
+                        view.onDismiss?(true)
                     }
                 }
 
                 it("will call animateOnShow") {
-                    view.show(accessibilityCompatible: false, parentView: parentView, onDismiss: {})
+                    view.show(accessibilityCompatible: false, parentView: parentView, onDismiss: { _ in })
                     expect(view.wasAnimateOnShowCalled).to(beTrue())
                 }
 
                 it("will disable user interaction in parent view for the time of animation") {
-                    view.show(accessibilityCompatible: false, parentView: parentView, onDismiss: {})
+                    view.show(accessibilityCompatible: false, parentView: parentView, onDismiss: { _ in })
                     expect(view.superview?.isUserInteractionEnabled).to(beFalse())
                     expect(view.wasAnimationCompletionCalled).toEventually(beTrue())
                     expect(view.superview?.isUserInteractionEnabled).to(beTrue())
@@ -47,15 +47,18 @@ class ViewSpec: QuickSpec {
 
             context("when dismiss is called") {
 
-                it("will call onDismiss closure") {
+                it("will call onDismiss closure with `false` parameter") {
                     waitUntil { done in
-                        view.show(accessibilityCompatible: false, parentView: parentView, onDismiss: { done() })
+                        view.show(accessibilityCompatible: false, parentView: parentView, onDismiss: { cancelled in
+                            expect(cancelled).to(beFalse())
+                            done()
+                        })
                         view.dismiss()
                     }
                 }
 
                 it("will remove itself from superview") {
-                    view.show(accessibilityCompatible: false, parentView: parentView, onDismiss: { })
+                    view.show(accessibilityCompatible: false, parentView: parentView, onDismiss: { _ in })
                     expect(view.superview).toNot(beNil())
                     view.dismiss()
                     expect(view.superview).to(beNil())
@@ -201,7 +204,8 @@ class ViewSpec: QuickSpec {
 }
 
 class BaseViewTestObject: UIView, BaseView {
-    var onDismiss: (() -> Void)?
+    var basePresenter: BaseViewPresenterType = BaseViewPresenterMock()
+    var onDismiss: ((_ cancelled: Bool) -> Void)?
     private(set) var wasAnimateOnShowCalled = false
     private(set) var wasAnimationCompletionCalled = false
 
@@ -213,6 +217,18 @@ class BaseViewTestObject: UIView, BaseView {
         }
     }
     func constraintsForParent(_ parent: UIView) -> [NSLayoutConstraint] { [] }
+}
+
+class BaseViewPresenterMock: BaseViewPresenterType {
+    var campaign: Campaign!
+    var impressions: [Impression] = []
+    var impressionService: ImpressionServiceType = ImpressionServiceMock()
+    var associatedImage: UIImage?
+
+    func viewDidInitialize() { }
+    func handleButtonTrigger(_ trigger: Trigger?) { }
+    func optOutCampaign() { }
+    func loadResources() { }
 }
 
 class FullViewPresenterMock: FullViewPresenterType {

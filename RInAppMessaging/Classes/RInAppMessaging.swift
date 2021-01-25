@@ -75,6 +75,7 @@
                 let campaignsValidator = dependencyManager.resolve(type: CampaignsValidatorType.self),
                 let readyCampaignDispatcher = dependencyManager.resolve(type: CampaignDispatcherType.self),
                 let campaignTriggerAgent = dependencyManager.resolve(type: CampaignTriggerAgentType.self),
+                let campaignRepository = dependencyManager.resolve(type: CampaignRepositoryType.self),
                 let router = dependencyManager.resolve(type: RouterType.self) else {
 
                     assertionFailure("In-App Messaging SDK module initialization failure: Dependencies could not be resolved")
@@ -90,6 +91,7 @@
                                                      eventMatcher: eventMatcher,
                                                      readyCampaignDispatcher: readyCampaignDispatcher,
                                                      campaignTriggerAgent: campaignTriggerAgent,
+                                                     campaignRepository: campaignRepository,
                                                      router: router)
             initializedModule?.aggregatedErrorHandler = { error in
                 errorDelegate?.inAppMessagingDidReturnError(error)
@@ -121,9 +123,11 @@
     /// Close currently displayed campaign's message.
     /// This method should be called when app needs to force-close the displayed message without user action.
     /// Campaign's impressions won't be sent (i.e. the message won't be counted as displayed)
-    @objc public static func closeMessage() {
+    /// - Parameter clearQueuedCampaigns: when set to true, it will clear also the list of campaigns that were
+    ///                                   triggered and are queued to be displayed.
+    @objc public static func closeMessage(clearQueuedCampaigns: Bool = false) {
         inAppQueue?.async(flags: .barrier) {
-            initializedModule?.closeMessage()
+            initializedModule?.closeMessage(clearQueuedCampaigns: clearQueuedCampaigns)
         }
     }
 

@@ -9,6 +9,7 @@ internal protocol CampaignDispatcherType {
     var delegate: CampaignDispatcherDelegate? { get set }
 
     func addToQueue(campaign: Campaign)
+    func resetQueue()
     func dispatchAllIfNeeded()
 }
 
@@ -20,7 +21,7 @@ internal class CampaignDispatcher: CampaignDispatcherType {
     private let permissionService: DisplayPermissionServiceType
     private let campaignRepository: CampaignRepositoryType
 
-    private let dispatchQueue = DispatchQueue(label: "IAM.Campaign", attributes: .concurrent)
+    private let dispatchQueue = DispatchQueue(label: "IAM.Campaign", qos: .userInteractive)
     private var queuedCampaigns = [Campaign]()
     private(set) var isDispatching = false
 
@@ -36,14 +37,21 @@ internal class CampaignDispatcher: CampaignDispatcherType {
     }
 
     func addToQueue(campaign: Campaign) {
-        dispatchQueue.async(flags: .barrier) {
+        dispatchQueue.async {
             self.queuedCampaigns.append(campaign)
         }
     }
 
-    func dispatchAllIfNeeded() {
+    func resetQueue() {
+        dispatchQueue.async {
+            self.isDispatching = false
+            self.queuedCampaigns.removeAll()
+            // Note: WorkScheduler might still call dispatchNext()
+        }
+    }
 
-        dispatchQueue.async(flags: .barrier) {
+    func dispatchAllIfNeeded() {
+        dispatchQueue.async {
             guard !self.isDispatching else {
                 return
             }
@@ -53,57 +61,59 @@ internal class CampaignDispatcher: CampaignDispatcherType {
         }
     }
 
+    /// Must be executed on `dispatchQueue`
     private func dispatchNext() {
 
-        dispatchQueue.async(flags: .barrier) {
-            guard !self.queuedCampaigns.isEmpty else {
-                self.isDispatching = false
-                return
-            }
-
-            let campaign = self.queuedCampaigns.removeFirst()
-            let permissionResponse = self.permissionService.checkPermission(forCampaign: campaign.data)
-            if permissionResponse.performPing {
-                self.delegate?.performPing()
-            }
-
-            guard campaign.data.isTest || permissionResponse.display else {
-                self.dispatchNext()
-                return
-            }
-            self.campaignRepository.decrementImpressionsLeftInCampaign(campaign)
-            let campaignTitle = campaign.data.messagePayload.title
-
-            self.router.displayCampaign(campaign, confirmation: {
-                let contexts = campaign.contexts
-                guard let delegate = self.delegate, !contexts.isEmpty, !campaign.data.isTest else {
-                    return true
-                }
-                let shouldShow = delegate.shouldShowCampaignMessage(title: campaignTitle,
-                                                                    contexts: contexts)
-                if !shouldShow {
-                    self.campaignRepository.incrementImpressionsLeftInCampaign(campaign)
-                }
-                return shouldShow
-
-            }(), completion: { cancelled in
-                self.dispatchQueue.async(flags: .barrier) {
-
-                    guard !self.queuedCampaigns.isEmpty else {
-                        self.isDispatching = false
-                        return
-                    }
-                    if cancelled {
-                        self.dispatchNext()
-                    } else {
-                        WorkScheduler.scheduleTask(
-                            milliseconds: self.delayBeforeNextMessage(for: campaign.data),
-                            closure: self.dispatchNext
-                        )
-                    }
-                }
-            })
+        guard !queuedCampaigns.isEmpty else {
+            isDispatching = false
+            return
         }
+
+        let campaign = queuedCampaigns.removeFirst()
+        let permissionResponse = permissionService.checkPermission(forCampaign: campaign.data)
+        if permissionResponse.performPing {
+            delegate?.performPing()
+        }
+
+        guard campaign.data.isTest || permissionResponse.display else {
+            dispatchNext()
+            return
+        }
+
+        campaignRepository.decrementImpressionsLeftInCampaign(campaign)
+        let campaignTitle = campaign.data.messagePayload.title
+
+        router.displayCampaign(campaign, confirmation: {
+            let contexts = campaign.contexts
+            guard let delegate = delegate, !contexts.isEmpty, !campaign.data.isTest else {
+                return true
+            }
+            let shouldShow = delegate.shouldShowCampaignMessage(title: campaignTitle,
+                                                                contexts: contexts)
+            if !shouldShow {
+                campaignRepository.incrementImpressionsLeftInCampaign(campaign)
+            }
+            return shouldShow
+
+        }(), completion: { cancelled in
+            self.dispatchQueue.async {
+
+                guard !self.queuedCampaigns.isEmpty else {
+                    self.isDispatching = false
+                    return
+                }
+                if cancelled {
+                    self.dispatchNext()
+                } else {
+                    WorkScheduler.scheduleTask(
+                        milliseconds: self.delayBeforeNextMessage(for: campaign.data),
+                        closure: {
+                            self.dispatchQueue.async { self.dispatchNext() }
+                        }
+                    )
+                }
+            }
+        })
     }
 
     private func delayBeforeNextMessage(for campaignData: CampaignData) -> Int {

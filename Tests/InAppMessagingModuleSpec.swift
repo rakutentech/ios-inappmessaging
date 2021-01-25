@@ -17,6 +17,7 @@ class InAppMessagingModuleSpec: QuickSpec {
             var eventMatcher: EventMatcherMock!
             var readyCampaignDispatcher: CampaignDispatcherMock!
             var campaignTriggerAgent: CampaignTriggerAgentMock!
+            var campaignRepository: CampaignRepositoryMock!
             var router: RouterMock!
             var delegate: Delegate!
 
@@ -29,6 +30,7 @@ class InAppMessagingModuleSpec: QuickSpec {
                 eventMatcher = EventMatcherMock()
                 readyCampaignDispatcher = CampaignDispatcherMock()
                 campaignTriggerAgent = CampaignTriggerAgentMock()
+                campaignRepository = CampaignRepositoryMock()
                 router = RouterMock()
                 delegate = Delegate()
                 iamModule = InAppMessagingModule(configurationManager: configurationManager,
@@ -39,6 +41,7 @@ class InAppMessagingModuleSpec: QuickSpec {
                                                  eventMatcher: eventMatcher,
                                                  readyCampaignDispatcher: readyCampaignDispatcher,
                                                  campaignTriggerAgent: campaignTriggerAgent,
+                                                 campaignRepository: campaignRepository,
                                                  router: router)
                 iamModule.delegate = delegate
             }
@@ -248,8 +251,29 @@ class InAppMessagingModuleSpec: QuickSpec {
                 context("when calling closeMessage") {
 
                     it("will discard displayed campaign even if module is not initialized") {
-                        iamModule.closeMessage()
+                        iamModule.closeMessage(clearQueuedCampaigns: false)
                         expect(router.wasDiscardCampaignCalled).to(beTrue())
+                    }
+
+                    it("will increment impressionsLeft in closed campaign") {
+                        let campaign = TestHelpers.generateCampaign(id: "test")
+                        router.lastDisplayedCampaign = campaign
+
+                        iamModule.closeMessage(clearQueuedCampaigns: false)
+                        expect(campaignRepository.wasIncrementImpressionsCalled).to(beTrue())
+                    }
+
+                    it("will reset queued campaigns list if `clearQueuedCampaigns` is true") {
+                        iamModule.closeMessage(clearQueuedCampaigns: true)
+                        expect(readyCampaignDispatcher.wasResetQueueCalled).to(beTrue())
+                    }
+
+                    it("will not reset queued campaigns list if `clearQueuedCampaigns` is false") {
+                        let campaign = TestHelpers.generateCampaign(id: "test")
+                        router.lastDisplayedCampaign = campaign
+
+                        iamModule.closeMessage(clearQueuedCampaigns: false)
+                        expect(readyCampaignDispatcher.wasResetQueueCalled).to(beFalse())
                     }
                 }
 

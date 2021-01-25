@@ -21,10 +21,10 @@ extension UIView {
         subviews.forEach { $0.removeFromSuperview() }
     }
 
-    func findIAMViewSubview() -> UIView? {
+    func findIAMViewSubview() -> BaseView? {
         for subview in subviews {
-            if subview is BaseView {
-                return subview
+            if let iamView = subview as? BaseView {
+                return iamView
             } else if let iamView = subview.findIAMViewSubview() {
                 return iamView
             }

@@ -131,9 +131,10 @@ In certain cases there might be a need to manually close a campaign's message wi
 An example is when a different user logs in and the currently displayed campaign does not target the new user.
 (Or when a campaign's message appears after login process has started).
 In that case, to avoid user's confusion, host app can force-close the campaign by calling `closeMessage()` API method.
+The `clearQueuedCampaigns` optional parameter, when set to `true` (`false` by default), will additionally remove all campaigns that were queued to be displayed.
 
 ```swift
-RInAppMessaging.closeMessage()
+RInAppMessaging.closeMessage(clearQueuedCampaigns: true)
 ```
 **Note:** Calling this API will not increment the campaign's impression (i.e. not counted as displayed).
 

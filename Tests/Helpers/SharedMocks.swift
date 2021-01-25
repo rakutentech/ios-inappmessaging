@@ -46,12 +46,16 @@ class CampaignDispatcherMock: CampaignDispatcherType {
     weak var delegate: CampaignDispatcherDelegate?
     private(set) var wasDispatchCalled = false
     private(set) var addedCampaigns = [Campaign]()
+    private(set) var wasResetQueueCalled = false
 
     func addToQueue(campaign: Campaign) {
         addedCampaigns.append(campaign)
     }
     func dispatchAllIfNeeded() {
         wasDispatchCalled = true
+    }
+    func resetQueue() {
+        wasResetQueueCalled = true
     }
 }
 
@@ -314,8 +318,9 @@ class RouterMock: RouterType {
         completion(false)
     }
 
-    func discardDisplayedCampaign() {
+    func discardDisplayedCampaign() -> Campaign? {
         wasDiscardCampaignCalled = true
+        return lastDisplayedCampaign
     }
 }
 
