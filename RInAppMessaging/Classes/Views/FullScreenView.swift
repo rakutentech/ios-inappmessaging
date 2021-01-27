@@ -1,7 +1,16 @@
+import UIKit
+
 /// Class that initializes the modal view using the passed in campaign information to build the UI.
 internal class FullScreenView: FullView {
 
-    private weak var statusBarBackgroundHeightConstraint: NSLayoutConstraint?
+    private lazy var statusBarBackgroundView: UIView = {
+        let backgroundView = UIView()
+        backgroundView.translatesAutoresizingMaskIntoConstraints = false
+        backgroundView.backgroundColor = .statusBarOverlayColor
+        return backgroundView
+    }()
+    private lazy var statusBarBackgroundViewHeightConstraint = statusBarBackgroundView.heightAnchor
+        .constraint(equalToConstant: UIApplication.shared.statusBarFrame.height)
 
     override var mode: FullViewMode {
         return .fullScreen
@@ -28,26 +37,20 @@ internal class FullScreenView: FullView {
     override func setup(viewModel: FullViewModel) {
         super.setup(viewModel: viewModel)
 
-        let statusBarBackground = UIView()
-        statusBarBackground.translatesAutoresizingMaskIntoConstraints = false
-        statusBarBackground.backgroundColor = .statusBarOverlayColor
-
-        let heightConstraint = statusBarBackground.heightAnchor.constraint(
-            equalToConstant: UIApplication.shared.statusBarFrame.height)
-        statusBarBackgroundHeightConstraint = heightConstraint
-
-        contentView.addSubview(statusBarBackground)
+        contentView.addSubview(statusBarBackgroundView)
         NSLayoutConstraint.activate([
-            statusBarBackground.topAnchor.constraint(equalTo: contentView.topAnchor),
-            statusBarBackground.leftAnchor.constraint(equalTo: contentView.leftAnchor),
-            statusBarBackground.rightAnchor.constraint(equalTo: contentView.rightAnchor),
-            heightConstraint
+            statusBarBackgroundView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            statusBarBackgroundView.leftAnchor.constraint(equalTo: contentView.leftAnchor),
+            statusBarBackgroundView.rightAnchor.constraint(equalTo: contentView.rightAnchor),
+            statusBarBackgroundViewHeightConstraint
         ])
     }
 
     override func layoutSubviews() {
         super.layoutSubviews()
+
+        statusBarBackgroundView.backgroundColor = .statusBarOverlayColor
         // statusBarFrame.height is 0 when status bar is hidden
-        statusBarBackgroundHeightConstraint?.constant = UIApplication.shared.statusBarFrame.height
+        statusBarBackgroundViewHeightConstraint.constant = UIApplication.shared.statusBarFrame.height
     }
 }

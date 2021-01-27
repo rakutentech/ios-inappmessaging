@@ -1,3 +1,5 @@
+import UIKit
+
 /// SlideUpView for InAppMessaging campaign.
 internal class SlideUpView: UIView, SlideUpViewType {
 
