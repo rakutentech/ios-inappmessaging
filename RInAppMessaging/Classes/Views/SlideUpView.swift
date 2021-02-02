@@ -19,6 +19,10 @@ internal class SlideUpView: UIView, SlideUpViewType {
         }
     }
 
+    static var viewIdentifier: String {
+        return "IAMView-SlideUp"
+    }
+
     var onDismiss: ((_ cancelled: Bool) -> Void)?
     var basePresenter: BaseViewPresenterType {
         return presenter

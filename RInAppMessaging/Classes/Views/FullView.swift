@@ -1,14 +1,13 @@
 import UIKit
 import class WebKit.WKWebView
 
-internal enum FullViewMode: Equatable {
-    case none
-    case modal(maxWindowHeightPercentage: CGFloat)
-    case fullScreen
-}
-
-/// Base class for full size campaign views.
+/// Base class for full size campaign views. (abstract)
 internal class FullView: UIView, FullViewType, RichContentBrowsable {
+
+    class var viewIdentifier: String {
+        assertionFailure("Subclasses must override this variable")
+        return ""
+    }
 
     // Constant values used for UI elements in model views.
     struct UIConstants {
@@ -27,6 +26,19 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         var dialogViewWidthOffset: CGFloat = 0 // Spacing on the left and right side of subviews.
         var dialogViewWidthMultiplier: CGFloat = 1 // Spacing on the left and right side of subviews.
         var bodyViewSafeAreaOffsetY: CGFloat = 0 // Offset for text content applied when there is no image
+    }
+
+    internal enum Mode: Equatable {
+        case none
+        case modal(maxWindowHeightPercentage: CGFloat)
+        case fullScreen
+    }
+
+    internal enum Layout: String {
+        case html
+        case textOnly
+        case imageOnly
+        case textAndImage
     }
 
     @IBOutlet private(set) weak var contentView: UIView! // Wraps dialog view to allow rounded corners
@@ -59,7 +71,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
     private let presenter: FullViewPresenterType
 
     var uiConstants = UIConstants()
-    var mode: FullViewMode {
+    var mode: Mode {
         return .none
     }
     var isOptOutChecked: Bool {
@@ -70,6 +82,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         return presenter
     }
 
+    private var layout: Layout?
     private(set) var hasImage = false {
         didSet {
             exitButton.invertedColors = hasImage
@@ -97,17 +110,13 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
     }
 
     func setup(viewModel: FullViewModel) {
-
         removeAllSubviews()
+
         guard mode != .none else {
             return
         }
 
         setupMainView()
-        setupAccessibility()
-        updateUIConstants()
-
-        backgroundView.backgroundColor = uiConstants.backgroundColor ?? viewModel.backgroundColor
 
         if let image = viewModel.image {
             hasImage = true
@@ -116,6 +125,19 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         } else {
             hasImage = false
         }
+
+        if viewModel.isHTML {
+            layout = .html
+        } else if hasImage {
+            layout = viewModel.hasText ? .textAndImage : .imageOnly
+        } else if viewModel.hasText {
+            layout = .textOnly
+        }
+
+        setupAccessibility()
+        updateUIConstants()
+
+        backgroundView.backgroundColor = uiConstants.backgroundColor ?? viewModel.backgroundColor
 
         layoutContentView(viewModel: viewModel)
         layoutUIComponents()
@@ -134,12 +156,17 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
     }
 
     private func setupAccessibility() {
-        backgroundView.accessibilityIdentifier = "IAMBackgroundView"
+        backgroundView.accessibilityIdentifier = "backgroundView"
         dialogView.accessibilityIdentifier = "dialogView"
         bodyView.accessibilityIdentifier = "textView"
         bodyLabel.accessibilityIdentifier = "bodyMessage"
         lowerBodyLabel.accessibilityIdentifier = "lowerBodyMessage"
         headerLabel.accessibilityIdentifier = "headerMessage"
+        imageView.accessibilityIdentifier = "imageView"
+
+        if let layout = layout {
+            accessibilityIdentifier = type(of: self).viewIdentifier + " data-qa=\"\(layout)\""
+        }
     }
 
     private func setupMainView() {
@@ -197,11 +224,11 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         bodyView.isLayoutMarginsRelativeArrangement = true
         bodyView.layoutMargins.top = uiConstants.bodyMarginTop
 
-        if viewModel.isHTML, let messageBody = viewModel.messageBody {
+        if viewModel.isHTML, let htmlBody = viewModel.messageBody {
             hasImage = false
             exitButton.invertedColors = true
             bodyContainerView.isHidden = true
-            setupWebView(withHtmlString: messageBody)
+            setupWebView(withHtmlString: htmlBody)
         } else {
             if let headerMessage = viewModel.header {
                 setupHeaderMessage(headerMessage, color: viewModel.headerColor)
@@ -214,18 +241,15 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
     }
 
     private func updateUIComponentsVisibility(viewModel: FullViewModel) {
-        let isBodyEmpty = (viewModel.isHTML ||
-                            viewModel.header?.isEmpty != false &&
-                            viewModel.messageBody?.isEmpty != false &&
-                            viewModel.messageLowerBody?.isEmpty != false) &&
-                        !viewModel.showOptOut &&
-                        !viewModel.showButtons
+        let shouldHideBody = (viewModel.isHTML || !viewModel.hasText) &&
+            !viewModel.showOptOut &&
+            !viewModel.showButtons
 
         buttonsContainer.isHidden = !viewModel.showButtons
         optOutView.isHidden = !viewModel.showOptOut
         optOutAndButtonsSpacer.isHidden = buttonsContainer.isHidden || optOutView.isHidden
         controlsView.isHidden = buttonsContainer.isHidden && optOutView.isHidden
-        bodyView.isHidden = isBodyEmpty
+        bodyView.isHidden = shouldHideBody
     }
 
     private func setupWebView(withHtmlString htmlString: String) {

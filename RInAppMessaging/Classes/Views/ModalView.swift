@@ -3,7 +3,11 @@ import UIKit
 /// Class that initializes the modal view using the passed in campaign information to build the UI.
 internal class ModalView: FullView {
 
-    override var mode: FullViewMode {
+    override class var viewIdentifier: String {
+        return "IAMView-Modal"
+    }
+
+    override var mode: Mode {
         if UIDevice.current.userInterfaceIdiom == .pad {
             return .modal(maxWindowHeightPercentage: 0.75)
         } else {

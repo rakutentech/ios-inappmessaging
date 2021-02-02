@@ -98,7 +98,7 @@ class ViewSpec: QuickSpec {
             }
 
             it("will have .none mode set") {
-                expect(view.mode).to(equal(FullViewMode.none))
+                expect(view.mode).to(equal(FullView.Mode.none))
             }
 
             it("will call viewDidInitialize on presenter after init") {
@@ -204,6 +204,8 @@ class ViewSpec: QuickSpec {
 }
 
 class BaseViewTestObject: UIView, BaseView {
+    static var viewIdentifier: String { "BaseViewTest" }
+
     var basePresenter: BaseViewPresenterType = BaseViewPresenterMock()
     var onDismiss: ((_ cancelled: Bool) -> Void)?
     private(set) var wasAnimateOnShowCalled = false
