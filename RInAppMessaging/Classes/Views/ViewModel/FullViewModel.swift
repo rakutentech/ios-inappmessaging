@@ -13,6 +13,6 @@ internal struct FullViewModel {
     let showButtons: Bool
 
     var hasText: Bool {
-        [header, messageBody, messageBody].contains { $0?.isEmpty == false }
+        [header, messageBody, messageLowerBody].contains { $0?.isEmpty == false }
     }
 }
