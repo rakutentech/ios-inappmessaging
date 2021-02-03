@@ -18,8 +18,6 @@ internal protocol BaseView: UIView {
 
 internal extension BaseView {
 
-    static var viewIdentifier: String { return "IAMView" }
-
     func show(accessibilityCompatible: Bool,
               parentView: UIView,
               onDismiss: @escaping ((_ cancelled: Bool) -> Void)) {
@@ -34,7 +32,7 @@ internal extension BaseView {
     }
 
     private func displayView(accessibilityCompatible: Bool, parentView: UIView) {
-        accessibilityIdentifier = Self.viewIdentifier
+        accessibilityIdentifier = accessibilityIdentifier ?? Self.viewIdentifier
 
         translatesAutoresizingMaskIntoConstraints = false
         parentView.addSubview(self)

@@ -11,4 +11,8 @@ internal struct FullViewModel {
     let isHTML: Bool
     let showOptOut: Bool
     let showButtons: Bool
+
+    var hasText: Bool {
+        [header, messageBody, messageLowerBody].contains { $0?.isEmpty == false }
+    }
 }

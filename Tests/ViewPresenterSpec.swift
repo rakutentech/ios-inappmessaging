@@ -337,6 +337,8 @@ class ViewPresenterSpec: QuickSpec {
 
 private class FullViewMock: UIView, FullViewType {
 
+    static var viewIdentifier: String { "FullViewMock" }
+
     var isOptOutChecked: Bool = false
     var onDismiss: ((_ cancelled: Bool) -> Void)?
     var basePresenter: BaseViewPresenterType = BaseViewPresenterMock()
@@ -362,6 +364,9 @@ private class FullViewMock: UIView, FullViewType {
 }
 
 private class SlideUpViewMock: UIView, SlideUpViewType {
+
+    static var viewIdentifier: String { "SlideUpViewMock" }
+
     var onDismiss: ((_ cancelled: Bool) -> Void)?
     var basePresenter: BaseViewPresenterType = BaseViewPresenterMock()
 

@@ -3,6 +3,10 @@ import UIKit
 /// Class that initializes the modal view using the passed in campaign information to build the UI.
 internal class FullScreenView: FullView {
 
+    override class var viewIdentifier: String {
+        return "IAMView-FullScreen"
+    }
+
     private lazy var statusBarBackgroundView: UIView = {
         let backgroundView = UIView()
         backgroundView.translatesAutoresizingMaskIntoConstraints = false
@@ -12,7 +16,7 @@ internal class FullScreenView: FullView {
     private lazy var statusBarBackgroundViewHeightConstraint = statusBarBackgroundView.heightAnchor
         .constraint(equalToConstant: UIApplication.shared.statusBarFrame.height)
 
-    override var mode: FullViewMode {
+    override var mode: Mode {
         return .fullScreen
     }
 
