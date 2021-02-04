@@ -154,10 +154,10 @@ class ConfigurationServiceMock: ConfigurationServiceType {
 }
 
 class CampaignTriggerAgentMock: CampaignTriggerAgentType {
-    private(set) var triggeredCampaigns = [Campaign]()
+    private(set) var wasValidateAndTriggerCampaignsCalled = false
 
-    func trigger(campaign: Campaign, triggeredEvents: Set<Event>) {
-        triggeredCampaigns.append(campaign)
+    func validateAndTriggerCampaigns() {
+        wasValidateAndTriggerCampaignsCalled = true
     }
 }
 

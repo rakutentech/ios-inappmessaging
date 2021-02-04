@@ -10,12 +10,14 @@ class ViewPresenterSpec: QuickSpec {
         var campaignRepository: CampaignRepositoryMock!
         var impressionService: ImpressionServiceMock!
         var eventMatcher: EventMatcherMock!
+        var campaignTriggerAgent: CampaignTriggerAgentMock!
 
         beforeEach {
             campaignsValidator = CampaignsValidatorMock()
             campaignRepository = CampaignRepositoryMock()
             impressionService = ImpressionServiceMock()
             eventMatcher = EventMatcherMock()
+            campaignTriggerAgent = CampaignTriggerAgentMock()
         }
 
         describe("BaseViewPresenter") {
@@ -25,11 +27,10 @@ class ViewPresenterSpec: QuickSpec {
                                                             delay: 0, maxImpressions: 1)
 
             beforeEach {
-                presenter = BaseViewPresenter(campaignsValidator: campaignsValidator,
-                                             campaignRepository: campaignRepository,
+                presenter = BaseViewPresenter(campaignRepository: campaignRepository,
                                              impressionService: impressionService,
                                              eventMatcher: eventMatcher,
-                                             campaignTriggerAgent: CampaignTriggerAgentMock())
+                                             campaignTriggerAgent: campaignTriggerAgent)
                 presenter.campaign = testCampaign
             }
 
@@ -92,6 +93,11 @@ class ViewPresenterSpec: QuickSpec {
                     presenter.handleButtonTrigger(trigger)
                     expect(campaignsValidator.wasValidateCalled).to(beTrue())
                 }
+
+                it("will call Trigger Agent") {
+                    presenter.handleButtonTrigger(trigger)
+                    expect(campaignTriggerAgent.wasValidateAndTriggerCampaignsCalled).to(beTrue())
+                }
             }
 
             context("when optOutCampaign is called") {
@@ -119,8 +125,7 @@ class ViewPresenterSpec: QuickSpec {
 
             beforeEach {
                 view = SlideUpViewMock()
-                presenter = SlideUpViewPresenter(campaignsValidator: campaignsValidator,
-                                                 campaignRepository: campaignRepository,
+                presenter = SlideUpViewPresenter(campaignRepository: campaignRepository,
                                                  impressionService: impressionService,
                                                  eventMatcher: eventMatcher,
                                                  campaignTriggerAgent: CampaignTriggerAgentMock())
@@ -177,6 +182,11 @@ class ViewPresenterSpec: QuickSpec {
                     let expectedEvent = CommonUtility.convertTriggerObjectToCustomEvent(trigger!)
                     expect(eventMatcher.loggedEvents).to(contain(expectedEvent))
                 }
+
+                it("will call Trigger Agent if button trigger was present") {
+                    presenter.didClickContent()
+                    expect(campaignTriggerAgent.wasValidateAndTriggerCampaignsCalled).to(beTrue())
+                }
             }
         }
 
@@ -201,8 +211,7 @@ class ViewPresenterSpec: QuickSpec {
             ])
             beforeEach {
                 view = FullViewMock()
-                presenter = FullViewPresenter(campaignsValidator: campaignsValidator,
-                                              campaignRepository: campaignRepository,
+                presenter = FullViewPresenter(campaignRepository: campaignRepository,
                                               impressionService: impressionService,
                                               eventMatcher: eventMatcher,
                                               campaignTriggerAgent: CampaignTriggerAgentMock())
@@ -303,6 +312,11 @@ class ViewPresenterSpec: QuickSpec {
                     presenter.didClickAction(sender: sender)
                     let expectedEvent = CommonUtility.convertTriggerObjectToCustomEvent(sender.trigger!)
                     expect(eventMatcher.loggedEvents).to(contain(expectedEvent))
+                }
+
+                it("will call Trigger Agent if button trigger was present") {
+                    presenter.didClickAction(sender: sender)
+                    expect(campaignTriggerAgent.wasValidateAndTriggerCampaignsCalled).to(beTrue())
                 }
             }
 

@@ -51,19 +51,19 @@ internal class SlideUpViewPresenter: BaseViewPresenter, SlideUpViewPresenterType
             UIApplication.shared.open(uriToOpen, options: [:], completionHandler: nil)
         }
 
-        view?.dismiss()
-
         logImpression(type: .clickContent)
         sendImpressions()
 
         // If the button came with a campaign trigger, log it.
         handleButtonTrigger(campaignContent?.campaignTrigger)
+
+        view?.dismiss()
     }
 
     func didClickExitButton() {
-        view?.dismiss()
-
         logImpression(type: .exit)
         sendImpressions()
+
+        view?.dismiss()
     }
 }

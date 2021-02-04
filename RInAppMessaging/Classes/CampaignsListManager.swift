@@ -8,9 +8,7 @@ internal class CampaignsListManager: CampaignsListManagerType, TaskSchedulable {
         static let initialRetryDelayMS = Int32(10000)
     }
 
-    private let campaignsValidator: CampaignsValidatorType
     private var campaignRepository: CampaignRepositoryType
-    private let readyCampaignDispatcher: CampaignDispatcherType
     private let campaignTriggerAgent: CampaignTriggerAgentType
     private let messageMixerService: MessageMixerServiceType
 
@@ -18,15 +16,11 @@ internal class CampaignsListManager: CampaignsListManagerType, TaskSchedulable {
     var scheduledTask: DispatchWorkItem?
     private var retryDelayMS = Constants.initialRetryDelayMS
 
-    init(campaignsValidator: CampaignsValidatorType,
-         campaignRepository: CampaignRepositoryType,
-         readyCampaignDispatcher: CampaignDispatcherType,
+    init(campaignRepository: CampaignRepositoryType,
          campaignTriggerAgent: CampaignTriggerAgentType,
          messageMixerService: MessageMixerServiceType) {
 
-        self.campaignsValidator = campaignsValidator
         self.campaignRepository = campaignRepository
-        self.readyCampaignDispatcher = readyCampaignDispatcher
         self.campaignTriggerAgent = campaignTriggerAgent
         self.messageMixerService = messageMixerService
     }
@@ -52,11 +46,7 @@ internal class CampaignsListManager: CampaignsListManagerType, TaskSchedulable {
             campaignRepository.syncWith(list: decodedResponse.data,
                                         timestampMilliseconds: decodedResponse.currentPingMilliseconds)
         }
-        campaignsValidator.validate { campaign, events in
-            campaignTriggerAgent.trigger(campaign: campaign, triggeredEvents: events)
-        }
-
-        readyCampaignDispatcher.dispatchAllIfNeeded()
+        campaignTriggerAgent.validateAndTriggerCampaigns()
 
         scheduleNextPingCall(in: decodedResponse.nextPingMilliseconds)
     }

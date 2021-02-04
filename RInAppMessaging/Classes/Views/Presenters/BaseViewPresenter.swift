@@ -12,7 +12,6 @@ internal protocol BaseViewPresenterType: ImpressionTrackable {
 internal class BaseViewPresenter: BaseViewPresenterType {
 
     private(set) var impressionService: ImpressionServiceType
-    private let campaignsValidator: CampaignsValidatorType
     private let campaignRepository: CampaignRepositoryType
     private let eventMatcher: EventMatcherType
     private let campaignTriggerAgent: CampaignTriggerAgentType
@@ -30,13 +29,11 @@ internal class BaseViewPresenter: BaseViewPresenterType {
         return UIImage(data: imageData)
     }()
 
-    init(campaignsValidator: CampaignsValidatorType,
-         campaignRepository: CampaignRepositoryType,
+    init(campaignRepository: CampaignRepositoryType,
          impressionService: ImpressionServiceType,
          eventMatcher: EventMatcherType,
          campaignTriggerAgent: CampaignTriggerAgentType) {
 
-        self.campaignsValidator = campaignsValidator
         self.impressionService = impressionService
         self.eventMatcher = eventMatcher
         self.campaignRepository = campaignRepository
@@ -56,9 +53,7 @@ internal class BaseViewPresenter: BaseViewPresenterType {
             return
         }
         eventMatcher.matchAndStore(event: CommonUtility.convertTriggerObjectToCustomEvent(trigger))
-        campaignsValidator.validate { campaign, events in
-            campaignTriggerAgent.trigger(campaign: campaign, triggeredEvents: events)
-        }
+        campaignTriggerAgent.validateAndTriggerCampaigns()
     }
 
     func optOutCampaign() {

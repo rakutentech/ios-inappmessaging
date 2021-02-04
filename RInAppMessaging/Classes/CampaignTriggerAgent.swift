@@ -1,27 +1,33 @@
 internal protocol CampaignTriggerAgentType {
-    func trigger(campaign: Campaign, triggeredEvents: Set<Event>)
+    func validateAndTriggerCampaigns()
 }
 
 internal struct CampaignTriggerAgent: CampaignTriggerAgentType {
 
     private let eventMatcher: EventMatcherType
     private let dispatcher: CampaignDispatcherType
+    private let validator: CampaignsValidatorType
 
     init(eventMatcher: EventMatcherType,
-         readyCampaignDispatcher: CampaignDispatcherType) {
+         readyCampaignDispatcher: CampaignDispatcherType,
+         campaignsValidator: CampaignsValidatorType) {
 
         self.eventMatcher = eventMatcher
         self.dispatcher = readyCampaignDispatcher
+        self.validator = campaignsValidator
     }
 
-    func trigger(campaign: Campaign, triggeredEvents: Set<Event>) {
+    func validateAndTriggerCampaigns() {
         CommonUtility.lock(resourcesIn: [eventMatcher]) {
-            do {
-                try eventMatcher.removeSetOfMatchedEvents(triggeredEvents, for: campaign)
-                dispatcher.addToQueue(campaign: campaign)
-            } catch {
-                // Campaign is not ready to be displayed
+            validator.validate { (campaign, triggeredEvents) in
+                do {
+                    try eventMatcher.removeSetOfMatchedEvents(triggeredEvents, for: campaign)
+                    dispatcher.addToQueue(campaign: campaign)
+                } catch {
+                    // Campaign is not ready to be displayed
+                }
             }
         }
+        dispatcher.dispatchAllIfNeeded()
     }
 }
