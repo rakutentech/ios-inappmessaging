@@ -49,6 +49,50 @@ class LockableSpec: QuickSpec {
 
                 expect(lockableObject.resource.get()).toEventually(equal([1, 2, 3, 4]))
             }
+
+            it("will make other threads wait to execute lock() call") {
+                let resource = lockableObject.resource
+                resource.lock()
+                DispatchQueue.global().async {
+                    resource.lock()
+                    expect(resource.get()).to(equal([1]))
+                }
+                resource.set(value: [1])
+                expect(resource.isLocked).to(beTrue())
+                resource.unlock()
+                expect(resource.isLocked).toAfterTimeout(beTrue())
+            }
+
+            it("will keep the lock if number of unlock() calls did not match the number of lock() calls") {
+                let resource = lockableObject.resource
+                resource.lock()
+                resource.lock()
+                expect(resource.isLocked).to(beTrue())
+                resource.unlock()
+                expect(resource.isLocked).to(beTrue())
+            }
+
+            it("will not crash when unlock() was called more times than lock()") {
+                let resource = lockableObject.resource
+                resource.lock()
+                expect(resource.isLocked).to(beTrue())
+                resource.unlock()
+                resource.unlock()
+                expect(resource.isLocked).to(beFalse())
+            }
+
+            it("will unlock the thread if the resource was deallocated") {
+                var resource: LockableObject? = LockableObject([Int]())
+                resource?.lock()
+                resource?.lock()
+                waitUntil { done in
+                    DispatchQueue.global().async {
+                        expect(resource?.get()).to(beNil())
+                        done()
+                    }
+                    resource = nil
+                }
+            }
         }
     }
 }
