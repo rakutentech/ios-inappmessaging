@@ -21,7 +21,15 @@ extension UIApplication {
                 .filter({ $0.activationState == .foregroundActive })
                 .compactMap({ $0 as? UIWindowScene })
                 .first {
-            return keyScene.statusBarManager?.statusBarStyle
+
+            var style = keyScene.statusBarManager?.statusBarStyle
+            // `default` style doesn't tell us anything, so we can fallback to the most common pattern:
+            // light status bar content in dark mode and dark content in light mode.
+            if style == .default, let keyWindow = getKeyWindow() {
+                let isDarkMode = keyWindow.traitCollection.userInterfaceStyle == .dark
+                style = isDarkMode ? .lightContent : .darkContent
+            }
+            return style
         }
 
         // Only iOS 13+ is supported
