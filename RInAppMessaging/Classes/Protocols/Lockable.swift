@@ -18,35 +18,46 @@ internal protocol LockableResource {
 /// Other threads will synchronously wait for unlock() call to continue.
 internal class LockableObject<T>: LockableResource {
     private var resource: T
-    private var lockingThread: Thread?
     private let dispatchGroup = DispatchGroup()
-
-    var isLocked: Bool {
-        return lockingThread != nil
+    @AtomicGetSet private var lockingThread: Thread?
+    @AtomicGetSet private var lockCount: UInt = 0
+    private var shouldWait: Bool {
+        assert(!(isLocked && lockingThread == nil), "Thread was deallocated before calling unlock()")
+        return isLocked && lockingThread != nil && lockingThread != Thread.current
     }
+
+    var isLocked: Bool { lockCount > 0 }
 
     init(_ resource: T) {
         self.resource = resource
     }
 
     deinit {
-        unlock()
+        for _ in [0..<lockCount] {
+            unlock()
+        }
     }
 
     func lock() {
+        if shouldWait {
+            dispatchGroup.wait()
+        }
+        lockCount += 1
         lockingThread = Thread.current
         dispatchGroup.enter()
     }
 
     func unlock() {
-        if isLocked {
+        if lockCount > 0 {
             dispatchGroup.leave()
+            lockCount -= 1
+        } else {
+            lockingThread = nil
         }
-        lockingThread = nil
     }
 
     func get() -> T {
-        if isLocked, lockingThread != Thread.current {
+        if shouldWait {
             dispatchGroup.wait()
             return resource
         } else {
@@ -55,7 +66,7 @@ internal class LockableObject<T>: LockableResource {
     }
 
     func set(value: T) {
-        if isLocked, lockingThread != Thread.current {
+        if shouldWait {
             dispatchGroup.wait()
             resource = value
         } else {

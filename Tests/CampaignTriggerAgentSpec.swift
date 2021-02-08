@@ -13,12 +13,15 @@ class CampaignTriggerAgentSpec: QuickSpec {
             var eventMatcher: EventMatcherMock!
             var campaignDispatcher: CampaignDispatcherMock!
             var campaignTriggerAgent: CampaignTriggerAgent!
+            var campaignsValidator: CampaignsValidatorMock!
 
             beforeEach {
                 eventMatcher = EventMatcherMock()
                 campaignDispatcher = CampaignDispatcherMock()
+                campaignsValidator = CampaignsValidatorMock()
                 campaignTriggerAgent = CampaignTriggerAgent(eventMatcher: eventMatcher,
-                                                            readyCampaignDispatcher: campaignDispatcher)
+                                                            readyCampaignDispatcher: campaignDispatcher,
+                                                            campaignsValidator: campaignsValidator)
             }
 
             context("when events match") {
@@ -26,23 +29,32 @@ class CampaignTriggerAgentSpec: QuickSpec {
                     eventMatcher.simulateMatchingSuccess = true
                 }
                 it("will add campaign to the queue when events match") {
-                    campaignTriggerAgent.trigger(campaign: testCampaign,
-                                                 triggeredEvents: [])
+                    campaignsValidator.campaignsToTrigger = [testCampaign]
+                    campaignTriggerAgent.validateAndTriggerCampaigns()
+
                     expect(campaignDispatcher.addedCampaigns).to(elementsEqual([testCampaign]))
                 }
 
                 it("will not dispatch campaign when events coulnd't be triggered") {
                     eventMatcher.simulateMatcherError = .providedSetOfEventsHaveAlreadyBeenUsed
-                    campaignTriggerAgent.trigger(campaign: testCampaign,
-                                                 triggeredEvents: [])
+                    campaignsValidator.campaignsToTrigger = [testCampaign]
+                    campaignTriggerAgent.validateAndTriggerCampaigns()
+
                     expect(campaignDispatcher.addedCampaigns).to(beEmpty())
                 }
             }
 
+            it("will validate campaigns") {
+                campaignsValidator.campaignsToTrigger = [testCampaign]
+                campaignTriggerAgent.validateAndTriggerCampaigns()
+                expect(campaignsValidator.wasValidateCalled).to(beTrue())
+            }
+
             it("will not dispatch campaign when events don't match") {
                 eventMatcher.simulateMatchingSuccess = false
-                campaignTriggerAgent.trigger(campaign: testCampaign,
-                                             triggeredEvents: [])
+                campaignsValidator.campaignsToTrigger = [testCampaign]
+                campaignTriggerAgent.validateAndTriggerCampaigns()
+
                 expect(campaignDispatcher.addedCampaigns).to(beEmpty())
             }
         }

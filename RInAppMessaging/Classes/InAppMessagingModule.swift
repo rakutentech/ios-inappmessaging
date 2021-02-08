@@ -5,7 +5,6 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
     private var configurationManager: ConfigurationManagerType
     private var campaignsListManager: CampaignsListManagerType
     private let preferenceRepository: IAMPreferenceRepository
-    private let campaignsValidator: CampaignsValidatorType
     private let eventMatcher: EventMatcherType
     private var readyCampaignDispatcher: CampaignDispatcherType
     private var impressionService: ImpressionServiceType
@@ -23,7 +22,6 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
          campaignsListManager: CampaignsListManagerType,
          impressionService: ImpressionServiceType,
          preferenceRepository: IAMPreferenceRepository,
-         campaignsValidator: CampaignsValidatorType,
          eventMatcher: EventMatcherType,
          readyCampaignDispatcher: CampaignDispatcherType,
          campaignTriggerAgent: CampaignTriggerAgentType,
@@ -33,7 +31,6 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
         self.configurationManager = configurationManager
         self.campaignsListManager = campaignsListManager
         self.preferenceRepository = preferenceRepository
-        self.campaignsValidator = campaignsValidator
         self.eventMatcher = eventMatcher
         self.readyCampaignDispatcher = readyCampaignDispatcher
         self.impressionService = impressionService
@@ -77,10 +74,7 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
             return
         }
 
-        campaignsValidator.validate { campaign, events in
-            campaignTriggerAgent.trigger(campaign: campaign, triggeredEvents: events)
-        }
-        readyCampaignDispatcher.dispatchAllIfNeeded()
+        campaignTriggerAgent.validateAndTriggerCampaigns()
     }
 
     func registerPreference(_ preference: IAMPreference?) {

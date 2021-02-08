@@ -16,7 +16,7 @@ class InAppMessagingModuleSpec: QuickSpec {
             var campaignsValidator: CampaignsValidatorMock!
             var eventMatcher: EventMatcherMock!
             var readyCampaignDispatcher: CampaignDispatcherMock!
-            var campaignTriggerAgent: CampaignTriggerAgentMock!
+            var campaignTriggerAgent: CampaignTriggerAgentType!
             var campaignRepository: CampaignRepositoryMock!
             var router: RouterMock!
             var delegate: Delegate!
@@ -29,7 +29,9 @@ class InAppMessagingModuleSpec: QuickSpec {
                 campaignsValidator = CampaignsValidatorMock()
                 eventMatcher = EventMatcherMock()
                 readyCampaignDispatcher = CampaignDispatcherMock()
-                campaignTriggerAgent = CampaignTriggerAgentMock()
+                campaignTriggerAgent = CampaignTriggerAgent(eventMatcher: eventMatcher,
+                                                            readyCampaignDispatcher: readyCampaignDispatcher,
+                                                            campaignsValidator: campaignsValidator)
                 campaignRepository = CampaignRepositoryMock()
                 router = RouterMock()
                 delegate = Delegate()
@@ -37,7 +39,6 @@ class InAppMessagingModuleSpec: QuickSpec {
                                                  campaignsListManager: campaignsListManager,
                                                  impressionService: impressionService,
                                                  preferenceRepository: preferenceRepository,
-                                                 campaignsValidator: campaignsValidator,
                                                  eventMatcher: eventMatcher,
                                                  readyCampaignDispatcher: readyCampaignDispatcher,
                                                  campaignTriggerAgent: campaignTriggerAgent,
@@ -134,12 +135,12 @@ class InAppMessagingModuleSpec: QuickSpec {
                                 expect(campaignsValidator.wasValidateCalled).to(beTrue())
                             }
 
-                            it("will use CampaignTriggerAgent for each campaign that should be triggered") {
+                            it("will trigger campaigns that should be triggered") {
                                 let campaigns = [TestHelpers.generateCampaign(id: "1"),
                                                  TestHelpers.generateCampaign(id: "2")]
                                 campaignsValidator.campaignsToTrigger = campaigns
                                 iamModule.logEvent(PurchaseSuccessfulEvent())
-                                expect(campaignTriggerAgent.triggeredCampaigns).to(equal(campaigns))
+                                expect(readyCampaignDispatcher.addedCampaigns).to(equal(campaigns))
                             }
 
                             it("will call dispatchAllIfNeeded") {

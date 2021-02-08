@@ -9,22 +9,18 @@ class CampaignsListManagerSpec: QuickSpec {
         describe("CampaignsListManager") {
 
             var manager: CampaignsListManager!
-            var campaignsValidator: CampaignsValidatorMock!
             var campaignRepository: CampaignRepositoryMock!
-            var readyCampaignDispatcher: CampaignDispatcherMock!
             var messageMixerService: MessageMixerServiceMock!
+            var campaignTriggerAgent: CampaignTriggerAgentMock!
             var errorDelegate: ErrorDelegateMock!
 
             beforeEach {
-                campaignsValidator = CampaignsValidatorMock()
                 campaignRepository = CampaignRepositoryMock()
-                readyCampaignDispatcher = CampaignDispatcherMock()
                 messageMixerService = MessageMixerServiceMock()
                 errorDelegate = ErrorDelegateMock()
-                manager = CampaignsListManager(campaignsValidator: campaignsValidator,
-                                               campaignRepository: campaignRepository,
-                                               readyCampaignDispatcher: readyCampaignDispatcher,
-                                               campaignTriggerAgent: CampaignTriggerAgentMock(),
+                campaignTriggerAgent = CampaignTriggerAgentMock()
+                manager = CampaignsListManager(campaignRepository: campaignRepository,
+                                               campaignTriggerAgent: campaignTriggerAgent,
                                                messageMixerService: messageMixerService)
                 manager.errorDelegate = errorDelegate
             }
@@ -90,14 +86,9 @@ class CampaignsListManagerSpec: QuickSpec {
                         expect(campaignRepository.lastSyncCampaigns).to(elementsEqual(pingResponse.data))
                     }
 
-                    it("will validate all existing campaigns") {
+                    it("will call validateAndTriggerCampaigns") {
                         manager.refreshList()
-                        expect(campaignsValidator.wasValidateCalled).to(beTrue())
-                    }
-
-                    it("will call dispatchIfNeeded") {
-                        manager.refreshList()
-                        expect(readyCampaignDispatcher.wasDispatchCalled).to(beTrue())
+                        expect(campaignTriggerAgent.wasValidateAndTriggerCampaignsCalled).to(beTrue())
                     }
 
                     it("will schedule next ping call") {

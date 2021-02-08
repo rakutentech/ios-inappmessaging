@@ -6,16 +6,16 @@ class ViewPresenterSpec: QuickSpec {
 
     override func spec() {
 
-        var campaignsValidator: CampaignsValidatorMock!
         var campaignRepository: CampaignRepositoryMock!
         var impressionService: ImpressionServiceMock!
         var eventMatcher: EventMatcherMock!
+        var campaignTriggerAgent: CampaignTriggerAgentMock!
 
         beforeEach {
-            campaignsValidator = CampaignsValidatorMock()
             campaignRepository = CampaignRepositoryMock()
             impressionService = ImpressionServiceMock()
             eventMatcher = EventMatcherMock()
+            campaignTriggerAgent = CampaignTriggerAgentMock()
         }
 
         describe("BaseViewPresenter") {
@@ -25,11 +25,10 @@ class ViewPresenterSpec: QuickSpec {
                                                             delay: 0, maxImpressions: 1)
 
             beforeEach {
-                presenter = BaseViewPresenter(campaignsValidator: campaignsValidator,
-                                             campaignRepository: campaignRepository,
+                presenter = BaseViewPresenter(campaignRepository: campaignRepository,
                                              impressionService: impressionService,
                                              eventMatcher: eventMatcher,
-                                             campaignTriggerAgent: CampaignTriggerAgentMock())
+                                             campaignTriggerAgent: campaignTriggerAgent)
                 presenter.campaign = testCampaign
             }
 
@@ -88,9 +87,9 @@ class ViewPresenterSpec: QuickSpec {
                     expect(eventMatcher.loggedEvents).to(contain(expectedEvent))
                 }
 
-                it("will re-validate campaigns list") {
+                it("will call Trigger Agent") {
                     presenter.handleButtonTrigger(trigger)
-                    expect(campaignsValidator.wasValidateCalled).to(beTrue())
+                    expect(campaignTriggerAgent.wasValidateAndTriggerCampaignsCalled).to(beTrue())
                 }
             }
 
@@ -119,11 +118,10 @@ class ViewPresenterSpec: QuickSpec {
 
             beforeEach {
                 view = SlideUpViewMock()
-                presenter = SlideUpViewPresenter(campaignsValidator: campaignsValidator,
-                                                 campaignRepository: campaignRepository,
+                presenter = SlideUpViewPresenter(campaignRepository: campaignRepository,
                                                  impressionService: impressionService,
                                                  eventMatcher: eventMatcher,
-                                                 campaignTriggerAgent: CampaignTriggerAgentMock())
+                                                 campaignTriggerAgent: campaignTriggerAgent)
                 presenter.view = view
                 presenter.campaign = campaign
             }
@@ -177,6 +175,11 @@ class ViewPresenterSpec: QuickSpec {
                     let expectedEvent = CommonUtility.convertTriggerObjectToCustomEvent(trigger!)
                     expect(eventMatcher.loggedEvents).to(contain(expectedEvent))
                 }
+
+                it("will call Trigger Agent if button trigger was present") {
+                    presenter.didClickContent()
+                    expect(campaignTriggerAgent.wasValidateAndTriggerCampaignsCalled).to(beTrue())
+                }
             }
         }
 
@@ -201,11 +204,10 @@ class ViewPresenterSpec: QuickSpec {
             ])
             beforeEach {
                 view = FullViewMock()
-                presenter = FullViewPresenter(campaignsValidator: campaignsValidator,
-                                              campaignRepository: campaignRepository,
+                presenter = FullViewPresenter(campaignRepository: campaignRepository,
                                               impressionService: impressionService,
                                               eventMatcher: eventMatcher,
-                                              campaignTriggerAgent: CampaignTriggerAgentMock())
+                                              campaignTriggerAgent: campaignTriggerAgent)
                 presenter.view = view
                 presenter.campaign = campaign
             }
@@ -303,6 +305,11 @@ class ViewPresenterSpec: QuickSpec {
                     presenter.didClickAction(sender: sender)
                     let expectedEvent = CommonUtility.convertTriggerObjectToCustomEvent(sender.trigger!)
                     expect(eventMatcher.loggedEvents).to(contain(expectedEvent))
+                }
+
+                it("will call Trigger Agent if button trigger was present") {
+                    presenter.didClickAction(sender: sender)
+                    expect(campaignTriggerAgent.wasValidateAndTriggerCampaignsCalled).toEventually(beTrue())
                 }
             }
 

@@ -52,8 +52,6 @@ internal class FullViewPresenter: BaseViewPresenter, FullViewPresenterType {
     }
 
     func didClickAction(sender: ActionButton) {
-        view?.dismiss()
-
         logImpression(type: sender.impression)
         checkOptOutStatus()
         sendImpressions()
@@ -78,14 +76,16 @@ internal class FullViewPresenter: BaseViewPresenter, FullViewPresenterType {
 
         // If the button came with a campaign trigger, log it.
         handleButtonTrigger(sender.trigger)
+
+        view?.dismiss()
     }
 
     func didClickExitButton() {
-        view?.dismiss()
-
         logImpression(type: .exit)
         checkOptOutStatus()
         sendImpressions()
+
+        view?.dismiss()
     }
 
     private func checkOptOutStatus() {

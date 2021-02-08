@@ -79,9 +79,7 @@ internal enum MainContainerFactory {
                                  configurationRepository: manager.resolve(type: ConfigurationRepositoryType.self)!)
             }),
             ContainerElement(type: CampaignsListManagerType.self, factory: {
-                CampaignsListManager(campaignsValidator: manager.resolve(type: CampaignsValidatorType.self)!,
-                                     campaignRepository: manager.resolve(type: CampaignRepositoryType.self)!,
-                                     readyCampaignDispatcher: manager.resolve(type: CampaignDispatcherType.self)!,
+                CampaignsListManager(campaignRepository: manager.resolve(type: CampaignRepositoryType.self)!,
                                      campaignTriggerAgent: manager.resolve(type: CampaignTriggerAgentType.self)!,
                                      messageMixerService: manager.resolve(type: MessageMixerServiceType.self)!)
             })]
@@ -93,22 +91,21 @@ internal enum MainContainerFactory {
                                    eventMatcher: manager.resolve(type: EventMatcherType.self)!)
             }, transient: true),
             ContainerElement(type: FullViewPresenterType.self, factory: {
-                FullViewPresenter(campaignsValidator: manager.resolve(type: CampaignsValidatorType.self)!,
-                                  campaignRepository: manager.resolve(type: CampaignRepositoryType.self)!,
+                FullViewPresenter(campaignRepository: manager.resolve(type: CampaignRepositoryType.self)!,
                                   impressionService: manager.resolve(type: ImpressionServiceType.self)!,
                                   eventMatcher: manager.resolve(type: EventMatcherType.self)!,
                                   campaignTriggerAgent: manager.resolve(type: CampaignTriggerAgentType.self)!)
             }, transient: true),
             ContainerElement(type: SlideUpViewPresenterType.self, factory: {
-                SlideUpViewPresenter(campaignsValidator: manager.resolve(type: CampaignsValidatorType.self)!,
-                                     campaignRepository: manager.resolve(type: CampaignRepositoryType.self)!,
+                SlideUpViewPresenter(campaignRepository: manager.resolve(type: CampaignRepositoryType.self)!,
                                      impressionService: manager.resolve(type: ImpressionServiceType.self)!,
                                      eventMatcher: manager.resolve(type: EventMatcherType.self)!,
                                      campaignTriggerAgent: manager.resolve(type: CampaignTriggerAgentType.self)!)
             }, transient: true),
             ContainerElement(type: CampaignTriggerAgentType.self, factory: {
                 CampaignTriggerAgent(eventMatcher: manager.resolve(type: EventMatcherType.self)!,
-                                     readyCampaignDispatcher: manager.resolve(type: CampaignDispatcherType.self)!)
+                                     readyCampaignDispatcher: manager.resolve(type: CampaignDispatcherType.self)!,
+                                     campaignsValidator: manager.resolve(type: CampaignsValidatorType.self)!)
             }, transient: true)
         ])
 

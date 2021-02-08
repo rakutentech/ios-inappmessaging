@@ -7,6 +7,7 @@ internal protocol CampaignsValidatorType {
     /// This method is called when:
     /// 1) MessageMixerService retrieves a new list from the ping endpoint.
     /// 2) Hostapp logs an event.
+    /// 3) Campaign's button logs an event.
     /// - Parameter validatedCampaignHandler: Handler that will be called synchronously.
     /// for every campaign that has been validated successsfuly.
     /// - Parameter campaign: validated campaign
