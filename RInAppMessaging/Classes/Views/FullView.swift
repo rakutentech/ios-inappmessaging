@@ -156,13 +156,23 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
     }
 
     private func setupAccessibility() {
+        var displayMode = ""
+        switch mode {
+        case .fullScreen:
+            displayMode = "FullScreen"
+        case .modal:
+            displayMode = "Modal"
+        default: ()
+        }
+
         backgroundView.accessibilityIdentifier = "backgroundView"
-        dialogView.accessibilityIdentifier = "dialogView"
+        dialogView.accessibilityIdentifier = "dialogView-" + displayMode
         bodyView.accessibilityIdentifier = "textView"
         bodyLabel.accessibilityIdentifier = "bodyMessage"
         lowerBodyLabel.accessibilityIdentifier = "lowerBodyMessage"
         headerLabel.accessibilityIdentifier = "headerMessage"
         imageView.accessibilityIdentifier = "imageView"
+        imageView.isAccessibilityElement = true
 
         if let layout = layout {
             accessibilityIdentifier = type(of: self).viewIdentifier + " data-qa=\"\(layout)\""

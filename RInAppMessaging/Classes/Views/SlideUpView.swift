@@ -103,7 +103,7 @@ internal class SlideUpView: UIView, SlideUpViewType {
     }
 
     private func setupDialogView() {
-        dialogView.accessibilityIdentifier = "dialogView"
+        dialogView.accessibilityIdentifier = "dialogView-SlideUp"
         dialogView.backgroundColor = .clear
         dialogView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(dialogView)
