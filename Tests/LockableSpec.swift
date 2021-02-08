@@ -52,15 +52,15 @@ class LockableSpec: QuickSpec {
 
             it("will make other threads wait to execute lock() call") {
                 let resource = lockableObject.resource
-                resource.lock()
+                resource.lock() // 1. thread A - lock
                 DispatchQueue.global().async {
-                    resource.lock()
-                    expect(resource.get()).to(equal([1]))
+                    resource.lock() // 2. thread B - wait for their lock / 6. thread B - lock the resource again
+                    expect(resource.get()).to(equal([1])) // 7. check the value set by thread A
                 }
-                resource.set(value: [1])
-                expect(resource.isLocked).to(beTrue())
-                resource.unlock()
-                expect(resource.isLocked).toAfterTimeout(beTrue())
+                expect(resource.isLocked).to(beTrue()) // 3. check if thread A locked the resource
+                resource.set(value: [1]) // 4. thread A - modify the resource
+                resource.unlock() // 5. thread A - unlock
+                expect(resource.isLocked).toAfterTimeout(beTrue()) // 8. confirm thread B executed the lock
             }
 
             it("will keep the lock if number of unlock() calls did not match the number of lock() calls") {
