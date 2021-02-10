@@ -1,9 +1,9 @@
 ## Changelog
 
-### 3.0.0 (in-progress)
+### 3.0.0 (2021-02-10)
 **Breaking change:** Minimum supported iOS version is now 11.0 [SDKCF-3182]
 - Status bar overlay in Full Screen campaigns is now present in all layout types. The color is adjusted to status bar style (dark or light) - this feature is available only on iOS 13+. [SDKCF-3203, SDKCF-3175]
-- Addded new API method to close campaign's message manually [SDKCF-3201]
+- Added new API method to close campaign's message manually [SDKCF-3201]
 - Improvements:
 	- Added integration tests [SDKCF-3109]
 	- Moved CI from Travis to Bitrise

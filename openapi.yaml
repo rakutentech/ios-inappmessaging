@@ -6,7 +6,7 @@ info:
   license:
     name: MIT
     url: https://opensource.org/licenses/MIT
-  version: 2.1.0
+  version: 3.0.0
 tags:
 - name: Configuration
 - name: Campaign
@@ -71,6 +71,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PingResponse'
+        401:
+          description: Authorization failure. Please check README
   /display_permission:
     post:
       tags:
@@ -108,7 +110,8 @@ paths:
                   performPing:
                     type: boolean
                     description: true - Perform additional /ping call
-                    
+        401:
+          description: Authorization failure. Please check README
   /impression:
     post:
       tags:
@@ -141,6 +144,8 @@ paths:
       responses:
         200:
           description: Request succeeded
+        401:
+          description: Authorization failure. Please check README
 components:
   schemas:
     ConfigRequest:
