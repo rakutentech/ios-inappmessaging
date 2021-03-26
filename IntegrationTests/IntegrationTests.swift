@@ -4,6 +4,10 @@ import XCTest
 
 class IntegrationTests: XCTestCase {
 
+    private enum Constants {
+        static let requestTimeout: TimeInterval = 10.0
+    }
+
     static var testQueue: DispatchQueue!
     static var dependencyManager: DependencyManager!
 
@@ -46,7 +50,7 @@ class IntegrationTests: XCTestCase {
             expectation.fulfill()
         }
 
-        wait(for: [expectation], timeout: 5.0)
+        wait(for: [expectation], timeout: Constants.requestTimeout)
     }
 
     func test2Ping() throws {
@@ -69,6 +73,6 @@ class IntegrationTests: XCTestCase {
             expectation.fulfill()
         }
 
-        wait(for: [expectation], timeout: 5.0)
+        wait(for: [expectation], timeout: Constants.requestTimeout)
     }
 }
