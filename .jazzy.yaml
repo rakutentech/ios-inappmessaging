@@ -5,7 +5,7 @@ module_version: 3.0.0
 module: RInAppMessaging
 xcodebuild_arguments:
   - -workspace
-  - RInAppMessaging.xcworkspace.xcworkspace
+  - RInAppMessaging.xcworkspace
   - -scheme
   - RInAppMessaging-Example
 podspec: RInAppMessaging.podspec

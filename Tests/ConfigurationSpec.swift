@@ -34,8 +34,11 @@ class ConfigurationSpec: QuickSpec {
 
             context("when configuration returned false") {
 
-                it("will disable module") {
+                beforeEach {
                     configurationManager.isConfigEnabled = false
+                }
+
+                it("will disable module") {
                     waitUntil { done in
                         configurationManager.fetchCalledClosure = {
                             expect(RInAppMessaging.initializedModule).toNot(beNil())
@@ -48,7 +51,6 @@ class ConfigurationSpec: QuickSpec {
                 }
 
                 it("will not call ping") {
-                    configurationManager.isConfigEnabled = false
                     RInAppMessaging.configure(dependencyManager: dependencyManager)
 
                     expect(mockMessageMixer.wasPingCalled).toAfterTimeout(beFalse())

@@ -51,7 +51,7 @@ class ImpressionServiceSpec: QuickSpec {
             it("will use provided URL in a request") {
                 sendRequestAndWaitForResponse()
                 expect(httpSession.sentRequest).toNot(beNil())
-                expect(httpSession.sentRequest?.url).to(equal(configData.endpoints.impression))
+                expect(httpSession.sentRequest?.url).to(equal(configData.endpoints?.impression))
             }
 
             it("will report an error if url is not available") {
@@ -69,7 +69,7 @@ class ImpressionServiceSpec: QuickSpec {
             context("when request succeeds") {
 
                 beforeEach {
-                    httpSession.httpResponse = HTTPURLResponse(url: configData.endpoints.impression!,
+                    httpSession.httpResponse = HTTPURLResponse(url: configData.endpoints!.impression!,
                                                                statusCode: 200,
                                                                httpVersion: nil,
                                                                headerFields: nil)
