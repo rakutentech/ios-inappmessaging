@@ -7,11 +7,7 @@ class MessageMixerServiceSpec: QuickSpec {
     override func spec() {
 
         let requestQueue = DispatchQueue(label: "iam.test.request")
-        let configData = ConfigData(enabled: true,
-                                    endpoints: EndpointURL(
-                                        ping: URL(string: "https://ping.url")!,
-                                        displayPermission: nil,
-                                        impression: nil))
+        let configData = ConfigData(enabled: true, endpoints: .empty)
 
         var service: MessageMixerService!
         var preferenceRepository: IAMPreferenceRepository!
@@ -47,13 +43,13 @@ class MessageMixerServiceSpec: QuickSpec {
             it("will use provided URL in a request") {
                 sendRequestAndWaitForResponse()
                 expect(httpSession.sentRequest).toNot(beNil())
-                expect(httpSession.sentRequest?.url).to(equal(configData.endpoints.ping))
+                expect(httpSession.sentRequest?.url).to(equal(configData.endpoints?.ping))
             }
 
             context("when request succeeds") {
 
                 beforeEach {
-                    httpSession.httpResponse = HTTPURLResponse(url: configData.endpoints.ping,
+                    httpSession.httpResponse = HTTPURLResponse(url: configData.endpoints!.ping!,
                                                                statusCode: 200,
                                                                httpVersion: nil,
                                                                headerFields: nil)

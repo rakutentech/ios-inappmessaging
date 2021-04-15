@@ -69,7 +69,7 @@ class ConfigurationServiceSpec: QuickSpec {
                         httpSession.responseData = TestHelpers.getJSONData(fileName: "config_success")
                         fetchConfig()
 
-                        expect(configModel?.endpoints.ping)
+                        expect(configModel?.endpoints?.ping)
                             .to(equal(URL( string: "https://endpoint.com/ping")!))
                     }
 
@@ -77,7 +77,7 @@ class ConfigurationServiceSpec: QuickSpec {
                         httpSession.responseData = TestHelpers.getJSONData(fileName: "config_success")
                         fetchConfig()
 
-                        expect(configModel?.endpoints.impression)
+                        expect(configModel?.endpoints?.impression)
                             .to(equal(URL( string: "https://endpoint.com/impression")!))
                     }
 
@@ -85,7 +85,7 @@ class ConfigurationServiceSpec: QuickSpec {
                         httpSession.responseData = TestHelpers.getJSONData(fileName: "config_success")
                         fetchConfig()
 
-                        expect(configModel?.endpoints.displayPermission)
+                        expect(configModel?.endpoints?.displayPermission)
                             .to(equal(URL( string: "https://endpoint.com/display_permission")!))
                     }
 
@@ -93,8 +93,8 @@ class ConfigurationServiceSpec: QuickSpec {
                         httpSession.responseData = TestHelpers.getJSONData(fileName: "config_success_optional")
                         fetchConfig()
 
-                        expect(configModel?.endpoints.ping)
-                            .to(equal(URL( string: "https://endpoint.com/ping")!))
+                        expect(configModel).toNot(beNil())
+                        expect(configModel?.endpoints).to(beNil())
                     }
                 }
 
@@ -102,25 +102,6 @@ class ConfigurationServiceSpec: QuickSpec {
 
                     it("will return .jsonDecodingError when `enabled` is missing") {
                         httpSession.responseData = TestHelpers.getJSONData(fileName: "config_fail_enabled")
-
-                        waitUntil { done in
-                            requestQueue.async {
-                                let result = service.getConfigData()
-                                let error = result.getError()
-                                expect(error).toNot(beNil())
-
-                                guard case .jsonDecodingError = error else {
-                                    fail("Unexpected error type \(String(describing: error)). Expected .jsonDecodingError")
-                                    done()
-                                    return
-                                }
-                                done()
-                            }
-                        }
-                    }
-
-                    it("will return .jsonDecodingError when ping endpoint is missing") {
-                        httpSession.responseData = TestHelpers.getJSONData(fileName: "config_fail_ping")
 
                         waitUntil { done in
                             requestQueue.async {

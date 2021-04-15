@@ -51,7 +51,7 @@ class DisplayPermissionServiceSpec: QuickSpec {
             it("will use provided URL in a request") {
                 sendRequestAndWaitForResponse()
                 expect(httpSession.sentRequest).toNot(beNil())
-                expect(httpSession.sentRequest?.url).to(equal(configData.endpoints.displayPermission))
+                expect(httpSession.sentRequest?.url).to(equal(configData.endpoints?.displayPermission))
             }
 
             it("will give permission if url is not available") {
@@ -75,7 +75,7 @@ class DisplayPermissionServiceSpec: QuickSpec {
             context("when request succeeds") {
 
                 beforeEach {
-                    httpSession.httpResponse = HTTPURLResponse(url: configData.endpoints.displayPermission!,
+                    httpSession.httpResponse = HTTPURLResponse(url: configData.endpoints!.displayPermission!,
                                                                statusCode: 200,
                                                                httpVersion: nil,
                                                                headerFields: nil)

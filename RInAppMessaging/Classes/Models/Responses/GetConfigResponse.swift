@@ -4,11 +4,11 @@ internal struct GetConfigResponse: Decodable {
 
 internal struct ConfigData: Decodable {
     let enabled: Bool
-    let endpoints: EndpointURL
+    let endpoints: EndpointURL?
 }
 
 internal struct EndpointURL: Decodable, Equatable {
-    let ping: URL
+    let ping: URL?
     let displayPermission: URL?
     let impression: URL?
 }

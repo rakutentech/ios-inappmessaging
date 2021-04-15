@@ -1,9 +1,0 @@
-{
-    "data": {
-        "enabled": true,
-        "endpoints": {
-            "impression": "https://endpoint.com/impression",
-            "displayPermission": "https://endpoint.com/display_permission"
-        }
-    }
-}

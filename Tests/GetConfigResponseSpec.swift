@@ -1,0 +1,172 @@
+import Quick
+import Nimble
+@testable import RInAppMessaging
+
+class GetConfigResponseSpec: QuickSpec {
+
+    override func spec() {
+
+        describe("GetConfigResponse model") {
+            context("when decoding JSON payload") {
+
+                it("will be correctly created if all fields are present") {
+                    let model = try? JSONDecoder().decode(GetConfigResponse.self, from: Payloads.allFields.utf8Data!)
+
+                    expect(model).toNot(beNil())
+                    expect(model?.data.enabled).to(beFalse())
+                    expect(model?.data.endpoints?.ping).toNot(beNil())
+                    expect(model?.data.endpoints?.impression).toNot(beNil())
+                    expect(model?.data.endpoints?.displayPermission).toNot(beNil())
+                }
+
+                it("will be correctly created if there are no endpoints") {
+                    let model = try? JSONDecoder().decode(GetConfigResponse.self, from: Payloads.noEndpoints.utf8Data!)
+
+                    expect(model).toNot(beNil())
+                    expect(model?.data.enabled).to(beFalse())
+                    expect(model?.data.endpoints).to(beNil())
+                }
+
+                it("will be correctly created if endpoints field is empty") {
+                    let model = try? JSONDecoder().decode(GetConfigResponse.self, from: Payloads.emptyEndpoints.utf8Data!)
+
+                    expect(model).toNot(beNil())
+                    expect(model?.data.enabled).to(beFalse())
+                    expect(model?.data.endpoints?.ping).to(beNil())
+                    expect(model?.data.endpoints?.impression).to(beNil())
+                    expect(model?.data.endpoints?.displayPermission).to(beNil())
+                }
+
+                it("will be correctly created if there is no ping endpoint") {
+                    let model = try? JSONDecoder().decode(GetConfigResponse.self, from: Payloads.noPingEndpoint.utf8Data!)
+
+                    expect(model).toNot(beNil())
+                    expect(model?.data.enabled).to(beFalse())
+                    expect(model?.data.endpoints?.ping).to(beNil())
+                    expect(model?.data.endpoints?.impression).toNot(beNil())
+                    expect(model?.data.endpoints?.displayPermission).toNot(beNil())
+                }
+
+                it("will be correctly created if there is no impression endpoint") {
+                    let model = try? JSONDecoder().decode(GetConfigResponse.self, from: Payloads.noImpressionEndpoint.utf8Data!)
+
+                    expect(model).toNot(beNil())
+                    expect(model?.data.enabled).to(beFalse())
+                    expect(model?.data.endpoints?.ping).toNot(beNil())
+                    expect(model?.data.endpoints?.impression).to(beNil())
+                    expect(model?.data.endpoints?.displayPermission).toNot(beNil())
+                }
+
+                it("will be correctly created if there is no display permission endpoint") {
+                    let model = try? JSONDecoder().decode(GetConfigResponse.self, from: Payloads.noDisplayPermissionEndpoint.utf8Data!)
+
+                    expect(model).toNot(beNil())
+                    expect(model?.data.enabled).to(beFalse())
+                    expect(model?.data.endpoints?.ping).toNot(beNil())
+                    expect(model?.data.endpoints?.impression).toNot(beNil())
+                    expect(model?.data.endpoints?.displayPermission).to(beNil())
+                }
+
+                it("will not be correctly created if there is no enabled flag") {
+                    let model = try? JSONDecoder().decode(GetConfigResponse.self, from: Payloads.noEnabled.utf8Data!)
+
+                    expect(model).to(beNil())
+                }
+
+                it("will not be correctly created if there is no data") {
+                    let model = try? JSONDecoder().decode(GetConfigResponse.self, from: Payloads.noData.utf8Data!)
+
+                    expect(model).to(beNil())
+                }
+            }
+        }
+    }
+
+    private enum Payloads {
+        static let allFields = """
+        {
+          "data": {
+            "enabled": false,
+            "endpoints": {
+              "ping": "https://something",
+              "impression": "https://something",
+              "displayPermission": "https://something"
+            }
+          }
+        }
+        """
+
+        static let noEndpoints = """
+        {
+          "data": {
+            "enabled": false
+          }
+        }
+        """
+
+        static let noPingEndpoint = """
+        {
+          "data": {
+            "enabled": false,
+            "endpoints": {
+              "impression": "https://something",
+              "displayPermission": "https://something"
+            }
+          }
+        }
+        """
+
+        static let noImpressionEndpoint = """
+        {
+          "data": {
+            "enabled": false,
+            "endpoints": {
+              "ping": "https://something",
+              "displayPermission": "https://something"
+            }
+          }
+        }
+        """
+
+        static let noDisplayPermissionEndpoint = """
+        {
+          "data": {
+            "enabled": false,
+            "endpoints": {
+              "ping": "https://something",
+              "impression": "https://something"
+            }
+          }
+        }
+        """
+
+        static let noEnabled = """
+        {
+          "data": {
+            "endpoints": {
+              "ping": "https://something",
+              "impression": "https://something",
+              "displayPermission": "https://something"
+            }
+          }
+        }
+        """
+
+        static let emptyEndpoints = """
+        {
+          "data": {
+            "enabled": false,
+            "endpoints": { }
+          }
+        }
+        """
+
+        static let noData = "{ }"
+    }
+}
+
+private extension String {
+    var utf8Data: Data? {
+        data(using: .utf8)
+    }
+}
