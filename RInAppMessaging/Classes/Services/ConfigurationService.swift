@@ -5,6 +5,7 @@ internal protocol ConfigurationServiceType {
 internal enum ConfigurationServiceError: Error {
     case requestError(RequestError)
     case jsonDecodingError(Error)
+    case tooManyRequestsError
 }
 
 internal struct ConfigurationService: ConfigurationServiceType, HttpRequestable {
@@ -30,7 +31,12 @@ internal struct ConfigurationService: ConfigurationServiceType, HttpRequestable 
                 return ConfigurationServiceError.jsonDecodingError($0)
             }
         case .failure(let requestError):
-            return .failure(.requestError(requestError))
+            switch requestError {
+            case .httpError(let statusCode, _, _) where statusCode == 429:
+                return .failure(.tooManyRequestsError)
+            default:
+                return .failure(.requestError(requestError))
+            }
         }
     }
 
