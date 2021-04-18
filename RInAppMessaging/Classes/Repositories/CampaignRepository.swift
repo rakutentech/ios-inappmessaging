@@ -13,24 +13,29 @@ internal protocol CampaignRepositoryType: AnyObject, Lockable {
     @discardableResult
     func optOutCampaign(_ campaign: Campaign) -> Campaign?
 
-    /// Decrements number of impressionsLeft for provided campaign in the repository.
-    /// - Parameter campaign: The campaign to update impressionsLeft value.
-    /// - Returns: A new campaign structure with updated impressionsLeft value
+    /// Decrements number of impressionsLeft for provided campaign id in the repository.
+    /// - Parameter id: The id of a campaign whose impressionsLeft value is to be updated.
+    /// - Returns: An updated campaign model with updated impressionsLeft value
     /// or `nil` if campaign couldn't be found in the repository.
     @discardableResult
-    func decrementImpressionsLeftInCampaign(_ campaign: Campaign) -> Campaign?
+    func decrementImpressionsLeftInCampaign(id: String) -> Campaign?
 
-    /// Increments number of impressionsLeft for provided campaign in the repository.
-    /// - Parameter campaign: The campaign to update impressionsLeft value.
-    /// - Returns: A new campaign structure with updated impressionsLeft value
+    /// Increments number of impressionsLeft for provided campaign id in the repository.
+    /// - Parameter id: The id of a campaign whose impressionsLeft value is to be updated.
+    /// - Returns: An updated campaign model with updated impressionsLeft value
     /// or `nil` if campaign couldn't be found in the repository.
     @discardableResult
-    func incrementImpressionsLeftInCampaign(_ campaign: Campaign) -> Campaign?
+    func incrementImpressionsLeftInCampaign(id: String) -> Campaign?
+
+    /// Loads campaign data from user cache
+    func loadCachedData()
 }
 
 /// Repository to store campaigns retrieved from ping request.
 internal class CampaignRepository: CampaignRepositoryType {
 
+    private let userDataCache: UserDataCacheable
+    private let preferenceRepository: IAMPreferenceRepository
     private let campaigns = LockableObject([Campaign]())
     private(set) var lastSyncInMilliseconds: Int64?
     var list: [Campaign] {
@@ -40,23 +45,37 @@ internal class CampaignRepository: CampaignRepositoryType {
         return [campaigns]
     }
 
+    init(userDataCache: UserDataCacheable, preferenceRepository: IAMPreferenceRepository) {
+        self.userDataCache = userDataCache
+        self.preferenceRepository = preferenceRepository
+
+        loadCachedData()
+    }
+
     func syncWith(list: [Campaign], timestampMilliseconds: Int64) {
         lastSyncInMilliseconds = timestampMilliseconds
         let oldList = self.campaigns.get()
         var newList = [Campaign]()
 
-        // Preserving information about opt out state in case when server didn't process impressions sent from the SDK yet.
-        // There is an assumption that maxImpressions value from the server is the most recent one.
-        // (Considering any possible updates to the campaign in the IAM web dashboard)
+        let retainImpressionsLeftValue = true // Left for feature flag functionality
         list.forEach { newCampaign in
             var updatedCampaign = newCampaign
             if let oldCampaign = oldList.first(where: { $0.id == newCampaign.id }) {
-                updatedCampaign = Campaign.updatedCampaign(updatedCampaign,
-                    asOptedOut: oldCampaign.isOptedOut)
+                updatedCampaign = Campaign.updatedCampaign(updatedCampaign, asOptedOut: oldCampaign.isOptedOut)
+
+                if retainImpressionsLeftValue {
+                    var newImpressionsLeft = oldCampaign.impressionsLeft
+                    let wasMaxImpressionsEdited = oldCampaign.data.maxImpressions != newCampaign.data.maxImpressions
+                    if wasMaxImpressionsEdited {
+                        newImpressionsLeft += newCampaign.data.maxImpressions - oldCampaign.data.maxImpressions
+                    }
+                    updatedCampaign = Campaign.updatedCampaign(updatedCampaign, withImpressionLeft: newImpressionsLeft)
+                }
             }
             newList.append(updatedCampaign)
         }
         self.campaigns.set(value: newList)
+        userDataCache.cacheCampaignData(newList, userIdentifiers: preferenceRepository.getUserIdentifiers())
     }
 
     @discardableResult
@@ -70,29 +89,50 @@ internal class CampaignRepository: CampaignRepositoryType {
         let updatedCampaign = Campaign.updatedCampaign(campaign, asOptedOut: true)
         list[index] = updatedCampaign
         self.campaigns.set(value: list)
+        userDataCache.cacheCampaignData(list, userIdentifiers: preferenceRepository.getUserIdentifiers())
         return updatedCampaign
     }
 
     @discardableResult
-    func decrementImpressionsLeftInCampaign(_ campaign: Campaign) -> Campaign? {
-        let updatedCampaign = Campaign.updatedCampaign(campaign, withImpressionLeft: max(0, campaign.impressionsLeft - 1))
-        return updateCampaignInTheList(updatedCampaign) ? updatedCampaign : nil
+    func decrementImpressionsLeftInCampaign(id: String) -> Campaign? {
+        guard let campaign = findCampaign(withID: id) else {
+            return nil
+        }
+        return updateImpressionsLeftInCampaign(campaign, newValue: max(0, campaign.impressionsLeft - 1))
     }
 
     @discardableResult
-    func incrementImpressionsLeftInCampaign(_ campaign: Campaign) -> Campaign? {
-        let updatedCampaign = Campaign.updatedCampaign(campaign, withImpressionLeft: campaign.impressionsLeft + 1)
-        return updateCampaignInTheList(updatedCampaign) ? updatedCampaign : nil
+    func incrementImpressionsLeftInCampaign(id: String) -> Campaign? {
+        guard let campaign = findCampaign(withID: id) else {
+            return nil
+        }
+        return updateImpressionsLeftInCampaign(campaign, newValue: campaign.impressionsLeft + 1)
     }
 
-    private func updateCampaignInTheList(_ campaign: Campaign) -> Bool {
+    func loadCachedData() {
+        guard let cachedData = userDataCache.getUserData(identifiers: preferenceRepository.getUserIdentifiers())?.campaignData else {
+            return
+        }
+        campaigns.set(value: cachedData)
+    }
+
+    private func findCampaign(withID id: String) -> Campaign? {
+        let list = campaigns.get()
+        return list.first(where: { $0.id == id })
+    }
+
+    private func updateImpressionsLeftInCampaign(_ campaign: Campaign, newValue: Int) -> Campaign? {
         var list = campaigns.get()
         guard let index = list.firstIndex(where: { $0.id == campaign.id }) else {
-            Logger.debug("Campaign \(campaign.id) cannot be updated - not found in repository")
-            return false
+            Logger.debug("Campaign \(campaign.id) could not be updated - not found in the repository")
+            assertionFailure()
+            return nil
         }
-        list[index] = campaign
+
+        let udpatedCampaign = Campaign.updatedCampaign(campaign, withImpressionLeft: newValue)
+        list[index] = udpatedCampaign
         campaigns.set(value: list)
-        return true
+        userDataCache.cacheCampaignData(list, userIdentifiers: preferenceRepository.getUserIdentifiers())
+        return udpatedCampaign
     }
 }

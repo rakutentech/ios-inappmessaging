@@ -23,6 +23,10 @@ internal class CampaignsListManager: CampaignsListManagerType, TaskSchedulable {
         self.messageMixerService = messageMixerService
     }
 
+    deinit {
+        self.scheduledTask?.cancel()
+    }
+
     func refreshList() {
         pingMixerServer()
     }
@@ -81,7 +85,7 @@ internal class CampaignsListManager: CampaignsListManagerType, TaskSchedulable {
     }
 
     private func scheduleNextPingCall(in milliseconds: Int) {
-        scheduleWorkItem(milliseconds: milliseconds, wallDeadline: true) { [weak self] in
+        scheduleTask(milliseconds: milliseconds, wallDeadline: true) { [weak self] in
             self?.pingMixerServer()
         }
     }

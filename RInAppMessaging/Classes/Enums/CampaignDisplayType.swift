@@ -1,4 +1,4 @@
-internal enum CampaignDisplayType: Int, Decodable {
+internal enum CampaignDisplayType: Int, Codable {
     case invalid = 0
     case modal
     case full

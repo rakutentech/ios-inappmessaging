@@ -42,7 +42,13 @@ internal enum MainContainerFactory {
                                      configurationRepository: manager.resolve(type: ConfigurationRepositoryType.self)!,
                                      resumeQueue: manager.resolve(type: DispatchQueue.self)!)
             }),
-            ContainerElement(type: CampaignRepositoryType.self, factory: { CampaignRepository() }),
+            ContainerElement(type: UserDataCacheable.self, factory: {
+                UserDataCache(userDefaults: UserDefaults.standard)
+            }),
+            ContainerElement(type: CampaignRepositoryType.self, factory: {
+                CampaignRepository(userDataCache: manager.resolve(type: UserDataCacheable.self)!,
+                                   preferenceRepository: manager.resolve(type: IAMPreferenceRepository.self)!)
+            }),
             ContainerElement(type: EventMatcherType.self, factory: {
                 EventMatcher(campaignRepository: manager.resolve(type: CampaignRepositoryType.self)!)
             }),

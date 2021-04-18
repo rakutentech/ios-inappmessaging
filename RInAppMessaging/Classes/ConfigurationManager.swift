@@ -4,7 +4,7 @@ internal protocol ConfigurationManagerType: AnyObject, ErrorReportable {
     func fetchAndSaveConfigData(completion: @escaping (ConfigData) -> Void)
 }
 
-internal class ConfigurationManager: ConfigurationManagerType {
+internal class ConfigurationManager: ConfigurationManagerType, TaskSchedulable {
     private let configurationService: ConfigurationServiceType
     private let configurationRepository: ConfigurationRepositoryType
     private let reachability: ReachabilityType?
@@ -14,6 +14,7 @@ internal class ConfigurationManager: ConfigurationManagerType {
     private var lastRequestTime: TimeInterval = 0
     private var onConnectionResumed: (() -> Void)?
 
+    var scheduledTask: DispatchWorkItem?
     weak var errorDelegate: ErrorDelegate?
     private(set) var scheduledTask: DispatchWorkItem?
 
@@ -29,6 +30,10 @@ internal class ConfigurationManager: ConfigurationManagerType {
         self.configurationService = configurationService
         self.configurationRepository = configurationRepository
         self.resumeQueue = resumeQueue
+    }
+
+    deinit {
+        scheduledTask?.cancel()
     }
 
     func fetchAndSaveConfigData(completion: @escaping (ConfigData) -> Void) {

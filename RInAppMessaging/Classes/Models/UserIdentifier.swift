@@ -1,4 +1,4 @@
-internal struct UserIdentifier: Codable, Equatable {
+internal struct UserIdentifier: Codable, Hashable {
     private enum CodingKeys: String, CodingKey {
         case identifier = "id"
         case type

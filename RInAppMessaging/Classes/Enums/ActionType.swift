@@ -1,4 +1,4 @@
-internal enum ActionType: Int, Decodable {
+internal enum ActionType: Int, Codable {
     case invalid = 0
     case redirect
     case deeplink

@@ -21,15 +21,24 @@ class CampaignRepositoryMock: CampaignRepositoryType {
     private(set) var wasIncrementImpressionsCalled = false
     private(set) var wasOptOutCalled = false
     private(set) var lastSyncCampaigns = [Campaign]()
+    private(set) var wasLoadCachedDataCalled = false
 
-    func decrementImpressionsLeftInCampaign(_ campaign: Campaign) -> Campaign? {
+    func decrementImpressionsLeftInCampaign(id: String) -> Campaign? {
         wasDecrementImpressionsCalled = true
-        return Campaign.updatedCampaign(campaign, withImpressionLeft: campaign.impressionsLeft - 1)
+        guard let (index, campaign) = indexAndCampaign(forID: id) else {
+            return nil
+        }
+        lastSyncCampaigns[index] = Campaign.updatedCampaign(campaign, withImpressionLeft: campaign.impressionsLeft - 1)
+        return lastSyncCampaigns[index]
     }
 
-    func incrementImpressionsLeftInCampaign(_ campaign: Campaign) -> Campaign? {
+    func incrementImpressionsLeftInCampaign(id: String) -> Campaign? {
         wasIncrementImpressionsCalled = true
-        return Campaign.updatedCampaign(campaign, withImpressionLeft: campaign.impressionsLeft + 1)
+        guard let (index, campaign) = indexAndCampaign(forID: id) else {
+            return nil
+        }
+        lastSyncCampaigns[index] = Campaign.updatedCampaign(campaign, withImpressionLeft: campaign.impressionsLeft + 1)
+        return lastSyncCampaigns[index]
     }
 
     func optOutCampaign(_ campaign: Campaign) -> Campaign? {
@@ -39,6 +48,17 @@ class CampaignRepositoryMock: CampaignRepositoryType {
 
     func syncWith(list: [Campaign], timestampMilliseconds: Int64) {
         lastSyncCampaigns = list
+    }
+
+    func loadCachedData() {
+        wasLoadCachedDataCalled = true
+    }
+
+    private func indexAndCampaign(forID id: String) -> (Int, Campaign)? {
+        for (index, campaign) in lastSyncCampaigns.enumerated() where campaign.id == id {
+            return (index, campaign)
+        }
+        return nil
     }
 }
 
@@ -322,6 +342,24 @@ class RouterMock: RouterType {
     func discardDisplayedCampaign() -> Campaign? {
         wasDiscardCampaignCalled = true
         return lastDisplayedCampaign
+    }
+}
+
+class UserDataCacheMock: UserDataCacheable {
+    var userDataMock: UserDataCacheContainer?
+    var cachedCampaignData: [Campaign]?
+    var cachedDisplayPermissionData: (DisplayPermissionResponse, Campaign)?
+
+    func getUserData(identifiers: [UserIdentifier]) -> UserDataCacheContainer? {
+        return userDataMock
+    }
+
+    func cacheCampaignData(_ data: [Campaign], userIdentifiers: [UserIdentifier]) {
+        cachedCampaignData = data
+    }
+
+    func cacheDisplayPermissionData(_ data: DisplayPermissionResponse, for campaign: Campaign, userIdentifiers: [UserIdentifier]) {
+        cachedDisplayPermissionData = (data, campaign)
     }
 }
 
