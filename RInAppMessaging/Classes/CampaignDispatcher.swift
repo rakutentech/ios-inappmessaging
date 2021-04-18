@@ -80,7 +80,7 @@ internal class CampaignDispatcher: CampaignDispatcherType {
             return
         }
 
-        campaignRepository.decrementImpressionsLeftInCampaign(campaign)
+        campaignRepository.decrementImpressionsLeftInCampaign(id: campaign.id)
         let campaignTitle = campaign.data.messagePayload.title
 
         router.displayCampaign(campaign, confirmation: {
@@ -91,7 +91,7 @@ internal class CampaignDispatcher: CampaignDispatcherType {
             let shouldShow = delegate.shouldShowCampaignMessage(title: campaignTitle,
                                                                 contexts: contexts)
             if !shouldShow {
-                campaignRepository.incrementImpressionsLeftInCampaign(campaign)
+                campaignRepository.incrementImpressionsLeftInCampaign(id: campaign.id)
             }
             return shouldShow
 

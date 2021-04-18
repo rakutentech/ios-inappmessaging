@@ -132,7 +132,7 @@ struct TestHelpers {
             }
 
             return PingResponse(
-                nextPingMilliseconds: 0,
+                nextPingMilliseconds: Int.max,
                 currentPingMilliseconds: 0,
                 data: campaigns)
         }

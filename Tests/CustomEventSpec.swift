@@ -15,7 +15,7 @@ class CustomEventsSpec: QuickSpec {
         var validatorHandler: ValidatorHandler!
 
         beforeEach {
-            campaignRepository = CampaignRepository()
+            campaignRepository = CampaignRepository(userDataCache: UserDataCacheMock(), preferenceRepository: IAMPreferenceRepository())
             eventMatcher = EventMatcher(campaignRepository: campaignRepository)
             campaignsValidator = CampaignsValidator(
                 campaignRepository: campaignRepository,

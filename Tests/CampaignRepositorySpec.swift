@@ -8,6 +8,7 @@ class CampaignRepositorySpec: QuickSpec {
         describe("CampaignRepository") {
 
             var campaignRepository: CampaignRepository!
+            var userDataCache: UserDataCacheMock!
             var firstPersistedCampaign: Campaign? {
                 return campaignRepository.list.first
             }
@@ -22,7 +23,14 @@ class CampaignRepositorySpec: QuickSpec {
             }
 
             beforeEach {
-                campaignRepository = CampaignRepository()
+                userDataCache = UserDataCacheMock()
+                campaignRepository = CampaignRepository(userDataCache: userDataCache, preferenceRepository: IAMPreferenceRepository())
+            }
+
+            it("will load cache data during initialization") {
+                userDataCache.userDataMock = UserDataCacheContainer(campaignData: [testCampaign])
+                campaignRepository = CampaignRepository(userDataCache: userDataCache, preferenceRepository: IAMPreferenceRepository())
+                expect(campaignRepository.list).to(equal([testCampaign]))
             }
 
             context("when syncing") {
@@ -44,13 +52,13 @@ class CampaignRepositorySpec: QuickSpec {
                     expect(campaignRepository.list).to(haveCount(1))
                 }
 
-                it("will override impressionsLeft value even if maxImpressions number is bigger") {
+                it("will persist impressionsLeft value") {
                     campaignRepository.syncWith(list: [testCampaign], timestampMilliseconds: 0)
-                    campaignRepository.decrementImpressionsLeftInCampaign(testCampaign)
+                    campaignRepository.decrementImpressionsLeftInCampaign(id: testCampaign.id)
                     expect(firstPersistedCampaign?.impressionsLeft).to(equal(2))
 
                     campaignRepository.syncWith(list: [testCampaign], timestampMilliseconds: 0)
-                    expect(firstPersistedCampaign?.impressionsLeft).to(equal(3))
+                    expect(firstPersistedCampaign?.impressionsLeft).to(equal(2))
                 }
 
                 it("will persist isOptedOut value") {
@@ -60,6 +68,34 @@ class CampaignRepositorySpec: QuickSpec {
                     campaignRepository.optOutCampaign(testCampaign)
                     campaignRepository.syncWith(list: [testCampaign], timestampMilliseconds: 0)
                     expect(firstPersistedCampaign?.isOptedOut).to(beTrue())
+                }
+
+                it("will not override impressionsLeft value even if maxImpressions number is smaller") {
+                    campaignRepository.syncWith(list: [testCampaign], timestampMilliseconds: 0)
+                    campaignRepository.incrementImpressionsLeftInCampaign(id: testCampaign.id)
+                    expect(firstPersistedCampaign?.impressionsLeft).to(equal(4))
+
+                    campaignRepository.syncWith(list: [testCampaign], timestampMilliseconds: 0)
+                    expect(firstPersistedCampaign?.impressionsLeft).to(equal(4))
+                }
+
+                it("will modify impressionsLeft if maxImpressions value is different (campaign modification)") {
+                    campaignRepository.syncWith(list: [testCampaign], timestampMilliseconds: 0)
+                    campaignRepository.decrementImpressionsLeftInCampaign(id: testCampaign.id)
+                    campaignRepository.decrementImpressionsLeftInCampaign(id: testCampaign.id)
+                    expect(firstPersistedCampaign?.impressionsLeft).to(equal(1))
+
+                    let updatedCampaign = TestHelpers.generateCampaign(id: "testImpressions",
+                                                                    test: false,
+                                                                    delay: 0,
+                                                                    maxImpressions: 6)
+                    campaignRepository.syncWith(list: [updatedCampaign], timestampMilliseconds: 0)
+                    expect(firstPersistedCampaign?.impressionsLeft).to(equal(4))
+                }
+
+                it("will save updated list to the cache") {
+                    campaignRepository.syncWith(list: [testCampaign], timestampMilliseconds: 0)
+                    expect(userDataCache.cachedCampaignData).to(equal([testCampaign]))
                 }
             }
 
@@ -72,6 +108,12 @@ class CampaignRepositorySpec: QuickSpec {
                     campaignRepository.optOutCampaign(testCampaign)
                     expect(firstPersistedCampaign?.isOptedOut).to(beTrue())
                 }
+
+                it("will save updated list to the cache") {
+                    campaignRepository.syncWith(list: [testCampaign], timestampMilliseconds: 0)
+                    campaignRepository.optOutCampaign(testCampaign)
+                    expect(userDataCache.cachedCampaignData?.first?.isOptedOut).to(beTrue())
+                }
             }
 
             context("when decrementImpressionsLeftInCampaign is called") {
@@ -80,7 +122,7 @@ class CampaignRepositorySpec: QuickSpec {
                     campaignRepository.syncWith(list: [testCampaign], timestampMilliseconds: 0)
                     let impressionsLeft = firstPersistedCampaign?.impressionsLeft ?? 0
 
-                    campaignRepository.decrementImpressionsLeftInCampaign(testCampaign)
+                    campaignRepository.decrementImpressionsLeftInCampaign(id: testCampaign.id)
                     expect(firstPersistedCampaign?.impressionsLeft).to(equal(impressionsLeft - 1))
                 }
 
@@ -90,9 +132,15 @@ class CampaignRepositorySpec: QuickSpec {
                                                                     delay: 0,
                                                                     maxImpressions: 0)
                     campaignRepository.syncWith(list: [testCampaign], timestampMilliseconds: 0)
-                    campaignRepository.decrementImpressionsLeftInCampaign(testCampaign)
+                    campaignRepository.decrementImpressionsLeftInCampaign(id: testCampaign.id)
 
                     expect(firstPersistedCampaign?.impressionsLeft).to(equal(0))
+                }
+
+                it("will save updated list to the cache") {
+                    campaignRepository.syncWith(list: [testCampaign], timestampMilliseconds: 0)
+                    campaignRepository.decrementImpressionsLeftInCampaign(id: testCampaign.id)
+                    expect(userDataCache.cachedCampaignData?.first?.impressionsLeft).to(equal(testCampaign.impressionsLeft - 1))
                 }
             }
 
@@ -102,8 +150,14 @@ class CampaignRepositorySpec: QuickSpec {
                     campaignRepository.syncWith(list: [testCampaign], timestampMilliseconds: 0)
                     expect(firstPersistedCampaign?.impressionsLeft).to(equal(3))
 
-                    campaignRepository.incrementImpressionsLeftInCampaign(testCampaign)
+                    campaignRepository.incrementImpressionsLeftInCampaign(id: testCampaign.id)
                     expect(firstPersistedCampaign?.impressionsLeft).to(equal(4))
+                }
+
+                it("will save updated list to the cache") {
+                    campaignRepository.syncWith(list: [testCampaign], timestampMilliseconds: 0)
+                    campaignRepository.incrementImpressionsLeftInCampaign(id: testCampaign.id)
+                    expect(userDataCache.cachedCampaignData?.first?.impressionsLeft).to(equal(testCampaign.impressionsLeft + 1))
                 }
             }
         }

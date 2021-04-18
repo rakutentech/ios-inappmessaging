@@ -86,6 +86,7 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
         guard isInitialized else {
             return
         }
+        campaignRepository.loadCachedData()
         campaignsListManager.refreshList()
     }
 
@@ -94,7 +95,7 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
             readyCampaignDispatcher.resetQueue()
         }
         if let campaign = router.discardDisplayedCampaign() {
-            campaignRepository.incrementImpressionsLeftInCampaign(campaign)
+            campaignRepository.incrementImpressionsLeftInCampaign(id: campaign.id)
         }
     }
 }

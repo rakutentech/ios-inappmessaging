@@ -213,6 +213,11 @@ class InAppMessagingModuleSpec: QuickSpec {
                                 iamModule.registerPreference(IAMPreference())
                                 expect(campaignsListManager.wasRefreshListCalled).to(beTrue())
                             }
+
+                            it("will reload campaigns repository cache") {
+                                iamModule.registerPreference(IAMPreference())
+                                expect(campaignRepository.wasLoadCachedDataCalled).to(beTrue())
+                            }
                         }
 
                         context("and module is not initialized") {
@@ -226,6 +231,11 @@ class InAppMessagingModuleSpec: QuickSpec {
                             it("will not refresh list of campaigns") {
                                 iamModule.registerPreference(IAMPreference())
                                 expect(campaignsListManager.wasRefreshListCalled).toAfterTimeout(beFalse())
+                            }
+
+                            it("will not reload campaigns repository cache") {
+                                iamModule.registerPreference(IAMPreference())
+                                expect(campaignRepository.wasLoadCachedDataCalled).to(beFalse())
                             }
                         }
                     }
@@ -245,6 +255,11 @@ class InAppMessagingModuleSpec: QuickSpec {
                         it("will not refresh list of campaigns") {
                             iamModule.registerPreference(IAMPreference())
                             expect(campaignsListManager.wasRefreshListCalled).toAfterTimeout(beFalse())
+                        }
+
+                        it("will not reload campaigns repository cache") {
+                            iamModule.registerPreference(IAMPreference())
+                            expect(campaignRepository.wasLoadCachedDataCalled).to(beFalse())
                         }
                     }
                 }
