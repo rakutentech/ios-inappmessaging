@@ -10,7 +10,6 @@ internal struct DisplayPermissionResponse: Codable, Equatable {
     let performPing: Bool
     let creationTimeMilliseconds: Int64 // Cache coding only
 
-    // For unit tests
     init(display: Bool, performPing: Bool) {
         self.display = display
         self.performPing = performPing

@@ -16,7 +16,6 @@ internal class ConfigurationManager: ConfigurationManagerType, TaskSchedulable {
 
     var scheduledTask: DispatchWorkItem?
     weak var errorDelegate: ErrorDelegate?
-    private(set) var scheduledTask: DispatchWorkItem?
 
     private var state = ResponseState.success
     private var previousState = ResponseState.success
@@ -66,12 +65,12 @@ internal class ConfigurationManager: ConfigurationManagerType, TaskSchedulable {
                 if case ResponseState.success = previousState {
                     retryDelayMS = Constants.Retry.TooManyRequestsError.initialRetryDelayMS
                 }
-                scheduledTask = WorkScheduler.scheduleTask(milliseconds: Int(retryDelayMS), closure: retryHandler, wallDeadline: true)
+                scheduleTask(milliseconds: Int(retryDelayMS), wallDeadline: true, retryHandler)
                 // Exponential backoff for pinging Configuration server.
                 retryDelayMS.increaseRandomizedBackoff()
 
             default:
-                scheduledTask = WorkScheduler.scheduleTask(milliseconds: Int(retryDelayMS), closure: retryHandler, wallDeadline: true)
+                scheduleTask(milliseconds: Int(retryDelayMS), wallDeadline: true, retryHandler)
                 // Exponential backoff for pinging Configuration server.
                 retryDelayMS.increaseBackOff()
             }

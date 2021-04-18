@@ -348,7 +348,7 @@ class RouterMock: RouterType {
 class UserDataCacheMock: UserDataCacheable {
     var userDataMock: UserDataCacheContainer?
     var cachedCampaignData: [Campaign]?
-    var cachedDisplayPermissionData: (DisplayPermissionResponse, Campaign)?
+    var cachedDisplayPermissionData: (DisplayPermissionResponse, String)?
 
     func getUserData(identifiers: [UserIdentifier]) -> UserDataCacheContainer? {
         return userDataMock
@@ -358,8 +358,8 @@ class UserDataCacheMock: UserDataCacheable {
         cachedCampaignData = data
     }
 
-    func cacheDisplayPermissionData(_ data: DisplayPermissionResponse, for campaign: Campaign, userIdentifiers: [UserIdentifier]) {
-        cachedDisplayPermissionData = (data, campaign)
+    func cacheDisplayPermissionData(_ data: DisplayPermissionResponse, campaignID: String, userIdentifiers: [UserIdentifier]) {
+        cachedDisplayPermissionData = (data, campaignID)
     }
 }
 

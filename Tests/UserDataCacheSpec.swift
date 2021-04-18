@@ -8,6 +8,7 @@ class UserDataCacheSpec: QuickSpec {
 
         let userDefaults = UserDefaults(suiteName: "UserDataCacheSpec")!
         let user = [UserIdentifier(type: .userId, identifier: "testUser")]
+        let userDefaultsDataKey = "IAM_user_cache"
 
         afterEach {
             UserDefaults.standard.removePersistentDomain(forName: "UserDataCacheSpec")
@@ -20,11 +21,17 @@ class UserDataCacheSpec: QuickSpec {
                 expect(userCache.getUserData(identifiers: [])).to(beNil())
             }
 
+            it("will return nil if invalid cached data was found") {
+                userDefaults.set("invalid_data".data(using: .utf8), forKey: userDefaultsDataKey)
+                let userCache = UserDataCache(userDefaults: userDefaults)
+                expect(userCache.getUserData(identifiers: [])).to(beNil())
+            }
+
             it("will return previously cached display permission data") {
                 let previousUserCache = UserDataCache(userDefaults: userDefaults)
                 let displayPermissionData = DisplayPermissionResponse(display: true, performPing: false)
                 let campaign = TestHelpers.generateCampaign(id: "test")
-                previousUserCache.cacheDisplayPermissionData(displayPermissionData, for: campaign, userIdentifiers: [])
+                previousUserCache.cacheDisplayPermissionData(displayPermissionData, campaignID: campaign.id, userIdentifiers: [])
 
                 let userCache = UserDataCache(userDefaults: userDefaults)
                 let userContainer = userCache.getUserData(identifiers: [])
@@ -38,8 +45,8 @@ class UserDataCacheSpec: QuickSpec {
                 let dpDataB = DisplayPermissionResponse(display: false, performPing: false) // creationTimeMilliseconds is also different
                 let campaignA = TestHelpers.generateCampaign(id: "test1")
                 let campaignB = TestHelpers.generateCampaign(id: "test2")
-                userCache.cacheDisplayPermissionData(dpDataA, for: campaignA, userIdentifiers: [])
-                userCache.cacheDisplayPermissionData(dpDataB, for: campaignB, userIdentifiers: [])
+                userCache.cacheDisplayPermissionData(dpDataA, campaignID: campaignA.id, userIdentifiers: [])
+                userCache.cacheDisplayPermissionData(dpDataB, campaignID: campaignB.id, userIdentifiers: [])
 
                 let userContainer = userCache.getUserData(identifiers: [])
                 expect(userContainer?.displayPermissionData(for: campaignA)).toNot(equal(userContainer?.displayPermissionData(for: campaignB)))

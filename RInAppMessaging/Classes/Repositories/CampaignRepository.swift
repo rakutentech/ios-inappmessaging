@@ -117,8 +117,7 @@ internal class CampaignRepository: CampaignRepositoryType {
     }
 
     private func findCampaign(withID id: String) -> Campaign? {
-        let list = campaigns.get()
-        return list.first(where: { $0.id == id })
+        campaigns.get().first(where: { $0.id == id })
     }
 
     private func updateImpressionsLeftInCampaign(_ campaign: Campaign, newValue: Int) -> Campaign? {
@@ -129,10 +128,10 @@ internal class CampaignRepository: CampaignRepositoryType {
             return nil
         }
 
-        let udpatedCampaign = Campaign.updatedCampaign(campaign, withImpressionLeft: newValue)
-        list[index] = udpatedCampaign
+        let updatedCampaign = Campaign.updatedCampaign(campaign, withImpressionLeft: newValue)
+        list[index] = updatedCampaign
         campaigns.set(value: list)
         userDataCache.cacheCampaignData(list, userIdentifiers: preferenceRepository.getUserIdentifiers())
-        return udpatedCampaign
+        return updatedCampaign
     }
 }

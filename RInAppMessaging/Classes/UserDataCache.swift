@@ -1,7 +1,7 @@
 internal protocol UserDataCacheable: AnyObject {
     func getUserData(identifiers: [UserIdentifier]) -> UserDataCacheContainer?
     func cacheCampaignData(_ data: [Campaign], userIdentifiers: [UserIdentifier])
-    func cacheDisplayPermissionData(_ data: DisplayPermissionResponse, for campaign: Campaign, userIdentifiers: [UserIdentifier])
+    func cacheDisplayPermissionData(_ data: DisplayPermissionResponse, campaignID: String, userIdentifiers: [UserIdentifier])
 }
 
 internal struct UserDataCacheContainer: Codable, Equatable {
@@ -20,21 +20,24 @@ internal struct UserDataCacheContainer: Codable, Equatable {
 
 internal class UserDataCache: UserDataCacheable {
 
+    private typealias CacheContainers = [Set<UserIdentifier>: UserDataCacheContainer]
+
     private let userDefaults: UserDefaults
-    private var cachedContainers: [Set<UserIdentifier>: UserDataCacheContainer]
+    private var cachedContainers: CacheContainers
     private let persistedDataKey = "IAM_user_cache"
+    private let isTestEnvironment = Bundle.tests != nil
 
     init(userDefaults: UserDefaults) {
         self.userDefaults = userDefaults
 
         if let persistedData = userDefaults.object(forKey: persistedDataKey) as? Data {
             do {
-                let decodedData = try JSONDecoder().decode([Set<UserIdentifier>: UserDataCacheContainer].self, from: persistedData)
+                let decodedData = try JSONDecoder().decode(CacheContainers.self, from: persistedData)
                 cachedContainers = decodedData
             } catch {
                 cachedContainers = [:]
                 Logger.debug("UserDataCache decoding failed! \(error)")
-                assertionFailure()
+                !isTestEnvironment ? assertionFailure() : ()
             }
         } else {
             cachedContainers = [:]
@@ -53,10 +56,10 @@ internal class UserDataCache: UserDataCacheable {
         saveData()
     }
 
-    func cacheDisplayPermissionData(_ data: DisplayPermissionResponse, for campaign: Campaign, userIdentifiers: [UserIdentifier]) {
+    func cacheDisplayPermissionData(_ data: DisplayPermissionResponse, campaignID: String, userIdentifiers: [UserIdentifier]) {
         let cacheKey = userKey(from: userIdentifiers)
         var currentData = cachedContainers[cacheKey] ?? UserDataCacheContainer()
-        currentData.displayPermissionData[campaign.id] = data
+        currentData.displayPermissionData[campaignID] = data
         cachedContainers[cacheKey] = currentData
         saveData()
     }
@@ -72,6 +75,6 @@ internal class UserDataCache: UserDataCacheable {
     }
 
     private func userKey(from identifiers: [UserIdentifier]) -> Set<UserIdentifier> {
-        return Set<UserIdentifier>(identifiers)
+        Set<UserIdentifier>(identifiers)
     }
 }
