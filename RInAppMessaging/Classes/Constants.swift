@@ -40,4 +40,16 @@ internal enum Constants {
         static let impressions = "InAppMessaging_impressions"
         static let events = "InAppMessaging_events"
     }
+
+    enum Retry {
+        enum Default {
+            static let initialRetryDelayMS = Int32(10000)
+        }
+
+        enum TooManyRequestsError {
+            static let initialRetryDelayMS = Int32(60000)
+            static let backOffLowerBoundInSecond = Int32(1) // second
+            static let backOffUpperBoundInSecond = Int32(60) // second
+        }
+    }
 }

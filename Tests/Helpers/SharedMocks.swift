@@ -141,12 +141,13 @@ class ReachabilityMock: ReachabilityType {
 class ConfigurationServiceMock: ConfigurationServiceType {
     var getConfigDataCallCount = 0
     var simulateRequestFailure = false
+    var mockedError = ConfigurationServiceError.requestError(.unknown)
 
     func getConfigData() -> Result<ConfigData, ConfigurationServiceError> {
         getConfigDataCallCount += 1
 
         guard !simulateRequestFailure else {
-            return .failure(.requestError(.unknown))
+            return .failure(mockedError)
         }
 
         return .success(ConfigData(enabled: true, endpoints: .empty))

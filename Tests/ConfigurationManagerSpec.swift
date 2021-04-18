@@ -90,6 +90,13 @@ class ConfigurationManagerSpec: QuickSpec {
                         configurationService.simulateRequestFailure = false
                     }
                 }
+
+                it("should retry for .tooManyRequestsError error") {
+                    configurationService.simulateRequestFailure = true
+                    configurationService.mockedError = .tooManyRequestsError
+                    configurationManager.fetchAndSaveConfigData(completion: { _ in })
+                    expect(configurationManager.scheduledTask).toEventuallyNot(beNil())
+                }
             }
         }
     }

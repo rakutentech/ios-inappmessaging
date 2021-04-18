@@ -68,6 +68,12 @@ class CampaignsListManagerSpec: QuickSpec {
                         manager.refreshList()
                         expect(errorDelegate.wasErrorReceived).to(beFalse())
                     }
+
+                    it("will retry for .tooManyRequestsError error") {
+                        messageMixerService.mockedError = .tooManyRequestsError
+                        manager.refreshList()
+                        expect(manager.scheduledTask).toEventuallyNot(beNil())
+                    }
                 }
 
                 context("and ping call succeeded") {

@@ -6,6 +6,7 @@ internal enum MessageMixerServiceError: Error {
     case requestError(RequestError)
     case jsonDecodingError(Error)
     case invalidConfiguration
+    case tooManyRequestsError
 }
 
 internal class MessageMixerService: MessageMixerServiceType, HttpRequestable {
@@ -44,7 +45,12 @@ internal class MessageMixerService: MessageMixerServiceType, HttpRequestable {
                 return MessageMixerServiceError.jsonDecodingError($0)
             }
         case .failure(let requestError):
-            return .failure(.requestError(requestError))
+            switch requestError {
+            case .httpError(let statusCode, _, _) where statusCode == 429:
+                return .failure(.tooManyRequestsError)
+            default:
+                return .failure(.requestError(requestError))
+            }
         }
     }
 
