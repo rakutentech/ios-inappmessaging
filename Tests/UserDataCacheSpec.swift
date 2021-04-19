@@ -74,7 +74,7 @@ class UserDataCacheSpec: QuickSpec {
                 expect(userContainer?.campaignData).to(equal(campaigns))
             }
 
-            it("will not return data from anonymous user container") {
+            it("will not return registered user data from anonymous user container") {
                 let previousUserCache = UserDataCache(userDefaults: userDefaults)
                 let campaigns = TestHelpers.MockResponse.withGeneratedCampaigns(count: 2, test: false, delay: 0).data
                 previousUserCache.cacheCampaignData(campaigns, userIdentifiers: [])
