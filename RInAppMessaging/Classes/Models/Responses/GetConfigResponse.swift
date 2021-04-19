@@ -3,8 +3,15 @@ internal struct GetConfigResponse: Decodable {
 }
 
 internal struct ConfigData: Decodable {
-    let enabled: Bool
+    let rolloutPercentage: Int
     let endpoints: EndpointURL?
+}
+
+extension ConfigData {
+    // Temporary property - It has to be removed in the ticket SDKCF-3663
+    var enabled: Bool {
+        rolloutPercentage > 0
+    }
 }
 
 internal struct EndpointURL: Decodable, Equatable {

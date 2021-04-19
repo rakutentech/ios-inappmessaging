@@ -33,7 +33,8 @@ class ConfigurationServiceSpec: QuickSpec {
                         done()
                     }
                 }
-                expect(httpSession.sentRequest?.url).to(equal(configURL))
+                expect(httpSession.sentRequest?.url?.scheme).to(equal(configURL.scheme))
+                expect(httpSession.sentRequest?.url?.host).to(equal(configURL.host))
             }
 
             context("when request succeeds") {
@@ -188,7 +189,7 @@ class ConfigurationServiceSpec: QuickSpec {
                         }
                     }
 
-                    let request = httpSession.decodeSentData(modelType: GetConfigRequest.self)
+                    let request = httpSession.decodeQueryItems(modelType: GetConfigRequest.self)
 
                     expect(request).toNot(beNil())
                     expect(request?.locale).to(equal(Locale.current.normalizedIdentifier))
@@ -208,7 +209,7 @@ class ConfigurationServiceSpec: QuickSpec {
                                 expect(error).toNot(beNil())
 
                                 guard case .requestError(let requestError) = error,
-                                      case .bodyEncodingError(let encodingError) = requestError,
+                                      case .urlBuildingError(let encodingError) = requestError,
                                       case .missingMetadata = encodingError as? RequestError else {
                                     fail("Unexpected error type \(String(describing: error)). Expected .requestError(.missingMetadata)")
                                     done()
