@@ -13,6 +13,7 @@ class GetConfigResponseSpec: QuickSpec {
                     let model = try? JSONDecoder().decode(GetConfigResponse.self, from: Payloads.allFields.utf8Data!)
 
                     expect(model).toNot(beNil())
+                    expect(model?.data.rolloutPercentage).to(equal(0))
                     expect(model?.data.enabled).to(beFalse())
                     expect(model?.data.endpoints?.ping).toNot(beNil())
                     expect(model?.data.endpoints?.impression).toNot(beNil())
@@ -23,6 +24,7 @@ class GetConfigResponseSpec: QuickSpec {
                     let model = try? JSONDecoder().decode(GetConfigResponse.self, from: Payloads.noEndpoints.utf8Data!)
 
                     expect(model).toNot(beNil())
+                    expect(model?.data.rolloutPercentage).to(equal(0))
                     expect(model?.data.enabled).to(beFalse())
                     expect(model?.data.endpoints).to(beNil())
                 }
@@ -31,6 +33,7 @@ class GetConfigResponseSpec: QuickSpec {
                     let model = try? JSONDecoder().decode(GetConfigResponse.self, from: Payloads.emptyEndpoints.utf8Data!)
 
                     expect(model).toNot(beNil())
+                    expect(model?.data.rolloutPercentage).to(equal(0))
                     expect(model?.data.enabled).to(beFalse())
                     expect(model?.data.endpoints?.ping).to(beNil())
                     expect(model?.data.endpoints?.impression).to(beNil())
@@ -41,6 +44,7 @@ class GetConfigResponseSpec: QuickSpec {
                     let model = try? JSONDecoder().decode(GetConfigResponse.self, from: Payloads.noPingEndpoint.utf8Data!)
 
                     expect(model).toNot(beNil())
+                    expect(model?.data.rolloutPercentage).to(equal(0))
                     expect(model?.data.enabled).to(beFalse())
                     expect(model?.data.endpoints?.ping).to(beNil())
                     expect(model?.data.endpoints?.impression).toNot(beNil())
@@ -51,6 +55,7 @@ class GetConfigResponseSpec: QuickSpec {
                     let model = try? JSONDecoder().decode(GetConfigResponse.self, from: Payloads.noImpressionEndpoint.utf8Data!)
 
                     expect(model).toNot(beNil())
+                    expect(model?.data.rolloutPercentage).to(equal(0))
                     expect(model?.data.enabled).to(beFalse())
                     expect(model?.data.endpoints?.ping).toNot(beNil())
                     expect(model?.data.endpoints?.impression).to(beNil())
@@ -61,14 +66,15 @@ class GetConfigResponseSpec: QuickSpec {
                     let model = try? JSONDecoder().decode(GetConfigResponse.self, from: Payloads.noDisplayPermissionEndpoint.utf8Data!)
 
                     expect(model).toNot(beNil())
+                    expect(model?.data.rolloutPercentage).to(equal(0))
                     expect(model?.data.enabled).to(beFalse())
                     expect(model?.data.endpoints?.ping).toNot(beNil())
                     expect(model?.data.endpoints?.impression).toNot(beNil())
                     expect(model?.data.endpoints?.displayPermission).to(beNil())
                 }
 
-                it("will not be correctly created if there is no enabled flag") {
-                    let model = try? JSONDecoder().decode(GetConfigResponse.self, from: Payloads.noEnabled.utf8Data!)
+                it("will not be correctly created if there is no rolloutPercentage flag") {
+                    let model = try? JSONDecoder().decode(GetConfigResponse.self, from: Payloads.noRolloutPercentage.utf8Data!)
 
                     expect(model).to(beNil())
                 }
@@ -86,7 +92,7 @@ class GetConfigResponseSpec: QuickSpec {
         static let allFields = """
         {
           "data": {
-            "enabled": false,
+            "rolloutPercentage": 0,
             "endpoints": {
               "ping": "https://something",
               "impression": "https://something",
@@ -99,7 +105,7 @@ class GetConfigResponseSpec: QuickSpec {
         static let noEndpoints = """
         {
           "data": {
-            "enabled": false
+            "rolloutPercentage": 0
           }
         }
         """
@@ -107,7 +113,7 @@ class GetConfigResponseSpec: QuickSpec {
         static let noPingEndpoint = """
         {
           "data": {
-            "enabled": false,
+            "rolloutPercentage": 0,
             "endpoints": {
               "impression": "https://something",
               "displayPermission": "https://something"
@@ -119,7 +125,7 @@ class GetConfigResponseSpec: QuickSpec {
         static let noImpressionEndpoint = """
         {
           "data": {
-            "enabled": false,
+            "rolloutPercentage": 0,
             "endpoints": {
               "ping": "https://something",
               "displayPermission": "https://something"
@@ -131,7 +137,7 @@ class GetConfigResponseSpec: QuickSpec {
         static let noDisplayPermissionEndpoint = """
         {
           "data": {
-            "enabled": false,
+            "rolloutPercentage": 0,
             "endpoints": {
               "ping": "https://something",
               "impression": "https://something"
@@ -140,7 +146,7 @@ class GetConfigResponseSpec: QuickSpec {
         }
         """
 
-        static let noEnabled = """
+        static let noRolloutPercentage = """
         {
           "data": {
             "endpoints": {
@@ -155,7 +161,7 @@ class GetConfigResponseSpec: QuickSpec {
         static let emptyEndpoints = """
         {
           "data": {
-            "enabled": false,
+            "rolloutPercentage": 0,
             "endpoints": { }
           }
         }

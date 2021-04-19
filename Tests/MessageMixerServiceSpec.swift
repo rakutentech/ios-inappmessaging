@@ -7,7 +7,7 @@ class MessageMixerServiceSpec: QuickSpec {
     override func spec() {
 
         let requestQueue = DispatchQueue(label: "iam.test.request")
-        let configData = ConfigData(enabled: true, endpoints: .empty)
+        let configData = ConfigData(rolloutPercentage: 100, endpoints: .empty)
 
         var service: MessageMixerService!
         var preferenceRepository: IAMPreferenceRepository!

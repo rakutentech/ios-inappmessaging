@@ -13,6 +13,9 @@ internal enum RequestError: Error {
     case taskFailed(Error)
     case httpError(Int, URLResponse?, Data?)
     case bodyEncodingError(Error?)
+    case urlBuildingError(Error)
+    case urlIsNil
+    case bodyIsNil
 }
 
 internal protocol HttpRequestable {
@@ -32,7 +35,15 @@ internal protocol HttpRequestable {
                            addtionalHeaders: [HeaderAttribute]?,
                            completion: @escaping (_ result: RequestResult) -> Void)
 
+    func buildURLRequest(url: URL) -> Result<URLRequest, Error>
+
     func buildHttpBody(with parameters: [String: Any]?) -> Result<Data, Error>
+}
+
+extension HttpRequestable {
+    func buildURLRequest(url: URL) -> Result<URLRequest, Error> {
+        .success(URLRequest(url: url))
+    }
 }
 
 /// Default implementation of HttpRequestable.
@@ -87,19 +98,29 @@ extension HttpRequestable {
                                    addtionalHeaders: [HeaderAttribute]?,
                                    shouldWait: Bool,
                                    completion: @escaping (_ result: RequestResult) -> Void) {
-
-        var request = URLRequest(url: url)
-        request.httpMethod = httpMethod.rawValue
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-
-        let bodyResult = buildHttpBody(with: parameters)
-        switch bodyResult {
-        case .success(let body):
-            request.httpBody = body
+        var request: URLRequest
+        let result = buildURLRequest(url: url)
+        switch result {
+        case .success(let urlRequest):
+            request = urlRequest
         case .failure(let error):
-            completion(.failure(.bodyEncodingError(error)))
+            completion(.failure(.urlBuildingError(error)))
             return
         }
+
+        if httpMethod != .get {
+            let bodyResult = buildHttpBody(with: parameters)
+            switch bodyResult {
+            case .success(let body):
+                request.httpBody = body
+            case .failure(let error):
+                completion(.failure(.bodyEncodingError(error)))
+                return
+            }
+        }
+
+        request.httpMethod = httpMethod.rawValue
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
 
         if let headers = addtionalHeaders {
             appendHeaders(headers, forRequest: &request)

@@ -129,12 +129,12 @@ class MessageMixerServiceMock: MessageMixerServiceType {
 
 class ConfigurationManagerMock: ConfigurationManagerType {
     weak var errorDelegate: ErrorDelegate?
-    var isConfigEnabled = true
+    var rolloutPercentage = 100
     var fetchCalledClosure = {}
 
     func fetchAndSaveConfigData(completion: @escaping (ConfigData) -> Void) {
         fetchCalledClosure()
-        completion(ConfigData(enabled: isConfigEnabled, endpoints: .empty))
+        completion(ConfigData(rolloutPercentage: rolloutPercentage, endpoints: .empty))
     }
 }
 
@@ -162,6 +162,7 @@ class ConfigurationServiceMock: ConfigurationServiceType {
     var getConfigDataCallCount = 0
     var simulateRequestFailure = false
     var mockedError = ConfigurationServiceError.requestError(.unknown)
+    var rolloutPercentage = 100
 
     func getConfigData() -> Result<ConfigData, ConfigurationServiceError> {
         getConfigDataCallCount += 1
@@ -170,7 +171,7 @@ class ConfigurationServiceMock: ConfigurationServiceType {
             return .failure(mockedError)
         }
 
-        return .success(ConfigData(enabled: true, endpoints: .empty))
+        return .success(ConfigData(rolloutPercentage: rolloutPercentage, endpoints: .empty))
     }
 }
 
@@ -253,6 +254,27 @@ class URLSessionMock: URLSession {
             return nil
         }
         return try? JSONDecoder().decode(modelType.self, from: httpBody)
+    }
+
+    func decodeQueryItems<T: Decodable>(modelType: T.Type) -> T? {
+        guard let url = sentRequest?.url,
+              let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: true),
+              let queryItems = urlComponents.queryItems else {
+            return nil
+        }
+        let array = queryItems.map { item -> String? in
+            guard let value = item.value else {
+                return nil
+            }
+            if let intValue = Int(value) {
+                return "\"\(item.name)\": \(intValue)"
+            }
+            return "\"\(item.name)\": \"\(value)\""
+        }.compactMap { $0 }
+        guard let jsonData = "{\(array.joined(separator: ","))}".data(using: .utf8) else {
+            return nil
+        }
+        return try? JSONDecoder().decode(modelType.self, from: jsonData)
     }
 
     override func dataTask(

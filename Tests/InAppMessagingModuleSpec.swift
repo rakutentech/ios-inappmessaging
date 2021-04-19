@@ -72,11 +72,11 @@ class InAppMessagingModuleSpec: QuickSpec {
 
                 context("and module is enabled") {
                     beforeEach {
-                        configurationManager.isConfigEnabled = true
+                        configurationManager.rolloutPercentage = 100
                     }
 
                     it("will call refreshList in CampaignsListManager") {
-                        configurationManager.isConfigEnabled = true
+                        configurationManager.rolloutPercentage = 100
                         iamModule.initialize { }
 
                         expect(campaignsListManager.wasRefreshListCalled).to(beTrue())
@@ -94,7 +94,7 @@ class InAppMessagingModuleSpec: QuickSpec {
 
                 context("and module is disabled") {
                     beforeEach {
-                        configurationManager.isConfigEnabled = false
+                        configurationManager.rolloutPercentage = 0
                     }
 
                     it("will not call refreshList in CampaignsListManager") {
@@ -117,7 +117,7 @@ class InAppMessagingModuleSpec: QuickSpec {
 
                     context("and module is enabled") {
                         beforeEach {
-                            configurationManager.isConfigEnabled = true
+                            configurationManager.rolloutPercentage = 100
                         }
 
                         context("and module is initialized") {
@@ -170,7 +170,7 @@ class InAppMessagingModuleSpec: QuickSpec {
 
                     context("and module is disabled") {
                         beforeEach {
-                            configurationManager.isConfigEnabled = false
+                            configurationManager.rolloutPercentage = 0
                             iamModule.initialize { }
                         }
 
@@ -195,7 +195,7 @@ class InAppMessagingModuleSpec: QuickSpec {
 
                     context("and module is enabled") {
                         beforeEach {
-                            configurationManager.isConfigEnabled = true
+                            configurationManager.rolloutPercentage = 100
                         }
 
                         context("and module is initialized") {
@@ -242,7 +242,7 @@ class InAppMessagingModuleSpec: QuickSpec {
 
                     context("and module is disabled") {
                         beforeEach {
-                            configurationManager.isConfigEnabled = false
+                            configurationManager.rolloutPercentage = 0
                             iamModule.initialize { }
                         }
 

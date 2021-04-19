@@ -7,7 +7,7 @@ class DisplayPermissionServiceSpec: QuickSpec {
     override func spec() {
 
         let requestQueue = DispatchQueue(label: "iam.test.request")
-        let configData = ConfigData(enabled: true,
+        let configData = ConfigData(rolloutPercentage: 100,
                                     endpoints: EndpointURL(
                                         ping: URL(string: "https://ping.url")!,
                                         displayPermission: URL(string: "https://permission.url")!,
@@ -56,7 +56,7 @@ class DisplayPermissionServiceSpec: QuickSpec {
 
             it("will give permission if url is not available") {
                 configurationRepository.saveConfiguration(
-                    ConfigData(enabled: true,
+                    ConfigData(rolloutPercentage: 100,
                                endpoints: EndpointURL(
                                 ping: URL(string: "https://ping.url")!,
                                 displayPermission: nil,

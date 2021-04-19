@@ -19,7 +19,7 @@ class PublicAPISpec: QuickSpec {
             return DependencyManager.Container([
                 DependencyManager.ContainerElement(type: ConfigurationManagerType.self, factory: {
                     let manager = ConfigurationManagerMock()
-                    manager.isConfigEnabled = true
+                    manager.rolloutPercentage = 100
                     return manager
                 }),
                 DependencyManager.ContainerElement(type: MessageMixerServiceType.self, factory: { messageMixerService }),
