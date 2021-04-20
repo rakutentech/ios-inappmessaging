@@ -42,10 +42,10 @@ class IntegrationTests: XCTestCase {
                 response = nil
             }
             XCTAssertNotNil(response)
-            XCTAssert(response?.enabled == true)
-            XCTAssertNotNil(response?.endpoints.ping)
-            XCTAssertNotNil(response?.endpoints.displayPermission)
-            XCTAssertNotNil(response?.endpoints.impression)
+            XCTAssertNotNil(response?.rolloutPercentage)
+            XCTAssertNotNil(response?.endpoints?.ping)
+            XCTAssertNotNil(response?.endpoints?.displayPermission)
+            XCTAssertNotNil(response?.endpoints?.impression)
 
             expectation.fulfill()
         }
