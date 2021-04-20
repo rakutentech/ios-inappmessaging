@@ -5,7 +5,7 @@ import Nimble
 class KeyHasherSpec: QuickSpec {
 
     override func spec() {
-        // Be sure to run those tests for ios version >=13.0 and <13.0
+
         describe("KeyHasher") {
 
             var hasher: KeyHasher!
@@ -18,7 +18,7 @@ class KeyHasherSpec: QuickSpec {
                 context("when using \(encryption) encryption method") {
 
                     beforeEach {
-                        hasher.encryprtionMethod = encryption
+                        hasher.encryptionMethod = encryption
                     }
 
                     it("will generate a valid hash for empty data") {
@@ -47,7 +47,7 @@ class KeyHasherSpec: QuickSpec {
                         let resultA = hasher.generateHash()
 
                         var anotherHasher = KeyHasher()
-                        anotherHasher.encryprtionMethod = hasher.encryprtionMethod
+                        anotherHasher.encryptionMethod = hasher.encryptionMethod
                         anotherHasher.combine("some value")
                         let resultB = anotherHasher.generateHash()
 
@@ -59,7 +59,7 @@ class KeyHasherSpec: QuickSpec {
                         let resultA = hasher.generateHash()
 
                         var anotherHasher = KeyHasher()
-                        anotherHasher.encryprtionMethod = hasher.encryprtionMethod
+                        anotherHasher.encryptionMethod = hasher.encryptionMethod
                         anotherHasher.combine("another value")
                         let resultB = anotherHasher.generateHash()
 
@@ -98,7 +98,7 @@ class KeyHasherSpec: QuickSpec {
                             let resultA = hasher.generateHash()
 
                             var anotherHasher = KeyHasher()
-                            anotherHasher.encryprtionMethod = hasher.encryprtionMethod
+                            anotherHasher.encryptionMethod = hasher.encryptionMethod
                             anotherHasher.salt = hasher.salt
                             anotherHasher.combine("some value")
                             let resultB = anotherHasher.generateHash()
@@ -111,7 +111,7 @@ class KeyHasherSpec: QuickSpec {
                             let resultA = hasher.generateHash()
 
                             var anotherHasher = KeyHasher()
-                            anotherHasher.encryprtionMethod = hasher.encryprtionMethod
+                            anotherHasher.encryptionMethod = hasher.encryptionMethod
                             anotherHasher.salt = hasher.salt
                             anotherHasher.combine("another value")
                             let resultB = anotherHasher.generateHash()

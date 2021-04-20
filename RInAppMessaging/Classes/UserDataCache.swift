@@ -79,9 +79,9 @@ internal class UserDataCache: UserDataCacheable {
         identifiers.map({ $0.identifier }).sorted().forEach {
             hasher.combine($0)
         }
-        hasher.encryprtionMethod = .md5
+        hasher.encryptionMethod = .md5
         let salt = hasher.generateHash()
-        hasher.encryprtionMethod = .sha256
+        hasher.encryptionMethod = .sha256
         hasher.salt = salt
 
         return hasher.generateHash()
