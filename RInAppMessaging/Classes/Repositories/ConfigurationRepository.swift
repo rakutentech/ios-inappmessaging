@@ -5,7 +5,7 @@ internal protocol ConfigurationRepositoryType: AnyObject {
 
     func saveConfiguration(_ data: ConfigData)
     func getEndpoints() -> EndpointURL?
-    func getIsEnabledStatus() -> Bool?
+    func getRolloutPercentage() -> Int?
 }
 
 internal class ConfigurationRepository: ConfigurationRepositoryType {
@@ -21,10 +21,10 @@ internal class ConfigurationRepository: ConfigurationRepositoryType {
     }
 
     func getEndpoints() -> EndpointURL? {
-        return configuration?.endpoints
+        configuration?.endpoints
     }
 
-    func getIsEnabledStatus() -> Bool? {
-        return configuration?.enabled
+    func getRolloutPercentage() -> Int? {
+        configuration?.rolloutPercentage
     }
 }

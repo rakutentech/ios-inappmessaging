@@ -11,6 +11,7 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
     private let campaignTriggerAgent: CampaignTriggerAgentType
     private let campaignRepository: CampaignRepositoryType
     private let router: RouterType
+    private let randomizer: RandomizerType
 
     private var isInitialized = false
     private var isEnabled = true
@@ -26,7 +27,8 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
          readyCampaignDispatcher: CampaignDispatcherType,
          campaignTriggerAgent: CampaignTriggerAgentType,
          campaignRepository: CampaignRepositoryType,
-         router: RouterType) {
+         router: RouterType,
+         randomizer: RandomizerType) {
 
         self.configurationManager = configurationManager
         self.campaignsListManager = campaignsListManager
@@ -37,6 +39,7 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
         self.campaignTriggerAgent = campaignTriggerAgent
         self.campaignRepository = campaignRepository
         self.router = router
+        self.randomizer = randomizer
 
         self.configurationManager.errorDelegate = self
         self.campaignsListManager.errorDelegate = self
@@ -51,10 +54,11 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
         }
 
         configurationManager.fetchAndSaveConfigData { [weak self] config in
-            self?.isEnabled = config.enabled
+            let enabled = self?.isEnabled(config: config) ?? false
+            self?.isEnabled = enabled
             self?.isInitialized = true
 
-            if config.enabled {
+            if enabled {
                 self?.campaignsListManager.refreshList()
             } else {
                 deinitHandler()
@@ -122,5 +126,15 @@ extension InAppMessagingModule {
 extension InAppMessagingModule {
     func didReceiveError(sender: ErrorReportable, error: NSError) {
         aggregatedErrorHandler?(error)
+    }
+}
+
+// MARK: - Enabled method
+extension InAppMessagingModule {
+    private func isEnabled(config: ConfigData) -> Bool {
+        guard config.rolloutPercentage > 0 else {
+            return false
+        }
+        return randomizer.dice <= config.rolloutPercentage
     }
 }

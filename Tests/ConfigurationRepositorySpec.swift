@@ -20,7 +20,7 @@ class ConfigurationRepositorySpec: QuickSpec {
 
             it("will not hold any data until saved") {
                 expect(configurationRepository.getEndpoints()).to(beNil())
-                expect(configurationRepository.getIsEnabledStatus()).to(beNil())
+                expect(configurationRepository.getRolloutPercentage()).to(beNil())
             }
 
             it("will properly save endpoint data") {
@@ -38,7 +38,7 @@ class ConfigurationRepositorySpec: QuickSpec {
                 let config = ConfigData(rolloutPercentage: rolloutPercentage, endpoints: .empty)
                 configurationRepository.saveConfiguration(config)
 
-                expect(configurationRepository.getIsEnabledStatus()).to(beTrue())
+                expect(configurationRepository.getRolloutPercentage()).to(equal(rolloutPercentage))
             }
         }
     }

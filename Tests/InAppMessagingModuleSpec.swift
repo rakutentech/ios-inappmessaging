@@ -19,6 +19,7 @@ class InAppMessagingModuleSpec: QuickSpec {
             var campaignTriggerAgent: CampaignTriggerAgentType!
             var campaignRepository: CampaignRepositoryMock!
             var router: RouterMock!
+            var randomizer: RandomizerMock!
             var delegate: Delegate!
 
             beforeEach {
@@ -34,6 +35,7 @@ class InAppMessagingModuleSpec: QuickSpec {
                                                             campaignsValidator: campaignsValidator)
                 campaignRepository = CampaignRepositoryMock()
                 router = RouterMock()
+                randomizer = RandomizerMock()
                 delegate = Delegate()
                 iamModule = InAppMessagingModule(configurationManager: configurationManager,
                                                  campaignsListManager: campaignsListManager,
@@ -43,7 +45,8 @@ class InAppMessagingModuleSpec: QuickSpec {
                                                  readyCampaignDispatcher: readyCampaignDispatcher,
                                                  campaignTriggerAgent: campaignTriggerAgent,
                                                  campaignRepository: campaignRepository,
-                                                 router: router)
+                                                 router: router,
+                                                 randomizer: randomizer)
                 iamModule.delegate = delegate
             }
 
@@ -89,6 +92,32 @@ class InAppMessagingModuleSpec: QuickSpec {
                         }
 
                         expect(deinitCalled).toAfterTimeout(beFalse())
+                    }
+                }
+
+                context("and module is partially enabled") {
+                    [(1, 2), (50, 51), (99, 100)].forEach { (rolloutPercentage, returnedValue) in
+                        it("will not call refreshList in CampaignsListManager") {
+                             configurationManager.rolloutPercentage = rolloutPercentage
+                             randomizer.returnedValue = UInt(returnedValue)
+                             iamModule.initialize { }
+
+                             expect(campaignsListManager.wasRefreshListCalled).to(beFalse())
+                        }
+                    }
+
+                    [(1, 1), (50, 49), (50, 50), (99, 98), (99, 99), (100, 100)].forEach { (rolloutPercentage, returnedValue) in
+                        it("will call refreshList in CampaignsListManager") {
+                             configurationManager.rolloutPercentage = rolloutPercentage
+                             randomizer.returnedValue = UInt(returnedValue)
+                             iamModule.initialize { }
+
+                             expect(campaignsListManager.wasRefreshListCalled).to(beTrue())
+                        }
+                    }
+
+                    afterEach {
+                        randomizer.returnedValue = 0
                     }
                 }
 

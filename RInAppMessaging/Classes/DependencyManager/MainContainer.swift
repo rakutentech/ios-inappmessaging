@@ -71,6 +71,9 @@ internal enum MainContainerFactory {
             ContainerElement(type: RouterType.self, factory: {
                 Router(dependencyManager: manager)
             }),
+            ContainerElement(type: Randomizer.self, factory: {
+                Randomizer()
+            }),
             ContainerElement(type: CampaignDispatcherType.self, factory: {
                 CampaignDispatcher(router: manager.resolve(type: RouterType.self)!,
                                         permissionService: manager.resolve(type: DisplayPermissionServiceType.self)!,
