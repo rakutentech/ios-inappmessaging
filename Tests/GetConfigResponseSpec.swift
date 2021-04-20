@@ -14,7 +14,6 @@ class GetConfigResponseSpec: QuickSpec {
 
                     expect(model).toNot(beNil())
                     expect(model?.data.rolloutPercentage).to(equal(0))
-                    expect(model?.data.enabled).to(beFalse())
                     expect(model?.data.endpoints?.ping).toNot(beNil())
                     expect(model?.data.endpoints?.impression).toNot(beNil())
                     expect(model?.data.endpoints?.displayPermission).toNot(beNil())
@@ -25,7 +24,6 @@ class GetConfigResponseSpec: QuickSpec {
 
                     expect(model).toNot(beNil())
                     expect(model?.data.rolloutPercentage).to(equal(0))
-                    expect(model?.data.enabled).to(beFalse())
                     expect(model?.data.endpoints).to(beNil())
                 }
 
@@ -34,7 +32,6 @@ class GetConfigResponseSpec: QuickSpec {
 
                     expect(model).toNot(beNil())
                     expect(model?.data.rolloutPercentage).to(equal(0))
-                    expect(model?.data.enabled).to(beFalse())
                     expect(model?.data.endpoints?.ping).to(beNil())
                     expect(model?.data.endpoints?.impression).to(beNil())
                     expect(model?.data.endpoints?.displayPermission).to(beNil())
@@ -45,7 +42,6 @@ class GetConfigResponseSpec: QuickSpec {
 
                     expect(model).toNot(beNil())
                     expect(model?.data.rolloutPercentage).to(equal(0))
-                    expect(model?.data.enabled).to(beFalse())
                     expect(model?.data.endpoints?.ping).to(beNil())
                     expect(model?.data.endpoints?.impression).toNot(beNil())
                     expect(model?.data.endpoints?.displayPermission).toNot(beNil())
@@ -56,7 +52,6 @@ class GetConfigResponseSpec: QuickSpec {
 
                     expect(model).toNot(beNil())
                     expect(model?.data.rolloutPercentage).to(equal(0))
-                    expect(model?.data.enabled).to(beFalse())
                     expect(model?.data.endpoints?.ping).toNot(beNil())
                     expect(model?.data.endpoints?.impression).to(beNil())
                     expect(model?.data.endpoints?.displayPermission).toNot(beNil())
@@ -67,7 +62,6 @@ class GetConfigResponseSpec: QuickSpec {
 
                     expect(model).toNot(beNil())
                     expect(model?.data.rolloutPercentage).to(equal(0))
-                    expect(model?.data.enabled).to(beFalse())
                     expect(model?.data.endpoints?.ping).toNot(beNil())
                     expect(model?.data.endpoints?.impression).toNot(beNil())
                     expect(model?.data.endpoints?.displayPermission).to(beNil())

@@ -75,7 +75,8 @@
                 let readyCampaignDispatcher = dependencyManager.resolve(type: CampaignDispatcherType.self),
                 let campaignTriggerAgent = dependencyManager.resolve(type: CampaignTriggerAgentType.self),
                 let campaignRepository = dependencyManager.resolve(type: CampaignRepositoryType.self),
-                let router = dependencyManager.resolve(type: RouterType.self) else {
+                let router = dependencyManager.resolve(type: RouterType.self),
+                let randomizer = dependencyManager.resolve(type: Randomizer.self) else {
 
                     assertionFailure("In-App Messaging SDK module initialization failure: Dependencies could not be resolved")
                     return
@@ -90,7 +91,8 @@
                                                      readyCampaignDispatcher: readyCampaignDispatcher,
                                                      campaignTriggerAgent: campaignTriggerAgent,
                                                      campaignRepository: campaignRepository,
-                                                     router: router)
+                                                     router: router,
+                                                     randomizer: randomizer)
             initializedModule?.aggregatedErrorHandler = { error in
                 errorDelegate?.inAppMessagingDidReturnError(error)
             }

@@ -393,3 +393,10 @@ extension EndpointURL {
                            impression: emptyURL)
     }
 }
+
+final class RandomizerMock: RandomizerType {
+    var returnedValue: UInt = 0
+    var dice: UInt {
+        returnedValue
+    }
+}
