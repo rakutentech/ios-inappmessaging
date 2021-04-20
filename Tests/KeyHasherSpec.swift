@@ -30,6 +30,12 @@ class KeyHasherSpec: QuickSpec {
                         expect(hasher.generateHash()).toNot(beEmpty())
                     }
 
+                    it("will generate a valid hash for a very long value") {
+                        let longString = Array(repeating: "123abc!@#", count: 100).joined()
+                        hasher.combine(longString)
+                        expect(hasher.generateHash()).toNot(beEmpty())
+                    }
+
                     it("will generate a valid hash for single added value") {
                         hasher.combine("some value")
                         expect(hasher.generateHash()).toNot(beEmpty())
