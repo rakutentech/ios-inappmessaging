@@ -228,11 +228,11 @@ class PublicAPISpec: QuickSpec {
                         return false
                     }))
 
+                    RInAppMessaging.deinitializeModule()
                     reinitializeSDK()
-                    campaignsListManager.refreshList()
                     expect(campaignRepository.list).to(haveCount(1))
                     expect(campaignRepository.list.first?.impressionsLeft).to(equal(1))
-                    RInAppMessaging.logEvent(LoginSuccessfulEvent())
+                    generateAndDisplayLoginCampaigns(count: 1, addContexts: false)
 
                     expect(UIApplication.shared.keyWindow?.subviews).toEventually(containElementSatisfying({
                         if let view = $0 as? BaseView {
@@ -244,12 +244,13 @@ class PublicAPISpec: QuickSpec {
                 }
 
                 it("will not show a message if impressionsLeft was 0 in the last session") {
-                    messageMixerService.mockedResponse = PingResponse(
+                    let mockedResponse = PingResponse(
                         nextPingMilliseconds: Int.max,
                         currentPingMilliseconds: 0,
                         data: [TestHelpers.generateCampaign(id: "test", test: false, delay: 100, maxImpressions: 1,
                                                             triggers: [Trigger(type: .event, eventType: .loginSuccessful,
                                                                                eventName: "e1", attributes: [])])])
+                    messageMixerService.mockedResponse = mockedResponse
                     campaignsListManager.refreshList()
                     RInAppMessaging.logEvent(LoginSuccessfulEvent())
 
@@ -261,7 +262,9 @@ class PublicAPISpec: QuickSpec {
                         return false
                     }))
 
+                    RInAppMessaging.deinitializeModule()
                     reinitializeSDK()
+                    messageMixerService.mockedResponse = mockedResponse
                     campaignsListManager.refreshList()
                     expect(campaignRepository.list).to(haveCount(1))
                     RInAppMessaging.logEvent(LoginSuccessfulEvent())
@@ -282,10 +285,10 @@ class PublicAPISpec: QuickSpec {
                         return false
                     }))
 
+                    RInAppMessaging.deinitializeModule()
                     reinitializeSDK()
-                    campaignsListManager.refreshList()
                     expect(campaignRepository.list).to(haveCount(1))
-                    RInAppMessaging.logEvent(LoginSuccessfulEvent())
+                    generateAndDisplayLoginCampaigns(count: 1, addContexts: false)
 
                     expect(UIApplication.shared.keyWindow?.subviews)
                         .toAfterTimeout(allPass({ !($0 is BaseView) }))

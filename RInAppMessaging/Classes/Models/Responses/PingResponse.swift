@@ -15,6 +15,7 @@ internal struct Campaign: Codable, Hashable {
     private enum CodingKeys: String, CodingKey {
         case data = "campaignData"
         case impressionsLeft // Cache coding only
+        case isOptedOut // Cache coding only
     }
 
     let data: CampaignData
@@ -38,6 +39,7 @@ internal struct Campaign: Codable, Hashable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let data = try container.decode(CampaignData.self, forKey: .data)
         impressionsLeft = (try? container.decode(Int.self, forKey: .impressionsLeft)) ?? data.maxImpressions
+        isOptedOut = (try? container.decode(Bool.self, forKey: .isOptedOut)) ?? false
         self.data = data
     }
 
@@ -45,6 +47,7 @@ internal struct Campaign: Codable, Hashable {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(data, forKey: .data)
         try container.encode(impressionsLeft, forKey: .impressionsLeft)
+        try container.encode(isOptedOut, forKey: .isOptedOut)
     }
 
     init(data: CampaignData) {

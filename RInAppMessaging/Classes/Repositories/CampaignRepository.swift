@@ -110,10 +110,8 @@ internal class CampaignRepository: CampaignRepositoryType {
     }
 
     func loadCachedData() {
-        guard let cachedData = userDataCache.getUserData(identifiers: preferenceRepository.getUserIdentifiers())?.campaignData else {
-            return
-        }
-        campaigns.set(value: cachedData)
+        let cachedData = userDataCache.getUserData(identifiers: preferenceRepository.getUserIdentifiers())?.campaignData
+        campaigns.set(value: cachedData ?? [])
     }
 
     private func findCampaign(withID id: String) -> Campaign? {

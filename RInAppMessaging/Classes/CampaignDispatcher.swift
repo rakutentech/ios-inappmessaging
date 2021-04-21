@@ -15,7 +15,7 @@ internal protocol CampaignDispatcherType {
 
 /// Class for adding ready (validated) campaigns to a queue to be sequentially displayed.
 /// Each next campaign is scheduled after closing according to the Campaign's delay paramater.
-internal class CampaignDispatcher: CampaignDispatcherType {
+internal class CampaignDispatcher: CampaignDispatcherType, TaskSchedulable {
 
     private let router: RouterType
     private let permissionService: DisplayPermissionServiceType
@@ -23,9 +23,10 @@ internal class CampaignDispatcher: CampaignDispatcherType {
 
     private let dispatchQueue = DispatchQueue(label: "IAM.Campaign", qos: .userInteractive)
     private var queuedCampaigns = [Campaign]()
-    private(set) var isDispatching = false
+    @AtomicGetSet private(set) var isDispatching = false
 
     weak var delegate: CampaignDispatcherDelegate?
+    var scheduledTask: DispatchWorkItem?
 
     init(router: RouterType,
          permissionService: DisplayPermissionServiceType,
@@ -43,10 +44,10 @@ internal class CampaignDispatcher: CampaignDispatcherType {
     }
 
     func resetQueue() {
+        isDispatching = false
+        scheduledTask?.cancel()
         dispatchQueue.async {
-            self.isDispatching = false
             self.queuedCampaigns.removeAll()
-            // Note: WorkScheduler might still call dispatchNext()
         }
     }
 
@@ -105,12 +106,9 @@ internal class CampaignDispatcher: CampaignDispatcherType {
                 if cancelled {
                     self.dispatchNext()
                 } else {
-                    WorkScheduler.scheduleTask(
-                        milliseconds: self.delayBeforeNextMessage(for: campaign.data),
-                        closure: {
-                            self.dispatchQueue.async { self.dispatchNext() }
-                        }
-                    )
+                    self.scheduleTask(milliseconds: self.delayBeforeNextMessage(for: campaign.data)) {
+                        self.dispatchQueue.async { self.dispatchNext() }
+                    }
                 }
             }
         })
