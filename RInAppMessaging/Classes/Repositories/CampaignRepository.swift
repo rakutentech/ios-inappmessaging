@@ -28,7 +28,7 @@ internal protocol CampaignRepositoryType: AnyObject, Lockable {
     func incrementImpressionsLeftInCampaign(id: String) -> Campaign?
 
     /// Loads campaign data from user cache
-    func loadCachedData()
+    func loadCachedData(syncWithDefaultUserData: Bool)
 }
 
 /// Repository to store campaigns retrieved from ping request.
@@ -38,6 +38,8 @@ internal class CampaignRepository: CampaignRepositoryType {
     private let preferenceRepository: IAMPreferenceRepository
     private let campaigns = LockableObject([Campaign]())
     private(set) var lastSyncInMilliseconds: Int64?
+    private var defaultCacheUser = [UserIdentifier]()
+
     var list: [Campaign] {
         return campaigns.get()
     }
@@ -49,7 +51,7 @@ internal class CampaignRepository: CampaignRepositoryType {
         self.userDataCache = userDataCache
         self.preferenceRepository = preferenceRepository
 
-        loadCachedData()
+        loadCachedData(syncWithDefaultUserData: false)
     }
 
     func syncWith(list: [Campaign], timestampMilliseconds: Int64) {
@@ -75,7 +77,7 @@ internal class CampaignRepository: CampaignRepositoryType {
             newList.append(updatedCampaign)
         }
         self.campaigns.set(value: newList)
-        userDataCache.cacheCampaignData(newList, userIdentifiers: preferenceRepository.getUserIdentifiers())
+        saveDataToCache(newList)
     }
 
     @discardableResult
@@ -89,7 +91,8 @@ internal class CampaignRepository: CampaignRepositoryType {
         let updatedCampaign = Campaign.updatedCampaign(campaign, asOptedOut: true)
         list[index] = updatedCampaign
         self.campaigns.set(value: list)
-        userDataCache.cacheCampaignData(list, userIdentifiers: preferenceRepository.getUserIdentifiers())
+        saveDataToCache(list)
+
         return updatedCampaign
     }
 
@@ -109,10 +112,21 @@ internal class CampaignRepository: CampaignRepositoryType {
         return updateImpressionsLeftInCampaign(campaign, newValue: campaign.impressionsLeft + 1)
     }
 
-    func loadCachedData() {
-        let cachedData = userDataCache.getUserData(identifiers: preferenceRepository.getUserIdentifiers())?.campaignData
-        campaigns.set(value: cachedData ?? [])
+    func loadCachedData(syncWithDefaultUserData: Bool) {
+        var cachedData = userDataCache.getUserData(identifiers: preferenceRepository.getUserIdentifiers())?.campaignData ?? []
+        if syncWithDefaultUserData {
+            userDataCache.getUserData(identifiers: defaultCacheUser)?.campaignData?.forEach({ defaultUserCampaign in
+                if let existingCampaignIndex = cachedData.firstIndex(where: { $0.id == defaultUserCampaign.id }) {
+                    cachedData[existingCampaignIndex] = defaultUserCampaign
+                } else {
+                    cachedData.append(defaultUserCampaign)
+                }
+            })
+        }
+        campaigns.set(value: cachedData)
     }
+
+    // MARK: - Helpers
 
     private func findCampaign(withID id: String) -> Campaign? {
         campaigns.get().first(where: { $0.id == id })
@@ -129,7 +143,16 @@ internal class CampaignRepository: CampaignRepositoryType {
         let updatedCampaign = Campaign.updatedCampaign(campaign, withImpressionLeft: newValue)
         list[index] = updatedCampaign
         campaigns.set(value: list)
-        userDataCache.cacheCampaignData(list, userIdentifiers: preferenceRepository.getUserIdentifiers())
+        saveDataToCache(list)
+
         return updatedCampaign
+    }
+
+    private func saveDataToCache(_ list: [Campaign]) {
+        let user = preferenceRepository.getUserIdentifiers()
+        userDataCache.cacheCampaignData(list, userIdentifiers: user)
+        if defaultCacheUser != user {
+            userDataCache.cacheCampaignData(list, userIdentifiers: defaultCacheUser)
+        }
     }
 }

@@ -222,6 +222,8 @@ class InAppMessagingModuleSpec: QuickSpec {
 
                 context("when calling registerPreference") {
 
+                    let aUser = IAMPreferenceBuilder().setUserId("user").build()
+
                     context("and module is enabled") {
                         beforeEach {
                             configurationManager.rolloutPercentage = 100
@@ -246,6 +248,31 @@ class InAppMessagingModuleSpec: QuickSpec {
                             it("will reload campaigns repository cache") {
                                 iamModule.registerPreference(IAMPreference())
                                 expect(campaignRepository.wasLoadCachedDataCalled).to(beTrue())
+                            }
+
+                            it("will reload campaigns repository cache with syncWithDefaultUserData set to true for following user changes") {
+                                [(nil, aUser), (IAMPreference(), aUser)]
+                                    .forEach { userA, userB in
+                                        iamModule.registerPreference(userA)
+                                        campaignRepository.resetFlags()
+                                        iamModule.registerPreference(userB)
+                                        expect(campaignRepository.wasLoadCachedDataCalled).to(beTrue())
+                                        expect(campaignRepository.loadCachedDataParameters).to(equal((true)))
+                                    }
+                            }
+
+                            it("will reload campaigns repository cache with syncWithDefaultUserData set to false for following user changes") {
+                                [(aUser, nil), (aUser, IAMPreference()),
+                                 (aUser, IAMPreferenceBuilder().setUserId("userB").build()),
+                                 (nil, nil), (nil, IAMPreference()),
+                                 (IAMPreference(), nil), (IAMPreference(), IAMPreference())]
+                                    .forEach { userA, userB in
+                                        iamModule.registerPreference(userA)
+                                        campaignRepository.resetFlags()
+                                        iamModule.registerPreference(userB)
+                                        expect(campaignRepository.wasLoadCachedDataCalled).to(beTrue())
+                                        expect(campaignRepository.loadCachedDataParameters).to(equal((false)))
+                                    }
                             }
 
                             it("will reset dispatch queue if new preference has different ids") {

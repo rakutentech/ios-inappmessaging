@@ -110,6 +110,13 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
                                 expect(router.lastDisplayedCampaign).toEventually(equal(firstCampaign))
                                 expect(router.lastDisplayedCampaign).toEventually(equal(secondCampaign))
                             }
+
+                            it("will not restore impressions left value") {
+                                let campaign = TestHelpers.generateCampaign(id: "test", title: "[ctx] title")
+                                dispatcher.addToQueue(campaign: campaign)
+                                dispatcher.dispatchAllIfNeeded()
+                                expect(campaignRepository.wasIncrementImpressionsCalled).toAfterTimeout(beFalse())
+                            }
                         }
 
                         context("and contexts are not approved") {
@@ -150,6 +157,13 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
                                 dispatcher.addToQueue(campaign: testCampaign)
                                 dispatcher.dispatchAllIfNeeded()
                                 expect(delegate.wasPingCalled).toEventually(beTrue())
+                            }
+
+                            it("will restore impressions left value (cancelled display)") {
+                                let campaign = TestHelpers.generateCampaign(id: "test", title: "[ctx] title")
+                                dispatcher.addToQueue(campaign: campaign)
+                                dispatcher.dispatchAllIfNeeded()
+                                expect(campaignRepository.wasIncrementImpressionsCalled).toEventually(beTrue())
                             }
                         }
                     }
@@ -247,9 +261,11 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
             }
 
             context("after dispatching") {
+                beforeEach {
+                    permissionService.shouldGrantPermission = true
+                }
 
                 it("will decrement impressions left in campaign") {
-                    permissionService.shouldGrantPermission = true
                     let campaign = TestHelpers.generateCampaign(id: "test")
                     dispatcher.addToQueue(campaign: campaign)
                     dispatcher.dispatchAllIfNeeded()
@@ -257,7 +273,6 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
                 }
 
                 it("will restore impressions left value if contexts were rejected") {
-                    permissionService.shouldGrantPermission = true
                     delegate.shouldShowCampaign = false
                     let campaign = TestHelpers.generateCampaign(id: "test", title: "[ctx] title")
                     dispatcher.addToQueue(campaign: campaign)
@@ -266,7 +281,6 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
                 }
 
                 it("will not increment impressions left value if contexts were approved") {
-                    permissionService.shouldGrantPermission = true
                     delegate.shouldShowCampaign = true
                     let campaign = TestHelpers.generateCampaign(id: "test", title: "[ctx] title")
                     dispatcher.addToQueue(campaign: campaign)
@@ -275,7 +289,6 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
                 }
 
                 it("will dispatch remaining campaigns") {
-                    permissionService.shouldGrantPermission = true
                     TestHelpers.MockResponse.withGeneratedCampaigns(count: 10, test: false, delay: 10).data.forEach {
                         dispatcher.addToQueue(campaign: $0)
                     }
@@ -284,7 +297,6 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
                 }
 
                 it("will schedule next dispatch after a delay defined in campaign data") {
-                    permissionService.shouldGrantPermission = true
                     TestHelpers.MockResponse.withGeneratedCampaigns(count: 2, test: false, delay: 1000).data.forEach {
                         dispatcher.addToQueue(campaign: $0)
                     }
@@ -295,7 +307,6 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
                 }
 
                 it("won't schedule next dispatch if there are no queued campaigns") {
-                    permissionService.shouldGrantPermission = true
                     let campaign = TestHelpers.MockResponse.withGeneratedCampaigns(count: 1, test: false, delay: 0).data[0]
                     dispatcher.addToQueue(campaign: campaign)
                     dispatcher.dispatchAllIfNeeded()
