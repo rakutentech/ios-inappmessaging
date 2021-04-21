@@ -85,10 +85,20 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
         guard isEnabled else {
             return
         }
+
+        let diff: [IAMPreference.Field]?
+        if let preference = preference {
+            diff = preference.diff(preferenceRepository.preference)
+        } else {
+            diff = preferenceRepository.preference == nil ? [] : nil
+        }
         preferenceRepository.setPreference(preference)
 
         guard isInitialized else {
             return
+        }
+        if diff?.isEmpty != true && diff != [.accessToken] {
+            readyCampaignDispatcher.resetQueue()
         }
         campaignRepository.loadCachedData()
         campaignsListManager.refreshList()

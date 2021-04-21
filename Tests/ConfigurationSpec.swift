@@ -48,6 +48,7 @@ class ConfigurationSpec: QuickSpec {
                     }
 
                     expect(RInAppMessaging.initializedModule).toEventually(beNil())
+                    expect(RInAppMessaging.dependencyManager).to(beNil())
                 }
 
                 it("will not call ping") {

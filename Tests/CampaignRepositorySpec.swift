@@ -160,6 +160,25 @@ class CampaignRepositorySpec: QuickSpec {
                     expect(userDataCache.cachedCampaignData?.first?.impressionsLeft).to(equal(testCampaign.impressionsLeft + 1))
                 }
             }
+
+            context("when loadCache is called") {
+
+                it("will populate campaign list from cache data") {
+                    userDataCache.userDataMock = UserDataCacheContainer(campaignData: [testCampaign])
+                    expect(campaignRepository.list).to(beEmpty())
+                    campaignRepository.loadCachedData()
+                    expect(campaignRepository.list).to(haveCount(1))
+                }
+
+                it("will clear campaign list if there is no cache data (user change)") {
+                    userDataCache.userDataMock = UserDataCacheContainer(campaignData: [testCampaign])
+                    campaignRepository.loadCachedData()
+                    expect(campaignRepository.list).to(haveCount(1))
+                    userDataCache.userDataMock = nil
+                    campaignRepository.loadCachedData()
+                    expect(campaignRepository.list).to(beEmpty())
+                }
+            }
         }
     }
 }

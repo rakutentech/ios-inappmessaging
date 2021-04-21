@@ -64,9 +64,9 @@ class CampaignRepositoryMock: CampaignRepositoryType {
 
 class CampaignDispatcherMock: CampaignDispatcherType {
     weak var delegate: CampaignDispatcherDelegate?
-    private(set) var wasDispatchCalled = false
-    private(set) var addedCampaigns = [Campaign]()
-    private(set) var wasResetQueueCalled = false
+    var wasDispatchCalled = false
+    var addedCampaigns = [Campaign]()
+    var wasResetQueueCalled = false
 
     func addToQueue(campaign: Campaign) {
         addedCampaigns.append(campaign)

@@ -247,6 +247,34 @@ class InAppMessagingModuleSpec: QuickSpec {
                                 iamModule.registerPreference(IAMPreference())
                                 expect(campaignRepository.wasLoadCachedDataCalled).to(beTrue())
                             }
+
+                            it("will reset dispatch queue if new preference has different ids") {
+                                iamModule.registerPreference(IAMPreferenceBuilder().setUserId("user").build())
+                                readyCampaignDispatcher.wasResetQueueCalled = false
+                                iamModule.registerPreference(IAMPreferenceBuilder().setUserId("user2").build())
+                                expect(readyCampaignDispatcher.wasResetQueueCalled).to(beTrue())
+                            }
+
+                            it("will reset dispatch queue if previous preference was nil") {
+                                iamModule.registerPreference(nil)
+                                readyCampaignDispatcher.wasResetQueueCalled = false
+                                iamModule.registerPreference(IAMPreferenceBuilder().setUserId("user2").build())
+                                expect(readyCampaignDispatcher.wasResetQueueCalled).to(beTrue())
+                            }
+
+                            it("will not reset dispatch queue if new preference has the same id") {
+                                iamModule.registerPreference(IAMPreferenceBuilder().setUserId("user").build())
+                                readyCampaignDispatcher.wasResetQueueCalled = false
+                                iamModule.registerPreference(IAMPreferenceBuilder().setUserId("user").build())
+                                expect(readyCampaignDispatcher.wasResetQueueCalled).to(beFalse())
+                            }
+
+                            it("will not reset dispatch queue if just accessToken was added/modified") {
+                                iamModule.registerPreference(IAMPreferenceBuilder().setUserId("user").setAccessToken("token1").build())
+                                readyCampaignDispatcher.wasResetQueueCalled = false
+                                iamModule.registerPreference(IAMPreferenceBuilder().setUserId("user").setAccessToken("token2").build())
+                                expect(readyCampaignDispatcher.wasResetQueueCalled).to(beFalse())
+                            }
                         }
 
                         context("and module is not initialized") {
@@ -265,6 +293,13 @@ class InAppMessagingModuleSpec: QuickSpec {
                             it("will not reload campaigns repository cache") {
                                 iamModule.registerPreference(IAMPreference())
                                 expect(campaignRepository.wasLoadCachedDataCalled).to(beFalse())
+                            }
+
+                            it("will not reset dispatch queue even if new preference has different ids") {
+                                iamModule.registerPreference(IAMPreferenceBuilder().setUserId("user").build())
+                                readyCampaignDispatcher.wasResetQueueCalled = false
+                                iamModule.registerPreference(IAMPreferenceBuilder().setUserId("user2").build())
+                                expect(readyCampaignDispatcher.wasResetQueueCalled).to(beFalse())
                             }
                         }
                     }
