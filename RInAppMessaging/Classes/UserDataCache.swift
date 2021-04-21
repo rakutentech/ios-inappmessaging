@@ -20,7 +20,7 @@ internal struct UserDataCacheContainer: Codable, Equatable {
 
 internal class UserDataCache: UserDataCacheable {
 
-    private typealias CacheContainers = [Set<UserIdentifier>: UserDataCacheContainer]
+    private typealias CacheContainers = [String: UserDataCacheContainer]
 
     private let userDefaults: UserDefaults
     private var cachedContainers: CacheContainers
@@ -74,7 +74,16 @@ internal class UserDataCache: UserDataCacheable {
         }
     }
 
-    private func userKey(from identifiers: [UserIdentifier]) -> Set<UserIdentifier> {
-        Set<UserIdentifier>(identifiers)
+    private func userKey(from identifiers: [UserIdentifier]) -> String {
+        var hasher = KeyHasher()
+        identifiers.map({ $0.identifier }).sorted().forEach {
+            hasher.combine($0)
+        }
+        hasher.encryptionMethod = .md5
+        let salt = hasher.generateHash()
+        hasher.encryptionMethod = .sha256
+        hasher.salt = salt
+
+        return hasher.generateHash()
     }
 }
