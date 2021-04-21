@@ -22,6 +22,7 @@ class CampaignRepositoryMock: CampaignRepositoryType {
     private(set) var wasOptOutCalled = false
     private(set) var lastSyncCampaigns = [Campaign]()
     private(set) var wasLoadCachedDataCalled = false
+    private(set) var loadCachedDataParameters: (Bool)?
 
     func decrementImpressionsLeftInCampaign(id: String) -> Campaign? {
         wasDecrementImpressionsCalled = true
@@ -50,8 +51,18 @@ class CampaignRepositoryMock: CampaignRepositoryType {
         lastSyncCampaigns = list
     }
 
-    func loadCachedData() {
+    func loadCachedData(syncWithDefaultUserData: Bool) {
         wasLoadCachedDataCalled = true
+        loadCachedDataParameters = (syncWithDefaultUserData)
+    }
+
+    func resetFlags() {
+        wasDecrementImpressionsCalled = false
+        wasIncrementImpressionsCalled = false
+        wasOptOutCalled = false
+        lastSyncCampaigns = [Campaign]()
+        wasLoadCachedDataCalled = false
+        loadCachedDataParameters = nil
     }
 
     private func indexAndCampaign(forID id: String) -> (Int, Campaign)? {
@@ -369,19 +380,23 @@ class RouterMock: RouterType {
 
 class UserDataCacheMock: UserDataCacheable {
     var userDataMock: UserDataCacheContainer?
+    var defaultUserDataMock: UserDataCacheContainer?
     var cachedCampaignData: [Campaign]?
     var cachedDisplayPermissionData: (DisplayPermissionResponse, String)?
+    var cachedData = [[UserIdentifier]: UserDataCacheContainer]()
 
     func getUserData(identifiers: [UserIdentifier]) -> UserDataCacheContainer? {
-        return userDataMock
+        identifiers.isEmpty ? defaultUserDataMock : userDataMock
     }
 
     func cacheCampaignData(_ data: [Campaign], userIdentifiers: [UserIdentifier]) {
         cachedCampaignData = data
+        cachedData[userIdentifiers] = UserDataCacheContainer(campaignData: data)
     }
 
     func cacheDisplayPermissionData(_ data: DisplayPermissionResponse, campaignID: String, userIdentifiers: [UserIdentifier]) {
         cachedDisplayPermissionData = (data, campaignID)
+        cachedData[userIdentifiers] = UserDataCacheContainer(displayPermissionData: [campaignID: data])
     }
 }
 

@@ -91,14 +91,13 @@ internal class CampaignDispatcher: CampaignDispatcherType, TaskSchedulable {
             }
             let shouldShow = delegate.shouldShowCampaignMessage(title: campaignTitle,
                                                                 contexts: contexts)
-            if !shouldShow {
-                campaignRepository.incrementImpressionsLeftInCampaign(id: campaign.id)
-            }
             return shouldShow
 
         }(), completion: { cancelled in
             self.dispatchQueue.async {
-
+                if cancelled {
+                    self.campaignRepository.incrementImpressionsLeftInCampaign(id: campaign.id)
+                }
                 guard !self.queuedCampaigns.isEmpty else {
                     self.isDispatching = false
                     return

@@ -92,15 +92,17 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
         } else {
             diff = preferenceRepository.preference == nil ? [] : nil
         }
+        let isFirstUser = preferenceRepository.getUserIdentifiers().isEmpty && diff?.isEmpty == false
         preferenceRepository.setPreference(preference)
 
         guard isInitialized else {
             return
         }
         if diff?.isEmpty != true && diff != [.accessToken] {
+            // reset only if identifiers changed
             readyCampaignDispatcher.resetQueue()
         }
-        campaignRepository.loadCachedData()
+        campaignRepository.loadCachedData(syncWithDefaultUserData: isFirstUser)
         campaignsListManager.refreshList()
     }
 
