@@ -19,6 +19,10 @@ class ConfigurationServiceSpec: QuickSpec {
 
                 service = ConfigurationService(configURL: configURL,
                                                sessionConfiguration: .default)
+
+                BundleInfoMock.reset()
+                service.bundleInfo = BundleInfoMock.self
+
                 httpSession = URLSessionMock.mock(originalInstance: service.httpSession)
             }
 
