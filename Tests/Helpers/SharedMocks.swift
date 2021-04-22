@@ -23,6 +23,7 @@ class CampaignRepositoryMock: CampaignRepositoryType {
     private(set) var lastSyncCampaigns = [Campaign]()
     private(set) var wasLoadCachedDataCalled = false
     private(set) var loadCachedDataParameters: (Bool)?
+    private(set) var wasResetDataPersistenceCalled = false
 
     func decrementImpressionsLeftInCampaign(id: String) -> Campaign? {
         wasDecrementImpressionsCalled = true
@@ -51,9 +52,9 @@ class CampaignRepositoryMock: CampaignRepositoryType {
         lastSyncCampaigns = list
     }
 
-    func loadCachedData(syncWithDefaultUserData: Bool) {
+    func loadCachedData(syncWithLastUserData: Bool) {
         wasLoadCachedDataCalled = true
-        loadCachedDataParameters = (syncWithDefaultUserData)
+        loadCachedDataParameters = (syncWithLastUserData)
     }
 
     func resetFlags() {
@@ -63,6 +64,11 @@ class CampaignRepositoryMock: CampaignRepositoryType {
         lastSyncCampaigns = [Campaign]()
         wasLoadCachedDataCalled = false
         loadCachedDataParameters = nil
+        wasResetDataPersistenceCalled = false
+    }
+
+    func resetDataPersistence() {
+        wasResetDataPersistenceCalled = true
     }
 
     private func indexAndCampaign(forID id: String) -> (Int, Campaign)? {
@@ -359,6 +365,7 @@ class RouterMock: RouterType {
     var lastDisplayedCampaign: Campaign?
     var displayedCampaignsCount = 0
     var wasDiscardCampaignCalled = false
+    var displayTime = TimeInterval(0.1)
 
     func displayCampaign(_ campaign: Campaign,
                          confirmation: @escaping @autoclosure () -> Bool,
@@ -367,9 +374,12 @@ class RouterMock: RouterType {
             completion(true)
             return
         }
-        lastDisplayedCampaign = campaign
-        displayedCampaignsCount += 1
-        completion(false)
+        DispatchQueue.global().async {
+            usleep(useconds_t(self.displayTime * Double(USEC_PER_SEC))) // simulate display time
+            self.lastDisplayedCampaign = campaign
+            self.displayedCampaignsCount += 1
+            completion(false)
+        }
     }
 
     func discardDisplayedCampaign() -> Campaign? {
@@ -380,13 +390,13 @@ class RouterMock: RouterType {
 
 class UserDataCacheMock: UserDataCacheable {
     var userDataMock: UserDataCacheContainer?
-    var defaultUserDataMock: UserDataCacheContainer?
+    var lastUserDataMock: UserDataCacheContainer?
     var cachedCampaignData: [Campaign]?
     var cachedDisplayPermissionData: (DisplayPermissionResponse, String)?
     var cachedData = [[UserIdentifier]: UserDataCacheContainer]()
 
     func getUserData(identifiers: [UserIdentifier]) -> UserDataCacheContainer? {
-        identifiers.isEmpty ? defaultUserDataMock : userDataMock
+        identifiers == CampaignRepository.lastUser ? lastUserDataMock : userDataMock
     }
 
     func cacheCampaignData(_ data: [Campaign], userIdentifiers: [UserIdentifier]) {
@@ -398,6 +408,8 @@ class UserDataCacheMock: UserDataCacheable {
         cachedDisplayPermissionData = (data, campaignID)
         cachedData[userIdentifiers] = UserDataCacheContainer(displayPermissionData: [campaignID: data])
     }
+
+    func deleteUserData(identifiers: [UserIdentifier]) { }
 }
 
 extension EndpointURL {

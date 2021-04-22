@@ -86,23 +86,19 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
             return
         }
 
-        let diff: [IAMPreference.Field]?
-        if let preference = preference {
-            diff = preference.diff(preferenceRepository.preference)
-        } else {
-            diff = preferenceRepository.preference == nil ? [] : nil
-        }
-        let isFirstUser = preferenceRepository.getUserIdentifiers().isEmpty && diff?.isEmpty == false
+        let oldUserIdentifiers = preferenceRepository.getUserIdentifiers()
+        let diff = preferenceRepository.preference?.diff(preference)
         preferenceRepository.setPreference(preference)
 
         guard isInitialized else {
             return
         }
-        if diff?.isEmpty != true && diff != [.accessToken] {
-            // reset only if identifiers changed
-            readyCampaignDispatcher.resetQueue()
+
+        let isLogoutOrUserChange = (preferenceRepository.getUserIdentifiers().isEmpty || diff?.isEmpty == false) && !oldUserIdentifiers.isEmpty
+        if isLogoutOrUserChange {
+            campaignRepository.resetDataPersistence()
         }
-        campaignRepository.loadCachedData(syncWithDefaultUserData: isFirstUser)
+        campaignRepository.loadCachedData(syncWithLastUserData: false)
         campaignsListManager.refreshList()
     }
 

@@ -28,17 +28,21 @@ internal protocol CampaignRepositoryType: AnyObject, Lockable {
     func incrementImpressionsLeftInCampaign(id: String) -> Campaign?
 
     /// Loads campaign data from user cache
-    func loadCachedData(syncWithDefaultUserData: Bool)
+    func loadCachedData(syncWithLastUserData: Bool)
+
+    /// Deletes cached data used to sync between users
+    func resetDataPersistence()
 }
 
 /// Repository to store campaigns retrieved from ping request.
 internal class CampaignRepository: CampaignRepositoryType {
 
+    static let lastUser = [UserIdentifier(type: .userId, identifier: "IAM.lastUser!@#")]
+
     private let userDataCache: UserDataCacheable
     private let preferenceRepository: IAMPreferenceRepository
     private let campaigns = LockableObject([Campaign]())
     private(set) var lastSyncInMilliseconds: Int64?
-    private var defaultCacheUser = [UserIdentifier]()
 
     var list: [Campaign] {
         return campaigns.get()
@@ -51,7 +55,7 @@ internal class CampaignRepository: CampaignRepositoryType {
         self.userDataCache = userDataCache
         self.preferenceRepository = preferenceRepository
 
-        loadCachedData(syncWithDefaultUserData: false)
+        loadCachedData(syncWithLastUserData: true)
     }
 
     func syncWith(list: [Campaign], timestampMilliseconds: Int64) {
@@ -112,10 +116,10 @@ internal class CampaignRepository: CampaignRepositoryType {
         return updateImpressionsLeftInCampaign(campaign, newValue: campaign.impressionsLeft + 1)
     }
 
-    func loadCachedData(syncWithDefaultUserData: Bool) {
+    func loadCachedData(syncWithLastUserData: Bool) {
         var cachedData = userDataCache.getUserData(identifiers: preferenceRepository.getUserIdentifiers())?.campaignData ?? []
-        if syncWithDefaultUserData {
-            userDataCache.getUserData(identifiers: defaultCacheUser)?.campaignData?.forEach({ defaultUserCampaign in
+        if syncWithLastUserData {
+            userDataCache.getUserData(identifiers: CampaignRepository.lastUser)?.campaignData?.forEach({ defaultUserCampaign in
                 if let existingCampaignIndex = cachedData.firstIndex(where: { $0.id == defaultUserCampaign.id }) {
                     cachedData[existingCampaignIndex] = defaultUserCampaign
                 } else {
@@ -124,6 +128,10 @@ internal class CampaignRepository: CampaignRepositoryType {
             })
         }
         campaigns.set(value: cachedData)
+    }
+
+    func resetDataPersistence() {
+        userDataCache.deleteUserData(identifiers: CampaignRepository.lastUser)
     }
 
     // MARK: - Helpers
@@ -151,8 +159,6 @@ internal class CampaignRepository: CampaignRepositoryType {
     private func saveDataToCache(_ list: [Campaign]) {
         let user = preferenceRepository.getUserIdentifiers()
         userDataCache.cacheCampaignData(list, userIdentifiers: user)
-        if defaultCacheUser != user {
-            userDataCache.cacheCampaignData(list, userIdentifiers: defaultCacheUser)
-        }
+        userDataCache.cacheCampaignData(list, userIdentifiers: CampaignRepository.lastUser)
     }
 }
