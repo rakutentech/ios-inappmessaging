@@ -23,7 +23,8 @@ internal struct ConfigurationService: ConfigurationServiceType, HttpRequestable 
         let response = requestFromServerSync(
             url: configURL,
             httpMethod: .get,
-            addtionalHeaders: nil)
+            addtionalHeaders: buildRequestHeader()
+        )
 
         switch response {
         case .success((let data, _)):
@@ -70,7 +71,21 @@ extension ConfigurationService {
         )
     }
 
-    func buildURLRequest(url: URL) -> Result<URLRequest, Error> {
+    private func buildRequestHeader() -> [HeaderAttribute] {
+        let Keys = Constants.Request.Header.self
+        var additionalHeaders: [HeaderAttribute] = []
+
+        if let subId = bundleInfo.inAppSubscriptionId, !subId.isEmpty {
+            additionalHeaders.append(HeaderAttribute(key: Keys.subscriptionID, value: subId))
+        } else {
+            Logger.debug("Info.plist must contain a valid InAppMessagingAppSubscriptionID")
+            assertionFailure()
+        }
+
+        return additionalHeaders
+    }
+
+   func buildURLRequest(url: URL) -> Result<URLRequest, Error> {
         do {
             let request = try getConfigRequest()
             var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: true)

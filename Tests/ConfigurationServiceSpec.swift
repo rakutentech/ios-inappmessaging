@@ -19,6 +19,10 @@ class ConfigurationServiceSpec: QuickSpec {
 
                 service = ConfigurationService(configURL: configURL,
                                                sessionConfiguration: .default)
+
+                BundleInfoMock.reset()
+                service.bundleInfo = BundleInfoMock.self
+
                 httpSession = URLSessionMock.mock(originalInstance: service.httpSession)
             }
 
@@ -197,6 +201,20 @@ class ConfigurationServiceSpec: QuickSpec {
                     expect(request?.platform).to(equal(.ios))
                     expect(request?.appId).to(equal(BundleInfoMock.applicationId))
                     expect(request?.sdkVersion).to(equal(BundleInfoMock.inAppSdkVersion))
+                }
+
+                it("will send subscription id in header") {
+                    waitUntil { done in
+                        requestQueue.async {
+                            _ = service.getConfigData()
+                            done()
+                        }
+                    }
+
+                    let Keys = Constants.Request.Header.self
+                    let headers = httpSession.sentRequest?.allHTTPHeaderFields
+                    expect(headers).toNot(beEmpty())
+                    expect(headers?[Keys.subscriptionID]).to(equal(BundleInfoMock.inAppSubscriptionId))
                 }
 
                 context("and required data is missing") {
