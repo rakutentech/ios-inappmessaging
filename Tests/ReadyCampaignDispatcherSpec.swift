@@ -236,8 +236,17 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
                         dispatcher.dispatchAllIfNeeded()
                     }
 
-                    it("will stop dispatching") {
+                    it("will not stop dispatching if campaign is displayed") {
+                        router.displayTime = 2.0
                         expect(dispatcher.isDispatching).toEventually(beTrue())
+                        expect(dispatcher.scheduledTask).toEventually(beNil()) // wait
+                        dispatcher.resetQueue()
+                        expect(dispatcher.isDispatching).toAfterTimeout(beTrue())
+                    }
+
+                    it("will stop dispatching if campaign is not displayed") {
+                        expect(dispatcher.isDispatching).toEventually(beTrue())
+                        expect(dispatcher.scheduledTask).toEventuallyNot(beNil()) // wait
                         dispatcher.resetQueue()
                         expect(dispatcher.isDispatching).toEventually(beFalse())
                     }
@@ -247,7 +256,7 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
                         dispatcher.resetQueue()
                         dispatcher.addToQueue(campaign: testCampaigns[2])
                         dispatcher.dispatchAllIfNeeded()
-                        expect(router.lastDisplayedCampaign).toEventually(equal(testCampaigns[2]))
+                        expect(router.lastDisplayedCampaign).toEventually(equal(testCampaigns[2]), timeout: .seconds(2))
                         expect(router.displayedCampaignsCount).to(equal(2))
                     }
 
@@ -293,7 +302,7 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
                         dispatcher.addToQueue(campaign: $0)
                     }
                     dispatcher.dispatchAllIfNeeded()
-                    expect(router.displayedCampaignsCount).toEventually(equal(10))
+                    expect(router.displayedCampaignsCount).toEventually(equal(10), timeout: .seconds(2))
                 }
 
                 it("will schedule next dispatch after a delay defined in campaign data") {

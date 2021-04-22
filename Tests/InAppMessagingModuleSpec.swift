@@ -250,57 +250,33 @@ class InAppMessagingModuleSpec: QuickSpec {
                                 expect(campaignRepository.wasLoadCachedDataCalled).to(beTrue())
                             }
 
-                            it("will reload campaigns repository cache with syncWithDefaultUserData set to true for following user changes") {
-                                [(nil, aUser), (IAMPreference(), aUser)]
-                                    .forEach { userA, userB in
-                                        iamModule.registerPreference(userA)
+                            it("will reload campaigns repository cache with syncWithLastUserData set to false") {
+                                iamModule.registerPreference(aUser)
+                                expect(campaignRepository.wasLoadCachedDataCalled).to(beTrue())
+                                expect(campaignRepository.loadCachedDataParameters).to(equal((false)))
+                            }
+
+                            it("will reset campaigns repository data persistence when user logs out or changes to another user") {
+                                [(aUser, nil), (aUser, IAMPreference()),
+                                 (aUser, IAMPreferenceBuilder().setUserId("userB").build())]
+                                    .forEach { prefA, prefB in
+                                        iamModule.registerPreference(prefA)
                                         campaignRepository.resetFlags()
-                                        iamModule.registerPreference(userB)
-                                        expect(campaignRepository.wasLoadCachedDataCalled).to(beTrue())
-                                        expect(campaignRepository.loadCachedDataParameters).to(equal((true)))
+                                        iamModule.registerPreference(prefB)
+                                        expect(campaignRepository.wasResetDataPersistenceCalled).to(beTrue())
                                     }
                             }
 
-                            it("will reload campaigns repository cache with syncWithDefaultUserData set to false for following user changes") {
-                                [(aUser, nil), (aUser, IAMPreference()),
-                                 (aUser, IAMPreferenceBuilder().setUserId("userB").build()),
+                            it("will not reset campaigns repository data persistence when user did not log out or change to another user") {
+                                [(nil, aUser), (IAMPreference(), aUser),
                                  (nil, nil), (nil, IAMPreference()),
                                  (IAMPreference(), nil), (IAMPreference(), IAMPreference())]
-                                    .forEach { userA, userB in
-                                        iamModule.registerPreference(userA)
+                                    .forEach { prefA, prefB in
+                                        iamModule.registerPreference(prefA)
                                         campaignRepository.resetFlags()
-                                        iamModule.registerPreference(userB)
-                                        expect(campaignRepository.wasLoadCachedDataCalled).to(beTrue())
-                                        expect(campaignRepository.loadCachedDataParameters).to(equal((false)))
+                                        iamModule.registerPreference(prefB)
+                                        expect(campaignRepository.wasResetDataPersistenceCalled).to(beFalse())
                                     }
-                            }
-
-                            it("will reset dispatch queue if new preference has different ids") {
-                                iamModule.registerPreference(IAMPreferenceBuilder().setUserId("user").build())
-                                readyCampaignDispatcher.wasResetQueueCalled = false
-                                iamModule.registerPreference(IAMPreferenceBuilder().setUserId("user2").build())
-                                expect(readyCampaignDispatcher.wasResetQueueCalled).to(beTrue())
-                            }
-
-                            it("will reset dispatch queue if previous preference was nil") {
-                                iamModule.registerPreference(nil)
-                                readyCampaignDispatcher.wasResetQueueCalled = false
-                                iamModule.registerPreference(IAMPreferenceBuilder().setUserId("user2").build())
-                                expect(readyCampaignDispatcher.wasResetQueueCalled).to(beTrue())
-                            }
-
-                            it("will not reset dispatch queue if new preference has the same id") {
-                                iamModule.registerPreference(IAMPreferenceBuilder().setUserId("user").build())
-                                readyCampaignDispatcher.wasResetQueueCalled = false
-                                iamModule.registerPreference(IAMPreferenceBuilder().setUserId("user").build())
-                                expect(readyCampaignDispatcher.wasResetQueueCalled).to(beFalse())
-                            }
-
-                            it("will not reset dispatch queue if just accessToken was added/modified") {
-                                iamModule.registerPreference(IAMPreferenceBuilder().setUserId("user").setAccessToken("token1").build())
-                                readyCampaignDispatcher.wasResetQueueCalled = false
-                                iamModule.registerPreference(IAMPreferenceBuilder().setUserId("user").setAccessToken("token2").build())
-                                expect(readyCampaignDispatcher.wasResetQueueCalled).to(beFalse())
                             }
                         }
 

@@ -1,3 +1,5 @@
+import Foundation
+
 /// Protocol for optional delagate
 @objc public protocol RInAppMessagingDelegate: AnyObject {
     /// Method called only for campaigns with context just before displaying its message
@@ -133,6 +135,7 @@
     internal static func deinitializeModule() {
         inAppQueue.sync {
             initializedModule = nil
+            dependencyManager = nil
         }
     }
 }

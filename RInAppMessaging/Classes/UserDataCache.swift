@@ -2,6 +2,7 @@ internal protocol UserDataCacheable: AnyObject {
     func getUserData(identifiers: [UserIdentifier]) -> UserDataCacheContainer?
     func cacheCampaignData(_ data: [Campaign], userIdentifiers: [UserIdentifier])
     func cacheDisplayPermissionData(_ data: DisplayPermissionResponse, campaignID: String, userIdentifiers: [UserIdentifier])
+    func deleteUserData(identifiers: [UserIdentifier])
 }
 
 internal struct UserDataCacheContainer: Codable, Equatable {
@@ -61,6 +62,12 @@ internal class UserDataCache: UserDataCacheable {
         var currentData = cachedContainers[cacheKey] ?? UserDataCacheContainer()
         currentData.displayPermissionData[campaignID] = data
         cachedContainers[cacheKey] = currentData
+        saveData()
+    }
+
+    func deleteUserData(identifiers: [UserIdentifier]) {
+        let cacheKey = userKey(from: identifiers)
+        cachedContainers[cacheKey] = nil
         saveData()
     }
 

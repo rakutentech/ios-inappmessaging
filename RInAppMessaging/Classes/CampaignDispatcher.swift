@@ -23,7 +23,7 @@ internal class CampaignDispatcher: CampaignDispatcherType, TaskSchedulable {
 
     private let dispatchQueue = DispatchQueue(label: "IAM.Campaign", qos: .userInteractive)
     private var queuedCampaigns = [Campaign]()
-    @AtomicGetSet private(set) var isDispatching = false
+    private(set) var isDispatching = false
 
     weak var delegate: CampaignDispatcherDelegate?
     var scheduledTask: DispatchWorkItem?
@@ -44,9 +44,13 @@ internal class CampaignDispatcher: CampaignDispatcherType, TaskSchedulable {
     }
 
     func resetQueue() {
-        isDispatching = false
-        scheduledTask?.cancel()
         dispatchQueue.async {
+            let isDisplayingCampaign = self.scheduledTask == nil && self.isDispatching
+            if !isDisplayingCampaign {
+                self.isDispatching = false
+                self.scheduledTask?.cancel()
+            }
+
             self.queuedCampaigns.removeAll()
         }
     }
