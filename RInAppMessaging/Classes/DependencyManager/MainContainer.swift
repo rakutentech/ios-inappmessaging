@@ -33,14 +33,11 @@ internal enum MainContainerFactory {
             ContainerElement(type: ConfigurationRepositoryType.self, factory: {
                 ConfigurationRepository()
             }),
-            ContainerElement(type: DispatchQueue.self, factory: {
-                DispatchQueue(label: "IAM.Main", qos: .utility, attributes: [])
-            }),
             ContainerElement(type: ConfigurationManagerType.self, factory: {
                 ConfigurationManager(reachability: manager.resolve(type: ReachabilityType.self),
                                      configurationService: manager.resolve(type: ConfigurationServiceType.self)!,
                                      configurationRepository: manager.resolve(type: ConfigurationRepositoryType.self)!,
-                                     resumeQueue: manager.resolve(type: DispatchQueue.self)!)
+                                     resumeQueue: RInAppMessaging.inAppQueue)
             }),
             ContainerElement(type: UserDataCacheable.self, factory: {
                 UserDataCache(userDefaults: UserDefaults.standard)
