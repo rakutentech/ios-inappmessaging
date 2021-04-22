@@ -19,9 +19,7 @@
 
     internal private(set) static var initializedModule: InAppMessagingModule?
     private(set) static var dependencyManager: DependencyManager?
-    private static var inAppQueue: DispatchQueue? {
-        dependencyManager?.resolve(type: DispatchQueue.self)
-    }
+    internal static let inAppQueue = DispatchQueue(label: "IAM.Main", qos: .utility, attributes: [])
 
     private override init() { super.init() }
 
@@ -62,7 +60,7 @@
     static func configure(dependencyManager: DependencyManager) {
         self.dependencyManager = dependencyManager
 
-        inAppQueue?.async(flags: .barrier) {
+        inAppQueue.async(flags: .barrier) {
             guard initializedModule == nil else {
                 return
             }
@@ -107,7 +105,7 @@
     /// Log the event name passed in and also pass the event name to the view controller to display a matching campaign.
     /// - Parameter event: The Event object to log.
     @objc public static func logEvent(_ event: Event) {
-        inAppQueue?.async(flags: .barrier) {
+        inAppQueue.async(flags: .barrier) {
             initializedModule?.logEvent(event)
         }
     }
@@ -115,7 +113,7 @@
     /// Register user preference to the IAM SDK.
     /// - Parameter preference: Preferences of the user.
     @objc public static func registerPreference(_ preference: IAMPreference?) {
-        inAppQueue?.async(flags: .barrier) {
+        inAppQueue.async(flags: .barrier) {
             initializedModule?.registerPreference(preference)
         }
     }
@@ -126,14 +124,14 @@
     /// - Parameter clearQueuedCampaigns: when set to true, it will clear also the list of campaigns that were
     ///                                   triggered and are queued to be displayed.
     @objc public static func closeMessage(clearQueuedCampaigns: Bool = false) {
-        inAppQueue?.async(flags: .barrier) {
+        inAppQueue.async(flags: .barrier) {
             initializedModule?.closeMessage(clearQueuedCampaigns: clearQueuedCampaigns)
         }
     }
 
     /// For testing purposes
     internal static func deinitializeModule() {
-        inAppQueue?.sync {
+        inAppQueue.sync {
             initializedModule = nil
         }
     }
