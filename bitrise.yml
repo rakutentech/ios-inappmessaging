@@ -160,7 +160,17 @@ workflows:
             #!/usr/bin/env bash
             set -ex
 
-            bash <(curl -s https://codecov.io/bash) -J '^RInAppMessaging$' -X gcov
+            curl -sS https://codecov.io/bash > codecov
+
+            # verify checksum
+            VERSION=$(grep -o 'VERSION=\"[0-9\.]*\"' codecov | cut -d'"' -f2)
+            for i in 1 256 512
+            do
+                printf "SHA$i: "
+                curl -sS "https://raw.githubusercontent.com/codecov/codecov-bash/${VERSION}/SHA${i}SUM" | grep codecov | shasum -a $i -c
+            done
+
+            bash codecov -J '^RInAppMessaging$' -X gcov
 app:
   envs:
   - opts:
