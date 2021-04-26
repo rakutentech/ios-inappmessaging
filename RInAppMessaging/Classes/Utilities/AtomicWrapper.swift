@@ -2,7 +2,7 @@
 /// Mutating functions, subscript, incrementation etc. are not synchronized by default -
 /// use `mutate` function to ensure operation atomicity.
 @propertyWrapper
-class AtomicGetSet<Value> {
+struct AtomicGetSet<Value> {
     private let queue = PropertyQueueGenerator.spawnQueue(domain: "IAM.AtomicProperty")
     private var value: Value
 
@@ -19,7 +19,7 @@ class AtomicGetSet<Value> {
         }
     }
 
-    func mutate(_ mutation: (inout Value) -> Void) {
+    mutating func mutate(_ mutation: (inout Value) -> Void) {
         queue.sync {
             mutation(&value)
         }
