@@ -1,5 +1,15 @@
 ## Changelog
 
+### 4.0.0-pp-v1 (in-progress)
+- Improvements:
+    - Changed Config API call to be a /GET with query params. This allows the backend to filter requests if required. [SDKCF-3652]
+    - Added handling for "429 Too Many Requests" response to Config/Ping API requests. When status code 429 is received by the SDK it will start expontential backoff (plus a random factor) retries to space out the requests to the backend. [SDKCF-3654]
+    - Campaign opt-out & max impression tracking logic is now handled solely on client side. This change reduces the backend's load per request. [SDKCF-3656]
+    - Added support for rollout percentage value received in Config API response. This allows the backend to gradually increase campaign distribution. [SDKCF-3663]
+    - Added subscription key in Config API request header to enable better filtering of requests. [SDKCF-3716]
+- Bug fixes:
+    - Fixed rarely occurring threading crashes in dependency manager by using a static queue for access. [SDKCF-3646]
+
 ### 3.0.0 (2021-02-10)
 **Breaking change:** Minimum supported iOS version is now 11.0 [SDKCF-3182]
 - Status bar overlay in Full Screen campaigns is now present in all layout types. The color is adjusted to status bar style (dark or light) - this feature is available only on iOS 13+. [SDKCF-3203, SDKCF-3175]
