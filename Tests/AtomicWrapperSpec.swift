@@ -35,28 +35,69 @@ class AtomicWrapperSpec: QuickSpec {
                 self.atomicArray = []
             }
 
+            it("will not crash when two threads access the same value at the same time (get)") {
+                let dispatchGroup = DispatchGroup()
+                dispatchGroup.enter()
+                dispatchGroup.enter()
+
+                queueA.async {
+                    for _ in (1...1_000_000) {
+                        _ = self.atomicArray
+                    }
+                    dispatchGroup.leave()
+                }
+                queueB.async {
+                    for _ in (1...1_000_000) {
+                        _ = self.atomicArray
+                    }
+                    dispatchGroup.leave()
+                }
+                dispatchGroup.wait()
+            }
+
+            it("will not crash when two threads access the same value at the same time (set)") {
+                let dispatchGroup = DispatchGroup()
+                dispatchGroup.enter()
+                dispatchGroup.enter()
+
+                queueA.async {
+                    for _ in (1...1_000_000) {
+                        self.atomicArray = ["1"]
+                    }
+                    dispatchGroup.leave()
+                }
+                queueB.async {
+                    for _ in (1...1_000_000) {
+                        self.atomicArray = ["2"]
+                    }
+                    dispatchGroup.leave()
+                }
+                dispatchGroup.wait()
+            }
+
             context("when using mutating functions") {
 
                 // The tests below simulate a situation when one thread tries to modify the value
                 // while the other is using mutating function on the same value. The loop was added to ensure effectiveness
 
-                it("should ensure atomicity when using `mutate` functions") {
+                it("should ensure atomicity when using two concurrent `mutate` functions") {
                     for _ in (1...100) {
                         let dispatchGroup = DispatchGroup()
                         dispatchGroup.enter()
                         dispatchGroup.enter()
 
+                        let queueDispatchCoordinator = DispatchGroup()
+                        queueDispatchCoordinator.enter()
                         queueA.async {
-                            let queueDispatchCoordinator = DispatchGroup()
-                            queueDispatchCoordinator.enter()
-                            queueB.async {
-                                queueDispatchCoordinator.wait()
-                                self._atomicArray.mutate { $0.append("string 2") }
-                                dispatchGroup.leave()
+                            self._atomicArray.mutate {
+                                queueDispatchCoordinator.leave()
+                                $0.append(DelayedValue("string 1").get())
                             }
-
-                            queueDispatchCoordinator.leave()
-                            self._atomicArray.mutate { $0.append(DelayedValue("string 1").get()) }
+                            dispatchGroup.leave()
+                        }
+                        queueB.async {
+                            queueDispatchCoordinator.wait()
+                            self._atomicArray.mutate { $0.append("string 2") }
                             dispatchGroup.leave()
                         }
                         dispatchGroup.wait()
@@ -72,17 +113,18 @@ class AtomicWrapperSpec: QuickSpec {
                         dispatchGroup.enter()
                         dispatchGroup.enter()
 
+                        let queueDispatchCoordinator = DispatchGroup()
+                        queueDispatchCoordinator.enter()
                         queueA.async {
-                            let queueDispatchCoordinator = DispatchGroup()
-                            queueDispatchCoordinator.enter()
-                            queueB.async {
-                                queueDispatchCoordinator.wait()
-                                self.atomicArray = ["string 2"]
-                                dispatchGroup.leave()
+                            self._atomicArray.mutate {
+                                queueDispatchCoordinator.leave()
+                                $0.append(DelayedValue("string 1").get())
                             }
-
-                            queueDispatchCoordinator.leave()
-                            self._atomicArray.mutate { $0.append(DelayedValue("string 1").get()) }
+                            dispatchGroup.leave()
+                        }
+                        queueB.async {
+                            queueDispatchCoordinator.wait()
+                            self.atomicArray = ["string 2"]
                             dispatchGroup.leave()
                         }
                         dispatchGroup.wait()
@@ -96,17 +138,16 @@ class AtomicWrapperSpec: QuickSpec {
                         dispatchGroup.enter()
                         dispatchGroup.enter()
 
+                        let queueDispatchCoordinator = DispatchGroup()
+                        queueDispatchCoordinator.enter()
                         queueA.async {
-                            let queueDispatchCoordinator = DispatchGroup()
-                            queueDispatchCoordinator.enter()
-                            queueB.async {
-                                queueDispatchCoordinator.wait()
-                                self.atomicArray.append("string 2")
-                                dispatchGroup.leave()
-                            }
-
                             queueDispatchCoordinator.leave()
                             self.atomicArray.append(DelayedValue("string 1").get())
+                            dispatchGroup.leave()
+                        }
+                        queueB.async {
+                            queueDispatchCoordinator.wait()
+                            self.atomicArray.append("string 2")
                             dispatchGroup.leave()
                         }
                         dispatchGroup.wait()
@@ -122,17 +163,16 @@ class AtomicWrapperSpec: QuickSpec {
                         dispatchGroup.enter()
                         dispatchGroup.enter()
 
+                        let queueDispatchCoordinator = DispatchGroup()
+                        queueDispatchCoordinator.enter()
                         queueA.async {
-                            let queueDispatchCoordinator = DispatchGroup()
-                            queueDispatchCoordinator.enter()
-                            queueB.async {
-                                queueDispatchCoordinator.wait()
-                                self.atomicArray = ["string 2"]
-                                dispatchGroup.leave()
-                            }
-
                             queueDispatchCoordinator.leave()
                             self.atomicArray.append(DelayedValue("string 1").get())
+                            dispatchGroup.leave()
+                        }
+                        queueB.async {
+                            queueDispatchCoordinator.wait()
+                            self.atomicArray = ["string 2"]
                             dispatchGroup.leave()
                         }
                         dispatchGroup.wait()
