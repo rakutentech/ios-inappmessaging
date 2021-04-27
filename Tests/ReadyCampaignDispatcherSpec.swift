@@ -264,7 +264,7 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
                         expect(dispatcher.scheduledTask).toEventuallyNot(beNil()) // wait
                         dispatcher.resetQueue()
                         expect(dispatcher.scheduledTask?.isCancelled).to(beTrue())
-                        expect(router.displayedCampaignsCount).toAfterTimeout(equal(1))
+                        expect(router.displayedCampaignsCount).toAfterTimeout(equal(1), timeout: 2)
                     }
                 }
             }
