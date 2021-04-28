@@ -61,14 +61,16 @@ class AtomicWrapperSpec: QuickSpec {
                 dispatchGroup.enter()
 
                 queueA.async {
+                    let valueToSet = ["1"]
                     for _ in (1...1_000_000) {
-                        self.atomicArray = ["1"]
+                        self.atomicArray = valueToSet
                     }
                     dispatchGroup.leave()
                 }
                 queueB.async {
+                    let valueToSet = ["2"]
                     for _ in (1...1_000_000) {
-                        self.atomicArray = ["2"]
+                        self.atomicArray = valueToSet
                     }
                     dispatchGroup.leave()
                 }
