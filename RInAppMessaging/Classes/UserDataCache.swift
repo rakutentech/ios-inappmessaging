@@ -24,7 +24,7 @@ internal class UserDataCache: UserDataCacheable {
     private typealias CacheContainers = [String: UserDataCacheContainer]
 
     private let userDefaults: UserDefaults
-    private var cachedContainers: CacheContainers
+    @AtomicGetSet private var cachedContainers: CacheContainers
     private let persistedDataKey = "IAM_user_cache"
     private let isTestEnvironment = Bundle.tests != nil
 
