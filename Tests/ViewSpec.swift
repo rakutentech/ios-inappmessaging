@@ -145,7 +145,7 @@ class ViewSpec: QuickSpec {
             it("will prevent execution of javascript code in web view using `evaluateJavaScript()`") {
                 let webView = view.createWebView(withHtmlString: "<body>Text</body>", andFrame: .zero)
 
-                waitUntil(timeout: .seconds(5)) { done in
+                waitUntil(timeout: .seconds(6)) { done in
                     webView.evaluateJavaScript("document.body.innerHTML") { (_, error) in
                         expect((error as NSError?)?.code).to(equal(4))
                         expect((error as NSError?)?.domain).to(equal("WKErrorDomain"))

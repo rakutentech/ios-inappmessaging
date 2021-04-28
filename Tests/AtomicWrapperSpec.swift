@@ -77,6 +77,27 @@ class AtomicWrapperSpec: QuickSpec {
                 dispatchGroup.wait()
             }
 
+            it("will not crash when one thread writes and the other reads the same value at the same time") {
+                let dispatchGroup = DispatchGroup()
+                dispatchGroup.enter()
+                dispatchGroup.enter()
+
+                queueA.async {
+                    for _ in (1...1_000_000) {
+                        _ = self.atomicArray
+                    }
+                    dispatchGroup.leave()
+                }
+                queueB.async {
+                    let valueToSet = ["value"]
+                    for _ in (1...1_000_000) {
+                        self.atomicArray = valueToSet
+                    }
+                    dispatchGroup.leave()
+                }
+                dispatchGroup.wait()
+            }
+
             context("when using mutating functions") {
 
                 // The tests below simulate a situation when one thread tries to modify the value
