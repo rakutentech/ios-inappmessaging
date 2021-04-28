@@ -12,9 +12,6 @@ internal protocol LockableResource {
     func unlock()
 }
 
-// The following rule is disabled to ensure thread safety
-// swiftlint:disable shorthand_operator
-
 /// Object-wrapper that conforms to LockableResource protocol.
 /// Used to control getter and setter of given resource.
 /// When lock() has been called on some thread, only that thread will be able to access the resource.
@@ -45,14 +42,14 @@ internal class LockableObject<T>: LockableResource {
         if shouldWait {
             dispatchGroup.wait()
         }
-        lockCount = lockCount + 1
+        _lockCount.mutate { $0 += 1 }
         lockingThread = Thread.current
         dispatchGroup.enter()
     }
 
     func unlock() {
         if lockCount > 0 {
-            lockCount = lockCount - 1
+            _lockCount.mutate { $0 -= 1 }
             dispatchGroup.leave()
         } else {
             lockingThread = nil
