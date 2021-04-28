@@ -84,6 +84,30 @@ class UserDataCacheSpec: QuickSpec {
                 expect(userContainer).to(beNil())
             }
 
+            context("when two threads call cacheCampaignData") {
+                it("will not crash") {
+                    let queue1 = DispatchQueue(label: "UserDataCacheQueue1")
+                    let queue2 = DispatchQueue(label: "UserDataCacheQueue2")
+                    let userCache = UserDataCache(userDefaults: UserDefaults(suiteName: "UserDataCacheForQueue")!)
+                    var queue1IsDone = false
+                    var queue2IsDone = false
+                    queue1.async {
+                        userCache.cacheCampaignData([], userIdentifiers: [])
+                        DispatchQueue.main.async { queue1IsDone = true }
+                    }
+                    queue2.async {
+                        userCache.cacheCampaignData([], userIdentifiers: [])
+                        DispatchQueue.main.async { queue2IsDone = true }
+                    }
+                    expect(queue1IsDone).toEventually(beTrue())
+                    expect(queue2IsDone).toEventually(beTrue())
+                }
+
+                afterEach {
+                    UserDefaults.standard.removePersistentDomain(forName: "UserDataCacheForQueue")
+                }
+            }
+
             context("when creating a container for given user identifiers combination") {
                 let campaignsDataA = [TestHelpers.generateCampaign(id: "test1")]
                 let campaignsDataB = [TestHelpers.generateCampaign(id: "test2")]
