@@ -248,6 +248,27 @@ class EventMatcherSpec: QuickSpec {
                     expect(eventMatcher.containsAllMatchedEvents(for: campaign)).to(beFalse())
                 }
             }
+
+            context("when calling clearNonPersistentEvents") {
+
+                it("will clear all matched non-persistent events") {
+                    campaignRepository.list = [testCampaign]
+                    eventMatcher.matchAndStore(event: LoginSuccessfulEvent())
+                    expect(eventMatcher.matchedEvents(for: testCampaign)).toNot(beEmpty())
+
+                    eventMatcher.clearNonPersistentEvents()
+                    expect(eventMatcher.matchedEvents(for: testCampaign)).to(beEmpty())
+                }
+
+                it("will not clear persistent events") {
+                    campaignRepository.list = [testCampaign]
+                    eventMatcher.matchAndStore(event: AppStartEvent())
+                    expect(eventMatcher.matchedEvents(for: testCampaign)).toNot(beEmpty())
+
+                    eventMatcher.clearNonPersistentEvents()
+                    expect(eventMatcher.matchedEvents(for: testCampaign)).toNot(beEmpty())
+                }
+            }
         }
     }
 }

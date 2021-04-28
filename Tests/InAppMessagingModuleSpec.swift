@@ -278,6 +278,29 @@ class InAppMessagingModuleSpec: QuickSpec {
                                         expect(campaignRepository.wasResetDataPersistenceCalled).to(beFalse())
                                     }
                             }
+
+                            it("will clear event list when user logs out or changes to another user") {
+                                [(aUser, nil), (aUser, IAMPreference()),
+                                 (aUser, IAMPreferenceBuilder().setUserId("userB").build())]
+                                    .forEach { prefA, prefB in
+                                        iamModule.registerPreference(prefA)
+                                        eventMatcher.wasClearNonPersistentEventsCalled = false // reset
+                                        iamModule.registerPreference(prefB)
+                                        expect(eventMatcher.wasClearNonPersistentEventsCalled).to(beTrue())
+                                    }
+                            }
+
+                            it("will not clear event list when user did not log out or change to another user") {
+                                [(nil, aUser), (IAMPreference(), aUser),
+                                 (nil, nil), (nil, IAMPreference()),
+                                 (IAMPreference(), nil), (IAMPreference(), IAMPreference())]
+                                    .forEach { prefA, prefB in
+                                        iamModule.registerPreference(prefA)
+                                        eventMatcher.wasClearNonPersistentEventsCalled = false // reset
+                                        iamModule.registerPreference(prefB)
+                                        expect(eventMatcher.wasClearNonPersistentEventsCalled).to(beFalse())
+                                    }
+                            }
                         }
 
                         context("and module is not initialized") {
