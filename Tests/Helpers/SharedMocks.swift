@@ -101,6 +101,7 @@ class EventMatcherMock: EventMatcherType {
     var simulateMatchingSuccess = true
     var simulateMatcherError: EventMatcherError?
     var resourcesToLock: [LockableResource] = []
+    var wasClearNonPersistentEventsCalled = false
 
     func matchAndStore(event: Event) {
         loggedEvents.append(event)
@@ -119,6 +120,10 @@ class EventMatcherMock: EventMatcherType {
         if !simulateMatchingSuccess {
             throw EventMatcherError.couldntFindRequestedSetOfEvents
         }
+    }
+
+    func clearNonPersistentEvents() {
+        wasClearNonPersistentEventsCalled = true
     }
 }
 
