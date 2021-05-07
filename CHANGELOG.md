@@ -1,6 +1,6 @@
 ## Changelog
 
-### 4.0.0-pp (in-progress)
+### 4.0.0-pp (2021-05-07)
 - Improvements:
     - Changed Config API call to be a /GET with query params. This allows the backend to filter requests if required. [SDKCF-3652]
     - Added handling for "429 Too Many Requests" response to Config/Ping API requests. When status code 429 is received by the SDK it will start expontential backoff (plus a random factor) retries to space out the requests to the backend. [SDKCF-3654]
