@@ -6,14 +6,14 @@ info:
   license:
     name: MIT
     url: https://opensource.org/licenses/MIT
-  version: 3.0.0
+  version: 4.0.0
 tags:
 - name: Configuration
 - name: Campaign
 - name: Impressions
 paths:
   /get-config:
-    post:
+    get:
       tags:
       - Configuration
       summary: Get configuration to setup SDK
@@ -21,12 +21,44 @@ paths:
         initialization or disable all functionality. The response also gives endpoint
         urls for all other requests. All parameters are required
       operationId: getConfig
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ConfigRequest'
-        required: false
+      parameters:
+        - name: Subscription-Id
+          in: header
+          description: App subscription key
+          schema:
+            type: string
+        - name: locale
+          in: query
+          example: jp
+          required: true
+          schema:
+            type: string
+        - name: appVersion
+          in: query
+          example: "1.0"
+          required: true
+          schema:
+            type: string
+        - name: platform
+          in: query
+          description: iOS or Android
+          example: 1
+          required: true
+          schema:
+            type: integer
+        - name: appId
+          in: query
+          description: application bundle identifier
+          example: jp.co.company.app
+          required: true
+          schema:
+            type: string
+        - name: sdkVersion
+          in: query
+          example: 0.1.0
+          required: true
+          schema:
+            type: string
       responses:
         200:
           description: success
@@ -34,6 +66,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ConfigResponse'
+        429:
+          description: An error returned when server's load is too high.
+            SDK will keep retrying the request.
   /ping:
     post:
       tags:
@@ -73,6 +108,9 @@ paths:
                 $ref: '#/components/schemas/PingResponse'
         401:
           description: Authorization failure. Please check README
+        429:
+          description: An error returned when server's load is too high.
+            SDK will keep retrying the request.
   /display_permission:
     post:
       tags:
@@ -148,34 +186,15 @@ paths:
           description: Authorization failure. Please check README
 components:
   schemas:
-    ConfigRequest:
-      type: object
-      properties:
-        locale:
-          type: string
-          example: jp
-        appVersion:
-          type: string
-          example: "1.0"
-        platform:
-          type: integer
-          description: iOS or Android
-          example: 1
-        appId:
-          type: string
-          description: application bundle identifier
-          example: jp.co.company.app
-        sdkVersion:
-          type: string
-          example: 0.1.0
     ConfigResponse:
       type: object
       properties:
         data:
           type: object
           properties:
-            enabled:
-              type: boolean
+            rolloutPercentage:
+              description: A number on which SDK decides whether it should disable itself or not
+              type: integer
             endpoints:
               type: object
               properties:

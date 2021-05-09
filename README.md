@@ -6,7 +6,7 @@
 
 In-App Messaging (IAM) module allows app developers to easily configure and display notifications within their app.
 
-This module supports iOS 11.0 and above. It has been tested with iOS 11.0 and above.
+This module supports iOS 11.0 and above. It has been tested with iOS 11.1 and above.
 
 # **How to install**
 
@@ -206,6 +206,23 @@ func application(_ application: UIApplication, didFinishLaunchingWithOptions lau
 * Run `bundle install` then run `bundle exec pod install`
 * Open `RInAppMessaging.xcworkspace` in Xcode then build/run
 * To run the tests press key shortcut command-U
+
+# **SDK Logic**
+
+## User cache
+
+Each user has a separate cache container that is persisted in UserDefaults. Each combination of rakutenId and userId is treated as a different user including a special - anonymous user - that represents non logged-in user (rakutenId and userId are null or empty).
+The key to access cache container is a SHA256 hash created from user identifiers and salt (which is a MD5 hash of user identifiers).
+The cache stores data from ping response enriched with impressions counter and opt-out status.
+Calling `registerPerference()` reloads the cache and refreshes the list of available campaigns (with ping request).
+
+## Client-side opt-out handling
+
+If user (with registered identifier using `registerPerference()`) opts out from a campaign, that information is saved in user cache locally on the device and the campaign won't be shown again for that user on the same device. The opt-out status is not shared between devices. The same applies for anonymous user.
+
+## Client-side max impressions handling
+
+Campaign impressions (displays) are counted locally for each user. Meaning that a campaign with maxImpression value of 3 will be displayed to each user (registered with `registerPerference()`) max 3 times. Campaign's max impression number can be modified in the dashboard/backend. Then the SDK, after next ping call, will compare new value with old max impression number and add the difference to the current impression counter. The max impression data is not shared between devices. The same applies for anonymous user.
 
 # **Troubleshooting & F.A.Q.**
 
