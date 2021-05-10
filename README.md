@@ -212,7 +212,6 @@ func application(_ application: UIApplication, didFinishLaunchingWithOptions lau
 ## User cache
 
 Each user has a separate cache container that is persisted in UserDefaults. Each combination of rakutenId and userId is treated as a different user including a special - anonymous user - that represents non logged-in user (rakutenId and userId are null or empty).
-The key to access cache container is a SHA256 hash created from user identifiers and salt (which is a MD5 hash of user identifiers).
 The cache stores data from ping response enriched with impressions counter and opt-out status.
 Calling `registerPerference()` reloads the cache and refreshes the list of available campaigns (with ping request).
 
