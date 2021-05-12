@@ -115,7 +115,7 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
                                 let campaign = TestHelpers.generateCampaign(id: "test", title: "[ctx] title")
                                 dispatcher.addToQueue(campaign: campaign)
                                 dispatcher.dispatchAllIfNeeded()
-                                expect(campaignRepository.wasIncrementImpressionsCalled).toAfterTimeout(beFalse())
+                                expect(campaignRepository.incrementImpressionsCalls).toAfterTimeout(equal(0))
                             }
                         }
 
@@ -163,7 +163,7 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
                                 let campaign = TestHelpers.generateCampaign(id: "test", title: "[ctx] title")
                                 dispatcher.addToQueue(campaign: campaign)
                                 dispatcher.dispatchAllIfNeeded()
-                                expect(campaignRepository.wasIncrementImpressionsCalled).toEventually(beTrue())
+                                expect(campaignRepository.incrementImpressionsCalls).toAfterTimeout(equal(1))
                             }
                         }
                     }
@@ -278,7 +278,7 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
                     let campaign = TestHelpers.generateCampaign(id: "test")
                     dispatcher.addToQueue(campaign: campaign)
                     dispatcher.dispatchAllIfNeeded()
-                    expect(campaignRepository.wasDecrementImpressionsCalled).toEventually(beTrue())
+                    expect(campaignRepository.decrementImpressionsCalls).toAfterTimeout(equal(1))
                 }
 
                 it("will restore impressions left value if contexts were rejected") {
@@ -286,7 +286,7 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
                     let campaign = TestHelpers.generateCampaign(id: "test", title: "[ctx] title")
                     dispatcher.addToQueue(campaign: campaign)
                     dispatcher.dispatchAllIfNeeded()
-                    expect(campaignRepository.wasIncrementImpressionsCalled).toEventually(beTrue())
+                    expect(campaignRepository.incrementImpressionsCalls).toAfterTimeout(equal(1))
                 }
 
                 it("will not increment impressions left value if contexts were approved") {
@@ -294,7 +294,7 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
                     let campaign = TestHelpers.generateCampaign(id: "test", title: "[ctx] title")
                     dispatcher.addToQueue(campaign: campaign)
                     dispatcher.dispatchAllIfNeeded()
-                    expect(campaignRepository.wasIncrementImpressionsCalled).toAfterTimeout(beFalse())
+                    expect(campaignRepository.incrementImpressionsCalls).toAfterTimeout(equal(0))
                 }
 
                 it("will dispatch remaining campaigns") {

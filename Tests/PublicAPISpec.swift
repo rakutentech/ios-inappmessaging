@@ -141,6 +141,14 @@ class PublicAPISpec: QuickSpec {
                         $0 is BaseView
                     }))
                 }
+
+                it("will restore/increment impressionsLeft in closed campaign") {
+                    generateAndDisplayLoginCampaigns(count: 1, addContexts: false)
+
+                    expect(campaignRepository.list.first?.impressionsLeft).toEventually(equal(1))
+                    RInAppMessaging.closeMessage()
+                    expect(campaignRepository.list.first?.impressionsLeft).toEventually(equal(2))
+                }
             }
 
             context("delegate") {

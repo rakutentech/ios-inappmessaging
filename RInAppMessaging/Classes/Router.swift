@@ -14,8 +14,7 @@ internal protocol RouterType: AnyObject {
                          completion: @escaping (_ cancelled: Bool) -> Void)
 
     /// Removes displayed campaign view from the stack
-    /// - Returns: a campaign associated with displayed message or nil if no message was displayed
-    func discardDisplayedCampaign() -> Campaign?
+    func discardDisplayedCampaign()
 }
 
 /// Handles all the displaying logic of the SDK.
@@ -29,21 +28,17 @@ internal class Router: RouterType {
         self.dependencyManager = dependencyManager
     }
 
-    func discardDisplayedCampaign() -> Campaign? {
-        return displayQueue.sync {
-            let discard: () -> Campaign? = {
-                guard let rootView = UIApplication.shared.getKeyWindow() else {
-                    return nil
+    func discardDisplayedCampaign() {
+        displayQueue.sync {
+            DispatchQueue.main.async {
+                guard let rootView = UIApplication.shared.getKeyWindow(),
+                      let presentedView = rootView.findIAMViewSubview() else {
+                    return
                 }
 
-                let presentedView = rootView.findIAMViewSubview()
-                presentedView?.onDismiss?(true)
-                presentedView?.removeFromSuperview()
-
-                return presentedView?.basePresenter.campaign
+                presentedView.onDismiss?(true)
+                presentedView.removeFromSuperview()
             }
-
-            return Thread.isMainThread ? discard() : DispatchQueue.main.sync(execute: discard)
         }
     }
 

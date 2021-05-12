@@ -107,9 +107,7 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
         if clearQueuedCampaigns {
             readyCampaignDispatcher.resetQueue()
         }
-        if let campaign = router.discardDisplayedCampaign() {
-            campaignRepository.incrementImpressionsLeftInCampaign(id: campaign.id)
-        }
+        router.discardDisplayedCampaign()
     }
 }
 
