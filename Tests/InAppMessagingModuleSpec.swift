@@ -361,14 +361,6 @@ class InAppMessagingModuleSpec: QuickSpec {
                         expect(router.wasDiscardCampaignCalled).to(beTrue())
                     }
 
-                    it("will increment impressionsLeft in closed campaign") {
-                        let campaign = TestHelpers.generateCampaign(id: "test")
-                        router.lastDisplayedCampaign = campaign
-
-                        iamModule.closeMessage(clearQueuedCampaigns: false)
-                        expect(campaignRepository.wasIncrementImpressionsCalled).to(beTrue())
-                    }
-
                     it("will reset queued campaigns list if `clearQueuedCampaigns` is true") {
                         iamModule.closeMessage(clearQueuedCampaigns: true)
                         expect(readyCampaignDispatcher.wasResetQueueCalled).to(beTrue())

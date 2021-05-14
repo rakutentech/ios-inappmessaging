@@ -57,10 +57,10 @@ internal struct ConfigurationService: ConfigurationServiceType, HttpRequestable 
 extension ConfigurationService {
     private func getConfigRequest() throws -> GetConfigRequest {
         guard let appVersion = bundleInfo.appVersion,
-            let appId = bundleInfo.applicationId,
-            let sdkVersion = bundleInfo.inAppSdkVersion else {
-                Logger.debug("failed creating a request body")
-                throw RequestError.missingMetadata
+              let appId = bundleInfo.applicationId,
+              let sdkVersion = bundleInfo.inAppSdkVersion else {
+            Logger.debug("failed creating a request body")
+            throw RequestError.missingMetadata
         }
         return GetConfigRequest(
             locale: Locale.current.normalizedIdentifier,
@@ -85,7 +85,7 @@ extension ConfigurationService {
         return additionalHeaders
     }
 
-   func buildURLRequest(url: URL) -> Result<URLRequest, Error> {
+    func buildURLRequest(url: URL) -> Result<URLRequest, Error> {
         do {
             let request = try getConfigRequest()
             var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: true)

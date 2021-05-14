@@ -99,6 +99,7 @@ class CampaignsListManagerSpec: QuickSpec {
 
                     it("will schedule next ping call") {
                         manager.refreshList()
+                        expect(messageMixerService.wasPingCalled).toEventually(beTrue()) // wait
                         messageMixerService.wasPingCalled = false
                         expect(messageMixerService.wasPingCalled).toEventually(beTrue())
                     }

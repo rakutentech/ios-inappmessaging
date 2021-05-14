@@ -17,8 +17,8 @@ class CampaignRepositoryMock: CampaignRepositoryType {
     var lastSyncInMilliseconds: Int64?
     var resourcesToLock: [LockableResource] = []
 
-    private(set) var wasDecrementImpressionsCalled = false
-    private(set) var wasIncrementImpressionsCalled = false
+    private(set) var decrementImpressionsCalls = 0
+    private(set) var incrementImpressionsCalls = 0
     private(set) var wasOptOutCalled = false
     private(set) var lastSyncCampaigns = [Campaign]()
     private(set) var wasLoadCachedDataCalled = false
@@ -26,7 +26,7 @@ class CampaignRepositoryMock: CampaignRepositoryType {
     private(set) var wasResetDataPersistenceCalled = false
 
     func decrementImpressionsLeftInCampaign(id: String) -> Campaign? {
-        wasDecrementImpressionsCalled = true
+        decrementImpressionsCalls += 1
         guard let (index, campaign) = indexAndCampaign(forID: id) else {
             return nil
         }
@@ -35,7 +35,7 @@ class CampaignRepositoryMock: CampaignRepositoryType {
     }
 
     func incrementImpressionsLeftInCampaign(id: String) -> Campaign? {
-        wasIncrementImpressionsCalled = true
+        incrementImpressionsCalls += 1
         guard let (index, campaign) = indexAndCampaign(forID: id) else {
             return nil
         }
@@ -58,8 +58,8 @@ class CampaignRepositoryMock: CampaignRepositoryType {
     }
 
     func resetFlags() {
-        wasDecrementImpressionsCalled = false
-        wasIncrementImpressionsCalled = false
+        decrementImpressionsCalls = 0
+        incrementImpressionsCalls = 0
         wasOptOutCalled = false
         lastSyncCampaigns = [Campaign]()
         wasLoadCachedDataCalled = false
@@ -379,7 +379,10 @@ class RouterMock: RouterType {
             completion(true)
             return
         }
-        DispatchQueue.global().async {
+        DispatchQueue.global().async { [weak self] in
+            guard let self = self else {
+                return
+            }
             usleep(useconds_t(self.displayTime * Double(USEC_PER_SEC))) // simulate display time
             self.lastDisplayedCampaign = campaign
             self.displayedCampaignsCount += 1
@@ -387,9 +390,8 @@ class RouterMock: RouterType {
         }
     }
 
-    func discardDisplayedCampaign() -> Campaign? {
+    func discardDisplayedCampaign() {
         wasDiscardCampaignCalled = true
-        return lastDisplayedCampaign
     }
 }
 
