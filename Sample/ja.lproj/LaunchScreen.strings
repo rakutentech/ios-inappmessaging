@@ -1,6 +1,6 @@
 
-/* Class = "UILabel"; text = "  Copyright (c) 2020 Rakuten. All rights reserved."; ObjectID = "8ie-xW-0ye"; */
-"8ie-xW-0ye.text" = "  Copyright (c) 2020 Rakuten. All rights reserved.";
+/* Class = "UILabel"; text = "© Rakuten Group, Inc."; ObjectID = "8ie-xW-0ye"; */
+"8ie-xW-0ye.text" = "© Rakuten Group, Inc.";
 
-/* Class = "UILabel"; text = "InAppMessaging"; ObjectID = "kId-c2-rCX"; */
-"kId-c2-rCX.text" = "InAppMessaging";
+/* Class = "UILabel"; text = "RInAppMessaging"; ObjectID = "kId-c2-rCX"; */
+"kId-c2-rCX.text" = "RInAppMessaging";

@@ -384,7 +384,7 @@
 			attributes = {
 				LastSwiftUpdateCheck = 1230;
 				LastUpgradeCheck = 1210;
-				ORGANIZATIONNAME = CocoaPods;
+				ORGANIZATIONNAME = "Rakuten Group, Inc.";
 				TargetAttributes = {
 					45B5723B25ACE90F005A80F7 = {
 						CreatedOnToolsVersion = 12.3;
