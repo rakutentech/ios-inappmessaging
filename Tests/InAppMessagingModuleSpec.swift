@@ -2,8 +2,10 @@ import Quick
 import Nimble
 @testable import RInAppMessaging
 
+// swiftlint:disable:next type_body_length
 class InAppMessagingModuleSpec: QuickSpec {
 
+    // swiftlint:disable:next function_body_length
     override func spec() {
 
         describe("InAppMessagingModule") {
@@ -48,6 +50,20 @@ class InAppMessagingModuleSpec: QuickSpec {
                                                  router: router,
                                                  randomizer: randomizer)
                 iamModule.delegate = delegate
+            }
+
+            it("is enabled by deafult") {
+                expect(iamModule.isEnabled).to(beTrue())
+            }
+
+            it("will return true for shouldShowCampaignMessage if delegate is nil") {
+                iamModule.delegate = nil
+                expect(iamModule.shouldShowCampaignMessage(title: "", contexts: [])).to(beTrue())
+            }
+
+            it("will call delegate method if shouldShowCampaignMessage was called") {
+                _ = iamModule.shouldShowCampaignMessage(title: "", contexts: [])
+                expect(delegate.wasShouldShowCampaignCalled).to(beTrue())
             }
 
             context("when calling initialize") {
@@ -142,6 +158,62 @@ class InAppMessagingModuleSpec: QuickSpec {
                     }
                 }
 
+                context("and fetchAndSaveConfigData has not finished") {
+                    let queue = DispatchQueue(label: "iamTestQueue")
+
+                    beforeEach {
+                        configurationManager.fetchCalledClosure = {
+                            sleep(2)
+                        }
+                        queue.async {
+                            iamModule.initialize { }
+                        }
+                    }
+
+                    it("should wait synchronously with logEvent method") {
+                        queue.async {
+                            iamModule.logEvent(AppStartEvent())
+                        }
+                        expect(eventMatcher.loggedEvents).toAfterTimeout(beEmpty())
+                        expect(eventMatcher.loggedEvents).toEventually(haveCount(1), timeout: .seconds(2))
+                    }
+
+                    it("should wait synchronously with registerPreference method") {
+                        let preference = IAMPreferenceBuilder().setUserId("user").build()
+                        queue.async {
+                            iamModule.registerPreference(preference)
+                        }
+                        expect(preferenceRepository.preference).toAfterTimeout(beNil())
+                        expect(preferenceRepository.preference).toEventually(equal(preference), timeout: .seconds(2))
+                    }
+                }
+
+                context("and fetchAndSaveConfigData errored (waiting for retry)") {
+
+                    beforeEach {
+                        configurationManager.simulateRetryDelay = 1
+                        iamModule.initialize { }
+                    }
+
+                    it("will log all buferred events when module is enabled") {
+                        configurationManager.rolloutPercentage = 100
+                        iamModule.logEvent(AppStartEvent())
+                        iamModule.logEvent(LoginSuccessfulEvent())
+                        expect(eventMatcher.loggedEvents).to(beEmpty())
+                        expect(campaignsValidator.wasValidateCalled).to(beFalse())
+                        expect(eventMatcher.loggedEvents).toEventually(haveCount(2), timeout: .seconds(2))
+                        expect(campaignsValidator.wasValidateCalled).to(beTrue())
+                    }
+
+                    it("will not log all buferred events when module is disabled") {
+                        configurationManager.rolloutPercentage = 0
+                        iamModule.logEvent(AppStartEvent())
+                        iamModule.logEvent(LoginSuccessfulEvent())
+                        expect(eventMatcher.loggedEvents).toAfterTimeout(beEmpty(), timeout: 2)
+                        expect(campaignsValidator.wasValidateCalled).toAfterTimeout(beFalse(), timeout: 2)
+                    }
+                }
+
                 context("when calling logEvent") {
 
                     context("and module is enabled") {
@@ -180,9 +252,9 @@ class InAppMessagingModuleSpec: QuickSpec {
 
                         context("and module is not initialized") {
 
-                            it("will call EventMatcher") {
+                            it("will not call EventMatcher") {
                                 iamModule.logEvent(PurchaseSuccessfulEvent())
-                                expect(eventMatcher.loggedEvents).toEventually(haveCount(1))
+                                expect(eventMatcher.loggedEvents).toAfterTimeout(beEmpty())
                             }
 
                             it("will not validate campaigns") {
@@ -424,16 +496,6 @@ class InAppMessagingModuleSpec: QuickSpec {
                         }
                     }
                 }
-            }
-
-            it("will return true for shouldShowCampaignMessage if delegate is nil") {
-                iamModule.delegate = nil
-                expect(iamModule.shouldShowCampaignMessage(title: "", contexts: [])).to(beTrue())
-            }
-
-            it("will call delegate method if shouldShowCampaignMessage was called") {
-                _ = iamModule.shouldShowCampaignMessage(title: "", contexts: [])
-                expect(delegate.wasShouldShowCampaignCalled).to(beTrue())
             }
         }
     }

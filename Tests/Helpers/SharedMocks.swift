@@ -152,11 +152,20 @@ class MessageMixerServiceMock: MessageMixerServiceType {
 class ConfigurationManagerMock: ConfigurationManagerType {
     weak var errorDelegate: ErrorDelegate?
     var rolloutPercentage = 100
+    var simulateRetryDelay = TimeInterval(0)
     var fetchCalledClosure = {}
 
     func fetchAndSaveConfigData(completion: @escaping (ConfigData) -> Void) {
-        fetchCalledClosure()
-        completion(ConfigData(rolloutPercentage: rolloutPercentage, endpoints: .empty))
+        if simulateRetryDelay > 0 {
+            let delayMS = Int(simulateRetryDelay * 1000)
+            simulateRetryDelay = 0
+            WorkScheduler.scheduleTask(milliseconds: delayMS) { [weak self] in
+                self?.fetchAndSaveConfigData(completion: completion)
+            }
+        } else {
+            fetchCalledClosure()
+            completion(ConfigData(rolloutPercentage: rolloutPercentage, endpoints: .empty))
+        }
     }
 }
 
