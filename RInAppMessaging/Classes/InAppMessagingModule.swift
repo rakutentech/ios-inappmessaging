@@ -121,12 +121,12 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
 
     private func flushEventBuffer(void: Bool) {
         if !void {
-            self.eventBuffer.forEach {
-                self.eventMatcher.matchAndStore(event: $0)
+            eventBuffer.forEach {
+                eventMatcher.matchAndStore(event: $0)
             }
             campaignTriggerAgent.validateAndTriggerCampaigns()
         }
-        self.eventBuffer.removeAll()
+        eventBuffer.removeAll()
     }
 }
 
