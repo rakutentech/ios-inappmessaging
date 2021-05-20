@@ -64,9 +64,9 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
 
             if enabled {
                 self.campaignsListManager.refreshList()
-                self.flushEventBuffer(void: false)
+                self.flushEventBuffer(discardEvents: false)
             } else {
-                self.flushEventBuffer(void: true)
+                self.flushEventBuffer(discardEvents: true)
                 deinitHandler()
             }
         }
@@ -119,8 +119,8 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
         router.discardDisplayedCampaign()
     }
 
-    private func flushEventBuffer(void: Bool) {
-        if !void {
+    private func flushEventBuffer(discardEvents: Bool) {
+        if !discardEvents {
             eventBuffer.forEach {
                 eventMatcher.matchAndStore(event: $0)
             }
