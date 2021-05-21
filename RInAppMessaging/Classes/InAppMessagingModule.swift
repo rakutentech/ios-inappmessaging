@@ -14,7 +14,8 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
     private let randomizer: RandomizerType
 
     private var isInitialized = false
-    private var isEnabled = true
+    private(set) var isEnabled = true
+    private var eventBuffer = [Event]()
 
     var aggregatedErrorHandler: ((NSError) -> Void)?
     weak var delegate: RInAppMessagingDelegate?
@@ -54,13 +55,18 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
         }
 
         configurationManager.fetchAndSaveConfigData { [weak self] config in
-            let enabled = self?.isEnabled(config: config) ?? false
-            self?.isEnabled = enabled
-            self?.isInitialized = true
+            guard let self = self else {
+                return
+            }
+            let enabled = self.isEnabled(config: config)
+            self.isEnabled = enabled
+            self.isInitialized = true
 
             if enabled {
-                self?.campaignsListManager.refreshList()
+                self.campaignsListManager.refreshList()
+                self.flushEventBuffer(discardEvents: false)
             } else {
+                self.flushEventBuffer(discardEvents: true)
                 deinitHandler()
             }
         }
@@ -71,13 +77,16 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
             return
         }
 
-        eventMatcher.matchAndStore(event: event)
         sendEventName(Constants.RAnalytics.events, event.analyticsParameters)
 
         guard isInitialized else {
+            // Events that were logged after first getConfig request failed,
+            // are saved to this list to be processed later
+            eventBuffer.append(event)
             return
         }
 
+        eventMatcher.matchAndStore(event: event)
         campaignTriggerAgent.validateAndTriggerCampaigns()
     }
 
@@ -108,6 +117,16 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
             readyCampaignDispatcher.resetQueue()
         }
         router.discardDisplayedCampaign()
+    }
+
+    private func flushEventBuffer(discardEvents: Bool) {
+        if !discardEvents {
+            eventBuffer.forEach {
+                eventMatcher.matchAndStore(event: $0)
+            }
+            campaignTriggerAgent.validateAndTriggerCampaigns()
+        }
+        eventBuffer.removeAll()
     }
 }
 
