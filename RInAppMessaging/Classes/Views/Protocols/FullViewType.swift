@@ -1,4 +1,4 @@
-internal protocol FullViewType: BaseView, AlertPresentable {
+internal protocol FullViewType: BaseView {
     var isOptOutChecked: Bool { get }
 
     func setup(viewModel: FullViewModel)

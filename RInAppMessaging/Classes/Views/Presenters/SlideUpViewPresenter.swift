@@ -34,21 +34,19 @@ internal class SlideUpViewPresenter: BaseViewPresenter, SlideUpViewPresenterType
 
         if [.redirect, .deeplink].contains(campaignContent?.onClickBehavior.action) {
             guard let uri = campaignContent?.onClickBehavior.uri,
-                let uriToOpen = URL(string: uri),
-                UIApplication.shared.canOpenURL(uriToOpen) else {
+                let uriToOpen = URL(string: uri) else {
 
-                view?.showAlert(title: "dialog_alert_invalidURI_title".localized,
-                                message: "dialog_alert_invalidURI_message".localized,
-                                style: .alert,
-                                actions: [
-                                    UIAlertAction(title: "dialog_alert_invalidURI_close".localized,
-                                                  style: .default,
-                                                  handler: nil)
-                ])
+                if let view = view {
+                    showURLError(view: view)
+                }
                 return
             }
 
-            UIApplication.shared.open(uriToOpen, options: [:], completionHandler: nil)
+            UIApplication.shared.open(uriToOpen, options: [:], completionHandler: { success in
+                if !success, let view = self.view {
+                    self.showURLError(view: view)
+                }
+            })
         }
 
         logImpression(type: .clickContent)
