@@ -103,6 +103,15 @@ class ViewPresenterSpec: QuickSpec {
                     expect(campaignRepository.wasOptOutCalled).to(beTrue())
                 }
             }
+
+            context("when showURLError is called") {
+
+                it("will call showAlert on passed view") {
+                    let view = FullViewMock()
+                    presenter.showURLError(view: view)
+                    expect(view.wasShowAlertCalled).to(beTrue())
+                }
+            }
         }
 
         describe("SlideUpViewPresenter") {
@@ -352,6 +361,7 @@ private class FullViewMock: UIView, FullViewType {
 
     private(set) var wasSetupCalled = false
     private(set) var wasDismissCalled = false
+    private(set) var wasShowAlertCalled = false
     private(set) var addedButtons = [(ActionButton, viewModel: ActionButtonViewModel)]()
 
     func setup(viewModel: FullViewModel) {
@@ -364,6 +374,10 @@ private class FullViewMock: UIView, FullViewType {
 
     func addButtons(_ buttons: [(ActionButton, viewModel: ActionButtonViewModel)]) {
         addedButtons = buttons
+    }
+
+    func showAlert(title: String, message: String, style: UIAlertController.Style, actions: [UIAlertAction]) {
+        wasShowAlertCalled = true
     }
 
     func animateOnShow(completion: @escaping () -> Void) { completion() }

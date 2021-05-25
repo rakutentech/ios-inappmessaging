@@ -2,7 +2,7 @@ import class UIKit.UIView
 import func Foundation.NSClassFromString
 
 /// Base protocol for all of IAM's supported campaign views
-internal protocol BaseView: UIView {
+internal protocol BaseView: UIView, AlertPresentable {
 
     static var viewIdentifier: String { get }
     var onDismiss: ((_ cancelled: Bool) -> Void)? { get set }

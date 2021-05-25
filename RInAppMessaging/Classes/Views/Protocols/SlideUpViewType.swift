@@ -1,3 +1,3 @@
-internal protocol SlideUpViewType: BaseView, AlertPresentable {
+internal protocol SlideUpViewType: BaseView {
     func setup(viewModel: SlideUpViewModel)
 }

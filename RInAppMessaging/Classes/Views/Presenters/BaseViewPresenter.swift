@@ -1,3 +1,5 @@
+import class UIKit.UIAlertAction
+
 internal protocol BaseViewPresenterType: ImpressionTrackable {
     var campaign: Campaign! { get set }
     var impressions: [Impression] { get set }
@@ -63,5 +65,15 @@ internal class BaseViewPresenter: BaseViewPresenterType {
     func loadResources() {
         // load image from imageUrl data
         _ = associatedImage
+    }
+
+    func showURLError(view: BaseView) {
+        view.showAlert(title: "dialog_alert_invalidURI_title".localized,
+                       message: "dialog_alert_invalidURI_message".localized,
+                       style: .alert,
+                       actions: [UIAlertAction(title: "dialog_alert_invalidURI_close".localized,
+                                               style: .default,
+                                               handler: nil)
+        ])
     }
 }

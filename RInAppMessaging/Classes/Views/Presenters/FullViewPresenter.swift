@@ -60,18 +60,17 @@ internal class FullViewPresenter: BaseViewPresenter, FullViewPresenterType {
             guard let uriToOpen = URL(string: unwrappedUri),
                 UIApplication.shared.canOpenURL(uriToOpen) else {
 
-                view?.showAlert(title: "dialog_alert_invalidURI_title".localized,
-                               message: "dialog_alert_invalidURI_message".localized,
-                               style: .alert,
-                               actions: [
-                                UIAlertAction(title: "dialog_alert_invalidURI_close".localized,
-                                              style: .default,
-                                              handler: nil)
-                ])
+                if let view = view {
+                    showURLError(view: view)
+                }
                 return
             }
 
-            UIApplication.shared.open(uriToOpen, options: [:], completionHandler: nil)
+            UIApplication.shared.open(uriToOpen, options: [:], completionHandler: { success in
+                if !success, let view = self.view {
+                    self.showURLError(view: view)
+                }
+            })
         }
 
         // If the button came with a campaign trigger, log it.
