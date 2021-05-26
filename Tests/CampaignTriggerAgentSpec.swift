@@ -32,7 +32,7 @@ class CampaignTriggerAgentSpec: QuickSpec {
                     campaignsValidator.campaignsToTrigger = [testCampaign]
                     campaignTriggerAgent.validateAndTriggerCampaigns()
 
-                    expect(campaignDispatcher.addedCampaigns).to(elementsEqual([testCampaign]))
+                    expect(campaignDispatcher.addedCampaignIDs).to(elementsEqual([testCampaign.id]))
                 }
 
                 it("will not dispatch campaign when events coulnd't be triggered") {
@@ -40,7 +40,7 @@ class CampaignTriggerAgentSpec: QuickSpec {
                     campaignsValidator.campaignsToTrigger = [testCampaign]
                     campaignTriggerAgent.validateAndTriggerCampaigns()
 
-                    expect(campaignDispatcher.addedCampaigns).to(beEmpty())
+                    expect(campaignDispatcher.addedCampaignIDs).to(beEmpty())
                 }
             }
 
@@ -55,7 +55,7 @@ class CampaignTriggerAgentSpec: QuickSpec {
                 campaignsValidator.campaignsToTrigger = [testCampaign]
                 campaignTriggerAgent.validateAndTriggerCampaigns()
 
-                expect(campaignDispatcher.addedCampaigns).to(beEmpty())
+                expect(campaignDispatcher.addedCampaignIDs).to(beEmpty())
             }
         }
     }

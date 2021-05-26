@@ -29,7 +29,7 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
                     permissionService.shouldGrantPermission = true
                     let testCampaigns = TestHelpers.MockResponse.withGeneratedCampaigns(count: 3, test: false, delay: 0).data
                     testCampaigns.forEach {
-                        dispatcher.addToQueue(campaign: $0)
+                        dispatcher.addToQueue(campaignID: $0.id)
                     }
                     expect(router.lastDisplayedCampaign).toAfterTimeout(beNil(), timeout: 0.1)
                 }
@@ -50,22 +50,24 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
 
                         it("will display newly added campaigns") {
                             let testCampaigns = TestHelpers.MockResponse.withGeneratedCampaigns(count: 3, test: false, delay: 500).data
+                            campaignRepository.list = testCampaigns
                             let firstCampaign = testCampaigns[0]
                             let secondCampaign = testCampaigns[1]
                             let thirdCampaign = testCampaigns[2]
-                            dispatcher.addToQueue(campaign: firstCampaign)
-                            dispatcher.addToQueue(campaign: secondCampaign)
+                            dispatcher.addToQueue(campaignID: firstCampaign.id)
+                            dispatcher.addToQueue(campaignID: secondCampaign.id)
                             dispatcher.dispatchAllIfNeeded()
-                            dispatcher.addToQueue(campaign: thirdCampaign)
+                            dispatcher.addToQueue(campaignID: thirdCampaign.id)
                             expect(router.lastDisplayedCampaign).toEventually(equal(thirdCampaign), timeout: .seconds(2))
                         }
 
                         it("won't start another dispatch procedure if one has already started") {
                             let testCampaigns = TestHelpers.MockResponse.withGeneratedCampaigns(count: 2, test: false, delay: 8000).data
+                            campaignRepository.list = testCampaigns
                             let firstCampaign = testCampaigns[0]
                             let secondCampaign = testCampaigns[1]
-                            dispatcher.addToQueue(campaign: firstCampaign)
-                            dispatcher.addToQueue(campaign: secondCampaign)
+                            dispatcher.addToQueue(campaignID: firstCampaign.id)
+                            dispatcher.addToQueue(campaignID: secondCampaign.id)
                             dispatcher.dispatchAllIfNeeded()
                             expect(router.lastDisplayedCampaign).toEventually(equal(firstCampaign))
                             dispatcher.dispatchAllIfNeeded()
@@ -77,21 +79,24 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
 
                         it("will call delegate if contexts are present") {
                             let campaign = TestHelpers.generateCampaign(id: "test", title: "[ctx] title")
-                            dispatcher.addToQueue(campaign: campaign)
+                            campaignRepository.list = [campaign]
+                            dispatcher.addToQueue(campaignID: campaign.id)
                             dispatcher.dispatchAllIfNeeded()
                             expect(delegate.wasShouldShowCalled).toEventually(beTrue())
                         }
 
                         it("will not call delegate if contexts are not present") {
                             let campaign = TestHelpers.generateCampaign(id: "test", title: "title")
-                            dispatcher.addToQueue(campaign: campaign)
+                            campaignRepository.list = [campaign]
+                            dispatcher.addToQueue(campaignID: campaign.id)
                             dispatcher.dispatchAllIfNeeded()
                             expect(delegate.wasShouldShowCalled).toAfterTimeout(beFalse())
                         }
 
                         it("will display campaign normally if contexts are not present") {
                             let campaign = TestHelpers.generateCampaign(id: "test", title: "title")
-                            dispatcher.addToQueue(campaign: campaign)
+                            campaignRepository.list = [campaign]
+                            dispatcher.addToQueue(campaignID: campaign.id)
                             dispatcher.dispatchAllIfNeeded()
                             expect(router.lastDisplayedCampaign).toEventually(equal(campaign))
                         }
@@ -104,8 +109,9 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
                             it("will display newly added campaigns") {
                                 let firstCampaign = TestHelpers.generateCampaign(id: "test", title: "[ctx1] title")
                                 let secondCampaign = TestHelpers.generateCampaign(id: "test", title: "[ctx2] title")
-                                dispatcher.addToQueue(campaign: firstCampaign)
-                                dispatcher.addToQueue(campaign: secondCampaign)
+                                campaignRepository.list = [firstCampaign, secondCampaign]
+                                dispatcher.addToQueue(campaignID: firstCampaign.id)
+                                dispatcher.addToQueue(campaignID: secondCampaign.id)
                                 dispatcher.dispatchAllIfNeeded()
                                 expect(router.lastDisplayedCampaign).toEventually(equal(firstCampaign))
                                 expect(router.lastDisplayedCampaign).toEventually(equal(secondCampaign))
@@ -113,7 +119,8 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
 
                             it("will not restore impressions left value") {
                                 let campaign = TestHelpers.generateCampaign(id: "test", title: "[ctx] title")
-                                dispatcher.addToQueue(campaign: campaign)
+                                campaignRepository.list = [campaign]
+                                dispatcher.addToQueue(campaignID: campaign.id)
                                 dispatcher.dispatchAllIfNeeded()
                                 expect(campaignRepository.incrementImpressionsCalls).toAfterTimeout(equal(0))
                             }
@@ -131,22 +138,25 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
                                 let secondCampaign = TestHelpers.generateCampaign(
                                     id: "test2", test: false, delay: 10000, maxImpressions: 1,
                                     title: "title")
-                                dispatcher.addToQueue(campaign: firstCampaign)
-                                dispatcher.addToQueue(campaign: secondCampaign)
+                                campaignRepository.list = [firstCampaign, secondCampaign]
+                                dispatcher.addToQueue(campaignID: firstCampaign.id)
+                                dispatcher.addToQueue(campaignID: secondCampaign.id)
                                 dispatcher.dispatchAllIfNeeded()
                                 expect(router.lastDisplayedCampaign).toEventually(equal(secondCampaign), timeout: .milliseconds(500))
                             }
 
                             it("will not display campaigns with context") {
                                 let campaign = TestHelpers.generateCampaign(id: "test", title: "[ctx] title")
-                                dispatcher.addToQueue(campaign: campaign)
+                                campaignRepository.list = [campaign]
+                                dispatcher.addToQueue(campaignID: campaign.id)
                                 dispatcher.dispatchAllIfNeeded()
                                 expect(router.lastDisplayedCampaign).toAfterTimeout(beNil())
                             }
 
                             it("will always dispatch test campaigns") {
                                 let campaign = TestHelpers.generateCampaign(id: "test", title: "[ctx] title", isTest: true)
-                                dispatcher.addToQueue(campaign: campaign)
+                                campaignRepository.list = [campaign]
+                                dispatcher.addToQueue(campaignID: campaign.id)
                                 dispatcher.dispatchAllIfNeeded()
                                 expect(router.lastDisplayedCampaign).toEventually(equal(campaign))
                             }
@@ -154,14 +164,16 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
                             it("will perform ping if flag in the response is true") {
                                 permissionService.shouldPerformPing = true
                                 let testCampaign = TestHelpers.generateCampaign(id: "test", title: "[ctx] title")
-                                dispatcher.addToQueue(campaign: testCampaign)
+                                campaignRepository.list = [testCampaign]
+                                dispatcher.addToQueue(campaignID: testCampaign.id)
                                 dispatcher.dispatchAllIfNeeded()
                                 expect(delegate.wasPingCalled).toEventually(beTrue())
                             }
 
                             it("will restore impressions left value (cancelled display)") {
                                 let campaign = TestHelpers.generateCampaign(id: "test", title: "[ctx] title")
-                                dispatcher.addToQueue(campaign: campaign)
+                                campaignRepository.list = [campaign]
+                                dispatcher.addToQueue(campaignID: campaign.id)
                                 dispatcher.dispatchAllIfNeeded()
                                 expect(campaignRepository.incrementImpressionsCalls).toAfterTimeout(equal(1))
                             }
@@ -176,10 +188,11 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
 
                     it("will always dispatch test campaigns") {
                         let testCampaigns = TestHelpers.MockResponse.withGeneratedCampaigns(count: 2, test: true, delay: 500).data
+                        campaignRepository.list = testCampaigns
                         let firstCampaign = testCampaigns[0]
                         let secondCampaign = testCampaigns[1]
-                        dispatcher.addToQueue(campaign: firstCampaign)
-                        dispatcher.addToQueue(campaign: secondCampaign)
+                        dispatcher.addToQueue(campaignID: firstCampaign.id)
+                        dispatcher.addToQueue(campaignID: secondCampaign.id)
                         dispatcher.dispatchAllIfNeeded()
                         expect(router.lastDisplayedCampaign).toEventually(equal(firstCampaign))
                         expect(router.lastDisplayedCampaign).toEventually(equal(secondCampaign))
@@ -190,15 +203,16 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
                             id: "test1", test: false, delay: 10000, maxImpressions: 1)
                         let secondCampaign = TestHelpers.generateCampaign(
                             id: "test2", test: true, delay: 10000, maxImpressions: 1)
-                        dispatcher.addToQueue(campaign: firstCampaign)
-                        dispatcher.addToQueue(campaign: secondCampaign)
+                        campaignRepository.list = [firstCampaign, secondCampaign]
+                        dispatcher.addToQueue(campaignID: firstCampaign.id)
+                        dispatcher.addToQueue(campaignID: secondCampaign.id)
                         dispatcher.dispatchAllIfNeeded()
                         expect(router.lastDisplayedCampaign).toEventually(equal(secondCampaign), timeout: .milliseconds(500))
                     }
 
                     it("won't dispatch non-test campaigns") {
                         let campaign = TestHelpers.MockResponse.withGeneratedCampaigns(count: 1, test: false, delay: 0).data[0]
-                        dispatcher.addToQueue(campaign: campaign)
+                        dispatcher.addToQueue(campaignID: campaign.id)
                         dispatcher.dispatchAllIfNeeded()
                         expect(router.lastDisplayedCampaign).toAfterTimeout(beNil(), timeout: 0.1)
                     }
@@ -206,21 +220,22 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
                     it("will perform ping if flag in the response is true") {
                         permissionService.shouldPerformPing = true
                         let testCampaign = TestHelpers.generateCampaign(id: "test")
-                        dispatcher.addToQueue(campaign: testCampaign)
+                        campaignRepository.list = [testCampaign]
+                        dispatcher.addToQueue(campaignID: testCampaign.id)
                         dispatcher.dispatchAllIfNeeded()
                         expect(delegate.wasPingCalled).toEventually(beTrue())
                     }
 
                     it("won't call shouldShowCampaignMessage delegate method for non-test campaigns") {
                         let campaign = TestHelpers.generateCampaign(id: "test", title: "[ctx] title")
-                        dispatcher.addToQueue(campaign: campaign)
+                        dispatcher.addToQueue(campaignID: campaign.id)
                         dispatcher.dispatchAllIfNeeded()
                         expect(delegate.wasShouldShowCalled).toAfterTimeout(beFalse())
                     }
 
                     it("won't call shouldShowCampaignMessage delegate method for test campaigns") {
                         let campaign = TestHelpers.generateCampaign(id: "test", title: "[ctx] title")
-                        dispatcher.addToQueue(campaign: campaign)
+                        dispatcher.addToQueue(campaignID: campaign.id)
                         dispatcher.dispatchAllIfNeeded()
                         expect(delegate.wasShouldShowCalled).toAfterTimeout(beFalse())
                     }
@@ -231,8 +246,9 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
                     let testCampaigns = TestHelpers.MockResponse.withGeneratedCampaigns(count: 3, test: true, delay: 1000).data
 
                     beforeEach {
-                        dispatcher.addToQueue(campaign: testCampaigns[0])
-                        dispatcher.addToQueue(campaign: testCampaigns[1])
+                        campaignRepository.list = testCampaigns
+                        dispatcher.addToQueue(campaignID: testCampaigns[0].id)
+                        dispatcher.addToQueue(campaignID: testCampaigns[1].id)
                         dispatcher.dispatchAllIfNeeded()
                     }
 
@@ -254,7 +270,7 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
                     it("will remove all queued campaigns") {
                         expect(dispatcher.isDispatching).toEventually(beTrue()) // wait
                         dispatcher.resetQueue()
-                        dispatcher.addToQueue(campaign: testCampaigns[2])
+                        dispatcher.addToQueue(campaignID: testCampaigns[2].id)
                         dispatcher.dispatchAllIfNeeded()
                         expect(router.lastDisplayedCampaign).toEventually(equal(testCampaigns[2]), timeout: .seconds(2))
                         expect(router.displayedCampaignsCount).to(equal(2))
@@ -276,7 +292,8 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
 
                 it("will decrement impressions left in campaign") {
                     let campaign = TestHelpers.generateCampaign(id: "test")
-                    dispatcher.addToQueue(campaign: campaign)
+                    campaignRepository.list = [campaign]
+                    dispatcher.addToQueue(campaignID: campaign.id)
                     dispatcher.dispatchAllIfNeeded()
                     expect(campaignRepository.decrementImpressionsCalls).toAfterTimeout(equal(1))
                 }
@@ -284,7 +301,8 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
                 it("will restore impressions left value if contexts were rejected") {
                     delegate.shouldShowCampaign = false
                     let campaign = TestHelpers.generateCampaign(id: "test", title: "[ctx] title")
-                    dispatcher.addToQueue(campaign: campaign)
+                    campaignRepository.list = [campaign]
+                    dispatcher.addToQueue(campaignID: campaign.id)
                     dispatcher.dispatchAllIfNeeded()
                     expect(campaignRepository.incrementImpressionsCalls).toAfterTimeout(equal(1))
                 }
@@ -292,14 +310,16 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
                 it("will not increment impressions left value if contexts were approved") {
                     delegate.shouldShowCampaign = true
                     let campaign = TestHelpers.generateCampaign(id: "test", title: "[ctx] title")
-                    dispatcher.addToQueue(campaign: campaign)
+                    campaignRepository.list = [campaign]
+                    dispatcher.addToQueue(campaignID: campaign.id)
                     dispatcher.dispatchAllIfNeeded()
                     expect(campaignRepository.incrementImpressionsCalls).toAfterTimeout(equal(0))
                 }
 
                 it("will dispatch remaining campaigns") {
                     TestHelpers.MockResponse.withGeneratedCampaigns(count: 10, test: false, delay: 10).data.forEach {
-                        dispatcher.addToQueue(campaign: $0)
+                        campaignRepository.list.append($0)
+                        dispatcher.addToQueue(campaignID: $0.id)
                     }
                     dispatcher.dispatchAllIfNeeded()
                     expect(router.displayedCampaignsCount).toEventually(equal(10), timeout: .seconds(2))
@@ -307,7 +327,8 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
 
                 it("will schedule next dispatch after a delay defined in campaign data") {
                     TestHelpers.MockResponse.withGeneratedCampaigns(count: 2, test: false, delay: 1000).data.forEach {
-                        dispatcher.addToQueue(campaign: $0)
+                        campaignRepository.list.append($0)
+                        dispatcher.addToQueue(campaignID: $0.id)
                     }
                     dispatcher.dispatchAllIfNeeded()
                     expect(router.displayedCampaignsCount).toEventually(equal(1))
@@ -317,7 +338,8 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
 
                 it("won't schedule next dispatch if there are no queued campaigns") {
                     let campaign = TestHelpers.MockResponse.withGeneratedCampaigns(count: 1, test: false, delay: 0).data[0]
-                    dispatcher.addToQueue(campaign: campaign)
+                    campaignRepository.list = [campaign]
+                    dispatcher.addToQueue(campaignID: campaign.id)
                     dispatcher.dispatchAllIfNeeded()
                     expect(router.displayedCampaignsCount).toEventually(equal(1))
                     expect(dispatcher.isDispatching).to(beFalse())

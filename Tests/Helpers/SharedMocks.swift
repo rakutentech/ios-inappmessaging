@@ -82,11 +82,11 @@ class CampaignRepositoryMock: CampaignRepositoryType {
 class CampaignDispatcherMock: CampaignDispatcherType {
     weak var delegate: CampaignDispatcherDelegate?
     var wasDispatchCalled = false
-    var addedCampaigns = [Campaign]()
+    var addedCampaignIDs = [String]()
     var wasResetQueueCalled = false
 
-    func addToQueue(campaign: Campaign) {
-        addedCampaigns.append(campaign)
+    func addToQueue(campaignID: String) {
+        addedCampaignIDs.append(campaignID)
     }
     func dispatchAllIfNeeded() {
         wasDispatchCalled = true

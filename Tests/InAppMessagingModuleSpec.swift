@@ -205,7 +205,7 @@ class InAppMessagingModuleSpec: QuickSpec {
                         expect(campaignsValidator.wasValidateCalled).to(beTrue())
                     }
 
-                    it("will not log all buferred events when module is disabled") {
+                    it("will not log buferred events when module is disabled") {
                         configurationManager.rolloutPercentage = 0
                         iamModule.logEvent(AppStartEvent())
                         iamModule.logEvent(LoginSuccessfulEvent())
@@ -241,7 +241,7 @@ class InAppMessagingModuleSpec: QuickSpec {
                                                  TestHelpers.generateCampaign(id: "2")]
                                 campaignsValidator.campaignsToTrigger = campaigns
                                 iamModule.logEvent(PurchaseSuccessfulEvent())
-                                expect(readyCampaignDispatcher.addedCampaigns).to(equal(campaigns))
+                                expect(readyCampaignDispatcher.addedCampaignIDs).to(equal(campaigns.map({ $0.id })))
                             }
 
                             it("will call dispatchAllIfNeeded") {

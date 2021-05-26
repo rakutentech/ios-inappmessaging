@@ -27,6 +27,14 @@ internal struct CommonUtility {
         resourcesToLock.forEach { $0.unlock() }
     }
 
+    static func lock(resourcesIn object: Lockable) {
+        object.resourcesToLock.forEach { $0.lock() }
+    }
+
+    static func unlock(resourcesIn object: Lockable) {
+        object.resourcesToLock.forEach { $0.unlock() }
+    }
+
     /// Converts a `Trigger` object from `Button` object to a `CustomEvent`.
     /// - Parameter trigger: The trigger object to parse out.
     /// - Returns: The event object created the trigger object.

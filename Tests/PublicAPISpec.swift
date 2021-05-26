@@ -13,15 +13,12 @@ class PublicAPISpec: QuickSpec {
         var messageMixerService: MessageMixerServiceMock!
         var campaignsListManager: CampaignsListManagerType!
         var campaignRepository: CampaignRepositoryType!
+        var configurationManager: ConfigurationManagerMock!
         var delegate: Delegate!
 
         func mockContainer() -> DependencyManager.Container {
             return DependencyManager.Container([
-                DependencyManager.ContainerElement(type: ConfigurationManagerType.self, factory: {
-                    let manager = ConfigurationManagerMock()
-                    manager.rolloutPercentage = 100
-                    return manager
-                }),
+                DependencyManager.ContainerElement(type: ConfigurationManagerType.self, factory: { configurationManager }),
                 DependencyManager.ContainerElement(type: MessageMixerServiceType.self, factory: { messageMixerService }),
                 DependencyManager.ContainerElement(type: EventMatcherType.self, factory: { eventMatcher }),
                 DependencyManager.ContainerElement(type: UserDataCacheable.self, factory: {
@@ -30,17 +27,19 @@ class PublicAPISpec: QuickSpec {
             ])
         }
 
-        func reinitializeSDK() {
+        func reinitializeSDK(onDependencyResolved: (() -> Void)? = nil) {
             let dependencyManager = DependencyManager()
             dependencyManager.appendContainer(MainContainerFactory.create(dependencyManager: dependencyManager))
             dependencyManager.appendContainer(mockContainer())
+            configurationManager = ConfigurationManagerMock()
             messageMixerService = MessageMixerServiceMock()
             eventMatcher = EventMatcherSpy(
                 campaignRepository: dependencyManager.resolve(type: CampaignRepositoryType.self)!)
-            preferenceRepository = dependencyManager.resolve(type: IAMPreferenceRepository.self)!
+            preferenceRepository = dependencyManager.resolve(type: IAMPreferenceRepository.self)
             router = dependencyManager.resolve(type: RouterType.self)!
-            campaignsListManager = dependencyManager.resolve(type: CampaignsListManagerType.self)!
-            campaignRepository = dependencyManager.resolve(type: CampaignRepositoryType.self)!
+            campaignsListManager = dependencyManager.resolve(type: CampaignsListManagerType.self)
+            campaignRepository = dependencyManager.resolve(type: CampaignRepositoryType.self)
+            onDependencyResolved?()
             RInAppMessaging.configure(dependencyManager: dependencyManager)
         }
 
@@ -119,13 +118,50 @@ class PublicAPISpec: QuickSpec {
 
             it("won't send any events until configuration has finished") {
                 RInAppMessaging.deinitializeModule()
-                reinitializeSDK()
-                messageMixerService.delay = 3.0
+                reinitializeSDK(onDependencyResolved: {
+                    messageMixerService.delay = 3.0
+                })
                 RInAppMessaging.logEvent(LoginSuccessfulEvent())
                 expect(eventMatcher.loggedEvents).toAfterTimeout(beEmpty(), timeout: 1)
                 expect(eventMatcher.loggedEvents).toEventually(haveCount(1),
                                                                timeout: .seconds(Int(messageMixerService.delay + 1)),
                                                                pollInterval: .milliseconds(500))
+            }
+
+            // it will properly schedule campaigns when events are logged one after another AND
+            it("will display campaigns for matching events that were logged during config retry delay") {
+                RInAppMessaging.deinitializeModule()
+                reinitializeSDK(onDependencyResolved: {
+                    configurationManager.simulateRetryDelay = 1.0
+                    messageMixerService.delay = 1.0
+                    messageMixerService.mockedResponse = TestHelpers.MockResponse.withGeneratedCampaigns(
+                        count: 1, test: false, delay: 100, addContexts: false,
+                        triggers: [Trigger(type: .event,
+                                           eventType: .loginSuccessful,
+                                           eventName: "e1",
+                                           attributes: [])])
+                })
+                RInAppMessaging.logEvent(LoginSuccessfulEvent())
+                RInAppMessaging.logEvent(LoginSuccessfulEvent())
+                RInAppMessaging.logEvent(LoginSuccessfulEvent())
+
+                expect(UIApplication.shared.keyWindow?.subviews).toEventually(containElementSatisfying({
+                    if let view = $0 as? BaseView {
+                        view.dismiss()
+                        return true
+                    }
+                    return false
+                }), timeout: .seconds(3))
+                expect(UIApplication.shared.keyWindow?.subviews).toEventually(containElementSatisfying({
+                    if let view = $0 as? BaseView {
+                        view.dismiss()
+                        return true
+                    }
+                    return false
+                }))
+                expect(UIApplication.shared.keyWindow?.subviews).toAfterTimeoutNot(containElementSatisfying({
+                    $0 is BaseView
+                }))
             }
 
             context("when calling closeMessage") {
