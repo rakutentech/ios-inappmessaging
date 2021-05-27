@@ -140,12 +140,11 @@ class PublicAPISpec: QuickSpec {
                     configurationManager.simulateRetryDelay = 1.0
                     messageMixerService.delay = 1.0
                     messageMixerService.mockedResponse = TestHelpers.MockResponse.withGeneratedCampaigns(
-                        count: 1, test: false, delay: 100, addContexts: false,
+                        count: 1, test: false, delay: 100, maxImpressions: 2, addContexts: false,
                         triggers: [Trigger(type: .event,
                                            eventType: .loginSuccessful,
                                            eventName: "e1",
                                            attributes: [])])
-                    // maxImpressions = 2
                 })
                 RInAppMessaging.logEvent(LoginSuccessfulEvent())
                 RInAppMessaging.logEvent(LoginSuccessfulEvent())
