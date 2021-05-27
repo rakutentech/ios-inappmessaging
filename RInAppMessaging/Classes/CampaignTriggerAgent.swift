@@ -22,7 +22,7 @@ internal struct CampaignTriggerAgent: CampaignTriggerAgentType {
             validator.validate { (campaign, triggeredEvents) in
                 do {
                     try eventMatcher.removeSetOfMatchedEvents(triggeredEvents, for: campaign)
-                    dispatcher.addToQueue(campaign: campaign)
+                    dispatcher.addToQueue(campaignID: campaign.id)
                 } catch {
                     // Campaign is not ready to be displayed
                 }

@@ -8,7 +8,7 @@ internal protocol CampaignDispatcherDelegate: AnyObject {
 internal protocol CampaignDispatcherType {
     var delegate: CampaignDispatcherDelegate? { get set }
 
-    func addToQueue(campaign: Campaign)
+    func addToQueue(campaignID: String)
     func resetQueue()
     func dispatchAllIfNeeded()
 }
@@ -21,8 +21,8 @@ internal class CampaignDispatcher: CampaignDispatcherType, TaskSchedulable {
     private let permissionService: DisplayPermissionServiceType
     private let campaignRepository: CampaignRepositoryType
 
-    private let dispatchQueue = DispatchQueue(label: "IAM.Campaign", qos: .userInteractive)
-    private var queuedCampaigns = [Campaign]()
+    private let dispatchQueue = DispatchQueue(label: "IAM.CampaignDisplay", qos: .userInteractive)
+    private(set) var queuedCampaignIDs = [String]()
     private(set) var isDispatching = false
 
     weak var delegate: CampaignDispatcherDelegate?
@@ -37,9 +37,9 @@ internal class CampaignDispatcher: CampaignDispatcherType, TaskSchedulable {
         self.campaignRepository = campaignRepository
     }
 
-    func addToQueue(campaign: Campaign) {
+    func addToQueue(campaignID: String) {
         dispatchQueue.async {
-            self.queuedCampaigns.append(campaign)
+            self.queuedCampaignIDs.append(campaignID)
         }
     }
 
@@ -51,7 +51,7 @@ internal class CampaignDispatcher: CampaignDispatcherType, TaskSchedulable {
                 self.scheduledTask?.cancel()
             }
 
-            self.queuedCampaigns.removeAll()
+            self.queuedCampaignIDs.removeAll()
         }
     }
 
@@ -69,18 +69,27 @@ internal class CampaignDispatcher: CampaignDispatcherType, TaskSchedulable {
     /// Must be executed on `dispatchQueue`
     private func dispatchNext() {
 
-        guard !queuedCampaigns.isEmpty else {
+        guard !queuedCampaignIDs.isEmpty else {
             isDispatching = false
             return
         }
 
-        let campaign = queuedCampaigns.removeFirst()
+        CommonUtility.lock(resourcesIn: campaignRepository)
+        defer {
+            CommonUtility.unlock(resourcesIn: campaignRepository)
+        }
+
+        let campaignID = queuedCampaignIDs.removeFirst()
+        guard let campaign = campaignRepository.list.first(where: { $0.id == campaignID }) else {
+            Logger.debug("Warning: Queued campaign \(campaignID) does not exist in the repository anymore")
+            return
+        }
         let permissionResponse = permissionService.checkPermission(forCampaign: campaign.data)
         if permissionResponse.performPing {
             delegate?.performPing()
         }
 
-        guard campaign.data.isTest || permissionResponse.display else {
+        guard campaign.data.isTest || (permissionResponse.display && campaign.impressionsLeft > 0) else {
             dispatchNext()
             return
         }
@@ -102,7 +111,7 @@ internal class CampaignDispatcher: CampaignDispatcherType, TaskSchedulable {
                 if cancelled {
                     self.campaignRepository.incrementImpressionsLeftInCampaign(id: campaign.id)
                 }
-                guard !self.queuedCampaigns.isEmpty else {
+                guard !self.queuedCampaignIDs.isEmpty else {
                     self.isDispatching = false
                     return
                 }

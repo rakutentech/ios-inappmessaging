@@ -114,6 +114,7 @@ struct TestHelpers {
         static func withGeneratedCampaigns(count: Int,
                                            test: Bool,
                                            delay: Int,
+                                           maxImpressions: Int = 2,
                                            addContexts: Bool = false,
                                            triggers: [Trigger]? = nil) -> PingResponse {
             var campaigns = [Campaign]()
@@ -125,7 +126,7 @@ struct TestHelpers {
                         id: "testCampaignId\(i)",
                         test: test,
                         delay: delay,
-                        maxImpressions: 2,
+                        maxImpressions: maxImpressions,
                         title: title,
                         triggers: triggers))
                 }
