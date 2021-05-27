@@ -189,6 +189,59 @@ class ViewPresenterSpec: QuickSpec {
                     presenter.didClickContent()
                     expect(campaignTriggerAgent.wasValidateAndTriggerCampaignsCalled).to(beTrue())
                 }
+
+                context("and content URI is present") {
+
+                    it("will show error alert if redirect URL is invalid") {
+                        let campaign = TestHelpers.generateCampaign(
+                            id: "test",
+                            content: Content(
+                                onClickBehavior: OnClickBehavior(action: .redirect, uri: ""),
+                                campaignTrigger: Trigger(type: .event, eventType: .custom,
+                                                         eventName: "trigger", attributes: [])))
+                        presenter.campaign = campaign
+                        presenter.didClickContent()
+                        expect(view.wasShowAlertCalled).to(beTrue())
+                    }
+
+                    it("will show error alert if redirect URL couldn't be opened") {
+                        let campaign = TestHelpers.generateCampaign(
+                            id: "test",
+                            content: Content(
+                                onClickBehavior: OnClickBehavior(action: .redirect, uri: "unknown_scheme"),
+                                campaignTrigger: Trigger(type: .event, eventType: .custom,
+                                                         eventName: "trigger", attributes: [])))
+                        presenter.campaign = campaign
+                        presenter.didClickContent()
+                        expect(view.wasShowAlertCalled).toEventually(beTrue())
+                    }
+
+                    it("will show error alert if deeplink URL is invalid") {
+                        let campaign = TestHelpers.generateCampaign(
+                            id: "test",
+                            content: Content(
+                                onClickBehavior: OnClickBehavior(action: .deeplink, uri: ""),
+                                campaignTrigger: Trigger(type: .event, eventType: .custom,
+                                                         eventName: "trigger", attributes: [])))
+                        presenter.campaign = campaign
+                        presenter.didClickContent()
+                        expect(view.wasShowAlertCalled).to(beTrue())
+                    }
+
+                    it("will show error alert if deeplink URL couldn't be opened") {
+                        let campaign = TestHelpers.generateCampaign(
+                            id: "test",
+                            content: Content(
+                                onClickBehavior: OnClickBehavior(action: .deeplink, uri: "unknown_scheme"),
+                                campaignTrigger: Trigger(type: .event, eventType: .custom,
+                                                         eventName: "trigger", attributes: [])))
+                        presenter.campaign = campaign
+                        presenter.didClickContent()
+                        expect(view.wasShowAlertCalled).toEventually(beTrue())
+                    }
+
+                    // testing positive cases for redirect/deepling URL requires UIApplication.shared.openURL() function to be mocked
+                }
             }
         }
 
@@ -316,10 +369,34 @@ class ViewPresenterSpec: QuickSpec {
                     expect(eventMatcher.loggedEvents).to(contain(expectedEvent))
                 }
 
-                it("will call Trigger Agent if button trigger was present") {
+                it("will call Trigger Agent if button trigger is present") {
                     presenter.didClickAction(sender: sender)
                     expect(campaignTriggerAgent.wasValidateAndTriggerCampaignsCalled).toEventually(beTrue())
                 }
+
+                it("will show error alert if redirect URL is invalid") {
+                    let sender = ActionButton(impression: .actionOne,
+                                              uri: "",
+                                              trigger: Trigger(type: .event,
+                                                               eventType: .custom,
+                                                               eventName: "trigger",
+                                                               attributes: []))
+                    presenter.didClickAction(sender: sender)
+                    expect(view.wasShowAlertCalled).to(beTrue())
+                }
+
+                it("will show error alert if redirect URL couldn't be opened") {
+                    let sender = ActionButton(impression: .actionOne,
+                                              uri: "unknown_scheme",
+                                              trigger: Trigger(type: .event,
+                                                               eventType: .custom,
+                                                               eventName: "trigger",
+                                                               attributes: []))
+                    presenter.didClickAction(sender: sender)
+                    expect(view.wasShowAlertCalled).toEventually(beTrue())
+                }
+
+                // testing positive cases for redirect/deepling URL requires UIApplication.shared.openURL() function to be mocked
             }
 
             context("when didClickExitButton is called") {
@@ -393,6 +470,7 @@ private class SlideUpViewMock: UIView, SlideUpViewType {
 
     private(set) var wasSetupCalled = false
     private(set) var wasDismissCalled = false
+    private(set) var wasShowAlertCalled = false
 
     func setup(viewModel: SlideUpViewModel) {
         wasSetupCalled = true
@@ -400,6 +478,10 @@ private class SlideUpViewMock: UIView, SlideUpViewType {
 
     func dismiss() {
         wasDismissCalled = true
+    }
+
+    func showAlert(title: String, message: String, style: UIAlertController.Style, actions: [UIAlertAction]) {
+        wasShowAlertCalled = true
     }
 
     func animateOnShow(completion: @escaping () -> Void) { completion() }
