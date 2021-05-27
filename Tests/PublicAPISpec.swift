@@ -131,10 +131,10 @@ class PublicAPISpec: QuickSpec {
             // This test checks if events logged after getConfig() failure (bufferedEvents)
             // are re-logged properly when retried getConfig request succeeds.
             // If buffered events can fill the set of campaign triggers, for example 3 times,
-            // then that campaign should be displayed 3 times.
+            // then that campaign should be displayed 3 times if maxImpression allows it.
             // This test also checks if campaigns are queued properly (respecting impressionsLeft value)
             // when multiple events are logged in very short time.
-            it("will display campaigns after first ping call for matching events that were logged after getConfig request failure") {
+            it("will display campaign 2 times after first ping call for matching events that were logged after getConfig request failure") {
                 RInAppMessaging.deinitializeModule()
                 reinitializeSDK(onDependencyResolved: {
                     configurationManager.simulateRetryDelay = 1.0
