@@ -7,7 +7,7 @@ class MessageMixerServiceSpec: QuickSpec {
     override func spec() {
 
         let requestQueue = DispatchQueue(label: "iam.test.request")
-        let configData = ConfigData(enabled: true, endpoints: .empty)
+        let configData = ConfigData(rolloutPercentage: 100, endpoints: .empty)
 
         var service: MessageMixerService!
         var preferenceRepository: IAMPreferenceRepository!
@@ -119,7 +119,7 @@ class MessageMixerServiceSpec: QuickSpec {
                     httpSession.responseError = NSError(domain: "config.error.test", code: 1, userInfo: nil)
                 }
 
-                it("will return ConfigurationServiceError containig RequestError") {
+                it("will return ConfigurationServiceError containing .requestError") {
                     waitUntil { done in
                         requestQueue.async {
                             let result = service.ping()
@@ -134,6 +134,36 @@ class MessageMixerServiceSpec: QuickSpec {
                             done()
                         }
                     }
+                }
+            }
+
+            context("when request fails with a status code equals to 429") {
+                let originalHttpResponse: HTTPURLResponse? = httpSession?.httpResponse
+
+                it("will return ConfigurationServiceError containig .tooManyRequestsError") {
+                    httpSession.httpResponse = HTTPURLResponse(url: URL(string: "https://ping.url")!,
+                                                               statusCode: 429,
+                                                               httpVersion: nil,
+                                                               headerFields: nil)
+
+                    waitUntil { done in
+                        requestQueue.async {
+                            let result = service.ping()
+                            let error = result.getError()
+                            expect(error).toNot(beNil())
+
+                            guard case .tooManyRequestsError = error else {
+                                fail("Unexpected error type \(String(describing: error)). Expected .tooManyRequestsError")
+                                done()
+                                return
+                            }
+                            done()
+                        }
+                    }
+                }
+
+                afterEach {
+                    httpSession.httpResponse = originalHttpResponse
                 }
             }
 

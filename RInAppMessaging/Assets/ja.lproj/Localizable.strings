@@ -1,4 +1,4 @@
-"optOut_message" = "今後、このメッセージを表示しない";
+"optOut_message" = "次回から表示しない";
 "dialog_alert_invalidURI_title" = "ページが見つかりません";
 "dialog_alert_invalidURI_message" = "ページへの移動中にエラーが発生しました";
 "dialog_alert_invalidURI_close" = "閉じる";

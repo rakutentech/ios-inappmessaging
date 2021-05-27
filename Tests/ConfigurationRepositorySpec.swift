@@ -20,25 +20,25 @@ class ConfigurationRepositorySpec: QuickSpec {
 
             it("will not hold any data until saved") {
                 expect(configurationRepository.getEndpoints()).to(beNil())
-                expect(configurationRepository.getIsEnabledStatus()).to(beNil())
+                expect(configurationRepository.getRolloutPercentage()).to(beNil())
             }
 
             it("will properly save endpoint data") {
                 let endpoints = EndpointURL(ping: URL(string: "ping")!,
                                             displayPermission: URL(string: "displayPermission")!,
                                             impression: URL(string: "impression")!)
-                let config = ConfigData(enabled: true, endpoints: endpoints)
+                let config = ConfigData(rolloutPercentage: 100, endpoints: endpoints)
                 configurationRepository.saveConfiguration(config)
 
                 expect(configurationRepository.getEndpoints()).to(equal(endpoints))
             }
 
             it("will properly save enabled flag") {
-                let enabled = true
-                let config = ConfigData(enabled: enabled, endpoints: .empty)
+                let rolloutPercentage = 100
+                let config = ConfigData(rolloutPercentage: rolloutPercentage, endpoints: .empty)
                 configurationRepository.saveConfiguration(config)
 
-                expect(configurationRepository.getIsEnabledStatus()).to(equal(enabled))
+                expect(configurationRepository.getRolloutPercentage()).to(equal(rolloutPercentage))
             }
         }
     }

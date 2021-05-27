@@ -79,16 +79,7 @@ workflows:
         - cache_paths: |-
             $BITRISE_CACHE_DIR
             $GEM_CACHE_PATH
-    - build-status-change@0:
-        inputs:
-        - access_token: "$BITRISE_ACCESS_TOKEN"
     - slack@3:
-        run_if: |-
-          {{if .IsBuildFailed}}
-          true
-          {{else}}
-          {{enveq "BUILD_STATUS_CHANGED" "true"}}
-          {{end}}
         inputs:
         - channel: ''
         - webhook_url: "$SLACK_CHANNEL_WEBHOOK"
@@ -102,7 +93,7 @@ workflows:
             $BITRISE_APP_TITLE » $BITRISE_TRIGGERED_WORKFLOW_TITLE - #$BITRISE_BUILD_NUMBER *Failure*
             <$BITRISE_BUILD_URL|Open>
         - message: |+
-            $BITRISE_APP_TITLE » $BITRISE_TRIGGERED_WORKFLOW_TITLE - #$BITRISE_BUILD_NUMBER *Back to normal*
+            $BITRISE_APP_TITLE » $BITRISE_TRIGGERED_WORKFLOW_TITLE - #$BITRISE_BUILD_NUMBER *Success*
             <$BITRISE_BUILD_URL|Open>
         - fields: ''
         - buttons: ''

@@ -15,7 +15,7 @@ internal protocol CampaignDispatcherType {
 
 /// Class for adding ready (validated) campaigns to a queue to be sequentially displayed.
 /// Each next campaign is scheduled after closing according to the Campaign's delay paramater.
-internal class CampaignDispatcher: CampaignDispatcherType {
+internal class CampaignDispatcher: CampaignDispatcherType, TaskSchedulable {
 
     private let router: RouterType
     private let permissionService: DisplayPermissionServiceType
@@ -26,6 +26,7 @@ internal class CampaignDispatcher: CampaignDispatcherType {
     private(set) var isDispatching = false
 
     weak var delegate: CampaignDispatcherDelegate?
+    var scheduledTask: DispatchWorkItem?
 
     init(router: RouterType,
          permissionService: DisplayPermissionServiceType,
@@ -44,9 +45,13 @@ internal class CampaignDispatcher: CampaignDispatcherType {
 
     func resetQueue() {
         dispatchQueue.async {
-            self.isDispatching = false
+            let isDisplayingCampaign = self.scheduledTask == nil && self.isDispatching
+            if !isDisplayingCampaign {
+                self.isDispatching = false
+                self.scheduledTask?.cancel()
+            }
+
             self.queuedCampaigns.removeAll()
-            // Note: WorkScheduler might still call dispatchNext()
         }
     }
 
@@ -80,7 +85,7 @@ internal class CampaignDispatcher: CampaignDispatcherType {
             return
         }
 
-        campaignRepository.decrementImpressionsLeftInCampaign(campaign)
+        campaignRepository.decrementImpressionsLeftInCampaign(id: campaign.id)
         let campaignTitle = campaign.data.messagePayload.title
 
         router.displayCampaign(campaign, confirmation: {
@@ -90,14 +95,13 @@ internal class CampaignDispatcher: CampaignDispatcherType {
             }
             let shouldShow = delegate.shouldShowCampaignMessage(title: campaignTitle,
                                                                 contexts: contexts)
-            if !shouldShow {
-                campaignRepository.incrementImpressionsLeftInCampaign(campaign)
-            }
             return shouldShow
 
         }(), completion: { cancelled in
             self.dispatchQueue.async {
-
+                if cancelled {
+                    self.campaignRepository.incrementImpressionsLeftInCampaign(id: campaign.id)
+                }
                 guard !self.queuedCampaigns.isEmpty else {
                     self.isDispatching = false
                     return
@@ -105,12 +109,9 @@ internal class CampaignDispatcher: CampaignDispatcherType {
                 if cancelled {
                     self.dispatchNext()
                 } else {
-                    WorkScheduler.scheduleTask(
-                        milliseconds: self.delayBeforeNextMessage(for: campaign.data),
-                        closure: {
-                            self.dispatchQueue.async { self.dispatchNext() }
-                        }
-                    )
+                    self.scheduleTask(milliseconds: self.delayBeforeNextMessage(for: campaign.data)) {
+                        self.dispatchQueue.async { self.dispatchNext() }
+                    }
                 }
             }
         })

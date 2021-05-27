@@ -69,9 +69,9 @@ class ConfigurationManagerSpec: QuickSpec {
                 }
 
                 it("should save fetched configuration in the repository object") {
-                    expect(configurationRepository.getIsEnabledStatus()).to(beNil())
+                    expect(configurationRepository.getRolloutPercentage()).to(beNil())
                     configurationManager.fetchAndSaveConfigData(completion: { _ in })
-                    expect(configurationRepository.getIsEnabledStatus()).to(beTrue())
+                    expect(configurationRepository.getRolloutPercentage()).to(equal(100))
                 }
 
                 it("should retry after request failure") {
@@ -89,6 +89,13 @@ class ConfigurationManagerSpec: QuickSpec {
                         })
                         configurationService.simulateRequestFailure = false
                     }
+                }
+
+                it("should retry for .tooManyRequestsError error") {
+                    configurationService.simulateRequestFailure = true
+                    configurationService.mockedError = .tooManyRequestsError
+                    configurationManager.fetchAndSaveConfigData(completion: { _ in })
+                    expect(configurationManager.scheduledTask).toEventuallyNot(beNil())
                 }
             }
         }

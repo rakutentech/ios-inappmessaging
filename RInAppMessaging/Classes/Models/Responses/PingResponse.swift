@@ -10,10 +10,12 @@ internal struct PingResponse: Decodable {
     let data: [Campaign]
 }
 
-internal struct Campaign: Decodable, Hashable {
+internal struct Campaign: Codable, Hashable {
 
     private enum CodingKeys: String, CodingKey {
         case data = "campaignData"
+        case impressionsLeft // Cache coding only
+        case isOptedOut // Cache coding only
     }
 
     let data: CampaignData
@@ -35,8 +37,17 @@ internal struct Campaign: Decodable, Hashable {
 
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        data = try container.decode(CampaignData.self, forKey: .data)
-        impressionsLeft = data.maxImpressions
+        let data = try container.decode(CampaignData.self, forKey: .data)
+        impressionsLeft = (try? container.decode(Int.self, forKey: .impressionsLeft)) ?? data.maxImpressions
+        isOptedOut = (try? container.decode(Bool.self, forKey: .isOptedOut)) ?? false
+        self.data = data
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(data, forKey: .data)
+        try container.encode(impressionsLeft, forKey: .impressionsLeft)
+        try container.encode(isOptedOut, forKey: .isOptedOut)
     }
 
     init(data: CampaignData) {
@@ -61,7 +72,7 @@ internal struct Campaign: Decodable, Hashable {
     }
 }
 
-internal struct CampaignData: Decodable, Hashable {
+internal struct CampaignData: Codable, Hashable {
     let campaignId: String
     let maxImpressions: Int
     let type: CampaignDisplayType?
@@ -82,14 +93,14 @@ internal struct CampaignData: Decodable, Hashable {
     }
 }
 
-internal struct Trigger: Decodable, Equatable {
+internal struct Trigger: Codable, Equatable {
     let type: CampaignTriggerType
     let eventType: EventType
     let eventName: String
     let attributes: [TriggerAttribute]
 }
 
-internal struct MessagePayload: Decodable {
+internal struct MessagePayload: Codable {
     let title: String
     let messageBody: String?
     let messageLowerBody: String?
@@ -103,18 +114,18 @@ internal struct MessagePayload: Decodable {
     let messageSettings: MessageSettings
 }
 
-internal struct Resource: Decodable {
+internal struct Resource: Codable {
     let assetsUrl: String?
     let imageUrl: String?
     let cropType: CampaignCropType
 }
 
-internal struct MessageSettings: Decodable {
+internal struct MessageSettings: Codable {
     let displaySettings: DisplaySettings
     let controlSettings: ControlSettings?
 }
 
-internal struct DisplaySettings: Decodable {
+internal struct DisplaySettings: Codable {
     private enum CodingKeys: String, CodingKey {
         case orientation
         case slideFrom
@@ -134,22 +145,22 @@ internal struct DisplaySettings: Decodable {
     let delay: Int?
 }
 
-internal struct ControlSettings: Decodable {
+internal struct ControlSettings: Codable {
     let buttons: [Button]?
     let content: Content?
 }
 
-internal struct Content: Decodable {
+internal struct Content: Codable {
     let onClickBehavior: OnClickBehavior
     let campaignTrigger: Trigger?
 }
 
-internal struct OnClickBehavior: Decodable {
+internal struct OnClickBehavior: Codable {
     let action: ActionType
     let uri: String?
 }
 
-internal struct Button: Decodable {
+internal struct Button: Codable {
     let buttonText: String
     let buttonTextColor: String
     let buttonBackgroundColor: String
@@ -157,7 +168,7 @@ internal struct Button: Decodable {
     let campaignTrigger: Trigger?
 }
 
-internal struct ButtonBehavior: Decodable {
+internal struct ButtonBehavior: Codable {
     let action: ActionType
     let uri: String?
 }

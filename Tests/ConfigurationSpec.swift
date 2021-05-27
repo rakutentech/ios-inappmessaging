@@ -35,7 +35,7 @@ class ConfigurationSpec: QuickSpec {
             context("when configuration returned false") {
 
                 beforeEach {
-                    configurationManager.isConfigEnabled = false
+                    configurationManager.rolloutPercentage = 0
                 }
 
                 it("will disable module") {
@@ -48,6 +48,7 @@ class ConfigurationSpec: QuickSpec {
                     }
 
                     expect(RInAppMessaging.initializedModule).toEventually(beNil())
+                    expect(RInAppMessaging.dependencyManager).to(beNil())
                 }
 
                 it("will not call ping") {
@@ -60,7 +61,7 @@ class ConfigurationSpec: QuickSpec {
             context("when configuration returned true") {
 
                 it("will call ping") {
-                    configurationManager.isConfigEnabled = true
+                    configurationManager.rolloutPercentage = 100
                     RInAppMessaging.configure(dependencyManager: dependencyManager)
 
                     expect(mockMessageMixer.wasPingCalled).toEventually(beTrue())

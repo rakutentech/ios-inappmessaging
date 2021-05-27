@@ -122,8 +122,7 @@ class RouterSpec: QuickSpec {
                     router.displayCampaign(campaign, confirmation: true, completion: { _ in })
                     expect(UIApplication.shared.keyWindow?.subviews)
                         .toEventually(containElementSatisfying({ $0 is BaseView }))
-                    let closedCampaignView = router.discardDisplayedCampaign()
-                    expect(closedCampaignView).toNot(beNil())
+                    router.discardDisplayedCampaign()
                     expect(UIApplication.shared.keyWindow?.subviews)
                         .toEventuallyNot(containElementSatisfying({ $0 is BaseView }))
                 }
@@ -137,7 +136,7 @@ class RouterSpec: QuickSpec {
                     })
                     expect(UIApplication.shared.keyWindow?.subviews)
                         .toEventually(containElementSatisfying({ $0 is BaseView }))
-                    _ = router.discardDisplayedCampaign()
+                    router.discardDisplayedCampaign()
                     expect(completionCalled).toEventually(beTrue())
                 }
             }

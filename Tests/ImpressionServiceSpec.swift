@@ -7,7 +7,7 @@ class ImpressionServiceSpec: QuickSpec {
     override func spec() {
 
         let requestQueue = DispatchQueue(label: "iam.test.request")
-        let configData = ConfigData(enabled: true,
+        let configData = ConfigData(rolloutPercentage: 100,
                                     endpoints: EndpointURL(
                                         ping: URL(string: "https://ping.url")!,
                                         displayPermission: nil,
@@ -56,7 +56,7 @@ class ImpressionServiceSpec: QuickSpec {
 
             it("will report an error if url is not available") {
                 configurationRepository.saveConfiguration(
-                    ConfigData(enabled: true,
+                    ConfigData(rolloutPercentage: 100,
                                endpoints: EndpointURL(
                                 ping: URL(string: "https://ping.url")!,
                                 displayPermission: nil,

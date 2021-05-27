@@ -6,25 +6,26 @@ class PublicAPISpec: QuickSpec {
 
     override func spec() {
 
+        let userDefaults = UserDefaults(suiteName: "PublicAPISpec")!
         var eventMatcher: EventMatcherSpy!
         var preferenceRepository: IAMPreferenceRepository!
         var router: RouterType!
         var messageMixerService: MessageMixerServiceMock!
         var campaignsListManager: CampaignsListManagerType!
+        var campaignRepository: CampaignRepositoryType!
         var delegate: Delegate!
 
         func mockContainer() -> DependencyManager.Container {
             return DependencyManager.Container([
                 DependencyManager.ContainerElement(type: ConfigurationManagerType.self, factory: {
                     let manager = ConfigurationManagerMock()
-                    manager.isConfigEnabled = true
+                    manager.rolloutPercentage = 100
                     return manager
                 }),
-                DependencyManager.ContainerElement(type: MessageMixerServiceType.self, factory: {
-                    return messageMixerService
-                }),
-                DependencyManager.ContainerElement(type: EventMatcherType.self, factory: {
-                    return eventMatcher
+                DependencyManager.ContainerElement(type: MessageMixerServiceType.self, factory: { messageMixerService }),
+                DependencyManager.ContainerElement(type: EventMatcherType.self, factory: { eventMatcher }),
+                DependencyManager.ContainerElement(type: UserDataCacheable.self, factory: {
+                    UserDataCache(userDefaults: userDefaults)
                 })
             ])
         }
@@ -32,13 +33,14 @@ class PublicAPISpec: QuickSpec {
         func reinitializeSDK() {
             let dependencyManager = DependencyManager()
             dependencyManager.appendContainer(MainContainerFactory.create(dependencyManager: dependencyManager))
+            dependencyManager.appendContainer(mockContainer())
             messageMixerService = MessageMixerServiceMock()
             eventMatcher = EventMatcherSpy(
                 campaignRepository: dependencyManager.resolve(type: CampaignRepositoryType.self)!)
-            dependencyManager.appendContainer(mockContainer())
             preferenceRepository = dependencyManager.resolve(type: IAMPreferenceRepository.self)!
             router = dependencyManager.resolve(type: RouterType.self)!
             campaignsListManager = dependencyManager.resolve(type: CampaignsListManagerType.self)!
+            campaignRepository = dependencyManager.resolve(type: CampaignRepositoryType.self)!
             RInAppMessaging.configure(dependencyManager: dependencyManager)
         }
 
@@ -63,6 +65,7 @@ class PublicAPISpec: QuickSpec {
 
         afterEach {
             RInAppMessaging.deinitializeModule()
+            UserDefaults.standard.removePersistentDomain(forName: "PublicAPISpec")
         }
 
         describe("RInAppMessaging") {
@@ -138,6 +141,14 @@ class PublicAPISpec: QuickSpec {
                         $0 is BaseView
                     }))
                 }
+
+                it("will restore/increment impressionsLeft in closed campaign") {
+                    generateAndDisplayLoginCampaigns(count: 1, addContexts: false)
+
+                    expect(campaignRepository.list.first?.impressionsLeft).toEventually(equal(1))
+                    RInAppMessaging.closeMessage()
+                    expect(campaignRepository.list.first?.impressionsLeft).toEventually(equal(2))
+                }
             }
 
             context("delegate") {
@@ -185,7 +196,7 @@ class PublicAPISpec: QuickSpec {
                 it("will call the method before showing a message with proper parameters") {
                     delegate.shouldShowCampaign = true
                     messageMixerService.mockedResponse = PingResponse(
-                        nextPingMilliseconds: 0,
+                        nextPingMilliseconds: Int.max,
                         currentPingMilliseconds: 0,
                         data: [
                             TestHelpers.generateCampaign(id: "1",
@@ -204,6 +215,91 @@ class PublicAPISpec: QuickSpec {
                     expect(delegate.shouldShowCampaignCallParameters?.title).toEventually(equal("[ctx1][ctx2] title"), timeout: .seconds(2))
                     expect(delegate.shouldShowCampaignCallParameters?.contexts)
                         .toEventually(contain(["ctx1", "ctx2"]), timeout: .seconds(2))
+                }
+            }
+
+            context("caching") {
+                afterEach {
+                    UIApplication.shared.keyWindow?.subviews
+                        .filter { $0 is BaseView }
+                        .forEach { $0.removeFromSuperview() }
+                }
+
+                it("will show a message if impressionsLeft was greater than 0 in the last session") {
+                    generateAndDisplayLoginCampaigns(count: 1, addContexts: false)
+
+                    expect(UIApplication.shared.keyWindow?.subviews).toEventually(containElementSatisfying({
+                        if let view = $0 as? BaseView {
+                            view.dismiss()
+                            return true
+                        }
+                        return false
+                    }))
+
+                    RInAppMessaging.deinitializeModule()
+                    reinitializeSDK()
+                    expect(campaignRepository.list).to(haveCount(1))
+                    expect(campaignRepository.list.first?.impressionsLeft).to(equal(1))
+                    generateAndDisplayLoginCampaigns(count: 1, addContexts: false)
+
+                    expect(UIApplication.shared.keyWindow?.subviews).toEventually(containElementSatisfying({
+                        if let view = $0 as? BaseView {
+                            view.dismiss()
+                            return true
+                        }
+                        return false
+                    }))
+                }
+
+                it("will not show a message if impressionsLeft was 0 in the last session") {
+                    let mockedResponse = PingResponse(
+                        nextPingMilliseconds: Int.max,
+                        currentPingMilliseconds: 0,
+                        data: [TestHelpers.generateCampaign(id: "test", test: false, delay: 100, maxImpressions: 1,
+                                                            triggers: [Trigger(type: .event, eventType: .loginSuccessful,
+                                                                               eventName: "e1", attributes: [])])])
+                    messageMixerService.mockedResponse = mockedResponse
+                    campaignsListManager.refreshList()
+                    RInAppMessaging.logEvent(LoginSuccessfulEvent())
+
+                    expect(UIApplication.shared.keyWindow?.subviews).toEventually(containElementSatisfying({
+                        if let view = $0 as? BaseView {
+                            view.dismiss()
+                            return true
+                        }
+                        return false
+                    }))
+
+                    RInAppMessaging.deinitializeModule()
+                    reinitializeSDK()
+                    messageMixerService.mockedResponse = mockedResponse
+                    campaignsListManager.refreshList()
+                    expect(campaignRepository.list).to(haveCount(1))
+                    RInAppMessaging.logEvent(LoginSuccessfulEvent())
+
+                    expect(UIApplication.shared.keyWindow?.subviews)
+                        .toAfterTimeout(allPass({ !($0 is BaseView) }))
+                }
+
+                it("will not show a message if user opted out from it in the last session") {
+                    generateAndDisplayLoginCampaigns(count: 1, addContexts: false)
+
+                    expect(UIApplication.shared.keyWindow?.subviews).toEventually(containElementSatisfying({
+                        if let view = $0 as? BaseView {
+                            view.basePresenter.optOutCampaign()
+                            view.dismiss()
+                            return true
+                        }
+                        return false
+                    }))
+
+                    RInAppMessaging.deinitializeModule()
+                    reinitializeSDK()
+                    expect(campaignRepository.list).to(haveCount(1))
+                    generateAndDisplayLoginCampaigns(count: 1, addContexts: false)
+
+                    expect(UIApplication.shared.keyWindow?.subviews)
+                        .toAfterTimeout(allPass({ !($0 is BaseView) }))
                 }
             }
         }

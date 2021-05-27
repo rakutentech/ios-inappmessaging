@@ -33,16 +33,19 @@ internal enum MainContainerFactory {
             ContainerElement(type: ConfigurationRepositoryType.self, factory: {
                 ConfigurationRepository()
             }),
-            ContainerElement(type: DispatchQueue.self, factory: {
-                DispatchQueue(label: "IAM.Main", qos: .utility, attributes: [])
-            }),
             ContainerElement(type: ConfigurationManagerType.self, factory: {
                 ConfigurationManager(reachability: manager.resolve(type: ReachabilityType.self),
                                      configurationService: manager.resolve(type: ConfigurationServiceType.self)!,
                                      configurationRepository: manager.resolve(type: ConfigurationRepositoryType.self)!,
-                                     resumeQueue: manager.resolve(type: DispatchQueue.self)!)
+                                     resumeQueue: RInAppMessaging.inAppQueue)
             }),
-            ContainerElement(type: CampaignRepositoryType.self, factory: { CampaignRepository() }),
+            ContainerElement(type: UserDataCacheable.self, factory: {
+                UserDataCache(userDefaults: UserDefaults.standard)
+            }),
+            ContainerElement(type: CampaignRepositoryType.self, factory: {
+                CampaignRepository(userDataCache: manager.resolve(type: UserDataCacheable.self)!,
+                                   preferenceRepository: manager.resolve(type: IAMPreferenceRepository.self)!)
+            }),
             ContainerElement(type: EventMatcherType.self, factory: {
                 EventMatcher(campaignRepository: manager.resolve(type: CampaignRepositoryType.self)!)
             }),
@@ -64,6 +67,9 @@ internal enum MainContainerFactory {
             }),
             ContainerElement(type: RouterType.self, factory: {
                 Router(dependencyManager: manager)
+            }),
+            ContainerElement(type: Randomizer.self, factory: {
+                Randomizer()
             }),
             ContainerElement(type: CampaignDispatcherType.self, factory: {
                 CampaignDispatcher(router: manager.resolve(type: RouterType.self)!,

@@ -3,7 +3,7 @@ internal struct GetConfigResponse: Decodable {
 }
 
 internal struct ConfigData: Decodable {
-    let enabled: Bool
+    let rolloutPercentage: Int
     let endpoints: EndpointURL?
 }
 

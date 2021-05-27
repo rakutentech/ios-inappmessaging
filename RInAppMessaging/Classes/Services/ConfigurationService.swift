@@ -5,6 +5,7 @@ internal protocol ConfigurationServiceType {
 internal enum ConfigurationServiceError: Error {
     case requestError(RequestError)
     case jsonDecodingError(Error)
+    case tooManyRequestsError
 }
 
 internal struct ConfigurationService: ConfigurationServiceType, HttpRequestable {
@@ -21,8 +22,9 @@ internal struct ConfigurationService: ConfigurationServiceType, HttpRequestable 
     func getConfigData() -> Result<ConfigData, ConfigurationServiceError> {
         let response = requestFromServerSync(
             url: configURL,
-            httpMethod: .post,
-            addtionalHeaders: nil)
+            httpMethod: .get,
+            addtionalHeaders: buildRequestHeader()
+        )
 
         switch response {
         case .success((let data, _)):
@@ -30,7 +32,12 @@ internal struct ConfigurationService: ConfigurationServiceType, HttpRequestable 
                 return ConfigurationServiceError.jsonDecodingError($0)
             }
         case .failure(let requestError):
-            return .failure(.requestError(requestError))
+            switch requestError {
+            case .httpError(let statusCode, _, _) where statusCode == 429:
+                return .failure(.tooManyRequestsError)
+            default:
+                return .failure(.requestError(requestError))
+            }
         }
     }
 
@@ -48,31 +55,53 @@ internal struct ConfigurationService: ConfigurationServiceType, HttpRequestable 
 
 // MARK: - HttpRequestable implementation
 extension ConfigurationService {
-
-    func buildHttpBody(with parameters: [String: Any]?) -> Result<Data, Error> {
-
+    private func getConfigRequest() throws -> GetConfigRequest {
         guard let appVersion = bundleInfo.appVersion,
-            let appId = bundleInfo.applicationId,
-            let sdkVersion = bundleInfo.inAppSdkVersion else {
-
-                Logger.debug("failed creating a request body")
-                return .failure(RequestError.missingMetadata)
+              let appId = bundleInfo.applicationId,
+              let sdkVersion = bundleInfo.inAppSdkVersion else {
+            Logger.debug("failed creating a request body")
+            throw RequestError.missingMetadata
         }
-
-        let getConfigRequest = GetConfigRequest(
+        return GetConfigRequest(
             locale: Locale.current.normalizedIdentifier,
             appVersion: appVersion,
             platform: .ios,
             appId: appId,
             sdkVersion: sdkVersion
         )
+    }
 
+    private func buildRequestHeader() -> [HeaderAttribute] {
+        let Keys = Constants.Request.Header.self
+        var additionalHeaders: [HeaderAttribute] = []
+
+        if let subId = bundleInfo.inAppSubscriptionId, !subId.isEmpty {
+            additionalHeaders.append(HeaderAttribute(key: Keys.subscriptionID, value: subId))
+        } else {
+            Logger.debug("Info.plist must contain a valid InAppMessagingAppSubscriptionID")
+            assertionFailure()
+        }
+
+        return additionalHeaders
+    }
+
+    func buildURLRequest(url: URL) -> Result<URLRequest, Error> {
         do {
-            let body = try JSONEncoder().encode(getConfigRequest)
-            return .success(body)
+            let request = try getConfigRequest()
+            var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: true)
+            urlComponents?.queryItems = request.toQueryItems
+            guard let url = urlComponents?.url else {
+                return .failure(RequestError.urlIsNil)
+            }
+            return .success(URLRequest(url: url))
+
         } catch let error {
-            Logger.debug("failed creating a request body - \(error)")
+            Logger.debug("failed creating a request - \(error)")
             return .failure(error)
         }
+    }
+
+    func buildHttpBody(with parameters: [String: Any]?) -> Result<Data, Error> {
+        return .failure(RequestError.bodyIsNil)
     }
 }

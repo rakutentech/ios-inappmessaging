@@ -42,15 +42,15 @@ internal class LockableObject<T>: LockableResource {
         if shouldWait {
             dispatchGroup.wait()
         }
-        lockCount += 1
+        _lockCount.mutate { $0 += 1 }
         lockingThread = Thread.current
         dispatchGroup.enter()
     }
 
     func unlock() {
         if lockCount > 0 {
+            _lockCount.mutate { $0 -= 1 }
             dispatchGroup.leave()
-            lockCount -= 1
         } else {
             lockingThread = nil
         }

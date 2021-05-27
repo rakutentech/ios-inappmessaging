@@ -19,6 +19,10 @@ class ConfigurationServiceSpec: QuickSpec {
 
                 service = ConfigurationService(configURL: configURL,
                                                sessionConfiguration: .default)
+
+                BundleInfoMock.reset()
+                service.bundleInfo = BundleInfoMock.self
+
                 httpSession = URLSessionMock.mock(originalInstance: service.httpSession)
             }
 
@@ -33,7 +37,8 @@ class ConfigurationServiceSpec: QuickSpec {
                         done()
                     }
                 }
-                expect(httpSession.sentRequest?.url).to(equal(configURL))
+                expect(httpSession.sentRequest?.url?.scheme).to(equal(configURL.scheme))
+                expect(httpSession.sentRequest?.url?.host).to(equal(configURL.host))
             }
 
             context("when request succeeds") {
@@ -126,7 +131,7 @@ class ConfigurationServiceSpec: QuickSpec {
                     httpSession.responseError = NSError(domain: "config.error.test", code: 1, userInfo: nil)
                 }
 
-                it("will return ConfigurationServiceError containig RequestError") {
+                it("will return ConfigurationServiceError containing .requestError") {
                     waitUntil { done in
                         requestQueue.async {
                             let result = service.getConfigData()
@@ -144,6 +149,36 @@ class ConfigurationServiceSpec: QuickSpec {
                 }
             }
 
+            context("when request fails with a status code equals to 429") {
+                let originalHttpResponse: HTTPURLResponse? = httpSession?.httpResponse
+
+                it("will return ConfigurationServiceError containing .tooManyRequestsError") {
+                    httpSession.httpResponse = HTTPURLResponse(url: configURL,
+                                                               statusCode: 429,
+                                                               httpVersion: nil,
+                                                               headerFields: nil)
+
+                    waitUntil { done in
+                        requestQueue.async {
+                            let result = service.getConfigData()
+                            let error = result.getError()
+                            expect(error).toNot(beNil())
+
+                            guard case .tooManyRequestsError = error else {
+                                fail("Unexpected error type \(String(describing: error)). Expected .tooManyRequestsError")
+                                done()
+                                return
+                            }
+                            done()
+                        }
+                    }
+                }
+
+                afterEach {
+                    httpSession.httpResponse = originalHttpResponse
+                }
+            }
+
             context("when making a request") {
                 beforeEach {
                     BundleInfoMock.reset()
@@ -158,7 +193,7 @@ class ConfigurationServiceSpec: QuickSpec {
                         }
                     }
 
-                    let request = httpSession.decodeSentData(modelType: GetConfigRequest.self)
+                    let request = httpSession.decodeQueryItems(modelType: GetConfigRequest.self)
 
                     expect(request).toNot(beNil())
                     expect(request?.locale).to(equal(Locale.current.normalizedIdentifier))
@@ -166,6 +201,20 @@ class ConfigurationServiceSpec: QuickSpec {
                     expect(request?.platform).to(equal(.ios))
                     expect(request?.appId).to(equal(BundleInfoMock.applicationId))
                     expect(request?.sdkVersion).to(equal(BundleInfoMock.inAppSdkVersion))
+                }
+
+                it("will send subscription id in header") {
+                    waitUntil { done in
+                        requestQueue.async {
+                            _ = service.getConfigData()
+                            done()
+                        }
+                    }
+
+                    let Keys = Constants.Request.Header.self
+                    let headers = httpSession.sentRequest?.allHTTPHeaderFields
+                    expect(headers).toNot(beEmpty())
+                    expect(headers?[Keys.subscriptionID]).to(equal(BundleInfoMock.inAppSubscriptionId))
                 }
 
                 context("and required data is missing") {
@@ -178,7 +227,7 @@ class ConfigurationServiceSpec: QuickSpec {
                                 expect(error).toNot(beNil())
 
                                 guard case .requestError(let requestError) = error,
-                                      case .bodyEncodingError(let encodingError) = requestError,
+                                      case .urlBuildingError(let encodingError) = requestError,
                                       case .missingMetadata = encodingError as? RequestError else {
                                     fail("Unexpected error type \(String(describing: error)). Expected .requestError(.missingMetadata)")
                                     done()

@@ -2,8 +2,10 @@ import Quick
 import Nimble
 @testable import RInAppMessaging
 
+// swiftlint:disable:next type_body_length
 class InAppMessagingModuleSpec: QuickSpec {
 
+    // swiftlint:disable:next function_body_length
     override func spec() {
 
         describe("InAppMessagingModule") {
@@ -19,6 +21,7 @@ class InAppMessagingModuleSpec: QuickSpec {
             var campaignTriggerAgent: CampaignTriggerAgentType!
             var campaignRepository: CampaignRepositoryMock!
             var router: RouterMock!
+            var randomizer: RandomizerMock!
             var delegate: Delegate!
 
             beforeEach {
@@ -34,6 +37,7 @@ class InAppMessagingModuleSpec: QuickSpec {
                                                             campaignsValidator: campaignsValidator)
                 campaignRepository = CampaignRepositoryMock()
                 router = RouterMock()
+                randomizer = RandomizerMock()
                 delegate = Delegate()
                 iamModule = InAppMessagingModule(configurationManager: configurationManager,
                                                  campaignsListManager: campaignsListManager,
@@ -43,8 +47,23 @@ class InAppMessagingModuleSpec: QuickSpec {
                                                  readyCampaignDispatcher: readyCampaignDispatcher,
                                                  campaignTriggerAgent: campaignTriggerAgent,
                                                  campaignRepository: campaignRepository,
-                                                 router: router)
+                                                 router: router,
+                                                 randomizer: randomizer)
                 iamModule.delegate = delegate
+            }
+
+            it("is enabled by deafult") {
+                expect(iamModule.isEnabled).to(beTrue())
+            }
+
+            it("will return true for shouldShowCampaignMessage if delegate is nil") {
+                iamModule.delegate = nil
+                expect(iamModule.shouldShowCampaignMessage(title: "", contexts: [])).to(beTrue())
+            }
+
+            it("will call delegate method if shouldShowCampaignMessage was called") {
+                _ = iamModule.shouldShowCampaignMessage(title: "", contexts: [])
+                expect(delegate.wasShouldShowCampaignCalled).to(beTrue())
             }
 
             context("when calling initialize") {
@@ -72,11 +91,11 @@ class InAppMessagingModuleSpec: QuickSpec {
 
                 context("and module is enabled") {
                     beforeEach {
-                        configurationManager.isConfigEnabled = true
+                        configurationManager.rolloutPercentage = 100
                     }
 
                     it("will call refreshList in CampaignsListManager") {
-                        configurationManager.isConfigEnabled = true
+                        configurationManager.rolloutPercentage = 100
                         iamModule.initialize { }
 
                         expect(campaignsListManager.wasRefreshListCalled).to(beTrue())
@@ -92,9 +111,35 @@ class InAppMessagingModuleSpec: QuickSpec {
                     }
                 }
 
+                context("and module is partially enabled") {
+                    [(1, 2), (50, 51), (99, 100)].forEach { (rolloutPercentage, returnedValue) in
+                        it("will not call refreshList in CampaignsListManager") {
+                             configurationManager.rolloutPercentage = rolloutPercentage
+                             randomizer.returnedValue = UInt(returnedValue)
+                             iamModule.initialize { }
+
+                             expect(campaignsListManager.wasRefreshListCalled).to(beFalse())
+                        }
+                    }
+
+                    [(1, 1), (50, 49), (50, 50), (99, 98), (99, 99), (100, 100)].forEach { (rolloutPercentage, returnedValue) in
+                        it("will call refreshList in CampaignsListManager") {
+                             configurationManager.rolloutPercentage = rolloutPercentage
+                             randomizer.returnedValue = UInt(returnedValue)
+                             iamModule.initialize { }
+
+                             expect(campaignsListManager.wasRefreshListCalled).to(beTrue())
+                        }
+                    }
+
+                    afterEach {
+                        randomizer.returnedValue = 0
+                    }
+                }
+
                 context("and module is disabled") {
                     beforeEach {
-                        configurationManager.isConfigEnabled = false
+                        configurationManager.rolloutPercentage = 0
                     }
 
                     it("will not call refreshList in CampaignsListManager") {
@@ -113,11 +158,67 @@ class InAppMessagingModuleSpec: QuickSpec {
                     }
                 }
 
+                context("and fetchAndSaveConfigData has not finished") {
+                    let queue = DispatchQueue(label: "iamTestQueue")
+
+                    beforeEach {
+                        configurationManager.fetchCalledClosure = {
+                            sleep(2)
+                        }
+                        queue.async {
+                            iamModule.initialize { }
+                        }
+                    }
+
+                    it("should wait synchronously with logEvent method") {
+                        queue.async {
+                            iamModule.logEvent(AppStartEvent())
+                        }
+                        expect(eventMatcher.loggedEvents).toAfterTimeout(beEmpty())
+                        expect(eventMatcher.loggedEvents).toEventually(haveCount(1), timeout: .seconds(2))
+                    }
+
+                    it("should wait synchronously with registerPreference method") {
+                        let preference = IAMPreferenceBuilder().setUserId("user").build()
+                        queue.async {
+                            iamModule.registerPreference(preference)
+                        }
+                        expect(preferenceRepository.preference).toAfterTimeout(beNil())
+                        expect(preferenceRepository.preference).toEventually(equal(preference), timeout: .seconds(2))
+                    }
+                }
+
+                context("and fetchAndSaveConfigData errored (waiting for retry)") {
+
+                    beforeEach {
+                        configurationManager.simulateRetryDelay = 1
+                        iamModule.initialize { }
+                    }
+
+                    it("will log all buferred events when module is enabled") {
+                        configurationManager.rolloutPercentage = 100
+                        iamModule.logEvent(AppStartEvent())
+                        iamModule.logEvent(LoginSuccessfulEvent())
+                        expect(eventMatcher.loggedEvents).to(beEmpty())
+                        expect(campaignsValidator.wasValidateCalled).to(beFalse())
+                        expect(eventMatcher.loggedEvents).toEventually(haveCount(2), timeout: .seconds(2))
+                        expect(campaignsValidator.wasValidateCalled).to(beTrue())
+                    }
+
+                    it("will not log all buferred events when module is disabled") {
+                        configurationManager.rolloutPercentage = 0
+                        iamModule.logEvent(AppStartEvent())
+                        iamModule.logEvent(LoginSuccessfulEvent())
+                        expect(eventMatcher.loggedEvents).toAfterTimeout(beEmpty(), timeout: 2)
+                        expect(campaignsValidator.wasValidateCalled).toAfterTimeout(beFalse(), timeout: 2)
+                    }
+                }
+
                 context("when calling logEvent") {
 
                     context("and module is enabled") {
                         beforeEach {
-                            configurationManager.isConfigEnabled = true
+                            configurationManager.rolloutPercentage = 100
                         }
 
                         context("and module is initialized") {
@@ -151,9 +252,9 @@ class InAppMessagingModuleSpec: QuickSpec {
 
                         context("and module is not initialized") {
 
-                            it("will call EventMatcher") {
+                            it("will not call EventMatcher") {
                                 iamModule.logEvent(PurchaseSuccessfulEvent())
-                                expect(eventMatcher.loggedEvents).toEventually(haveCount(1))
+                                expect(eventMatcher.loggedEvents).toAfterTimeout(beEmpty())
                             }
 
                             it("will not validate campaigns") {
@@ -170,7 +271,7 @@ class InAppMessagingModuleSpec: QuickSpec {
 
                     context("and module is disabled") {
                         beforeEach {
-                            configurationManager.isConfigEnabled = false
+                            configurationManager.rolloutPercentage = 0
                             iamModule.initialize { }
                         }
 
@@ -193,9 +294,11 @@ class InAppMessagingModuleSpec: QuickSpec {
 
                 context("when calling registerPreference") {
 
+                    let aUser = IAMPreferenceBuilder().setUserId("user").build()
+
                     context("and module is enabled") {
                         beforeEach {
-                            configurationManager.isConfigEnabled = true
+                            configurationManager.rolloutPercentage = 100
                         }
 
                         context("and module is initialized") {
@@ -213,6 +316,63 @@ class InAppMessagingModuleSpec: QuickSpec {
                                 iamModule.registerPreference(IAMPreference())
                                 expect(campaignsListManager.wasRefreshListCalled).to(beTrue())
                             }
+
+                            it("will reload campaigns repository cache") {
+                                iamModule.registerPreference(IAMPreference())
+                                expect(campaignRepository.wasLoadCachedDataCalled).to(beTrue())
+                            }
+
+                            it("will reload campaigns repository cache with syncWithLastUserData set to false") {
+                                iamModule.registerPreference(aUser)
+                                expect(campaignRepository.wasLoadCachedDataCalled).to(beTrue())
+                                expect(campaignRepository.loadCachedDataParameters).to(equal((false)))
+                            }
+
+                            it("will reset campaigns repository data persistence when user logs out or changes to another user") {
+                                [(aUser, nil), (aUser, IAMPreference()),
+                                 (aUser, IAMPreferenceBuilder().setUserId("userB").build())]
+                                    .forEach { prefA, prefB in
+                                        iamModule.registerPreference(prefA)
+                                        campaignRepository.resetFlags()
+                                        iamModule.registerPreference(prefB)
+                                        expect(campaignRepository.wasResetDataPersistenceCalled).to(beTrue())
+                                    }
+                            }
+
+                            it("will not reset campaigns repository data persistence when user did not log out or change to another user") {
+                                [(nil, aUser), (IAMPreference(), aUser),
+                                 (nil, nil), (nil, IAMPreference()),
+                                 (IAMPreference(), nil), (IAMPreference(), IAMPreference())]
+                                    .forEach { prefA, prefB in
+                                        iamModule.registerPreference(prefA)
+                                        campaignRepository.resetFlags()
+                                        iamModule.registerPreference(prefB)
+                                        expect(campaignRepository.wasResetDataPersistenceCalled).to(beFalse())
+                                    }
+                            }
+
+                            it("will clear event list when user logs out or changes to another user") {
+                                [(aUser, nil), (aUser, IAMPreference()),
+                                 (aUser, IAMPreferenceBuilder().setUserId("userB").build())]
+                                    .forEach { prefA, prefB in
+                                        iamModule.registerPreference(prefA)
+                                        eventMatcher.wasClearNonPersistentEventsCalled = false // reset
+                                        iamModule.registerPreference(prefB)
+                                        expect(eventMatcher.wasClearNonPersistentEventsCalled).to(beTrue())
+                                    }
+                            }
+
+                            it("will not clear event list when user did not log out or change to another user") {
+                                [(nil, aUser), (IAMPreference(), aUser),
+                                 (nil, nil), (nil, IAMPreference()),
+                                 (IAMPreference(), nil), (IAMPreference(), IAMPreference())]
+                                    .forEach { prefA, prefB in
+                                        iamModule.registerPreference(prefA)
+                                        eventMatcher.wasClearNonPersistentEventsCalled = false // reset
+                                        iamModule.registerPreference(prefB)
+                                        expect(eventMatcher.wasClearNonPersistentEventsCalled).to(beFalse())
+                                    }
+                            }
                         }
 
                         context("and module is not initialized") {
@@ -227,12 +387,24 @@ class InAppMessagingModuleSpec: QuickSpec {
                                 iamModule.registerPreference(IAMPreference())
                                 expect(campaignsListManager.wasRefreshListCalled).toAfterTimeout(beFalse())
                             }
+
+                            it("will not reload campaigns repository cache") {
+                                iamModule.registerPreference(IAMPreference())
+                                expect(campaignRepository.wasLoadCachedDataCalled).to(beFalse())
+                            }
+
+                            it("will not reset dispatch queue even if new preference has different ids") {
+                                iamModule.registerPreference(IAMPreferenceBuilder().setUserId("user").build())
+                                readyCampaignDispatcher.wasResetQueueCalled = false
+                                iamModule.registerPreference(IAMPreferenceBuilder().setUserId("user2").build())
+                                expect(readyCampaignDispatcher.wasResetQueueCalled).to(beFalse())
+                            }
                         }
                     }
 
                     context("and module is disabled") {
                         beforeEach {
-                            configurationManager.isConfigEnabled = false
+                            configurationManager.rolloutPercentage = 0
                             iamModule.initialize { }
                         }
 
@@ -246,6 +418,11 @@ class InAppMessagingModuleSpec: QuickSpec {
                             iamModule.registerPreference(IAMPreference())
                             expect(campaignsListManager.wasRefreshListCalled).toAfterTimeout(beFalse())
                         }
+
+                        it("will not reload campaigns repository cache") {
+                            iamModule.registerPreference(IAMPreference())
+                            expect(campaignRepository.wasLoadCachedDataCalled).to(beFalse())
+                        }
                     }
                 }
 
@@ -254,14 +431,6 @@ class InAppMessagingModuleSpec: QuickSpec {
                     it("will discard displayed campaign even if module is not initialized") {
                         iamModule.closeMessage(clearQueuedCampaigns: false)
                         expect(router.wasDiscardCampaignCalled).to(beTrue())
-                    }
-
-                    it("will increment impressionsLeft in closed campaign") {
-                        let campaign = TestHelpers.generateCampaign(id: "test")
-                        router.lastDisplayedCampaign = campaign
-
-                        iamModule.closeMessage(clearQueuedCampaigns: false)
-                        expect(campaignRepository.wasIncrementImpressionsCalled).to(beTrue())
                     }
 
                     it("will reset queued campaigns list if `clearQueuedCampaigns` is true") {
@@ -327,16 +496,6 @@ class InAppMessagingModuleSpec: QuickSpec {
                         }
                     }
                 }
-            }
-
-            it("will return true for shouldShowCampaignMessage if delegate is nil") {
-                iamModule.delegate = nil
-                expect(iamModule.shouldShowCampaignMessage(title: "", contexts: [])).to(beTrue())
-            }
-
-            it("will call delegate method if shouldShowCampaignMessage was called") {
-                _ = iamModule.shouldShowCampaignMessage(title: "", contexts: [])
-                expect(delegate.wasShouldShowCampaignCalled).to(beTrue())
             }
         }
     }

@@ -11,9 +11,11 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
     private let campaignTriggerAgent: CampaignTriggerAgentType
     private let campaignRepository: CampaignRepositoryType
     private let router: RouterType
+    private let randomizer: RandomizerType
 
     private var isInitialized = false
-    private var isEnabled = true
+    private(set) var isEnabled = true
+    private var eventBuffer = [Event]()
 
     var aggregatedErrorHandler: ((NSError) -> Void)?
     weak var delegate: RInAppMessagingDelegate?
@@ -26,7 +28,8 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
          readyCampaignDispatcher: CampaignDispatcherType,
          campaignTriggerAgent: CampaignTriggerAgentType,
          campaignRepository: CampaignRepositoryType,
-         router: RouterType) {
+         router: RouterType,
+         randomizer: RandomizerType) {
 
         self.configurationManager = configurationManager
         self.campaignsListManager = campaignsListManager
@@ -37,6 +40,7 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
         self.campaignTriggerAgent = campaignTriggerAgent
         self.campaignRepository = campaignRepository
         self.router = router
+        self.randomizer = randomizer
 
         self.configurationManager.errorDelegate = self
         self.campaignsListManager.errorDelegate = self
@@ -51,12 +55,18 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
         }
 
         configurationManager.fetchAndSaveConfigData { [weak self] config in
-            self?.isEnabled = config.enabled
-            self?.isInitialized = true
+            guard let self = self else {
+                return
+            }
+            let enabled = self.isEnabled(config: config)
+            self.isEnabled = enabled
+            self.isInitialized = true
 
-            if config.enabled {
-                self?.campaignsListManager.refreshList()
+            if enabled {
+                self.campaignsListManager.refreshList()
+                self.flushEventBuffer(discardEvents: false)
             } else {
+                self.flushEventBuffer(discardEvents: true)
                 deinitHandler()
             }
         }
@@ -67,13 +77,16 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
             return
         }
 
-        eventMatcher.matchAndStore(event: event)
         sendEventName(Constants.RAnalytics.events, event.analyticsParameters)
 
         guard isInitialized else {
+            // Events that were logged after first getConfig request failed,
+            // are saved to this list to be processed later
+            eventBuffer.append(event)
             return
         }
 
+        eventMatcher.matchAndStore(event: event)
         campaignTriggerAgent.validateAndTriggerCampaigns()
     }
 
@@ -81,11 +94,21 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
         guard isEnabled else {
             return
         }
+
+        let oldUserIdentifiers = preferenceRepository.getUserIdentifiers()
+        let diff = preferenceRepository.preference?.diff(preference)
         preferenceRepository.setPreference(preference)
 
         guard isInitialized else {
             return
         }
+
+        let isLogoutOrUserChange = (preferenceRepository.getUserIdentifiers().isEmpty || diff?.isEmpty == false) && !oldUserIdentifiers.isEmpty
+        if isLogoutOrUserChange {
+            campaignRepository.resetDataPersistence()
+            eventMatcher.clearNonPersistentEvents()
+        }
+        campaignRepository.loadCachedData(syncWithLastUserData: false)
         campaignsListManager.refreshList()
     }
 
@@ -93,9 +116,17 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
         if clearQueuedCampaigns {
             readyCampaignDispatcher.resetQueue()
         }
-        if let campaign = router.discardDisplayedCampaign() {
-            campaignRepository.incrementImpressionsLeftInCampaign(campaign)
+        router.discardDisplayedCampaign()
+    }
+
+    private func flushEventBuffer(discardEvents: Bool) {
+        if !discardEvents {
+            eventBuffer.forEach {
+                eventMatcher.matchAndStore(event: $0)
+            }
+            campaignTriggerAgent.validateAndTriggerCampaigns()
         }
+        eventBuffer.removeAll()
     }
 }
 
@@ -121,5 +152,15 @@ extension InAppMessagingModule {
 extension InAppMessagingModule {
     func didReceiveError(sender: ErrorReportable, error: NSError) {
         aggregatedErrorHandler?(error)
+    }
+}
+
+// MARK: - Enabled method
+extension InAppMessagingModule {
+    private func isEnabled(config: ConfigData) -> Bool {
+        guard config.rolloutPercentage > 0 else {
+            return false
+        }
+        return randomizer.dice <= config.rolloutPercentage
     }
 }
