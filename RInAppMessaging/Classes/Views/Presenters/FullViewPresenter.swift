@@ -57,9 +57,8 @@ internal class FullViewPresenter: BaseViewPresenter, FullViewPresenterType {
         sendImpressions()
 
         if let unwrappedUri = sender.uri {
-            guard let uriToOpen = URL(string: unwrappedUri),
-                UIApplication.shared.canOpenURL(uriToOpen) else {
 
+            guard let uriToOpen = URL(string: unwrappedUri) else {
                 if let view = view {
                     showURLError(view: view)
                 }
