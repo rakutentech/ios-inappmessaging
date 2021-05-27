@@ -128,8 +128,13 @@ class PublicAPISpec: QuickSpec {
                                                                pollInterval: .milliseconds(500))
             }
 
-            // it will properly schedule campaigns when events are logged one after another AND
-            it("will display campaigns for matching events that were logged during config retry delay") {
+            // This test checks if events logged after getConfig() failure (bufferedEvents)
+            // are re-logged properly when retried getConfig request succeeds.
+            // If buffered events can fill the set of campaign triggers, for example 3 times,
+            // then that campaign should be displayed 3 times.
+            // This test also checks if campaigns are queued properly (respecting impressionsLeft value)
+            // when multiple events are logged in very short time.
+            it("will display campaigns after first ping call for matching events that were logged after getConfig request failure") {
                 RInAppMessaging.deinitializeModule()
                 reinitializeSDK(onDependencyResolved: {
                     configurationManager.simulateRetryDelay = 1.0
@@ -140,6 +145,7 @@ class PublicAPISpec: QuickSpec {
                                            eventType: .loginSuccessful,
                                            eventName: "e1",
                                            attributes: [])])
+                    // maxImpressions = 2
                 })
                 RInAppMessaging.logEvent(LoginSuccessfulEvent())
                 RInAppMessaging.logEvent(LoginSuccessfulEvent())
