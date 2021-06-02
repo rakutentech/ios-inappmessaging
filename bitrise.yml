@@ -47,23 +47,11 @@ workflows:
 
             bundle exec pod spec lint --allow-warnings
             bundle exec pod trunk push --allow-warnings --verbose
-    - script@1:
+    - fastlane@2:
         title: Generate and deploy Docs to Github Pages
         inputs:
-        - content: |-
-            #!/usr/bin/env bash
-            set -ex
-
-            git subtree add --prefix docs origin gh-pages
-
-            bundle exec jazzy
-
-            git add docs -f
-            git commit -m "Deploy Jazzy docs for version $BITRISE_GIT_TAG"
-
-            git config --global url."https://x-token-auth:$PUBLISHER_GITHUB_API_TOKEN@github.com".InsteadOf https://github.com
-            git subtree push --prefix docs origin gh-pages
-            git config --global --unset url."https://github.com".insteadOf
+        - update_fastlane: 'false'
+        - lane: deploy_ghpages ghpages_url:$GIT_REPOSITORY_URL github_token:$PUBLISHER_GITHUB_API_TOKEN
 
   integration_tests:
     before_run:
