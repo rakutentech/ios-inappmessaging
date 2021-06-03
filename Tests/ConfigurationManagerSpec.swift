@@ -97,6 +97,24 @@ class ConfigurationManagerSpec: QuickSpec {
                     configurationManager.fetchAndSaveConfigData(completion: { _ in })
                     expect(configurationManager.scheduledTask).toEventuallyNot(beNil())
                 }
+
+                it("should not retry for .missingOrInvalidSubscriptionId error") {
+                    configurationService.simulateRequestFailure = true
+                    configurationService.mockedError = .missingOrInvalidSubscriptionId
+                    configurationManager.fetchAndSaveConfigData(completion: { _ in })
+                    expect(configurationManager.scheduledTask).toAfterTimeout(beNil())
+                }
+
+                it("should return disable response for .missingOrInvalidSubscriptionId error") {
+                    configurationService.simulateRequestFailure = true
+                    configurationService.mockedError = .missingOrInvalidSubscriptionId
+                    waitUntil { done in
+                        configurationManager.fetchAndSaveConfigData(completion: { config in
+                            expect(config.rolloutPercentage).to(equal(0))
+                            done()
+                        })
+                    }
+                }
             }
         }
     }

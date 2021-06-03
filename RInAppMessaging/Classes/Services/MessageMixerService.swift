@@ -90,21 +90,11 @@ extension MessageMixerService {
     }
 
     private func buildRequestHeader() -> [HeaderAttribute] {
-        let Keys = Constants.Request.Header.self
-        var additionalHeaders: [HeaderAttribute] = []
+        var builder = HeaderAttributesBuilder()
+        builder.addSubscriptionID(bundleInfo: bundleInfo)
+        builder.addDeviceID()
+        builder.addAccessToken(preferenceRepository: preferenceRepository)
 
-        if let subId = bundleInfo.inAppSubscriptionId {
-            additionalHeaders.append(HeaderAttribute(key: Keys.subscriptionID, value: subId))
-        }
-
-        if let deviceId = UIDevice.current.identifierForVendor?.uuidString {
-            additionalHeaders.append(HeaderAttribute(key: Keys.deviceID, value: deviceId))
-        }
-
-        if let accessToken = preferenceRepository.getAccessToken() {
-            additionalHeaders.append(HeaderAttribute(key: Keys.authorization, value: "OAuth2 \(accessToken)"))
-        }
-
-        return additionalHeaders
+        return builder.build()
     }
 }

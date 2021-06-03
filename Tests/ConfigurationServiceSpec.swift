@@ -124,6 +124,72 @@ class ConfigurationServiceSpec: QuickSpec {
                         }
                     }
                 }
+
+                context("and status code is 4xx") {
+
+                    it("will return ConfigurationServiceError containing .tooManyRequestsError for code 429") {
+                        httpSession.httpResponse = HTTPURLResponse(url: configURL,
+                                                                   statusCode: 429,
+                                                                   httpVersion: nil,
+                                                                   headerFields: nil)
+                        waitUntil { done in
+                            requestQueue.async {
+                                let result = service.getConfigData()
+                                let error = result.getError()
+                                expect(error).toNot(beNil())
+
+                                guard case .tooManyRequestsError = error else {
+                                    fail("Unexpected error type \(String(describing: error)). Expected .tooManyRequestsError")
+                                    done()
+                                    return
+                                }
+                                done()
+                            }
+                        }
+                    }
+
+                    it("will return ConfigurationServiceError containing .missingOrInvalidSubscriptionId for code 400") {
+                        httpSession.httpResponse = HTTPURLResponse(url: configURL,
+                                                                   statusCode: 400,
+                                                                   httpVersion: nil,
+                                                                   headerFields: nil)
+                        waitUntil { done in
+                            requestQueue.async {
+                                let result = service.getConfigData()
+                                let error = result.getError()
+                                expect(error).toNot(beNil())
+
+                                guard case .missingOrInvalidSubscriptionId = error else {
+                                    fail("Unexpected error type \(String(describing: error)). Expected .missingOrInvalidSubscriptionId")
+                                    done()
+                                    return
+                                }
+                                done()
+                            }
+                        }
+                    }
+
+                    it("will return ConfigurationServiceError containing .missingOrInvalidSubscriptionId for code 404") {
+                        httpSession.httpResponse = HTTPURLResponse(url: configURL,
+                                                                   statusCode: 404,
+                                                                   httpVersion: nil,
+                                                                   headerFields: nil)
+                        waitUntil { done in
+                            requestQueue.async {
+                                let result = service.getConfigData()
+                                let error = result.getError()
+                                expect(error).toNot(beNil())
+
+                                guard case .missingOrInvalidSubscriptionId = error else {
+                                    fail("Unexpected error type \(String(describing: error)). Expected .missingOrInvalidSubscriptionId")
+                                    done()
+                                    return
+                                }
+                                done()
+                            }
+                        }
+                    }
+                }
             }
 
             context("when request fails") {
@@ -132,6 +198,8 @@ class ConfigurationServiceSpec: QuickSpec {
                 }
 
                 it("will return ConfigurationServiceError containing .requestError") {
+                    httpSession.responseError = NSError(domain: "config.error.test", code: 1, userInfo: nil)
+
                     waitUntil { done in
                         requestQueue.async {
                             let result = service.getConfigData()
@@ -146,36 +214,6 @@ class ConfigurationServiceSpec: QuickSpec {
                             done()
                         }
                     }
-                }
-            }
-
-            context("when request fails with a status code equals to 429") {
-                let originalHttpResponse: HTTPURLResponse? = httpSession?.httpResponse
-
-                it("will return ConfigurationServiceError containing .tooManyRequestsError") {
-                    httpSession.httpResponse = HTTPURLResponse(url: configURL,
-                                                               statusCode: 429,
-                                                               httpVersion: nil,
-                                                               headerFields: nil)
-
-                    waitUntil { done in
-                        requestQueue.async {
-                            let result = service.getConfigData()
-                            let error = result.getError()
-                            expect(error).toNot(beNil())
-
-                            guard case .tooManyRequestsError = error else {
-                                fail("Unexpected error type \(String(describing: error)). Expected .tooManyRequestsError")
-                                done()
-                                return
-                            }
-                            done()
-                        }
-                    }
-                }
-
-                afterEach {
-                    httpSession.httpResponse = originalHttpResponse
                 }
             }
 

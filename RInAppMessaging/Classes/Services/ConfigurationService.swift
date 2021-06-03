@@ -6,6 +6,7 @@ internal enum ConfigurationServiceError: Error {
     case requestError(RequestError)
     case jsonDecodingError(Error)
     case tooManyRequestsError
+    case missingOrInvalidSubscriptionId
 }
 
 internal struct ConfigurationService: ConfigurationServiceType, HttpRequestable {
@@ -35,6 +36,8 @@ internal struct ConfigurationService: ConfigurationServiceType, HttpRequestable 
             switch requestError {
             case .httpError(let statusCode, _, _) where statusCode == 429:
                 return .failure(.tooManyRequestsError)
+            case .httpError(let statusCode, _, _) where [404, 400].contains(statusCode):
+                return .failure(.missingOrInvalidSubscriptionId)
             default:
                 return .failure(.requestError(requestError))
             }
@@ -72,17 +75,14 @@ extension ConfigurationService {
     }
 
     private func buildRequestHeader() -> [HeaderAttribute] {
-        let Keys = Constants.Request.Header.self
-        var additionalHeaders: [HeaderAttribute] = []
+        var headerBuilder = HeaderAttributesBuilder()
 
-        if let subId = bundleInfo.inAppSubscriptionId, !subId.isEmpty {
-            additionalHeaders.append(HeaderAttribute(key: Keys.subscriptionID, value: subId))
-        } else {
+        if !headerBuilder.addSubscriptionID(bundleInfo: bundleInfo) {
             Logger.debug("Info.plist must contain a valid InAppMessagingAppSubscriptionID")
             assertionFailure()
         }
 
-        return additionalHeaders
+        return headerBuilder.build()
     }
 
     func buildURLRequest(url: URL) -> Result<URLRequest, Error> {

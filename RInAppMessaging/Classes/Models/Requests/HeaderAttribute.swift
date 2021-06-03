@@ -1,4 +1,4 @@
-internal struct HeaderAttribute: Codable {
+internal struct HeaderAttribute: Codable, Equatable {
     let key: String
     let value: String
 }
