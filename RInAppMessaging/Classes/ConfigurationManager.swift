@@ -59,17 +59,25 @@ internal class ConfigurationManager: ConfigurationManagerType, TaskSchedulable {
         case .failure(let error):
             previousState = state
             state = ResponseState.error(error)
-            reportError(description: "Error calling config server. Retrying in \(retryDelayMS)ms", data: error)
+
             switch error {
-            case ConfigurationServiceError.tooManyRequestsError:
+            case .tooManyRequestsError:
+                reportError(description: "Error calling config server. Retrying in \(retryDelayMS)ms", data: error)
                 if case ResponseState.success = previousState {
                     retryDelayMS = Constants.Retry.TooManyRequestsError.initialRetryDelayMS
                 }
                 scheduleTask(milliseconds: Int(retryDelayMS), wallDeadline: true, retryHandler)
                 // Exponential backoff for pinging Configuration server.
                 retryDelayMS.increaseRandomizedBackoff()
+            case .missingOrInvalidSubscriptionId:
+                reportError(description: "Config request error: Missing or invalid Subscription ID. SDK will be disabled.", data: error)
+                completion(ConfigData(rolloutPercentage: 0, endpoints: nil))
+            case .unknownSubscriptionId:
+                reportError(description: "Config request error: Unknown Subscription ID. SDK will be disabled.", data: error)
+                completion(ConfigData(rolloutPercentage: 0, endpoints: nil))
 
             default:
+                reportError(description: "Error calling config server. Retrying in \(retryDelayMS)ms", data: error)
                 scheduleTask(milliseconds: Int(retryDelayMS), wallDeadline: true, retryHandler)
                 // Exponential backoff for pinging Configuration server.
                 retryDelayMS.increaseBackOff()

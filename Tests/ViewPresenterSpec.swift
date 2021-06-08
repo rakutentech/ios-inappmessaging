@@ -240,7 +240,7 @@ class ViewPresenterSpec: QuickSpec {
                         expect(view.wasShowAlertCalled).toEventually(beTrue())
                     }
 
-                    // testing positive cases for redirect/deepling URL requires UIApplication.shared.openURL() function to be mocked
+                    // testing positive cases for redirect/deeplink URL requires UIApplication.shared.openURL() function to be mocked
                 }
             }
         }
@@ -396,7 +396,7 @@ class ViewPresenterSpec: QuickSpec {
                     expect(view.wasShowAlertCalled).toEventually(beTrue())
                 }
 
-                // testing positive cases for redirect/deepling URL requires UIApplication.shared.openURL() function to be mocked
+                // testing positive cases for redirect/deeplink URL requires UIApplication.shared.openURL() function to be mocked
             }
 
             context("when didClickExitButton is called") {

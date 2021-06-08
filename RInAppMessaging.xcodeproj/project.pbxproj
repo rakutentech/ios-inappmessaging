@@ -39,6 +39,7 @@
 		459B228224528A7D00D218CE /* DisplayPermissionServiceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459B228124528A7D00D218CE /* DisplayPermissionServiceSpec.swift */; };
 		459DE86A24074F720002F451 /* EventMatcherSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459DE86924074F720002F451 /* EventMatcherSpec.swift */; };
 		459DE86C2407B5750002F451 /* CustomEventSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459DE86B2407B5750002F451 /* CustomEventSpec.swift */; };
+		45A86D0F2669877F00D0C43F /* HeaderAttributesBuilderSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45A86D0E2669877F00D0C43F /* HeaderAttributesBuilderSpec.swift */; };
 		45ADA53E247CFE9E00A9E2A3 /* ConfigurationRepositorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45ADA53D247CFE9E00A9E2A3 /* ConfigurationRepositorySpec.swift */; };
 		45ADA540247D076E00A9E2A3 /* InAppMessagingModuleSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45ADA53F247D076E00A9E2A3 /* InAppMessagingModuleSpec.swift */; };
 		45ADA542247D206B00A9E2A3 /* RouterSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45ADA541247D206B00A9E2A3 /* RouterSpec.swift */; };
@@ -119,6 +120,7 @@
 		459B228124528A7D00D218CE /* DisplayPermissionServiceSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisplayPermissionServiceSpec.swift; sourceTree = "<group>"; };
 		459DE86924074F720002F451 /* EventMatcherSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventMatcherSpec.swift; sourceTree = "<group>"; };
 		459DE86B2407B5750002F451 /* CustomEventSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomEventSpec.swift; sourceTree = "<group>"; };
+		45A86D0E2669877F00D0C43F /* HeaderAttributesBuilderSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderAttributesBuilderSpec.swift; sourceTree = "<group>"; };
 		45ADA53D247CFE9E00A9E2A3 /* ConfigurationRepositorySpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationRepositorySpec.swift; sourceTree = "<group>"; };
 		45ADA53F247D076E00A9E2A3 /* InAppMessagingModuleSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessagingModuleSpec.swift; sourceTree = "<group>"; };
 		45ADA541247D206B00A9E2A3 /* RouterSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouterSpec.swift; sourceTree = "<group>"; };
@@ -289,6 +291,7 @@
 				456FE1E62428513200304872 /* ErrorReportableSpec.swift */,
 				459DE86924074F720002F451 /* EventMatcherSpec.swift */,
 				4538BAE226282DE4009952BE /* GetConfigResponseSpec.swift */,
+				45A86D0E2669877F00D0C43F /* HeaderAttributesBuilderSpec.swift */,
 				45357AF6245AD49E007D8FDC /* HttpRequestableSpec.swift */,
 				4557A8B0257E544C00C9D241 /* IAMPreferenceSpec.swift */,
 				D911DC56211159DE0082B950 /* IdRegistrationSpec.swift */,
@@ -546,6 +549,7 @@
 				456FE1ED2429C4D200304872 /* ViewSpec.swift in Sources */,
 				4595F4F4262DE12C0001F30B /* KeyHasherSpec.swift in Sources */,
 				4534947223C6ABF700189A81 /* SerializationSpec.swift in Sources */,
+				45A86D0F2669877F00D0C43F /* HeaderAttributesBuilderSpec.swift in Sources */,
 				D911DC5821115B410082B950 /* IdRegistrationSpec.swift in Sources */,
 				45EA720525B71FA2001B2049 /* UIApplicationExtensionSpec.swift in Sources */,
 				45AFB308246CFB640080D21B /* LocaleSpec.swift in Sources */,
