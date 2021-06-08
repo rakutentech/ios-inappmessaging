@@ -74,45 +74,63 @@ class ConfigurationManagerSpec: QuickSpec {
                     expect(configurationRepository.getRolloutPercentage()).to(equal(100))
                 }
 
-                it("should retry after request failure") {
-                    configurationService.simulateRequestFailure = true
-                    configurationManager.fetchAndSaveConfigData(completion: { _ in })
-                    expect(configurationService.getConfigDataCallCount).to(equal(1))
-                    expect(configurationService.getConfigDataCallCount).toEventually(equal(2), timeout: .seconds(11))
-                }
+                context("when request failed") {
 
-                it("should call completion after retry attempt was successful") {
-                    waitUntil(timeout: .seconds(11)) { done in
+                    beforeEach {
                         configurationService.simulateRequestFailure = true
-                        configurationManager.fetchAndSaveConfigData(completion: { _ in
-                            done()
-                        })
-                        configurationService.simulateRequestFailure = false
                     }
-                }
 
-                it("should retry for .tooManyRequestsError error") {
-                    configurationService.simulateRequestFailure = true
-                    configurationService.mockedError = .tooManyRequestsError
-                    configurationManager.fetchAndSaveConfigData(completion: { _ in })
-                    expect(configurationManager.scheduledTask).toEventuallyNot(beNil())
-                }
+                    it("should retry") {
+                        configurationManager.fetchAndSaveConfigData(completion: { _ in })
+                        expect(configurationService.getConfigDataCallCount).to(equal(1))
+                        expect(configurationService.getConfigDataCallCount).toEventually(equal(2), timeout: .seconds(11))
+                    }
 
-                it("should not retry for .missingOrInvalidSubscriptionId error") {
-                    configurationService.simulateRequestFailure = true
-                    configurationService.mockedError = .missingOrInvalidSubscriptionId
-                    configurationManager.fetchAndSaveConfigData(completion: { _ in })
-                    expect(configurationManager.scheduledTask).toAfterTimeout(beNil())
-                }
+                    it("should call completion after retry attempt was successful") {
+                        waitUntil(timeout: .seconds(11)) { done in
+                            configurationManager.fetchAndSaveConfigData(completion: { _ in
+                                done()
+                            })
+                            configurationService.simulateRequestFailure = false
+                        }
+                    }
 
-                it("should return disable response for .missingOrInvalidSubscriptionId error") {
-                    configurationService.simulateRequestFailure = true
-                    configurationService.mockedError = .missingOrInvalidSubscriptionId
-                    waitUntil { done in
-                        configurationManager.fetchAndSaveConfigData(completion: { config in
-                            expect(config.rolloutPercentage).to(equal(0))
-                            done()
-                        })
+                    it("should retry for .tooManyRequestsError error") {
+                        configurationService.mockedError = .tooManyRequestsError
+                        configurationManager.fetchAndSaveConfigData(completion: { _ in })
+                        expect(configurationManager.scheduledTask).toEventuallyNot(beNil())
+                    }
+
+                    it("should not retry for .missingOrInvalidSubscriptionId error") {
+                        configurationService.mockedError = .missingOrInvalidSubscriptionId
+                        configurationManager.fetchAndSaveConfigData(completion: { _ in })
+                        expect(configurationManager.scheduledTask).toAfterTimeout(beNil())
+                    }
+
+                    it("should return disable response for .missingOrInvalidSubscriptionId error") {
+                        configurationService.mockedError = .missingOrInvalidSubscriptionId
+                        waitUntil { done in
+                            configurationManager.fetchAndSaveConfigData(completion: { config in
+                                expect(config.rolloutPercentage).to(equal(0))
+                                done()
+                            })
+                        }
+                    }
+
+                    it("should not retry for .unknownSubscriptionId error") {
+                        configurationService.mockedError = .unknownSubscriptionId
+                        configurationManager.fetchAndSaveConfigData(completion: { _ in })
+                        expect(configurationManager.scheduledTask).toAfterTimeout(beNil())
+                    }
+
+                    it("should return disable response for .unknownSubscriptionId error") {
+                        configurationService.mockedError = .unknownSubscriptionId
+                        waitUntil { done in
+                            configurationManager.fetchAndSaveConfigData(completion: { config in
+                                expect(config.rolloutPercentage).to(equal(0))
+                                done()
+                            })
+                        }
                     }
                 }
             }

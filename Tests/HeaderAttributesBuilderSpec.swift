@@ -34,7 +34,7 @@ class HeaderAttributesBuilderSpec: QuickSpec {
                     expect(builder.addSubscriptionID(bundleInfo: BundleInfoMock.self)).to(beTrue())
                 }
 
-                it("should apped new header attribute") {
+                it("should append new header attribute") {
                     BundleInfoMock.inAppSubscriptionIdMock = "some-id"
                     builder.addSubscriptionID(bundleInfo: BundleInfoMock.self)
                     expect(builder.build()).to(elementsEqual([HeaderAttribute(key: Constants.Request.Header.subscriptionID, value: "some-id")]))
@@ -53,7 +53,7 @@ class HeaderAttributesBuilderSpec: QuickSpec {
                     expect(builder.addAccessToken(preferenceRepository: preferenceRepository)).to(beTrue())
                 }
 
-                it("should apped new header attribute") {
+                it("should append new header attribute") {
                     preferenceRepository.setPreference(IAMPreferenceBuilder().setAccessToken("token").build())
                     builder.addAccessToken(preferenceRepository: preferenceRepository)
                     expect(builder.build()).to(elementsEqual([HeaderAttribute(key: Constants.Request.Header.authorization, value: "OAuth2 token")]))

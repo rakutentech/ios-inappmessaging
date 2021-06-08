@@ -2,12 +2,13 @@ import Quick
 import Nimble
 @testable import RInAppMessaging
 
+private let configURL = URL(string: "http://config.url")!
+
 class ConfigurationServiceSpec: QuickSpec {
 
     override func spec() {
 
         let requestQueue = DispatchQueue(label: "iam.test.request")
-        let configURL = URL(string: "http://config.url")!
 
         var service: ConfigurationService!
         var httpSession: URLSessionMock!
@@ -44,10 +45,7 @@ class ConfigurationServiceSpec: QuickSpec {
             context("when request succeeds") {
 
                 beforeEach {
-                    httpSession.httpResponse = HTTPURLResponse(url: configURL,
-                                                               statusCode: 200,
-                                                               httpVersion: nil,
-                                                               headerFields: nil)
+                    httpSession.httpResponse = ConfigURLResponse(statusCode: 200)
                 }
 
                 context("and payload is valid") {
@@ -128,10 +126,7 @@ class ConfigurationServiceSpec: QuickSpec {
                 context("and status code is 4xx") {
 
                     it("will return ConfigurationServiceError containing .tooManyRequestsError for code 429") {
-                        httpSession.httpResponse = HTTPURLResponse(url: configURL,
-                                                                   statusCode: 429,
-                                                                   httpVersion: nil,
-                                                                   headerFields: nil)
+                        httpSession.httpResponse = ConfigURLResponse(statusCode: 429)
                         waitUntil { done in
                             requestQueue.async {
                                 let result = service.getConfigData()
@@ -149,10 +144,7 @@ class ConfigurationServiceSpec: QuickSpec {
                     }
 
                     it("will return ConfigurationServiceError containing .missingOrInvalidSubscriptionId for code 400") {
-                        httpSession.httpResponse = HTTPURLResponse(url: configURL,
-                                                                   statusCode: 400,
-                                                                   httpVersion: nil,
-                                                                   headerFields: nil)
+                        httpSession.httpResponse = ConfigURLResponse(statusCode: 400)
                         waitUntil { done in
                             requestQueue.async {
                                 let result = service.getConfigData()
@@ -169,18 +161,15 @@ class ConfigurationServiceSpec: QuickSpec {
                         }
                     }
 
-                    it("will return ConfigurationServiceError containing .missingOrInvalidSubscriptionId for code 404") {
-                        httpSession.httpResponse = HTTPURLResponse(url: configURL,
-                                                                   statusCode: 404,
-                                                                   httpVersion: nil,
-                                                                   headerFields: nil)
+                    it("will return ConfigurationServiceError containing .unknownSubscriptionId for code 404") {
+                        httpSession.httpResponse = ConfigURLResponse(statusCode: 404)
                         waitUntil { done in
                             requestQueue.async {
                                 let result = service.getConfigData()
                                 let error = result.getError()
                                 expect(error).toNot(beNil())
 
-                                guard case .missingOrInvalidSubscriptionId = error else {
+                                guard case .unknownSubscriptionId = error else {
                                     fail("Unexpected error type \(String(describing: error)). Expected .missingOrInvalidSubscriptionId")
                                     done()
                                     return
@@ -293,5 +282,19 @@ class ConfigurationServiceSpec: QuickSpec {
                 }
             }
         }
+    }
+}
+
+private class ConfigURLResponse: HTTPURLResponse {
+    init?(statusCode: Int) {
+        super.init(url: configURL,
+                   statusCode: statusCode,
+                   httpVersion: nil,
+                   headerFields: nil)
+    }
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }
