@@ -322,24 +322,24 @@ class InAppMessagingModuleSpec: QuickSpec {
                                 expect(campaignRepository.wasLoadCachedDataCalled).to(beTrue())
                             }
 
-                            it("will reload campaigns repository cache with syncWithLastUserData set to false") {
+                            it("will reload campaigns repository cache with syncWithLastUserData set to true") {
                                 iamModule.registerPreference(aUser)
                                 expect(campaignRepository.wasLoadCachedDataCalled).to(beTrue())
-                                expect(campaignRepository.loadCachedDataParameters).to(equal((false)))
+                                expect(campaignRepository.loadCachedDataParameters).to(equal((true)))
                             }
 
-                            it("will reset campaigns repository data persistence when user logs out or changes to another user") {
+                            it("will clear last user data when user logs out or changes to another user") {
                                 [(aUser, nil), (aUser, IAMPreference()),
                                  (aUser, IAMPreferenceBuilder().setUserId("userB").build())]
                                     .forEach { prefA, prefB in
                                         iamModule.registerPreference(prefA)
                                         campaignRepository.resetFlags()
                                         iamModule.registerPreference(prefB)
-                                        expect(campaignRepository.wasResetDataPersistenceCalled).to(beTrue())
+                                        expect(campaignRepository.wasClearLastUserDataCalled).to(beTrue())
                                     }
                             }
 
-                            it("will not reset campaigns repository data persistence when user did not log out or change to another user") {
+                            it("will not clear last user data when user did not log out or change to another user") {
                                 [(nil, aUser), (IAMPreference(), aUser),
                                  (nil, nil), (nil, IAMPreference()),
                                  (IAMPreference(), nil), (IAMPreference(), IAMPreference())]
@@ -347,7 +347,7 @@ class InAppMessagingModuleSpec: QuickSpec {
                                         iamModule.registerPreference(prefA)
                                         campaignRepository.resetFlags()
                                         iamModule.registerPreference(prefB)
-                                        expect(campaignRepository.wasResetDataPersistenceCalled).to(beFalse())
+                                        expect(campaignRepository.wasClearLastUserDataCalled).to(beFalse())
                                     }
                             }
 

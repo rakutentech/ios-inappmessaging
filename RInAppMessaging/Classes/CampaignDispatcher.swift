@@ -74,11 +74,6 @@ internal class CampaignDispatcher: CampaignDispatcherType, TaskSchedulable {
             return
         }
 
-        CommonUtility.lock(resourcesIn: campaignRepository)
-        defer {
-            CommonUtility.unlock(resourcesIn: campaignRepository)
-        }
-
         let campaignID = queuedCampaignIDs.removeFirst()
         guard let campaign = campaignRepository.list.first(where: { $0.id == campaignID }) else {
             Logger.debug("Warning: Queued campaign \(campaignID) does not exist in the repository anymore")

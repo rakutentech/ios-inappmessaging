@@ -14,6 +14,7 @@ class PublicAPISpec: QuickSpec {
         var campaignsListManager: CampaignsListManagerType!
         var campaignRepository: CampaignRepositoryType!
         var configurationManager: ConfigurationManagerMock!
+        var dataCache: UserDataCache!
         var delegate: Delegate!
 
         func mockContainer() -> DependencyManager.Container {
@@ -21,9 +22,7 @@ class PublicAPISpec: QuickSpec {
                 DependencyManager.ContainerElement(type: ConfigurationManagerType.self, factory: { configurationManager }),
                 DependencyManager.ContainerElement(type: MessageMixerServiceType.self, factory: { messageMixerService }),
                 DependencyManager.ContainerElement(type: EventMatcherType.self, factory: { eventMatcher }),
-                DependencyManager.ContainerElement(type: UserDataCacheable.self, factory: {
-                    UserDataCache(userDefaults: userDefaults)
-                })
+                DependencyManager.ContainerElement(type: UserDataCacheable.self, factory: { dataCache })
             ])
         }
 
@@ -33,6 +32,7 @@ class PublicAPISpec: QuickSpec {
             dependencyManager.appendContainer(mockContainer())
             configurationManager = ConfigurationManagerMock()
             messageMixerService = MessageMixerServiceMock()
+            dataCache = UserDataCache(userDefaults: userDefaults)
             eventMatcher = EventMatcherSpy(
                 campaignRepository: dependencyManager.resolve(type: CampaignRepositoryType.self)!)
             preferenceRepository = dependencyManager.resolve(type: IAMPreferenceRepository.self)
@@ -284,11 +284,7 @@ class PublicAPISpec: QuickSpec {
                     generateAndDisplayLoginCampaigns(count: 1, addContexts: false)
 
                     expect(UIApplication.shared.keyWindow?.subviews).toEventually(containElementSatisfying({
-                        if let view = $0 as? BaseView {
-                            view.dismiss()
-                            return true
-                        }
-                        return false
+                        $0 is BaseView
                     }))
                 }
 
@@ -341,6 +337,44 @@ class PublicAPISpec: QuickSpec {
 
                     expect(UIApplication.shared.keyWindow?.subviews)
                         .toAfterTimeout(allPass({ !($0 is BaseView) }))
+                }
+
+                it("will transfer cached data (sync) from anonymous user") {
+                    messageMixerService.mockedResponse = TestHelpers.MockResponse.withGeneratedCampaigns(
+                        count: 1, test: false, delay: 100, maxImpressions: 2, addContexts: false,
+                        triggers: [Trigger(type: .event,
+                                           eventType: .loginSuccessful,
+                                           eventName: "e1",
+                                           attributes: [])])
+                    RInAppMessaging.registerPreference(nil)
+                    RInAppMessaging.logEvent(LoginSuccessfulEvent())
+                    expect(UIApplication.shared.keyWindow?.subviews).toEventually(containElementSatisfying({
+                        $0 is BaseView
+                    })) // wait
+
+                    RInAppMessaging.registerPreference(IAMPreferenceBuilder().setUserId("user").build())
+                    let identifiers = [UserIdentifier(type: .userId, identifier: "user")]
+                    expect(dataCache.getUserData(identifiers: identifiers)?.campaignData?.first?.impressionsLeft)
+                        .toEventually(equal(1))
+                }
+
+                it("will not transfer cached data (sync) from empty user") {
+                    messageMixerService.mockedResponse = TestHelpers.MockResponse.withGeneratedCampaigns(
+                        count: 1, test: false, delay: 100, maxImpressions: 2, addContexts: false,
+                        triggers: [Trigger(type: .event,
+                                           eventType: .loginSuccessful,
+                                           eventName: "e1",
+                                           attributes: [])])
+                    RInAppMessaging.registerPreference(IAMPreferenceBuilder().setUserId("").build())
+                    RInAppMessaging.logEvent(LoginSuccessfulEvent())
+                    expect(UIApplication.shared.keyWindow?.subviews).toEventually(containElementSatisfying({
+                        $0 is BaseView
+                    })) // wait
+
+                    RInAppMessaging.registerPreference(IAMPreferenceBuilder().setUserId("user").build())
+                    let identifiers = [UserIdentifier(type: .userId, identifier: "user")]
+                    expect(dataCache.getUserData(identifiers: identifiers)?.campaignData?.first?.impressionsLeft)
+                        .toEventually(equal(2)) // nil -> 2
                 }
             }
         }
