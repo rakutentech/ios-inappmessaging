@@ -65,6 +65,9 @@ class PublicAPISpec: QuickSpec {
         afterEach {
             RInAppMessaging.deinitializeModule()
             UserDefaults.standard.removePersistentDomain(forName: "PublicAPISpec")
+            UIApplication.shared.keyWindow?.subviews
+                .filter { $0 is BaseView }
+                .forEach { $0.removeFromSuperview() }
         }
 
         describe("RInAppMessaging") {
@@ -193,11 +196,6 @@ class PublicAPISpec: QuickSpec {
             }
 
             context("delegate") {
-                afterEach {
-                    UIApplication.shared.keyWindow?.subviews
-                        .filter { $0 is BaseView }
-                        .forEach { $0.removeFromSuperview() }
-                }
 
                 it("will not call the method if there are no contexts") {
                     generateAndDisplayLoginCampaigns(count: 1, addContexts: false)
