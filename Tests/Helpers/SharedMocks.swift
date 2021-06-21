@@ -23,7 +23,7 @@ class CampaignRepositoryMock: CampaignRepositoryType {
     private(set) var lastSyncCampaigns = [Campaign]()
     private(set) var wasLoadCachedDataCalled = false
     private(set) var loadCachedDataParameters: (Bool)?
-    private(set) var wasResetDataPersistenceCalled = false
+    private(set) var wasClearLastUserDataCalled = false
 
     func decrementImpressionsLeftInCampaign(id: String) -> Campaign? {
         decrementImpressionsCalls += 1
@@ -64,11 +64,11 @@ class CampaignRepositoryMock: CampaignRepositoryType {
         lastSyncCampaigns = [Campaign]()
         wasLoadCachedDataCalled = false
         loadCachedDataParameters = nil
-        wasResetDataPersistenceCalled = false
+        wasClearLastUserDataCalled = false
     }
 
-    func resetDataPersistence() {
-        wasResetDataPersistenceCalled = true
+    func clearLastUserData() {
+        wasClearLastUserDataCalled = true
     }
 
     private func indexAndCampaign(forID id: String) -> (Int, Campaign)? {

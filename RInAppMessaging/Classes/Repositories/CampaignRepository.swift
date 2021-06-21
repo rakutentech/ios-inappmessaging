@@ -28,10 +28,11 @@ internal protocol CampaignRepositoryType: AnyObject, Lockable {
     func incrementImpressionsLeftInCampaign(id: String) -> Campaign?
 
     /// Loads campaign data from user cache
+    /// - Parameter syncWithLastUserData: When set to true, loaded data will be synchronized with previously registered user (including anonymous user).
     func loadCachedData(syncWithLastUserData: Bool)
 
     /// Deletes cached data used to sync between users
-    func resetDataPersistence()
+    func clearLastUserData()
 }
 
 /// Repository to store campaigns retrieved from ping request.
@@ -119,18 +120,18 @@ internal class CampaignRepository: CampaignRepositoryType {
     func loadCachedData(syncWithLastUserData: Bool) {
         var cachedData = userDataCache.getUserData(identifiers: preferenceRepository.getUserIdentifiers())?.campaignData ?? []
         if syncWithLastUserData {
-            userDataCache.getUserData(identifiers: CampaignRepository.lastUser)?.campaignData?.forEach({ defaultUserCampaign in
-                if let existingCampaignIndex = cachedData.firstIndex(where: { $0.id == defaultUserCampaign.id }) {
-                    cachedData[existingCampaignIndex] = defaultUserCampaign
+            userDataCache.getUserData(identifiers: CampaignRepository.lastUser)?.campaignData?.forEach({ lastUserCampaign in
+                if let existingCampaignIndex = cachedData.firstIndex(where: { $0.id == lastUserCampaign.id }) {
+                    cachedData[existingCampaignIndex] = lastUserCampaign
                 } else {
-                    cachedData.append(defaultUserCampaign)
+                    cachedData.append(lastUserCampaign)
                 }
             })
         }
         campaigns.set(value: cachedData)
     }
 
-    func resetDataPersistence() {
+    func clearLastUserData() {
         userDataCache.deleteUserData(identifiers: CampaignRepository.lastUser)
     }
 

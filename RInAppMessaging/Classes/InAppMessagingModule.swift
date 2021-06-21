@@ -105,10 +105,10 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
 
         let isLogoutOrUserChange = (preferenceRepository.getUserIdentifiers().isEmpty || diff?.isEmpty == false) && !oldUserIdentifiers.isEmpty
         if isLogoutOrUserChange {
-            campaignRepository.resetDataPersistence()
+            campaignRepository.clearLastUserData()
             eventMatcher.clearNonPersistentEvents()
         }
-        campaignRepository.loadCachedData(syncWithLastUserData: false)
+        campaignRepository.loadCachedData(syncWithLastUserData: true)
         campaignsListManager.refreshList()
     }
 
