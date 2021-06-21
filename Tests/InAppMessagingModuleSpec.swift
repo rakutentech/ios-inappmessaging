@@ -322,10 +322,10 @@ class InAppMessagingModuleSpec: QuickSpec {
                                 expect(campaignRepository.wasLoadCachedDataCalled).to(beTrue())
                             }
 
-                            it("will reload campaigns repository cache with syncWithLastUserData set to true") {
+                            it("will reload campaigns repository cache with syncWithLastUserData set to false") {
                                 iamModule.registerPreference(aUser)
                                 expect(campaignRepository.wasLoadCachedDataCalled).to(beTrue())
-                                expect(campaignRepository.loadCachedDataParameters).to(equal((true)))
+                                expect(campaignRepository.loadCachedDataParameters).to(equal((false)))
                             }
 
                             it("will clear last user data when user logs out or changes to another user") {

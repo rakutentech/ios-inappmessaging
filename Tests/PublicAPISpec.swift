@@ -337,7 +337,8 @@ class PublicAPISpec: QuickSpec {
                         .toAfterTimeout(allPass({ !($0 is BaseView) }))
                 }
 
-                it("will transfer cached data (sync) from anonymous user") {
+                // As it may contain outdated information (especially after logout)
+                it("will not transfer cached data (sync) from anonymous user") {
                     messageMixerService.mockedResponse = TestHelpers.MockResponse.withGeneratedCampaigns(
                         count: 1, test: false, delay: 100, maxImpressions: 2, addContexts: false,
                         triggers: [Trigger(type: .event,
@@ -349,11 +350,13 @@ class PublicAPISpec: QuickSpec {
                     expect(UIApplication.shared.keyWindow?.subviews).toEventually(containElementSatisfying({
                         $0 is BaseView
                     })) // wait
+                    expect(dataCache.getUserData(identifiers: [])?.campaignData?.first?.impressionsLeft)
+                        .to(equal(1))
 
                     RInAppMessaging.registerPreference(IAMPreferenceBuilder().setUserId("user").build())
                     let identifiers = [UserIdentifier(type: .userId, identifier: "user")]
                     expect(dataCache.getUserData(identifiers: identifiers)?.campaignData?.first?.impressionsLeft)
-                        .toEventually(equal(1))
+                        .toEventually(equal(2)) // nil -> 2
                 }
 
                 it("will not transfer cached data (sync) from empty user") {
@@ -368,6 +371,8 @@ class PublicAPISpec: QuickSpec {
                     expect(UIApplication.shared.keyWindow?.subviews).toEventually(containElementSatisfying({
                         $0 is BaseView
                     })) // wait
+                    expect(dataCache.getUserData(identifiers: [UserIdentifier(type: .userId, identifier: "")])?.campaignData?.first?.impressionsLeft)
+                        .to(equal(1))
 
                     RInAppMessaging.registerPreference(IAMPreferenceBuilder().setUserId("user").build())
                     let identifiers = [UserIdentifier(type: .userId, identifier: "user")]

@@ -108,7 +108,7 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
             campaignRepository.clearLastUserData()
             eventMatcher.clearNonPersistentEvents()
         }
-        campaignRepository.loadCachedData(syncWithLastUserData: true)
+        campaignRepository.loadCachedData(syncWithLastUserData: false)
         campaignsListManager.refreshList()
     }
 
