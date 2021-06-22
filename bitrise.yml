@@ -27,17 +27,12 @@ workflows:
     before_run:
     - _setup
     steps:
-    - script@1:
-        title: Verify branch
+    - brew-install@0:
+        title: Install svn for deploy_ghpages
         inputs:
-        - content: |-
-            #!/usr/bin/env bash
-            set -ex
-
-            if [[ "${BITRISE_GIT_BRANCH}" != "master" ]]; then
-              echo " [!] Deployments are allowed only on 'master' branch"
-              exit 1
-            fi
+        - cache_enabled: 'yes'
+        - upgrade: 'no'
+        - packages: svn
     - script@1:
         title: Lint and push Cocoapods trunk
         inputs:
