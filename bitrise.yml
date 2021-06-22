@@ -26,13 +26,9 @@ workflows:
   deploy:
     before_run:
     - _setup
+    after_run:
+    - _deploy_docs_worker    
     steps:
-    - brew-install@0:
-        title: Install svn for deploy_ghpages
-        inputs:
-        - cache_enabled: 'yes'
-        - upgrade: 'no'
-        - packages: svn
     - script@1:
         title: Lint and push Cocoapods trunk
         inputs:
@@ -42,6 +38,20 @@ workflows:
 
             bundle exec pod spec lint --allow-warnings
             bundle exec pod trunk push --allow-warnings --verbose
+
+  deploy_docs:
+    before_run:
+    - _setup
+    - _deploy_docs_worker
+
+  _deploy_docs_worker:
+    steps:
+    - brew-install@0:
+        title: Install svn
+        inputs:
+        - cache_enabled: 'yes'
+        - upgrade: 'no'
+        - packages: svn
     - fastlane@2:
         title: Generate and deploy Docs to Github Pages
         inputs:
