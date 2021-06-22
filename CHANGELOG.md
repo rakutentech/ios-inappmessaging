@@ -4,7 +4,7 @@
 **Breaking change:** Config API contract has changed and now requires the v2 GET endpoint. The SDK will not work with the v1 endpoint.
 - Improvements:
     - Updated company name references. [SDKCF-3550]
-	- Added handling for getConfig response status codes 400 and 404. [SDKCF-3884]
+    - Added handling for getConfig response status codes 400 and 404. [SDKCF-3884]
     - Changed Config API call to be a /GET with query params. This allows the backend to filter requests if required. [SDKCF-3652]
     - Added handling for "429 Too Many Requests" response to Config/Ping API requests. When status code 429 is received by the SDK it will start expontential backoff (plus a random factor) retries to space out the requests to the backend. [SDKCF-3654]
     - Campaign opt-out & max impression tracking logic is now handled solely on client side. This change reduces the backend's load per request. [SDKCF-3656]
