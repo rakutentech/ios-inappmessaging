@@ -63,7 +63,7 @@ func application(_ application: UIApplication, didFinishLaunchingWithOptions lau
 ```
 
 **Note**: 
-* Wrap the call to `configure()` in an `if <enable IAM-SDK boolean value> == true` condition to control enabling/disabling the SDK. 
+* You can wrap the call to `configure()` in an `if <enable IAM-SDK boolean value> == true` condition to control enabling/disabling the SDK. 
 * If `configure()` is not called, subsequent calls to other public API SDK functions have no effect.
 
 ### **logEvent()**  
