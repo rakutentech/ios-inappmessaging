@@ -233,13 +233,13 @@ Campaign impressions (displays) are counted locally for each user. Meaning that 
 # **Troubleshooting & F.A.Q.**
 
 * Configuration service returns `RequestError.missingMetadata` error
- * Ensure that IAM SDK is integrated properly (not as a static library)
+  * Ensure that IAM SDK is integrated properly (not as a static library)
 * If you receive HTTP error 401
   * If you are providing an access token in `IAMPreference` make sure that it comes from PROD endpoint. (this applies only to Rakuten developers)
 * If user targeting is not working
   * Ensure you provide *userId* or *rakutenId* in `IAMPreference`.
   * If you set an *accessToken* you **must also** provide associated *userId*. (Rakuten developers only)
 * Status bar characters and icons are not visible when Full-Screen campaign is presented
- * If your app is running on iOS version below 13.0 you need to either change background color of the campaign or set proper `preferredStatusbarStyle` in the top-most view controller. (for iOS versions above 13.0 this issue is handled internally by the SDK)
+  * If your app is running on iOS version below 13.0 you need to either change background color of the campaign or set proper `preferredStatusbarStyle` in the top-most view controller. (for iOS versions above 13.0 this issue is handled internally by the SDK)
 
 #### For other issues and more detailed information, Rakuten developers should refer to the Troubleshooting Guide on the internal developer documentation portal.
