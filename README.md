@@ -39,7 +39,7 @@ To use the module you must set the following values in your app's `Info.plist`:
 
 
 ## **Enable and disable the SDK remotely**
-We recommend, as good engineering practice, that you integrate with a remote config service so that you can fetch an e.g. `Enable_IAM_SDK` feature flag and use its value to dynamically enable/disable the SDK without making an app release. There are many remote config services on the market, both free and paid.
+We recommend, as good engineering practice, that you integrate with a remote config service so that you can fetch a feature flag, e.g. `Enable_IAM_SDK`, and use its value to dynamically enable/disable the SDK without making an app release. There are many remote config services on the market, both free and paid.
 
 # **Using the SDK**
 
