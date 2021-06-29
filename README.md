@@ -38,6 +38,9 @@ To use the module you must set the following values in your app's `Info.plist`:
 | `InAppMessagingConfigurationURL` | Endpoint for fetching the configuration |
 
 
+## **Enable and disable the SDK remotely**
+We recommend, as good engineering practice, that you integrate with a remote config service so that you can fetch an e.g. `Enable_IAM_SDK` feature flag and use its value to dynamically enable/disable the SDK without making an app release. There are many remote config services on the market, both free and paid.
+
 # **Using the SDK**
 
 The SDK provides 3 public methods for the host applications to use:
@@ -48,7 +51,7 @@ The SDK provides 3 public methods for the host applications to use:
 4. `closeMessage()`
 
 ### **configure()**  
-This method is called to initialize the SDK and should be placed in your AppDelegate's `didFinishLaunchingWithOptions`.
+This method initializes the SDK and should be placed in your AppDelegate's `didFinishLaunchingWithOptions`.
 
 ```swift
 import RInAppMessaging
@@ -58,6 +61,10 @@ func application(_ application: UIApplication, didFinishLaunchingWithOptions lau
     return true
 }
 ```
+
+**Note**: 
+* You can wrap the call to `configure()` in an `if <enable IAM-SDK boolean value> == true` condition to control enabling/disabling the SDK. 
+* If `configure()` is not called, subsequent calls to other public API SDK functions have no effect.
 
 ### **logEvent()**  
 This method is provided for the host application to log and save events. These events will be used to match campaign triggers.
@@ -226,13 +233,13 @@ Campaign impressions (displays) are counted locally for each user. Meaning that 
 # **Troubleshooting & F.A.Q.**
 
 * Configuration service returns `RequestError.missingMetadata` error
- * Ensure that IAM SDK is integrated properly (not as a static library)
-* Getting HTTP error 401
- * If you are providing an access token in `IAMPreference` make sure that it comes from PROD endpoint. (this applies only to Rakuten developers)
-* User targeting is not working
- * For user targeting to work you must provide *userId* or *rakutenId* in `IAMPreference`.
- * If you are setting an *accessToken* you must also provide associated *userId*. (Rakuten developers only)
+  * Ensure that IAM SDK is integrated properly (not as a static library)
+* If you receive HTTP error 401
+  * If you are providing an access token in `IAMPreference` make sure that it comes from PROD endpoint. (this applies only to Rakuten developers)
+* If user targeting is not working
+  * Ensure you provide *userId* or *rakutenId* in `IAMPreference`.
+  * If you set an *accessToken* you **must also** provide associated *userId*. (Rakuten developers only)
 * Status bar characters and icons are not visible when Full-Screen campaign is presented
- * If your app is running on iOS version below 13.0 you need to either change background color of the campaign or set proper `preferredStatusbarStyle` in the top-most view controller. (for iOS versions above 13.0 this issue is handled internally by the SDK)
+  * If your app is running on iOS version below 13.0 you need to either change background color of the campaign or set proper `preferredStatusbarStyle` in the top-most view controller. (for iOS versions above 13.0 this issue is handled internally by the SDK)
 
 #### For other issues and more detailed information, Rakuten developers should refer to the Troubleshooting Guide on the internal developer documentation portal.
