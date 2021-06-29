@@ -1,8 +1,8 @@
 ## Changelog
 
-### 4.0.1 (in-progress)
+### 4.0.1 (2021-06-30)
 - Improvements:
-    - Added recommendation to use a remote feature flag to enable/disable the SDK. [SDKCF-3938]
+    - Added recommendation to README that apps should use a remote feature flag to enable/disable the SDK. [SDKCF-3938]
 
 ### 4.0.0 (2021-06-22)
 **Breaking change:** Config API contract has changed and now requires the v2 GET endpoint. The SDK will not work with the v1 endpoint.
