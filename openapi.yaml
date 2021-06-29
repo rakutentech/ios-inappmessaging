@@ -6,7 +6,7 @@ info:
   license:
     name: MIT
     url: https://opensource.org/licenses/MIT
-  version: 4.0.0
+  version: 4.0.1
 tags:
 - name: Configuration
 - name: Campaign
