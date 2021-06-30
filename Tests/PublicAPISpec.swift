@@ -72,6 +72,19 @@ class PublicAPISpec: QuickSpec {
 
         describe("RInAppMessaging") {
 
+            it("will not crash if api methods are called prior to configure()") {
+                RInAppMessaging.deinitializeModule()
+                expect(RInAppMessaging.initializedModule).to(beNil())
+
+                let errorDelegate = ErrorDelegate()
+                RInAppMessaging.delegate = delegate
+                RInAppMessaging.errorDelegate = errorDelegate
+                RInAppMessaging.accessibilityCompatibleDisplay = true
+                RInAppMessaging.closeMessage(clearQueuedCampaigns: true)
+                RInAppMessaging.logEvent(LoginSuccessfulEvent())
+                RInAppMessaging.registerPreference(IAMPreferenceBuilder().setUserId("user").build())
+            }
+
             it("won't reinitialize module if config was called more than once") {
                 let expectedModule = RInAppMessaging.initializedModule
                 RInAppMessaging.configure()
