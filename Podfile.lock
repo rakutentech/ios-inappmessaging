@@ -1,7 +1,7 @@
 PODS:
   - Nimble (9.2.0)
   - Quick (4.0.0)
-  - RInAppMessaging (4.0.0-pp)
+  - RInAppMessaging (4.0.1)
   - SwiftLint (0.43.1)
 
 DEPENDENCIES:
@@ -23,7 +23,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   Nimble: 4f4a345c80b503b3ea13606a4f98405974ee4d0b
   Quick: 6473349e43b9271a8d43839d9ba1c442ed1b7ac4
-  RInAppMessaging: 5e99dc996b6a1afd16b7841d877f5d60d4f131f0
+  RInAppMessaging: 9e8e3a4e027bb9119bb6aab3dcde92088f8b6674
   SwiftLint: 99f82d07b837b942dd563c668de129a03fc3fb52
 
 PODFILE CHECKSUM: 8a6dcd4c28e5723bd520363ede4f5fec5524dcd0

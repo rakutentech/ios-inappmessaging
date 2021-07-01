@@ -72,6 +72,34 @@ class PublicAPISpec: QuickSpec {
 
         describe("RInAppMessaging") {
 
+            it("will not crash if api methods are called prior to configure()") {
+                RInAppMessaging.deinitializeModule()
+                expect(RInAppMessaging.initializedModule).to(beNil())
+
+                let errorDelegate = ErrorDelegate()
+                RInAppMessaging.delegate = delegate
+                RInAppMessaging.errorDelegate = errorDelegate
+                RInAppMessaging.accessibilityCompatibleDisplay = true
+                RInAppMessaging.closeMessage(clearQueuedCampaigns: true)
+                RInAppMessaging.logEvent(LoginSuccessfulEvent())
+                RInAppMessaging.registerPreference(IAMPreferenceBuilder().setUserId("user").build())
+            }
+
+            it("will send an error if api methods are called prior to configure()") {
+                RInAppMessaging.deinitializeModule()
+                expect(RInAppMessaging.initializedModule).to(beNil())
+
+                let errorDelegate = ErrorDelegate()
+                RInAppMessaging.errorDelegate = errorDelegate
+
+                RInAppMessaging.delegate = delegate // 1st error sent
+                RInAppMessaging.accessibilityCompatibleDisplay = true // 2nd error sent
+                RInAppMessaging.closeMessage(clearQueuedCampaigns: true) // 3rd error sent
+                RInAppMessaging.logEvent(LoginSuccessfulEvent()) // 4th error sent
+                RInAppMessaging.registerPreference(IAMPreferenceBuilder().setUserId("user").build()) // 5th error sent
+                expect(errorDelegate.totalErrorNumber).toEventually(equal(5))
+            }
+
             it("won't reinitialize module if config was called more than once") {
                 let expectedModule = RInAppMessaging.initializedModule
                 RInAppMessaging.configure()
@@ -386,7 +414,9 @@ class PublicAPISpec: QuickSpec {
 
 private class ErrorDelegate: RInAppMessagingErrorDelegate {
     private(set) var returnedError: NSError?
+    private(set) var totalErrorNumber = 0
     func inAppMessagingDidReturnError(_ error: NSError) {
+        totalErrorNumber += 1
         returnedError = error
     }
 }

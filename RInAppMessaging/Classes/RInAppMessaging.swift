@@ -32,6 +32,7 @@ import Foundation
     /// - Note: There is a possibility that changing this property will cause campaigns to display incorrectly
     @objc public static var accessibilityCompatibleDisplay = false {
         didSet {
+            notifyIfModuleNotInitialized()
             dependencyManager?.resolve(type: RouterType.self)?.accessibilityCompatibleDisplay = accessibilityCompatibleDisplay
         }
     }
@@ -42,7 +43,10 @@ import Foundation
     /// Optional delegate for advanced features
     @objc public static weak var delegate: RInAppMessagingDelegate? {
         didSet {
-            initializedModule?.delegate = delegate
+            inAppQueue.async {
+                notifyIfModuleNotInitialized()
+                initializedModule?.delegate = delegate
+            }
         }
     }
 
@@ -108,6 +112,7 @@ import Foundation
     /// - Parameter event: The Event object to log.
     @objc public static func logEvent(_ event: Event) {
         inAppQueue.async(flags: .barrier) {
+            notifyIfModuleNotInitialized()
             initializedModule?.logEvent(event)
         }
     }
@@ -116,6 +121,7 @@ import Foundation
     /// - Parameter preference: Preferences of the user.
     @objc public static func registerPreference(_ preference: IAMPreference?) {
         inAppQueue.async(flags: .barrier) {
+            notifyIfModuleNotInitialized()
             initializedModule?.registerPreference(preference)
         }
     }
@@ -127,6 +133,7 @@ import Foundation
     ///                                   triggered and are queued to be displayed.
     @objc public static func closeMessage(clearQueuedCampaigns: Bool = false) {
         inAppQueue.async(flags: .barrier) {
+            notifyIfModuleNotInitialized()
             initializedModule?.closeMessage(clearQueuedCampaigns: clearQueuedCampaigns)
         }
     }
@@ -137,5 +144,18 @@ import Foundation
             initializedModule = nil
             dependencyManager = nil
         }
+    }
+
+    private static func notifyIfModuleNotInitialized() {
+        guard initializedModule == nil else {
+            return
+        }
+
+        let description = "⚠️ API method called before calling `configure()`"
+        let error = NSError(domain: "InAppMessaging.\(type(of: self))",
+                            code: 0,
+                            userInfo: [NSLocalizedDescriptionKey: "InAppMessaging: " + description])
+        Logger.debug(description)
+        errorDelegate?.inAppMessagingDidReturnError(error)
     }
 }
