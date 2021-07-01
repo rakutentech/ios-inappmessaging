@@ -92,11 +92,11 @@ class PublicAPISpec: QuickSpec {
                 let errorDelegate = ErrorDelegate()
                 RInAppMessaging.errorDelegate = errorDelegate
 
-                RInAppMessaging.delegate = delegate
-                RInAppMessaging.accessibilityCompatibleDisplay = true
-                RInAppMessaging.closeMessage(clearQueuedCampaigns: true)
-                RInAppMessaging.logEvent(LoginSuccessfulEvent())
-                RInAppMessaging.registerPreference(IAMPreferenceBuilder().setUserId("user").build())
+                RInAppMessaging.delegate = delegate // 1st error sent
+                RInAppMessaging.accessibilityCompatibleDisplay = true // 2nd error sent
+                RInAppMessaging.closeMessage(clearQueuedCampaigns: true) // 3rd error sent
+                RInAppMessaging.logEvent(LoginSuccessfulEvent()) // 4th error sent
+                RInAppMessaging.registerPreference(IAMPreferenceBuilder().setUserId("user").build()) // 5th error sent
                 expect(errorDelegate.totalErrorNumber).toEventually(equal(5))
             }
 
