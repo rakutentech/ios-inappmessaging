@@ -64,7 +64,7 @@ class DisplayPermissionServiceSpec: QuickSpec {
                 waitUntil { done in
                     requestQueue.async {
                         let result = service.checkPermission(forCampaign: campaign.data)
-                        expect(result.display).to(beTrue())
+                        expect(result.display).to(beFalse())
                         expect(result.performPing).to(beFalse())
                         done()
                     }
@@ -105,7 +105,7 @@ class DisplayPermissionServiceSpec: QuickSpec {
                         waitUntil { done in
                             requestQueue.async {
                                 let response = service.checkPermission(forCampaign: campaign.data)
-                                expect(response.display).to(beTrue())
+                                expect(response.display).to(beFalse())
                                 expect(response.performPing).to(beFalse())
                                 done()
                             }
@@ -123,7 +123,7 @@ class DisplayPermissionServiceSpec: QuickSpec {
                     waitUntil { done in
                         requestQueue.async {
                             let response = service.checkPermission(forCampaign: campaign.data)
-                            expect(response.display).to(beTrue())
+                            expect(response.display).to(beFalse())
                             expect(response.performPing).to(beFalse())
                             done()
                         }

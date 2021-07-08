@@ -23,8 +23,8 @@ internal class DisplayPermissionService: DisplayPermissionServiceType, HttpReque
     }
 
     func checkPermission(forCampaign campaign: CampaignData) -> DisplayPermissionResponse {
-        // In case of error allow campaigns to be displayed anyway
-        let fallbackResponse = DisplayPermissionResponse(display: true, performPing: false)
+        // In case of error, disallow campaign display
+        let fallbackResponse = DisplayPermissionResponse(display: false, performPing: false)
         let requestParams = [
             Constants.Request.campaignID: campaign.campaignId
         ]

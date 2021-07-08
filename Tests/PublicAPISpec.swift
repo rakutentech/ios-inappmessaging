@@ -19,6 +19,7 @@ class PublicAPISpec: QuickSpec {
 
         func mockContainer() -> DependencyManager.Container {
             return DependencyManager.Container([
+                DependencyManager.ContainerElement(type: DisplayPermissionServiceType.self, factory: { DisplayPermissionServiceMock() }),
                 DependencyManager.ContainerElement(type: ConfigurationManagerType.self, factory: { configurationManager }),
                 DependencyManager.ContainerElement(type: MessageMixerServiceType.self, factory: { messageMixerService }),
                 DependencyManager.ContainerElement(type: EventMatcherType.self, factory: { eventMatcher }),
