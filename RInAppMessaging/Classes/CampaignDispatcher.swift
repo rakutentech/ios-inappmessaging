@@ -89,10 +89,26 @@ internal class CampaignDispatcher: CampaignDispatcherType, TaskSchedulable {
             return
         }
 
+        // fetch image from url and display if successful
+        if let resImgUrlString = campaign.data.messagePayload.resource.imageUrl, let resImgUrl = URL(string: resImgUrlString) {
+            data(from: resImgUrl) { imgBlob in
+                guard let imgBlob = imgBlob else {
+                    self.dispatchNext()
+                    return
+                }
+                self.displayCampaign(campaign, imageBlob: imgBlob)
+            }
+        } else {
+            // If no image expected, just display the message.
+            displayCampaign(campaign)
+        }
+    }
+
+    private func displayCampaign(_ campaign: Campaign, imageBlob: Data? = nil) {
         campaignRepository.decrementImpressionsLeftInCampaign(id: campaign.id)
         let campaignTitle = campaign.data.messagePayload.title
 
-        router.displayCampaign(campaign, confirmation: {
+        router.displayCampaign(campaign, associatedImageData: imageBlob, confirmation: {
             let contexts = campaign.contexts
             guard let delegate = delegate, !contexts.isEmpty, !campaign.data.isTest else {
                 return true
@@ -124,5 +140,18 @@ internal class CampaignDispatcher: CampaignDispatcherType, TaskSchedulable {
     private func delayBeforeNextMessage(for campaignData: CampaignData) -> Int {
         return campaignData.intervalBetweenDisplaysInMS ??
             Constants.CampaignMessage.defaultIntervalBetweenDisplaysInMS
+    }
+
+    private func data(from url: URL, completion: @escaping (Data?) -> Void) {
+        let sessionConfig = URLSessionConfiguration.default
+        sessionConfig.timeoutIntervalForRequest = 5 // seconds
+        sessionConfig.timeoutIntervalForResource = 5
+        URLSession(configuration: sessionConfig).dataTask(with: url) { (data, _, error) in
+            guard error != nil else {
+                completion(nil)
+                return
+            }
+            completion(data)
+        }.resume()
     }
 }

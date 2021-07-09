@@ -6,10 +6,12 @@ internal protocol RouterType: AnyObject {
     /// Contains logic to display the correct view type and create
     /// a view controller to present a single campaign.
     /// - Parameter campaign: The campaign object to display.
+    /// - Parameter associatedImageData: Campaign-associated image as Data
     /// - Parameter confirmation: A handler called just before displaying.
     /// - Parameter completion: Completion handler called once displaying has finished.
     /// - Parameter cancelled: true when message display was cancelled
     func displayCampaign(_ campaign: Campaign,
+                         associatedImageData: Data?,
                          confirmation: @escaping @autoclosure () -> Bool,
                          completion: @escaping (_ cancelled: Bool) -> Void)
 
@@ -43,6 +45,7 @@ internal class Router: RouterType {
     }
 
     func displayCampaign(_ campaign: Campaign,
+                         associatedImageData: Data?,
                          confirmation: @escaping @autoclosure () -> Bool,
                          completion: @escaping (_ cancelled: Bool) -> Void) {
 
@@ -69,14 +72,18 @@ internal class Router: RouterType {
                     break
                 }
                 presenter.campaign = campaign
-                presenter.loadResources()
+                if let associatedImageData = associatedImageData {
+                    presenter.associatedImage = UIImage(data: associatedImageData)
+                }
                 viewConstructor = { ModalView(presenter: presenter) }
             case .full:
                 guard let presenter = getPresenter(type: FullViewPresenterType.self) else {
                     break
                 }
                 presenter.campaign = campaign
-                presenter.loadResources()
+                if let associatedImageData = associatedImageData {
+                    presenter.associatedImage = UIImage(data: associatedImageData)
+                }
                 viewConstructor = { FullScreenView(presenter: presenter) }
             case .slide:
                 guard let presenter = getPresenter(type: SlideUpViewPresenterType.self) else {

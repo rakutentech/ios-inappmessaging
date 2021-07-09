@@ -382,6 +382,7 @@ class RouterMock: RouterType {
     var displayTime = TimeInterval(0.1)
 
     func displayCampaign(_ campaign: Campaign,
+                         associatedImageData: Data?,
                          confirmation: @escaping @autoclosure () -> Bool,
                          completion: @escaping (_ cancelled: Bool) -> Void) {
         guard confirmation() else {
