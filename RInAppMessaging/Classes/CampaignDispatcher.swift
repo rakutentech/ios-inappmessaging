@@ -145,7 +145,6 @@ internal class CampaignDispatcher: CampaignDispatcherType, TaskSchedulable {
     private func data(from url: URL, completion: @escaping (Data?) -> Void) {
         let sessionConfig = URLSessionConfiguration.default
         sessionConfig.timeoutIntervalForRequest = 5 // seconds
-        sessionConfig.timeoutIntervalForResource = 5
         URLSession(configuration: sessionConfig).dataTask(with: url) { (data, _, error) in
             guard error != nil else {
                 completion(nil)
