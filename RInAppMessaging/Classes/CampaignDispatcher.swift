@@ -94,14 +94,16 @@ internal class CampaignDispatcher: CampaignDispatcherType, TaskSchedulable {
             return
         }
 
-        // fetch image from url and display if successful
+        // fetch from imageUrl, display if successful, skip on error
         if let resImgUrlString = campaign.data.messagePayload.resource.imageUrl, let resImgUrl = URL(string: resImgUrlString) {
             data(from: resImgUrl) { imgBlob in
-                guard let imgBlob = imgBlob else {
-                    self.dispatchNext()
-                    return
+                self.dispatchQueue.async {
+                    guard let imgBlob = imgBlob else {
+                        self.dispatchNext()
+                        return
+                    }
+                    self.displayCampaign(campaign, imageBlob: imgBlob)
                 }
-                self.displayCampaign(campaign, imageBlob: imgBlob)
             }
         } else {
             // If no image expected, just display the message.
