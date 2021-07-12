@@ -54,7 +54,7 @@ class DisplayPermissionServiceSpec: QuickSpec {
                 expect(httpSession.sentRequest?.url).to(equal(configData.endpoints?.displayPermission))
             }
 
-            it("will give permission if url is not available") {
+            it("will deny permission if url is not available") {
                 configurationRepository.saveConfiguration(
                     ConfigData(rolloutPercentage: 100,
                                endpoints: EndpointURL(
