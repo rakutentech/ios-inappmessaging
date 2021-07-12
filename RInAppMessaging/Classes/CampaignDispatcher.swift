@@ -41,8 +41,9 @@ internal class CampaignDispatcher: CampaignDispatcherType, TaskSchedulable {
         sessionConfig.timeoutIntervalForRequest = Constants.CampaignMessage.imageResourceRequestTimeoutSeconds
         sessionConfig.urlCache = URLCache(
             memoryCapacity: 512_000,
-            diskCapacity: 8_000_000_000, // 100_000_000(5MB) * 4 images / 0.05 capacity
-            diskPath: "RInAppMessaging") // non-iCloud cache path
+            // response must be <= 5% in order to be cached
+            diskCapacity: 8_000_000_000, // allocation: 5MB * 4 images / 5%
+            diskPath: "RInAppMessaging") 
         httpSession = URLSession(configuration: sessionConfig)
     }
 
