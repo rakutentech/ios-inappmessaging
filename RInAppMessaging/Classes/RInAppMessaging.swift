@@ -32,8 +32,9 @@ import Foundation
     /// - Note: There is a possibility that changing this property will cause campaigns to display incorrectly
     @objc public static var accessibilityCompatibleDisplay = false {
         didSet {
-            notifyIfModuleNotInitialized()
-            dependencyManager?.resolve(type: RouterType.self)?.accessibilityCompatibleDisplay = accessibilityCompatibleDisplay
+            inAppQueue.async {
+                dependencyManager?.resolve(type: RouterType.self)?.accessibilityCompatibleDisplay = accessibilityCompatibleDisplay
+            }
         }
     }
 
@@ -43,10 +44,7 @@ import Foundation
     /// Optional delegate for advanced features
     @objc public static weak var delegate: RInAppMessagingDelegate? {
         didSet {
-            inAppQueue.async {
-                notifyIfModuleNotInitialized()
-                initializedModule?.delegate = delegate
-            }
+            initializedModule?.delegate = delegate
         }
     }
 
@@ -66,7 +64,7 @@ import Foundation
     static func configure(dependencyManager: DependencyManager) {
         self.dependencyManager = dependencyManager
 
-        inAppQueue.async(flags: .barrier) {
+        inAppQueue.async {
             guard initializedModule == nil else {
                 return
             }
@@ -111,7 +109,7 @@ import Foundation
     /// Log the event name passed in and also pass the event name to the view controller to display a matching campaign.
     /// - Parameter event: The Event object to log.
     @objc public static func logEvent(_ event: Event) {
-        inAppQueue.async(flags: .barrier) {
+        inAppQueue.async {
             notifyIfModuleNotInitialized()
             initializedModule?.logEvent(event)
         }
@@ -120,7 +118,7 @@ import Foundation
     /// Register user preference to the IAM SDK.
     /// - Parameter preference: Preferences of the user.
     @objc public static func registerPreference(_ preference: IAMPreference?) {
-        inAppQueue.async(flags: .barrier) {
+        inAppQueue.async {
             notifyIfModuleNotInitialized()
             initializedModule?.registerPreference(preference)
         }
@@ -132,7 +130,7 @@ import Foundation
     /// - Parameter clearQueuedCampaigns: when set to true, it will clear also the list of campaigns that were
     ///                                   triggered and are queued to be displayed.
     @objc public static func closeMessage(clearQueuedCampaigns: Bool = false) {
-        inAppQueue.async(flags: .barrier) {
+        inAppQueue.async {
             notifyIfModuleNotInitialized()
             initializedModule?.closeMessage(clearQueuedCampaigns: clearQueuedCampaigns)
         }
