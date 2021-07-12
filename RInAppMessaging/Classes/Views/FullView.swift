@@ -22,6 +22,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         var exitButtonFontSize: CGFloat = 13 // Size of the exit button.
         var exitButtonSize: CGFloat = 15 // Size of the exit button.
         var exitButtonVerticalOffset: CGFloat = 16 // Position of where the button should be relative to the safe area frame.
+        var exitButtonTouchAreaSize: CGFloat = 44 // Clickable area of exit button used in hitTest
         var dialogViewHorizontalMargin: CGFloat = 20 // The spacing between dialog view and the children elements.
         var dialogViewWidthOffset: CGFloat = 0 // Spacing on the left and right side of subviews.
         var dialogViewWidthMultiplier: CGFloat = 1 // Spacing on the left and right side of subviews.
@@ -107,6 +108,17 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         updateUIConstants()
         exitButtonYPositionConstraint.constant = uiConstants.exitButtonVerticalOffset
         bodyViewOffsetYConstraint.constant = hasImage ? 0 : uiConstants.bodyViewSafeAreaOffsetY
+    }
+
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        let exitButtonCenter = convert(exitButton.center, from: exitButton.superview)
+        let exitButtonTouchArea = CGRect(origin: exitButtonCenter, size: .zero)
+            .insetBy(dx: -uiConstants.exitButtonTouchAreaSize / 2.0, dy: -uiConstants.exitButtonTouchAreaSize / 2.0)
+
+        if exitButtonTouchArea.contains(point) {
+            return exitButton
+        }
+        return super.hitTest(point, with: event)
     }
 
     func setup(viewModel: FullViewModel) {
