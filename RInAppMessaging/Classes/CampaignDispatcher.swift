@@ -42,7 +42,7 @@ internal class CampaignDispatcher: CampaignDispatcherType, TaskSchedulable {
         sessionConfig.urlCache = URLCache(
             memoryCapacity: 512_000,
             diskCapacity: 8_000_000_000, // 100_000_000(5MB) * 4 images / 0.05 capacity
-            diskPath: "IAM.CampaignDisplay") // non-iCloud cache path
+            diskPath: "RInAppMessaging") // non-iCloud cache path
         httpSession = URLSession(configuration: sessionConfig)
     }
 
