@@ -11,6 +11,7 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
             var campaignRepository: CampaignRepositoryMock!
             var delegate: Delegate!
             var router: RouterMock!
+            var httpSession: URLSessionMock!
 
             beforeEach {
                 permissionService = PermissionServiceMock()
@@ -22,17 +23,20 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
                                                 campaignRepository: campaignRepository)
                 dispatcher.delegate = delegate
 
-                dispatcher.httpSession = URLSessionMock.mock(originalInstance: .shared)
-                // swiftlint:disable:next force_cast
-                let httpSession = dispatcher.httpSession as! URLSessionMock
+                URLSessionMock.startMockingURLSession()
+                httpSession = URLSessionMock.mock(originalInstance: dispatcher.httpSession)
 
-                // simulated data response for imageUrl
+                // simulated success response for imageUrl
                 httpSession.httpResponse = HTTPURLResponse(url: URL(string: "https://example.com/cat.jpg")!,
                                                            statusCode: 200,
                                                            httpVersion: nil,
                                                            headerFields: nil)
                 httpSession.responseData = Data()
                 httpSession.responseError = nil
+            }
+
+            afterEach {
+                URLSessionMock.stopMockingURLSession()
             }
 
             context("before dispatching") {
@@ -202,8 +206,6 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
 
                     context("httpSession errors on loading imageUrl") {
                         beforeEach {
-                            // swiftlint:disable:next force_cast
-                            let httpSession = dispatcher.httpSession as! URLSessionMock
                             httpSession.httpResponse = HTTPURLResponse(url: URL(string: "https://example.com/cat.jpg")!,
                                                                        statusCode: 500,
                                                                        httpVersion: nil,

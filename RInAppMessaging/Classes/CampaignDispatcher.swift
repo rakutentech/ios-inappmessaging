@@ -27,7 +27,7 @@ internal class CampaignDispatcher: CampaignDispatcherType, TaskSchedulable {
 
     weak var delegate: CampaignDispatcherDelegate?
     var scheduledTask: DispatchWorkItem?
-    var httpSession: URLSession
+    private(set) var httpSession: URLSession
 
     init(router: RouterType,
          permissionService: DisplayPermissionServiceType,
