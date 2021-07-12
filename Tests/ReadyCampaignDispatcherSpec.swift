@@ -21,6 +21,17 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
                                                 permissionService: permissionService,
                                                 campaignRepository: campaignRepository)
                 dispatcher.delegate = delegate
+
+                dispatcher.httpSession = URLSessionMock.mock(originalInstance: .shared)
+                // swiftlint:disable:next force_cast
+                let httpSession = dispatcher.httpSession as! URLSessionMock
+
+                // simulated data response for imageUrl
+                httpSession.httpResponse = HTTPURLResponse(url: URL(string: "https://example.com/cat.jpg")!,
+                                                           statusCode: 200,
+                                                           httpVersion: nil,
+                                                           headerFields: nil)
+                httpSession.responseData = Data()
             }
 
             context("before dispatching") {
@@ -177,6 +188,26 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
                                 dispatcher.dispatchAllIfNeeded()
                                 expect(campaignRepository.incrementImpressionsCalls).toAfterTimeout(equal(1))
                             }
+                        }
+                    }
+
+                    context("httpSession errors on loading imageUrl") {
+                        beforeEach {
+                            // swiftlint:disable:next force_cast
+                            let httpSession = dispatcher.httpSession as! URLSessionMock
+                            httpSession.httpResponse = HTTPURLResponse(url: URL(string: "https://example.com/cat.jpg")!,
+                                                                       statusCode: 500,
+                                                                       httpVersion: nil,
+                                                                       headerFields: nil)
+                            httpSession.responseError = NSError(domain: "campaign.error.test", code: 1, userInfo: nil)
+                        }
+
+                        it("won't display campaign when imageUrl is defined") {
+                            let campaign = TestHelpers.generateCampaign(id: "test", title: "title", type: .modal, isTest: false, hasImage: true)
+                            campaignRepository.list = [campaign]
+                            dispatcher.addToQueue(campaignID: campaign.id)
+                            dispatcher.dispatchAllIfNeeded()
+                            expect(router.lastDisplayedCampaign).toAfterTimeout(beNil())
                         }
                     }
                 }

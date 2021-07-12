@@ -27,6 +27,7 @@ internal class CampaignDispatcher: CampaignDispatcherType, TaskSchedulable {
 
     weak var delegate: CampaignDispatcherDelegate?
     var scheduledTask: DispatchWorkItem?
+    var httpSession: URLSession
 
     init(router: RouterType,
          permissionService: DisplayPermissionServiceType,
@@ -35,6 +36,10 @@ internal class CampaignDispatcher: CampaignDispatcherType, TaskSchedulable {
         self.router = router
         self.permissionService = permissionService
         self.campaignRepository = campaignRepository
+
+        let sessionConfig = URLSessionConfiguration.default
+        sessionConfig.timeoutIntervalForRequest = Constants.CampaignMessage.imageResourceRequestTimeoutSeconds
+        httpSession = URLSession(configuration: sessionConfig)
     }
 
     func addToQueue(campaignID: String) {
@@ -143,10 +148,8 @@ internal class CampaignDispatcher: CampaignDispatcherType, TaskSchedulable {
     }
 
     private func data(from url: URL, completion: @escaping (Data?) -> Void) {
-        let sessionConfig = URLSessionConfiguration.default
-        sessionConfig.timeoutIntervalForRequest = 5 // seconds
-        URLSession(configuration: sessionConfig).dataTask(with: url) { (data, _, error) in
-            guard error != nil else {
+        httpSession.dataTask(with: URLRequest(url: url)) { (data, _, error) in
+            guard error == nil else {
                 completion(nil)
                 return
             }
