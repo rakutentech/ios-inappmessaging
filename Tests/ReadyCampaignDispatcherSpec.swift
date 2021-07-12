@@ -32,6 +32,7 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
                                                            httpVersion: nil,
                                                            headerFields: nil)
                 httpSession.responseData = Data()
+                httpSession.responseError = nil
             }
 
             context("before dispatching") {
@@ -189,6 +190,14 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
                                 expect(campaignRepository.incrementImpressionsCalls).toAfterTimeout(equal(1))
                             }
                         }
+                    }
+
+                    it("will display campaign when imageUrl is defined") {
+                        let campaign = TestHelpers.generateCampaign(id: "test", title: "title", type: .modal, isTest: false, hasImage: true)
+                        campaignRepository.list = [campaign]
+                        dispatcher.addToQueue(campaignID: campaign.id)
+                        dispatcher.dispatchAllIfNeeded()
+                        expect(router.lastDisplayedCampaign).toAfterTimeout(equal(campaign))
                     }
 
                     context("httpSession errors on loading imageUrl") {
