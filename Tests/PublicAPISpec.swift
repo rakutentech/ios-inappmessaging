@@ -92,12 +92,10 @@ class PublicAPISpec: QuickSpec {
                 let errorDelegate = ErrorDelegate()
                 RInAppMessaging.errorDelegate = errorDelegate
 
-                RInAppMessaging.delegate = delegate // 1st error sent
-                RInAppMessaging.accessibilityCompatibleDisplay = true // 2nd error sent
-                RInAppMessaging.closeMessage(clearQueuedCampaigns: true) // 3rd error sent
-                RInAppMessaging.logEvent(LoginSuccessfulEvent()) // 4th error sent
-                RInAppMessaging.registerPreference(IAMPreferenceBuilder().setUserId("user").build()) // 5th error sent
-                expect(errorDelegate.totalErrorNumber).toEventually(equal(5))
+                RInAppMessaging.closeMessage(clearQueuedCampaigns: true) // 1st error sent
+                RInAppMessaging.logEvent(LoginSuccessfulEvent()) // 2nd error sent
+                RInAppMessaging.registerPreference(IAMPreferenceBuilder().setUserId("user").build()) // 3rd error sent
+                expect(errorDelegate.totalErrorNumber).toEventually(equal(3))
             }
 
             it("won't reinitialize module if config was called more than once") {
@@ -142,9 +140,9 @@ class PublicAPISpec: QuickSpec {
 
             it("will set accessibilityCompatibleDisplay flag in Router") {
                 RInAppMessaging.accessibilityCompatibleDisplay = true
-                expect(router.accessibilityCompatibleDisplay).to(beTrue())
+                expect(router.accessibilityCompatibleDisplay).toAfterTimeout(beTrue())
                 RInAppMessaging.accessibilityCompatibleDisplay = false
-                expect(router.accessibilityCompatibleDisplay).to(beFalse())
+                expect(router.accessibilityCompatibleDisplay).toEventually(beFalse())
             }
 
             it("won't send any events until configuration has finished") {
