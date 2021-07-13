@@ -149,6 +149,12 @@ class MessageMixerServiceMock: MessageMixerServiceType {
     }
 }
 
+class DisplayPermissionServiceMock: DisplayPermissionServiceType {
+    func checkPermission(forCampaign campaign: CampaignData) -> DisplayPermissionResponse {
+        DisplayPermissionResponse(display: true, performPing: false)
+    }
+}
+
 class ConfigurationManagerMock: ConfigurationManagerType {
     weak var errorDelegate: ErrorDelegate?
     var rolloutPercentage = 100
