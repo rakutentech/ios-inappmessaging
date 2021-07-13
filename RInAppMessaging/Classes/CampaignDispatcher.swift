@@ -27,6 +27,7 @@ internal class CampaignDispatcher: CampaignDispatcherType, TaskSchedulable {
 
     weak var delegate: CampaignDispatcherDelegate?
     var scheduledTask: DispatchWorkItem?
+    private(set) var httpSession: URLSession
 
     init(router: RouterType,
          permissionService: DisplayPermissionServiceType,
@@ -35,6 +36,15 @@ internal class CampaignDispatcher: CampaignDispatcherType, TaskSchedulable {
         self.router = router
         self.permissionService = permissionService
         self.campaignRepository = campaignRepository
+
+        let sessionConfig = URLSessionConfiguration.default
+        sessionConfig.timeoutIntervalForRequest = Constants.CampaignMessage.imageResourceRequestTimeoutSeconds
+        sessionConfig.urlCache = URLCache(
+            memoryCapacity: 512_000,
+            // response must be <= 5% in order to be cached
+            diskCapacity: 400_000_000, // allocation: 5MB * 4 images / 5%
+            diskPath: "RInAppMessaging")
+        httpSession = URLSession(configuration: sessionConfig)
     }
 
     func addToQueue(campaignID: String) {
@@ -89,10 +99,28 @@ internal class CampaignDispatcher: CampaignDispatcherType, TaskSchedulable {
             return
         }
 
+        // fetch from imageUrl, display if successful, skip on error
+        if let resImgUrlString = campaign.data.messagePayload.resource.imageUrl, let resImgUrl = URL(string: resImgUrlString) {
+            data(from: resImgUrl) { imgBlob in
+                self.dispatchQueue.async {
+                    guard let imgBlob = imgBlob else {
+                        self.dispatchNext()
+                        return
+                    }
+                    self.displayCampaign(campaign, imageBlob: imgBlob)
+                }
+            }
+        } else {
+            // If no image expected, just display the message.
+            displayCampaign(campaign)
+        }
+    }
+
+    private func displayCampaign(_ campaign: Campaign, imageBlob: Data? = nil) {
         campaignRepository.decrementImpressionsLeftInCampaign(id: campaign.id)
         let campaignTitle = campaign.data.messagePayload.title
 
-        router.displayCampaign(campaign, confirmation: {
+        router.displayCampaign(campaign, associatedImageData: imageBlob, confirmation: {
             let contexts = campaign.contexts
             guard let delegate = delegate, !contexts.isEmpty, !campaign.data.isTest else {
                 return true
@@ -124,5 +152,15 @@ internal class CampaignDispatcher: CampaignDispatcherType, TaskSchedulable {
     private func delayBeforeNextMessage(for campaignData: CampaignData) -> Int {
         return campaignData.intervalBetweenDisplaysInMS ??
             Constants.CampaignMessage.defaultIntervalBetweenDisplaysInMS
+    }
+
+    private func data(from url: URL, completion: @escaping (Data?) -> Void) {
+        httpSession.dataTask(with: URLRequest(url: url)) { (data, _, error) in
+            guard error == nil else {
+                completion(nil)
+                return
+            }
+            completion(data)
+        }.resume()
     }
 }

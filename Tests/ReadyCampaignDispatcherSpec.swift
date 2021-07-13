@@ -11,6 +11,7 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
             var campaignRepository: CampaignRepositoryMock!
             var delegate: Delegate!
             var router: RouterMock!
+            var httpSession: URLSessionMock!
 
             beforeEach {
                 permissionService = PermissionServiceMock()
@@ -21,6 +22,21 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
                                                 permissionService: permissionService,
                                                 campaignRepository: campaignRepository)
                 dispatcher.delegate = delegate
+
+                URLSessionMock.startMockingURLSession()
+                httpSession = URLSessionMock.mock(originalInstance: dispatcher.httpSession)
+
+                // simulated success response for imageUrl
+                httpSession.httpResponse = HTTPURLResponse(url: URL(string: "https://example.com/cat.jpg")!,
+                                                           statusCode: 200,
+                                                           httpVersion: nil,
+                                                           headerFields: nil)
+                httpSession.responseData = Data()
+                httpSession.responseError = nil
+            }
+
+            afterEach {
+                URLSessionMock.stopMockingURLSession()
             }
 
             context("before dispatching") {
@@ -177,6 +193,32 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
                                 dispatcher.dispatchAllIfNeeded()
                                 expect(campaignRepository.incrementImpressionsCalls).toAfterTimeout(equal(1))
                             }
+                        }
+                    }
+
+                    it("will display campaign when imageUrl is defined") {
+                        let campaign = TestHelpers.generateCampaign(id: "test", title: "title", type: .modal, isTest: false, hasImage: true)
+                        campaignRepository.list = [campaign]
+                        dispatcher.addToQueue(campaignID: campaign.id)
+                        dispatcher.dispatchAllIfNeeded()
+                        expect(router.lastDisplayedCampaign).toAfterTimeout(equal(campaign))
+                    }
+
+                    context("httpSession errors on loading imageUrl") {
+                        beforeEach {
+                            httpSession.httpResponse = HTTPURLResponse(url: URL(string: "https://example.com/cat.jpg")!,
+                                                                       statusCode: 500,
+                                                                       httpVersion: nil,
+                                                                       headerFields: nil)
+                            httpSession.responseError = NSError(domain: "campaign.error.test", code: 1, userInfo: nil)
+                        }
+
+                        it("won't display campaign when imageUrl is defined") {
+                            let campaign = TestHelpers.generateCampaign(id: "test", title: "title", type: .modal, isTest: false, hasImage: true)
+                            campaignRepository.list = [campaign]
+                            dispatcher.addToQueue(campaignID: campaign.id)
+                            dispatcher.dispatchAllIfNeeded()
+                            expect(router.lastDisplayedCampaign).toAfterTimeout(beNil())
                         }
                     }
                 }

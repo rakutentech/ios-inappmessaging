@@ -8,7 +8,6 @@ internal protocol BaseViewPresenterType: ImpressionTrackable {
     func viewDidInitialize()
     func handleButtonTrigger(_ trigger: Trigger?)
     func optOutCampaign()
-    func loadResources()
 }
 
 internal class BaseViewPresenter: BaseViewPresenterType {
@@ -20,16 +19,7 @@ internal class BaseViewPresenter: BaseViewPresenterType {
 
     var campaign: Campaign!
     var impressions: [Impression] = []
-    lazy var associatedImage: UIImage? = {
-        guard let imageURLString = campaign.data.messagePayload.resource.imageUrl,
-            let encodedImageURLString = imageURLString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
-            let encodedImageURL = URL(string: encodedImageURLString),
-            let imageData = try? Data(contentsOf: encodedImageURL) else {
-
-            return nil
-        }
-        return UIImage(data: imageData)
-    }()
+    var associatedImage: UIImage?
 
     init(campaignRepository: CampaignRepositoryType,
          impressionService: ImpressionServiceType,
@@ -60,11 +50,6 @@ internal class BaseViewPresenter: BaseViewPresenterType {
 
     func optOutCampaign() {
         campaign = campaignRepository.optOutCampaign(campaign)
-    }
-
-    func loadResources() {
-        // load image from imageUrl data
-        _ = associatedImage
     }
 
     func showURLError(view: BaseView) {

@@ -70,6 +70,7 @@ struct TestHelpers {
                                  title: String = "testTitle",
                                  type: CampaignDisplayType = .modal,
                                  isTest: Bool = false,
+                                 hasImage: Bool = false,
                                  content: Content? = nil,
                                  buttons: [Button]? = nil) -> Campaign {
         return Campaign(
@@ -91,7 +92,7 @@ struct TestHelpers {
                     frameColor: "color5",
                     resource: Resource(
                         assetsUrl: nil,
-                        imageUrl: nil,
+                        imageUrl: hasImage ? "https://www.example.com/cat.jpg" : nil,
                         cropType: .fill),
                     messageSettings: MessageSettings(
                         displaySettings: DisplaySettings(
