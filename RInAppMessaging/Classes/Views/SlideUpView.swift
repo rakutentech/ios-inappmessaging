@@ -49,14 +49,7 @@ internal class SlideUpView: UIView, SlideUpViewType {
     }
 
     override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-        guard let exitButton = exitButton else {
-            return super.hitTest(point, with: event)
-        }
-        let exitButtonCenter = convert(exitButton.center, from: exitButton.superview)
-        let exitButtonTouchArea = CGRect(origin: exitButtonCenter, size: .zero)
-            .insetBy(dx: -UIConstants.exitButtonTouchAreaSize / 2.0, dy: -UIConstants.exitButtonTouchAreaSize / 2.0)
-
-        if exitButtonTouchArea.contains(point) {
+        if isTouchInside(touchPoint: point, from: self, targetView: exitButton, touchAreaSize: UIConstants.exitButtonTouchAreaSize) {
             return exitButton
         }
         return super.hitTest(point, with: event)

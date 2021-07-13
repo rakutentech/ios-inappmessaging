@@ -111,11 +111,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
     }
 
     override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-        let exitButtonCenter = convert(exitButton.center, from: exitButton.superview)
-        let exitButtonTouchArea = CGRect(origin: exitButtonCenter, size: .zero)
-            .insetBy(dx: -uiConstants.exitButtonTouchAreaSize / 2.0, dy: -uiConstants.exitButtonTouchAreaSize / 2.0)
-
-        if exitButtonTouchArea.contains(point) {
+        if isTouchInside(touchPoint: point, from: self, targetView: exitButton, touchAreaSize: uiConstants.exitButtonTouchAreaSize) {
             return exitButton
         }
         return super.hitTest(point, with: event)
