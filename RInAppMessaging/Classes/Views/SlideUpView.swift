@@ -8,6 +8,7 @@ internal class SlideUpView: UIView, SlideUpViewType {
         static let exitButtonSize: CGFloat = 20
         static let exitButtonTopMargin: CGFloat = 12
         static let exitButtonRightMargin: CGFloat = 16
+        static let exitButtonTouchAreaSize: CGFloat = 44
         static let slideAnimationDuration: TimeInterval = 0.4
         static var messageBodyPadding: UIEdgeInsets {
             let bottomSafeArea = UIApplication.shared.getKeyWindow()?.safeAreaInsets.bottom ?? CGFloat(0)
@@ -30,6 +31,7 @@ internal class SlideUpView: UIView, SlideUpViewType {
 
     private let presenter: SlideUpViewPresenterType
     private let dialogView = UIView()
+    private var exitButton: ExitButton?
     private var slideFromDirection = SlideDirection.bottom
     private var bottomConstraint: NSLayoutConstraint!
     private var leftConstraint: NSLayoutConstraint!
@@ -44,6 +46,13 @@ internal class SlideUpView: UIView, SlideUpViewType {
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        if isTouchInside(touchPoint: point, from: self, targetView: exitButton, touchAreaSize: UIConstants.exitButtonTouchAreaSize) {
+            return exitButton
+        }
+        return super.hitTest(point, with: event)
     }
 
     func setup(viewModel: SlideUpViewModel) {
@@ -146,6 +155,7 @@ internal class SlideUpView: UIView, SlideUpViewType {
         exitButton.addTarget(self, action: #selector(onExitButtonClick), for: .touchUpInside)
 
         exitButton.translatesAutoresizingMaskIntoConstraints = false
+        self.exitButton = exitButton
         dialogView.addSubview(exitButton)
         NSLayoutConstraint.activate([
             exitButton.trailingAnchor.constraint(equalTo: dialogView.trailingAnchor,
