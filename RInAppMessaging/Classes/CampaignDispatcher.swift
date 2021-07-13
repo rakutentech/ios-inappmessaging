@@ -43,7 +43,7 @@ internal class CampaignDispatcher: CampaignDispatcherType, TaskSchedulable {
             memoryCapacity: 512_000,
             // response must be <= 5% in order to be cached
             diskCapacity: 400_000_000, // allocation: 5MB * 4 images / 5%
-            diskPath: "RInAppMessaging") 
+            diskPath: "RInAppMessaging")
         httpSession = URLSession(configuration: sessionConfig)
     }
 
