@@ -39,11 +39,10 @@ internal class CampaignDispatcher: CampaignDispatcherType, TaskSchedulable {
 
         let sessionConfig = URLSessionConfiguration.default
         sessionConfig.timeoutIntervalForRequest = Constants.CampaignMessage.imageResourceRequestTimeoutSeconds
-        sessionConfig.requestCachePolicy = .returnCacheDataElseLoad
         sessionConfig.urlCache = URLCache(
-            memoryCapacity: 10_000_000,
-            // response must be <= 5% in order to be cached
-            diskCapacity: 40_000_000,
+            // response must be <= 5% of mem/disk cap in order to commited to cache
+            memoryCapacity: 512_000, // default
+            diskCapacity: 101*1024*1024,
             diskPath: "RInAppMessaging")
         httpSession = URLSession(configuration: sessionConfig)
     }
