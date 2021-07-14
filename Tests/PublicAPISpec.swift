@@ -111,7 +111,7 @@ class PublicAPISpec: QuickSpec {
                     .setRakutenId("RID")
                     .build()
                 RInAppMessaging.registerPreference(preference)
-                expect(preferenceRepository.preference).toEventually(equal(preference))
+                expect(preferenceRepository.preference?.hashValue).toEventually(equal(preference.hashValue))
             }
 
             it("will log event when logEvent is called") {

@@ -90,20 +90,20 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
         campaignTriggerAgent.validateAndTriggerCampaigns()
     }
 
-    func registerPreference(_ preference: IAMPreference?) {
+    func registerPreference(_ preference: UserInfoProvider?) {
         guard isEnabled else {
             return
         }
 
         let oldUserIdentifiers = preferenceRepository.getUserIdentifiers()
-        let diff = preferenceRepository.preference?.diff(preference)
+        let isDiff = preferenceRepository.canUpdateUserInfo(newUserInfo: preference)
         preferenceRepository.setPreference(preference)
 
         guard isInitialized else {
             return
         }
 
-        let isLogoutOrUserChange = (preferenceRepository.getUserIdentifiers().isEmpty || diff?.isEmpty == false) && !oldUserIdentifiers.isEmpty
+        let isLogoutOrUserChange = (preferenceRepository.getUserIdentifiers().isEmpty || isDiff) && !oldUserIdentifiers.isEmpty
         if isLogoutOrUserChange {
             campaignRepository.clearLastUserData()
             eventMatcher.clearNonPersistentEvents()

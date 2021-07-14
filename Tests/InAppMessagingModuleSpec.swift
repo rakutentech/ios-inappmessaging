@@ -184,7 +184,7 @@ class InAppMessagingModuleSpec: QuickSpec {
                             iamModule.registerPreference(preference)
                         }
                         expect(preferenceRepository.preference).toAfterTimeout(beNil())
-                        expect(preferenceRepository.preference).toEventually(equal(preference), timeout: .seconds(2))
+                        expect(preferenceRepository.preference?.hashValue).toEventually(equal(preference.hashValue), timeout: .seconds(2))
                     }
                 }
 
@@ -309,7 +309,7 @@ class InAppMessagingModuleSpec: QuickSpec {
                             it("will register preference data") {
                                 let preference = IAMPreferenceBuilder().setUserId("user").build()
                                 iamModule.registerPreference(preference)
-                                expect(preferenceRepository.preference).to(equal(preference))
+                                expect(preferenceRepository.preference?.hashValue).to(equal(preference.hashValue))
                             }
 
                             it("will refresh list of campaigns") {
@@ -380,7 +380,7 @@ class InAppMessagingModuleSpec: QuickSpec {
                             it("will register preference data") {
                                 let preference = IAMPreferenceBuilder().setUserId("user").build()
                                 iamModule.registerPreference(preference)
-                                expect(preferenceRepository.preference).to(equal(preference))
+                                expect(preferenceRepository.preference?.hashValue).to(equal(preference.hashValue))
                             }
 
                             it("will not refresh list of campaigns") {

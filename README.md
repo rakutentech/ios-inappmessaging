@@ -120,15 +120,24 @@ A preference is what will allow IAM to identify users for targeting and segmenta
 To help IAM identify users, please set a new preference every time a user changes their login state i.e. when they log in or log out.  
 After logout is complete please call  `registerPreference()` with nil parameter.  
 Not all identifiers have to be provided.  
-**NOTE:** For our internal users - for user targeting you must provide an accessToken. If you are setting an accessToken you must also provide associated userId in `IAMPreference`.
+**NOTE:** For our internal users - for user targeting you must provide an accessToken. If you are setting an accessToken you must also provide associated userId in `UserInfoProvider`.
 
 ```swift
-let preference = IAMPreferenceBuilder()
-    .setUserId("testaccount@gmail.com")
-    .setRakutenId("testaccount")
-    .setAccessToken("27364827346")
-    .build()
+class AppUserInfoProvider: UserInfoProvider {
 
+    var provideRaeToken: String? {
+        raeToken
+    }
+
+    var provideUserId: String? {
+        userId
+    }
+    var provideRakutenId: String? {
+        rakutenId
+    }
+}
+
+let preference = AppUserInfoProvider()
 RInAppMessaging.registerPreference(preference)
 ```
 
@@ -235,9 +244,9 @@ Campaign impressions (displays) are counted locally for each user. Meaning that 
 * Configuration service returns `RequestError.missingMetadata` error
   * Ensure that IAM SDK is integrated properly (not as a static library)
 * If you receive HTTP error 401
-  * If you are providing an access token in `IAMPreference` make sure that it comes from PROD endpoint. (this applies only to Rakuten developers)
+  * If you are providing an access token in `UserInfoProvider` make sure that it comes from PROD endpoint. (this applies only to Rakuten developers)
 * If user targeting is not working
-  * Ensure you provide *userId* or *rakutenId* in `IAMPreference`.
+  * Ensure you provide *userId* or *rakutenId* in `UserInfoProvider`.
   * If you set an *accessToken* you **must also** provide associated *userId*. (Rakuten developers only)
 * Status bar characters and icons are not visible when Full-Screen campaign is presented
   * If your app is running on iOS version below 13.0 you need to either change background color of the campaign or set proper `preferredStatusbarStyle` in the top-most view controller. (for iOS versions above 13.0 this issue is handled internally by the SDK)

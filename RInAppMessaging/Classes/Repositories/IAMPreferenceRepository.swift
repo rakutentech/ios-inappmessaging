@@ -1,9 +1,19 @@
 /// Repository to hold `IAMPreference`.
 internal class IAMPreferenceRepository {
-    private(set) var preference: IAMPreference?
+    private(set) var preference: UserInfoProvider?
 
-    func setPreference(_ preference: IAMPreference?) {
+    func setPreference(_ preference: UserInfoProvider?) {
         self.preference = preference
+    }
+
+    func canUpdateUserInfo(newUserInfo: UserInfoProvider?) -> Bool {
+        func isEqual(_ lhs: UserInfoProvider, _ rhs: UserInfoProvider) -> Bool {
+            lhs.hashValue == rhs.hashValue
+        }
+        guard let newUserInfo = newUserInfo, let preference = preference else {
+            return true
+        }
+        return !isEqual(preference, newUserInfo)
     }
 
     /// Method to convert the preferences object into
@@ -18,13 +28,13 @@ internal class IAMPreferenceRepository {
 
         var userIdentifiers = [UserIdentifier]()
 
-        if let rakutenId = preference.rakutenId {
+        if let rakutenId = preference.provideRakutenId {
             userIdentifiers.append(
                 UserIdentifier(type: .rakutenId, identifier: rakutenId)
             )
         }
 
-        if let userId = preference.userId {
+        if let userId = preference.provideUserId {
             userIdentifiers.append(
                 UserIdentifier(type: .userId, identifier: userId)
             )
@@ -36,6 +46,6 @@ internal class IAMPreferenceRepository {
     /// Method to retrieve access token in preference object.
     /// - Returns: Access token as a string (Optional).
     func getAccessToken() -> String? {
-        return preference?.accessToken
+        preference?.provideRaeToken
     }
 }
