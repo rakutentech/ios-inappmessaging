@@ -42,7 +42,7 @@ internal class CampaignDispatcher: CampaignDispatcherType, TaskSchedulable {
         sessionConfig.urlCache = URLCache(
             // response must be <= 5% of mem/disk cap in order to committed to cache
             memoryCapacity: URLCache.shared.memoryCapacity,
-            diskCapacity: 100*1024*1024, // fits up to 5MB images
+            diskCapacity: Int(5266467/0.05), // fits up to 5MB images
             diskPath: "RInAppMessaging")
         httpSession = URLSession(configuration: sessionConfig)
     }
