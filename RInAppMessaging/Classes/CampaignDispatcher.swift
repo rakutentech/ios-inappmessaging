@@ -41,7 +41,7 @@ internal class CampaignDispatcher: CampaignDispatcherType, TaskSchedulable {
         sessionConfig.timeoutIntervalForRequest = Constants.CampaignMessage.imageResourceRequestTimeoutSeconds
         sessionConfig.urlCache = URLCache(
             // response must be <= 5% of mem/disk cap in order to commited to cache
-            memoryCapacity: 512_000, // default
+            memoryCapacity: URLCache.shared.memoryCapacity,
             diskCapacity: 101*1024*1024,
             diskPath: "RInAppMessaging")
         httpSession = URLSession(configuration: sessionConfig)
