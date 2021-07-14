@@ -13,7 +13,7 @@ internal class IAMPreferenceRepository {
         guard let newUserInfo = newUserInfo, let preference = preference else {
             return true
         }
-        return !isEqual(preference, newUserInfo)
+        return getUserIdentifiers().isEmpty || !isEqual(preference, newUserInfo)
     }
 
     /// Method to convert the preferences object into

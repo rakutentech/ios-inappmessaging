@@ -27,6 +27,7 @@
 }
 
 extension UserInfoProvider {
+    // value used to check UserInfoProvider for equality
     // swiftlint:disable:next legacy_hashing
     var hashValue: Int {
         (provideRakutenId ?? "").hashValue ^ (provideUserId ?? "").hashValue
