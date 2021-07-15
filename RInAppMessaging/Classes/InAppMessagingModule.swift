@@ -95,6 +95,11 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
             return
         }
 
+        if BundleInfo.applicationId?.starts(with: "jp.co.rakuten") == true, Bundle.tests == nil {
+            assert(preference?.provideRaeToken == nil || preference?.provideRaeToken != nil && preference?.provideUserId != nil,
+                            "provideUserId must be present when provideRaeToken is specified")
+        }
+
         let oldUserIdentifiers = preferenceRepository.getUserIdentifiers()
         let isDiff = preferenceRepository.canUpdateUserInfo(newUserInfo: preference)
         preferenceRepository.setPreference(preference)
