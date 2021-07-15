@@ -1,5 +1,38 @@
 @testable import RInAppMessaging
 
+class IAMPreference: UserInfoProvider {
+    var provideRaeToken: String?
+    var provideUserId: String?
+    var provideRakutenId: String?
+}
+
+class IAMPreferenceBuilder {
+    private var preference: IAMPreference
+
+    init() {
+        self.preference = IAMPreference()
+    }
+
+    func setRakutenId(_ rakutenId: String?) -> Self {
+        self.preference.provideRakutenId = rakutenId
+        return self
+    }
+
+    func setUserId(_ userId: String?) -> Self {
+        self.preference.provideUserId = userId
+        return self
+    }
+
+    func setAccessToken(_ accessToken: String?) -> Self {
+        self.preference.provideRaeToken = accessToken
+        return self
+    }
+
+    func build() -> IAMPreference {
+        self.preference
+    }
+}
+
 class CampaignsValidatorMock: CampaignsValidatorType {
     private(set) var wasValidateCalled = false
     var campaignsToTrigger = [Campaign]()

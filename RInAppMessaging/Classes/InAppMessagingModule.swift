@@ -90,20 +90,25 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
         campaignTriggerAgent.validateAndTriggerCampaigns()
     }
 
-    func registerPreference(_ preference: IAMPreference?) {
+    func registerPreference(_ preference: UserInfoProvider?) {
         guard isEnabled else {
             return
         }
 
+        if BundleInfo.applicationId?.starts(with: "jp.co.rakuten") == true, Bundle.tests == nil {
+            assert(preference?.provideRaeToken == nil || preference?.provideRaeToken != nil && preference?.provideUserId != nil,
+                            "provideUserId must be present when provideRaeToken is specified")
+        }
+
         let oldUserIdentifiers = preferenceRepository.getUserIdentifiers()
-        let diff = preferenceRepository.preference?.diff(preference)
+        let isDiff = preferenceRepository.canUpdateUserInfo(newUserInfo: preference)
         preferenceRepository.setPreference(preference)
 
         guard isInitialized else {
             return
         }
 
-        let isLogoutOrUserChange = (preferenceRepository.getUserIdentifiers().isEmpty || diff?.isEmpty == false) && !oldUserIdentifiers.isEmpty
+        let isLogoutOrUserChange = isDiff && !oldUserIdentifiers.isEmpty
         if isLogoutOrUserChange {
             campaignRepository.clearLastUserData()
             eventMatcher.clearNonPersistentEvents()

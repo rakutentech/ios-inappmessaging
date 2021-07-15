@@ -117,7 +117,7 @@ import Foundation
 
     /// Register user preference to the IAM SDK.
     /// - Parameter preference: Preferences of the user.
-    @objc public static func registerPreference(_ preference: IAMPreference?) {
+    @objc public static func registerPreference(_ preference: UserInfoProvider?) {
         inAppQueue.async {
             notifyIfModuleNotInitialized()
             initializedModule?.registerPreference(preference)
