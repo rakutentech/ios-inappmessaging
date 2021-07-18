@@ -13,7 +13,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
-        if !AppDelegate.isTestEnvironment {
+        if !AppDelegate.isTestEnvironment || CommandLine.arguments.contains("--uitesting") {
             RInAppMessaging.configure()
         }
 
