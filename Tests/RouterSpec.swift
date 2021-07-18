@@ -29,9 +29,7 @@ class RouterSpec: QuickSpec {
             }
 
             afterEach {
-                UIApplication.shared.keyWindow?.subviews
-                    .filter { $0 is BaseView }
-                    .forEach { $0.removeFromSuperview() }
+                UIApplication.shared.getKeyWindow()?.findIAMViewSubview()?.removeFromSuperview()
             }
 
             context("when calling displayCampaign") {
@@ -40,8 +38,7 @@ class RouterSpec: QuickSpec {
                     it("will not show campaign message") {
                         let campaign = TestHelpers.generateCampaign(id: "test", type: .modal)
                         router.displayCampaign(campaign, associatedImageData: nil, confirmation: false, completion: { _ in })
-                        expect(UIApplication.shared.keyWindow?.subviews)
-                            .toAfterTimeout(allPass({ !($0 is BaseView )}))
+                        expect(UIApplication.shared.getKeyWindow()?.findIAMViewSubview()).toAfterTimeout(beNil())
                     }
                 }
 
@@ -50,35 +47,35 @@ class RouterSpec: QuickSpec {
                     it("will show ModalView for modal campaign type") {
                         let campaign = TestHelpers.generateCampaign(id: "test", type: .modal)
                         router.displayCampaign(campaign, associatedImageData: nil, confirmation: true, completion: { _ in })
-                        expect(UIApplication.shared.keyWindow?.subviews)
+                        expect(UIApplication.shared.getKeyWindow()?.subviews)
                             .toEventually(containElementSatisfying({ $0 is ModalView }))
                     }
 
                     it("will show FullScreenView for full campaign type") {
                         let campaign = TestHelpers.generateCampaign(id: "test", type: .full)
                         router.displayCampaign(campaign, associatedImageData: nil, confirmation: true, completion: { _ in })
-                        expect(UIApplication.shared.keyWindow?.subviews)
+                        expect(UIApplication.shared.getKeyWindow()?.subviews)
                             .toEventually(containElementSatisfying({ $0 is FullScreenView }))
                     }
 
                     it("will show SlideUpView for slide campaign type") {
                         let campaign = TestHelpers.generateCampaign(id: "test", type: .slide)
                         router.displayCampaign(campaign, associatedImageData: nil, confirmation: true, completion: { _ in })
-                        expect(UIApplication.shared.keyWindow?.subviews)
+                        expect(UIApplication.shared.getKeyWindow()?.subviews)
                             .toEventually(containElementSatisfying({ $0 is SlideUpView }))
                     }
 
                     it("will not show any view for invalid campaign type") {
                         let campaign = TestHelpers.generateCampaign(id: "test", type: .invalid)
                         router.displayCampaign(campaign, associatedImageData: nil, confirmation: true, completion: { _ in })
-                        expect(UIApplication.shared.keyWindow?.subviews)
+                        expect(UIApplication.shared.getKeyWindow()?.subviews)
                             .toAfterTimeout(allPass({ !($0 is BaseView )}))
                     }
 
                     it("will not show any view for html campaign type") {
                         let campaign = TestHelpers.generateCampaign(id: "test", type: .html)
                         router.displayCampaign(campaign, associatedImageData: nil, confirmation: true, completion: { _ in })
-                        expect(UIApplication.shared.keyWindow?.subviews)
+                        expect(UIApplication.shared.getKeyWindow()?.subviews)
                             .toAfterTimeout(allPass({ !($0 is BaseView )}))
                     }
 
@@ -86,12 +83,12 @@ class RouterSpec: QuickSpec {
                         let campaign1 = TestHelpers.generateCampaign(id: "test", type: .modal)
                         let campaign2 = TestHelpers.generateCampaign(id: "test", type: .full)
                         router.displayCampaign(campaign1, associatedImageData: nil, confirmation: true, completion: { _ in })
-                        expect(UIApplication.shared.keyWindow?.subviews)
+                        expect(UIApplication.shared.getKeyWindow()?.subviews)
                             .toEventually(containElementSatisfying({ $0 is ModalView })) // wait
                         router.displayCampaign(campaign2, associatedImageData: nil, confirmation: true, completion: { _ in })
-                        expect(UIApplication.shared.keyWindow?.subviews)
+                        expect(UIApplication.shared.getKeyWindow()?.subviews)
                             .toAfterTimeoutNot(containElementSatisfying({ $0 is FullScreenView }))
-                        expect(UIApplication.shared.keyWindow?.subviews)
+                        expect(UIApplication.shared.getKeyWindow()?.subviews)
                             .to(containElementSatisfying({ $0 is ModalView }))
                     }
 
@@ -99,7 +96,7 @@ class RouterSpec: QuickSpec {
                         router.accessibilityCompatibleDisplay = false
                         let campaign = TestHelpers.generateCampaign(id: "test", type: .modal)
                         router.displayCampaign(campaign, associatedImageData: nil, confirmation: true, completion: { _ in })
-                        expect(UIApplication.shared.keyWindow?.subviews).toEventually(containElementSatisfying({ $0 is BaseView }))
+                        expect(UIApplication.shared.getKeyWindow()?.subviews).toEventually(containElementSatisfying({ $0 is BaseView }))
                     }
 
                     it("will add a view to the UIWindow's view main subview when `accessibilityCompatible` is true") {
@@ -120,10 +117,10 @@ class RouterSpec: QuickSpec {
                 it("will remove displayed campaign view") {
                     let campaign = TestHelpers.generateCampaign(id: "test", type: .modal)
                     router.displayCampaign(campaign, associatedImageData: nil, confirmation: true, completion: { _ in })
-                    expect(UIApplication.shared.keyWindow?.subviews)
+                    expect(UIApplication.shared.getKeyWindow()?.subviews)
                         .toEventually(containElementSatisfying({ $0 is BaseView }))
                     router.discardDisplayedCampaign()
-                    expect(UIApplication.shared.keyWindow?.subviews)
+                    expect(UIApplication.shared.getKeyWindow()?.subviews)
                         .toEventuallyNot(containElementSatisfying({ $0 is BaseView }))
                 }
 
@@ -134,7 +131,7 @@ class RouterSpec: QuickSpec {
                         completionCalled = true
                         expect(cancelled).to(beTrue())
                     })
-                    expect(UIApplication.shared.keyWindow?.subviews)
+                    expect(UIApplication.shared.getKeyWindow()?.subviews)
                         .toEventually(containElementSatisfying({ $0 is BaseView }))
                     router.discardDisplayedCampaign()
                     expect(completionCalled).toEventually(beTrue())

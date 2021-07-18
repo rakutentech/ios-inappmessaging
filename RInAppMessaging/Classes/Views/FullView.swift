@@ -188,6 +188,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         headerLabel.accessibilityIdentifier = "headerMessage"
         imageView.accessibilityIdentifier = "imageView"
         imageView.isAccessibilityElement = true
+        optOutView.accessibilityIdentifier = "optOutView"
 
         if let layout = layout {
             accessibilityIdentifier = type(of: self).viewIdentifier + " data-qa=\"\(layout)\""

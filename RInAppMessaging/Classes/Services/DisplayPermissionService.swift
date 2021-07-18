@@ -34,6 +34,10 @@ internal class DisplayPermissionService: DisplayPermissionServiceType, HttpReque
             return fallbackResponse
         }
 
+        guard displayPermissionUrl != UITestHelper.mockedEndpoints.displayPermission else {
+            return .init(display: true, performPing: false)
+        }
+
         let responseData = requestFromServerSync(url: displayPermissionUrl,
                                                  httpMethod: .post,
                                                  parameters: requestParams,
