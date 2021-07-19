@@ -38,7 +38,7 @@ internal extension BaseView {
         parentView.addSubview(self)
         NSLayoutConstraint.activate(constraintsForParent(parentView))
 
-        parentView.layoutIfNeeded()
+        parentView.setNeedsLayout()
         parentView.isUserInteractionEnabled = false
         animateOnShow(completion: {
             parentView.isUserInteractionEnabled = true
