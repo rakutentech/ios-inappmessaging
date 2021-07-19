@@ -57,6 +57,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
     @IBOutlet private weak var optOutView: OptOutMessageView!
     @IBOutlet private weak var optOutAndButtonsSpacer: UIView!
     @IBOutlet private weak var buttonsContainer: UIStackView!
+    @IBOutlet private weak var contentScrollView: UIScrollView!
     @IBOutlet private(set) weak var exitButton: ExitButton! {
         didSet {
             exitButton.invertedColors = hasImage
@@ -108,6 +109,12 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         updateUIConstants()
         exitButtonYPositionConstraint.constant = uiConstants.exitButtonVerticalOffset
         bodyViewOffsetYConstraint.constant = hasImage ? 0 : uiConstants.bodyViewSafeAreaOffsetY
+
+        DispatchQueue.main.async { [self] in
+            // Fixes a problem with content size width being set 0.5pt too much
+            // (landscape iPad), resulting in horizontal scroll bouncing.
+            contentScrollView.contentSize.width = contentScrollView.bounds.width
+        }
     }
 
     override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {

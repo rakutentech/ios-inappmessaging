@@ -17,6 +17,7 @@
                 <outlet property="bodyView" destination="mHs-W6-s9X" id="DFx-Il-UEO"/>
                 <outlet property="bodyViewOffsetYConstraint" destination="LEa-Mv-BCR" id="abv-2p-TYw"/>
                 <outlet property="buttonsContainer" destination="x36-hg-Dgf" id="V6b-Wj-ReC"/>
+                <outlet property="contentScrollView" destination="R2i-po-Za0" id="n9b-nr-Eho"/>
                 <outlet property="contentView" destination="9fo-EW-lL9" id="qtH-MB-9vO"/>
                 <outlet property="contentWidthOffsetConstraint" destination="rmG-89-pbI" id="RLz-RF-qgv"/>
                 <outlet property="controlsView" destination="IpI-Mq-vby" id="8Cg-db-Bxz"/>
