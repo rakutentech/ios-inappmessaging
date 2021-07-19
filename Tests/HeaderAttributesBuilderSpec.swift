@@ -9,7 +9,7 @@ class HeaderAttributesBuilderSpec: QuickSpec {
         describe("HeaderAttributesBuilder") {
 
             var builder: HeaderAttributesBuilder!
-            let preferenceRepository = IAMPreferenceRepository()
+            let preferenceRepository = AccountRepository()
 
             beforeEach {
                 builder = HeaderAttributesBuilder()

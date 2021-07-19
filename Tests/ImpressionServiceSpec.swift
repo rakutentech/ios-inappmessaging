@@ -15,7 +15,7 @@ class ImpressionServiceSpec: QuickSpec {
         let campaign = TestHelpers.generateCampaign(id: "test")
 
         var service: ImpressionService!
-        var preferenceRepository: IAMPreferenceRepository!
+        var preferenceRepository: AccountRepositoryType!
         var configurationRepository: ConfigurationRepository!
         var httpSession: URLSessionMock!
         var errorDelegate: ErrorDelegateMock!
@@ -34,7 +34,7 @@ class ImpressionServiceSpec: QuickSpec {
             beforeEach {
                 URLSessionMock.startMockingURLSession()
 
-                preferenceRepository = IAMPreferenceRepository()
+                preferenceRepository = AccountRepository()
                 configurationRepository = ConfigurationRepository()
                 configurationRepository.saveConfiguration(configData)
                 errorDelegate = ErrorDelegateMock()

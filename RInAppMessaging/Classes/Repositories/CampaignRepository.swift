@@ -41,7 +41,7 @@ internal class CampaignRepository: CampaignRepositoryType {
     static let lastUser = [UserIdentifier(type: .userId, identifier: "IAM.lastUser!@#")]
 
     private let userDataCache: UserDataCacheable
-    private let preferenceRepository: IAMPreferenceRepository
+    private let preferenceRepository: AccountRepositoryType
     private let campaigns = LockableObject([Campaign]())
     private(set) var lastSyncInMilliseconds: Int64?
 
@@ -52,7 +52,7 @@ internal class CampaignRepository: CampaignRepositoryType {
         return [campaigns]
     }
 
-    init(userDataCache: UserDataCacheable, preferenceRepository: IAMPreferenceRepository) {
+    init(userDataCache: UserDataCacheable, preferenceRepository: AccountRepositoryType) {
         self.userDataCache = userDataCache
         self.preferenceRepository = preferenceRepository
 

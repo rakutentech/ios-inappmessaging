@@ -19,8 +19,8 @@ class IdRegistrationSpec: QuickSpec {
         }
 
         let dependencyManager = DependencyManager()
-        var preferenceRepository: IAMPreferenceRepository! {
-            return dependencyManager.resolve(type: IAMPreferenceRepository.self)
+        var preferenceRepository: AccountRepositoryType! {
+            dependencyManager.resolve(type: AccountRepositoryType.self)
         }
 
         beforeSuite {

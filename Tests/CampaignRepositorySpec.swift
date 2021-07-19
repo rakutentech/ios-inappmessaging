@@ -9,7 +9,7 @@ class CampaignRepositorySpec: QuickSpec {
 
             var campaignRepository: CampaignRepository!
             var userDataCache: UserDataCacheMock!
-            var preferenceRepository: IAMPreferenceRepository!
+            var preferenceRepository: AccountRepository!
             var firstPersistedCampaign: Campaign? {
                 return campaignRepository.list.first
             }
@@ -31,13 +31,13 @@ class CampaignRepositorySpec: QuickSpec {
 
             beforeEach {
                 userDataCache = UserDataCacheMock()
-                preferenceRepository = IAMPreferenceRepository()
+                preferenceRepository = AccountRepository()
                 campaignRepository = CampaignRepository(userDataCache: userDataCache, preferenceRepository: preferenceRepository)
             }
 
             it("will load last user cache data during initialization") {
                 userDataCache.lastUserDataMock = UserDataCacheContainer(campaignData: [testCampaign])
-                campaignRepository = CampaignRepository(userDataCache: userDataCache, preferenceRepository: IAMPreferenceRepository())
+                campaignRepository = CampaignRepository(userDataCache: userDataCache, preferenceRepository: AccountRepository())
                 expect(campaignRepository.list).to(equal([testCampaign]))
             }
 

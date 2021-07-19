@@ -23,7 +23,7 @@ class MainContainerSpec: QuickSpec {
                     dependencyManager.resolve(type: CampaignRepositoryType.self),
                     dependencyManager.resolve(type: EventMatcherType.self),
                     dependencyManager.resolve(type: CampaignDispatcherType.self),
-                    dependencyManager.resolve(type: IAMPreferenceRepository.self),
+                    dependencyManager.resolve(type: AccountRepositoryType.self),
                     dependencyManager.resolve(type: DisplayPermissionServiceType.self),
                     dependencyManager.resolve(type: RouterType.self),
                     dependencyManager.resolve(type: MessageMixerServiceType.self),

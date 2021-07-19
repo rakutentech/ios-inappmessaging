@@ -8,7 +8,7 @@ class PublicAPISpec: QuickSpec {
 
         let userDefaults = UserDefaults(suiteName: "PublicAPISpec")!
         var eventMatcher: EventMatcherSpy!
-        var preferenceRepository: IAMPreferenceRepository!
+        var preferenceRepository: AccountRepositoryType!
         var router: RouterType!
         var messageMixerService: MessageMixerServiceMock!
         var campaignsListManager: CampaignsListManagerType!
@@ -36,7 +36,7 @@ class PublicAPISpec: QuickSpec {
             dataCache = UserDataCache(userDefaults: userDefaults)
             eventMatcher = EventMatcherSpy(
                 campaignRepository: dependencyManager.resolve(type: CampaignRepositoryType.self)!)
-            preferenceRepository = dependencyManager.resolve(type: IAMPreferenceRepository.self)
+            preferenceRepository = dependencyManager.resolve(type: AccountRepositoryType.self)
             router = dependencyManager.resolve(type: RouterType.self)!
             campaignsListManager = dependencyManager.resolve(type: CampaignsListManagerType.self)
             campaignRepository = dependencyManager.resolve(type: CampaignRepositoryType.self)
@@ -111,7 +111,7 @@ class PublicAPISpec: QuickSpec {
                     .setRakutenId("RID")
                     .build()
                 RInAppMessaging.registerPreference(preference)
-                expect(preferenceRepository.preference?.hashValue).toEventually(equal(preference.hashValue))
+                expect(preferenceRepository.userInfoProvider).toEventually(equal(preference))
             }
 
             it("will log event when logEvent is called") {
@@ -154,7 +154,7 @@ class PublicAPISpec: QuickSpec {
                 RInAppMessaging.logEvent(LoginSuccessfulEvent())
                 expect(eventMatcher.loggedEvents).toAfterTimeout(beEmpty(), timeout: 1)
                 expect(eventMatcher.loggedEvents).toEventually(haveCount(1),
-                                                               timeout: .seconds(Int(messageMixerService.delay + 1)),
+                                                               timeout: .seconds(Int(messageMixerService.delay + 3)),
                                                                pollInterval: .milliseconds(500))
             }
 

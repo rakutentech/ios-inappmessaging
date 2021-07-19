@@ -10,7 +10,7 @@ class MessageMixerServiceSpec: QuickSpec {
         let configData = ConfigData(rolloutPercentage: 100, endpoints: .empty)
 
         var service: MessageMixerService!
-        var preferenceRepository: IAMPreferenceRepository!
+        var preferenceRepository: AccountRepository!
         var configurationRepository: ConfigurationRepository!
         var httpSession: URLSessionMock!
 
@@ -28,7 +28,7 @@ class MessageMixerServiceSpec: QuickSpec {
             beforeEach {
                 URLSessionMock.startMockingURLSession()
 
-                preferenceRepository = IAMPreferenceRepository()
+                preferenceRepository = AccountRepository()
                 configurationRepository = ConfigurationRepository()
                 configurationRepository.saveConfiguration(configData)
                 service = MessageMixerService(preferenceRepository: preferenceRepository,

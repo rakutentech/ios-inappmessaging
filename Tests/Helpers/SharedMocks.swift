@@ -1,9 +1,12 @@
 @testable import RInAppMessaging
 
 class IAMPreference: UserInfoProvider {
-    var provideRaeToken: String?
-    var provideUserId: String?
-    var provideRakutenId: String?
+    var idToken: String?
+    func getIDToken() -> String? { idToken }
+    var userId: String?
+    func getUserId() -> String? { userId }
+    var rakutenId: String?
+    func getRakutenId() -> String? { rakutenId }
 }
 
 class IAMPreferenceBuilder {
@@ -14,17 +17,17 @@ class IAMPreferenceBuilder {
     }
 
     func setRakutenId(_ rakutenId: String?) -> Self {
-        self.preference.provideRakutenId = rakutenId
+        self.preference.rakutenId = rakutenId
         return self
     }
 
     func setUserId(_ userId: String?) -> Self {
-        self.preference.provideUserId = userId
+        self.preference.userId = userId
         return self
     }
 
     func setAccessToken(_ accessToken: String?) -> Self {
-        self.preference.provideRaeToken = accessToken
+        self.preference.idToken = accessToken
         return self
     }
 

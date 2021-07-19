@@ -14,7 +14,7 @@ class InAppMessagingModuleSpec: QuickSpec {
             var configurationManager: ConfigurationManagerMock!
             var campaignsListManager: CampaignsListManagerMock!
             var impressionService: ImpressionServiceMock!
-            var preferenceRepository: IAMPreferenceRepository!
+            var preferenceRepository: AccountRepository!
             var campaignsValidator: CampaignsValidatorMock!
             var eventMatcher: EventMatcherMock!
             var readyCampaignDispatcher: CampaignDispatcherMock!
@@ -28,7 +28,7 @@ class InAppMessagingModuleSpec: QuickSpec {
                 configurationManager = ConfigurationManagerMock()
                 campaignsListManager = CampaignsListManagerMock()
                 impressionService = ImpressionServiceMock()
-                preferenceRepository = IAMPreferenceRepository()
+                preferenceRepository = AccountRepository()
                 campaignsValidator = CampaignsValidatorMock()
                 eventMatcher = EventMatcherMock()
                 readyCampaignDispatcher = CampaignDispatcherMock()
@@ -183,8 +183,8 @@ class InAppMessagingModuleSpec: QuickSpec {
                         queue.async {
                             iamModule.registerPreference(preference)
                         }
-                        expect(preferenceRepository.preference).toAfterTimeout(beNil())
-                        expect(preferenceRepository.preference?.hashValue).toEventually(equal(preference.hashValue), timeout: .seconds(2))
+                        expect(preferenceRepository.userInfoProvider).toAfterTimeout(beNil())
+                        expect(preferenceRepository.userInfoProvider).toEventually(equal(preference), timeout: .seconds(2))
                     }
                 }
 
@@ -309,7 +309,7 @@ class InAppMessagingModuleSpec: QuickSpec {
                             it("will register preference data") {
                                 let preference = IAMPreferenceBuilder().setUserId("user").build()
                                 iamModule.registerPreference(preference)
-                                expect(preferenceRepository.preference?.hashValue).to(equal(preference.hashValue))
+                                expect(preferenceRepository.userInfoProvider).to(equal(preference))
                             }
 
                             it("will refresh list of campaigns") {
@@ -340,15 +340,56 @@ class InAppMessagingModuleSpec: QuickSpec {
                             }
 
                             it("will not clear last user data when user did not log out or change to another user") {
-                                [(nil, aUser), (IAMPreference(), aUser),
-                                 (nil, nil), (nil, IAMPreference()),
-                                 (IAMPreference(), nil), (IAMPreference(), IAMPreference())]
-                                    .forEach { prefA, prefB in
-                                        iamModule.registerPreference(prefA)
-                                        campaignRepository.resetFlags()
-                                        iamModule.registerPreference(prefB)
-                                        expect(campaignRepository.wasClearLastUserDataCalled).to(beFalse())
-                                    }
+                                let prefA1: UserInfoProvider? = nil
+                                let prefB1: UserInfoProvider? = aUser
+                                iamModule.registerPreference(prefA1)
+                                campaignRepository.resetFlags()
+                                iamModule.registerPreference(prefB1)
+                                expect(campaignRepository.wasClearLastUserDataCalled).to(beFalse())
+
+                                let prefA: UserInfoProvider? = IAMPreference()
+                                let prefB: UserInfoProvider? = aUser
+                                iamModule.registerPreference(prefA)
+                                campaignRepository.resetFlags()
+                                iamModule.registerPreference(prefB)
+                                expect(campaignRepository.wasClearLastUserDataCalled).to(beFalse())
+                            
+                                let prefAA: UserInfoProvider? = nil
+                                let prefBB: UserInfoProvider? = nil
+                                iamModule.registerPreference(prefAA)
+                                campaignRepository.resetFlags()
+                                iamModule.registerPreference(prefBB)
+                                expect(campaignRepository.wasClearLastUserDataCalled).to(beFalse())
+                            
+                                let prefAAA: UserInfoProvider? = nil
+                                let prefBBB: UserInfoProvider? = IAMPreference()
+                                iamModule.registerPreference(prefAAA)
+                                campaignRepository.resetFlags()
+                                iamModule.registerPreference(prefBBB)
+                                expect(campaignRepository.wasClearLastUserDataCalled).to(beFalse())
+                                
+                                let prefAAA1: UserInfoProvider? = IAMPreference()
+                                let prefBBB1: UserInfoProvider? = nil
+                                iamModule.registerPreference(prefAAA1)
+                                campaignRepository.resetFlags()
+                                iamModule.registerPreference(prefBBB1)
+                                expect(campaignRepository.wasClearLastUserDataCalled).to(beFalse())
+                                
+                                let prefAAA2: UserInfoProvider? = IAMPreference()
+                                let prefBBB2: UserInfoProvider? = IAMPreference()
+                                iamModule.registerPreference(prefAAA2)
+                                campaignRepository.resetFlags()
+                                iamModule.registerPreference(prefBBB2)
+                                expect(campaignRepository.wasClearLastUserDataCalled).to(beFalse())
+//                                [(nil, aUser), (IAMPreference(), aUser),
+//                                 (nil, nil), (nil, IAMPreference()),
+//                                 (IAMPreference(), nil), (IAMPreference(), IAMPreference())]
+//                                    .forEach { prefA, prefB in
+//                                        iamModule.registerPreference(prefA)
+//                                        campaignRepository.resetFlags()
+//                                        iamModule.registerPreference(prefB)
+//                                        expect(campaignRepository.wasClearLastUserDataCalled).to(beFalse())
+//                                    }
                             }
 
                             it("will clear event list when user logs out or changes to another user") {
@@ -363,15 +404,56 @@ class InAppMessagingModuleSpec: QuickSpec {
                             }
 
                             it("will not clear event list when user did not log out or change to another user") {
-                                [(nil, aUser), (IAMPreference(), aUser),
-                                 (nil, nil), (nil, IAMPreference()),
-                                 (IAMPreference(), nil), (IAMPreference(), IAMPreference())]
-                                    .forEach { prefA, prefB in
-                                        iamModule.registerPreference(prefA)
-                                        eventMatcher.wasClearNonPersistentEventsCalled = false // reset
-                                        iamModule.registerPreference(prefB)
-                                        expect(eventMatcher.wasClearNonPersistentEventsCalled).to(beFalse())
-                                    }
+                                let prefA1: UserInfoProvider? = nil
+                                let prefB1: UserInfoProvider? = aUser
+                                iamModule.registerPreference(prefA1)
+                                eventMatcher.wasClearNonPersistentEventsCalled = false // reset
+                                iamModule.registerPreference(prefB1)
+                                expect(eventMatcher.wasClearNonPersistentEventsCalled).to(beFalse())
+
+                                let prefA: UserInfoProvider? = IAMPreference()
+                                let prefB: UserInfoProvider? = aUser
+                                iamModule.registerPreference(prefA)
+                                eventMatcher.wasClearNonPersistentEventsCalled = false // reset
+                                iamModule.registerPreference(prefB)
+                                expect(eventMatcher.wasClearNonPersistentEventsCalled).to(beFalse())
+                            
+                                let prefAA: UserInfoProvider? = nil
+                                let prefBB: UserInfoProvider? = nil
+                                iamModule.registerPreference(prefAA)
+                                eventMatcher.wasClearNonPersistentEventsCalled = false // reset
+                                iamModule.registerPreference(prefBB)
+                                expect(eventMatcher.wasClearNonPersistentEventsCalled).to(beFalse())
+                            
+                                let prefAAA: UserInfoProvider? = nil
+                                let prefBBB: UserInfoProvider? = IAMPreference()
+                                iamModule.registerPreference(prefAAA)
+                                eventMatcher.wasClearNonPersistentEventsCalled = false // reset
+                                iamModule.registerPreference(prefBBB)
+                                expect(eventMatcher.wasClearNonPersistentEventsCalled).to(beFalse())
+                                
+                                let prefAAA1: UserInfoProvider? = IAMPreference()
+                                let prefBBB1: UserInfoProvider? = nil
+                                iamModule.registerPreference(prefAAA1)
+                                eventMatcher.wasClearNonPersistentEventsCalled = false // reset
+                                iamModule.registerPreference(prefBBB1)
+                                expect(eventMatcher.wasClearNonPersistentEventsCalled).to(beFalse())
+                                
+                                let prefAAA2: UserInfoProvider? = IAMPreference()
+                                let prefBBB2: UserInfoProvider? = IAMPreference()
+                                iamModule.registerPreference(prefAAA2)
+                                eventMatcher.wasClearNonPersistentEventsCalled = false // reset
+                                iamModule.registerPreference(prefBBB2)
+                                expect(eventMatcher.wasClearNonPersistentEventsCalled).to(beFalse())
+//                                [(nil, aUser), (IAMPreference(), aUser),
+//                                 (nil, nil), (nil, IAMPreference()),
+//                                 (IAMPreference(), nil), (IAMPreference(), IAMPreference())]
+//                                    .forEach { prefA, prefB in
+//                                        iamModule.registerPreference(prefA)
+//                                        eventMatcher.wasClearNonPersistentEventsCalled = false // reset
+//                                        iamModule.registerPreference(prefB)
+//                                        expect(eventMatcher.wasClearNonPersistentEventsCalled).to(beFalse())
+//                                    }
                             }
                         }
 
@@ -380,7 +462,7 @@ class InAppMessagingModuleSpec: QuickSpec {
                             it("will register preference data") {
                                 let preference = IAMPreferenceBuilder().setUserId("user").build()
                                 iamModule.registerPreference(preference)
-                                expect(preferenceRepository.preference?.hashValue).to(equal(preference.hashValue))
+                                expect(preferenceRepository.userInfoProvider).to(equal(preference))
                             }
 
                             it("will not refresh list of campaigns") {
@@ -411,7 +493,7 @@ class InAppMessagingModuleSpec: QuickSpec {
                         it("will not register preference data") {
                             let preference = IAMPreferenceBuilder().setUserId("user").build()
                             iamModule.registerPreference(preference)
-                            expect(preferenceRepository.preference).toAfterTimeout(beNil())
+                            expect(preferenceRepository.userInfoProvider).toAfterTimeout(beNil())
                         }
 
                         it("will not refresh list of campaigns") {

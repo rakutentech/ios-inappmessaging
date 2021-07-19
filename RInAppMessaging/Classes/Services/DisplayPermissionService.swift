@@ -5,7 +5,7 @@ internal protocol DisplayPermissionServiceType {
 internal class DisplayPermissionService: DisplayPermissionServiceType, HttpRequestable {
 
     private let campaignRepository: CampaignRepositoryType
-    private let preferenceRepository: IAMPreferenceRepository
+    private let preferenceRepository: AccountRepositoryType
     private let configurationRepository: ConfigurationRepositoryType
 
     private(set) var httpSession: URLSession
@@ -13,7 +13,7 @@ internal class DisplayPermissionService: DisplayPermissionServiceType, HttpReque
     var bundleInfo = BundleInfo.self
 
     init(campaignRepository: CampaignRepositoryType,
-         preferenceRepository: IAMPreferenceRepository,
+         preferenceRepository: AccountRepositoryType,
          configurationRepository: ConfigurationRepositoryType) {
 
         self.campaignRepository = campaignRepository

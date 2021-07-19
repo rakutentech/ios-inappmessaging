@@ -15,7 +15,7 @@ class DisplayPermissionServiceSpec: QuickSpec {
         let campaign = TestHelpers.generateCampaign(id: "test")
 
         var service: DisplayPermissionService!
-        var preferenceRepository: IAMPreferenceRepository!
+        var preferenceRepository: AccountRepositoryType!
         var configurationRepository: ConfigurationRepository!
         var campaignRepository: CampaignRepositoryMock!
         var httpSession: URLSessionMock!
@@ -34,7 +34,7 @@ class DisplayPermissionServiceSpec: QuickSpec {
             beforeEach {
                 URLSessionMock.startMockingURLSession()
 
-                preferenceRepository = IAMPreferenceRepository()
+                preferenceRepository = AccountRepository()
                 campaignRepository = CampaignRepositoryMock()
                 configurationRepository = ConfigurationRepository()
                 configurationRepository.saveConfiguration(configData)

@@ -4,7 +4,7 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
 
     private var configurationManager: ConfigurationManagerType
     private var campaignsListManager: CampaignsListManagerType
-    private let preferenceRepository: IAMPreferenceRepository
+    private let preferenceRepository: AccountRepositoryType
     private let eventMatcher: EventMatcherType
     private var readyCampaignDispatcher: CampaignDispatcherType
     private var impressionService: ImpressionServiceType
@@ -23,7 +23,7 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
     init(configurationManager: ConfigurationManagerType,
          campaignsListManager: CampaignsListManagerType,
          impressionService: ImpressionServiceType,
-         preferenceRepository: IAMPreferenceRepository,
+         preferenceRepository: AccountRepositoryType,
          eventMatcher: EventMatcherType,
          readyCampaignDispatcher: CampaignDispatcherType,
          campaignTriggerAgent: CampaignTriggerAgentType,
@@ -63,7 +63,8 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
             self.isInitialized = true
 
             if enabled {
-                self.campaignsListManager.refreshList()
+//                self.campaignsListManager.refreshList()
+                self.refreshCampaignsWithPendingUserStateChange()
                 self.flushEventBuffer(discardEvents: false)
             } else {
                 self.flushEventBuffer(discardEvents: true)
@@ -85,7 +86,8 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
             eventBuffer.append(event)
             return
         }
-
+//        preferenceRepository.updateUserInfo()
+        refreshCampaignsWithPendingUserStateChange()
         eventMatcher.matchAndStore(event: event)
         campaignTriggerAgent.validateAndTriggerCampaigns()
     }
@@ -96,25 +98,13 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
         }
 
         if BundleInfo.applicationId?.starts(with: "jp.co.rakuten") == true, Bundle.tests == nil {
-            assert(preference?.provideRaeToken == nil || preference?.provideRaeToken != nil && preference?.provideUserId != nil,
+            assert(preference?.getIDToken() == nil || preference?.getIDToken() != nil && preference?.getUserId() != nil,
                             "provideUserId must be present when provideRaeToken is specified")
         }
 
-        let oldUserIdentifiers = preferenceRepository.getUserIdentifiers()
-        let isDiff = preferenceRepository.canUpdateUserInfo(newUserInfo: preference)
         preferenceRepository.setPreference(preference)
-
-        guard isInitialized else {
-            return
-        }
-
-        let isLogoutOrUserChange = isDiff && !oldUserIdentifiers.isEmpty
-        if isLogoutOrUserChange {
-            campaignRepository.clearLastUserData()
-            eventMatcher.clearNonPersistentEvents()
-        }
-        campaignRepository.loadCachedData(syncWithLastUserData: false)
-        campaignsListManager.refreshList()
+        refreshCampaignsWithPendingUserStateChange()
+        preferenceRepository.updateUserInfo()
     }
 
     func closeMessage(clearQueuedCampaigns: Bool) {
@@ -122,6 +112,18 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
             readyCampaignDispatcher.resetQueue()
         }
         router.discardDisplayedCampaign()
+    }
+
+    private func refreshCampaignsWithPendingUserStateChange() {
+        guard isInitialized else {
+            return
+        }
+        if preferenceRepository.hasLogoutOrUserChanged {
+            campaignRepository.clearLastUserData()
+            eventMatcher.clearNonPersistentEvents()
+        }
+        campaignRepository.loadCachedData(syncWithLastUserData: false)
+        campaignsListManager.refreshList()
     }
 
     private func flushEventBuffer(discardEvents: Bool) {

@@ -21,11 +21,11 @@ struct HeaderAttributesBuilder {
     }
 
     @discardableResult
-    mutating func addAccessToken(preferenceRepository: IAMPreferenceRepository) -> Bool {
-        guard let accessToken = preferenceRepository.getAccessToken() else {
+    mutating func addAccessToken(preferenceRepository: AccountRepositoryType) -> Bool {
+        guard let idToken = preferenceRepository.idToken else {
             return false
         }
-        addedHeaders.append(HeaderAttribute(key: Keys.authorization, value: "OAuth2 \(accessToken)"))
+        addedHeaders.append(HeaderAttribute(key: Keys.authorization, value: "OAuth2 \(idToken)"))
         return true
     }
 

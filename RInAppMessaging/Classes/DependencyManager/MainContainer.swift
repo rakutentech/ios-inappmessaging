@@ -44,12 +44,12 @@ internal enum MainContainerFactory {
             }),
             ContainerElement(type: CampaignRepositoryType.self, factory: {
                 CampaignRepository(userDataCache: manager.resolve(type: UserDataCacheable.self)!,
-                                   preferenceRepository: manager.resolve(type: IAMPreferenceRepository.self)!)
+                                   preferenceRepository: manager.resolve(type: AccountRepositoryType.self)!)
             }),
             ContainerElement(type: EventMatcherType.self, factory: {
                 EventMatcher(campaignRepository: manager.resolve(type: CampaignRepositoryType.self)!)
             }),
-            ContainerElement(type: IAMPreferenceRepository.self, factory: { IAMPreferenceRepository() }),
+            ContainerElement(type: AccountRepositoryType.self, factory: { AccountRepository() }),
             ContainerElement(type: ConfigurationServiceType.self, factory: {
                 guard let configURL = getValidConfigURL() else {
                     assertionFailure("Configuration URL in Info.plist is missing")
@@ -62,7 +62,7 @@ internal enum MainContainerFactory {
             ContainerElement(type: DisplayPermissionServiceType.self, factory: {
                 DisplayPermissionService(
                     campaignRepository: manager.resolve(type: CampaignRepositoryType.self)!,
-                    preferenceRepository: manager.resolve(type: IAMPreferenceRepository.self)!,
+                    preferenceRepository: manager.resolve(type: AccountRepositoryType.self)!,
                     configurationRepository: manager.resolve(type: ConfigurationRepositoryType.self)!)
             }),
             ContainerElement(type: RouterType.self, factory: {
@@ -77,11 +77,11 @@ internal enum MainContainerFactory {
                                         campaignRepository: manager.resolve(type: CampaignRepositoryType.self)!)
             }),
             ContainerElement(type: MessageMixerServiceType.self, factory: {
-                MessageMixerService(preferenceRepository: manager.resolve(type: IAMPreferenceRepository.self)!,
+                MessageMixerService(preferenceRepository: manager.resolve(type: AccountRepositoryType.self)!,
                                    configurationRepository: manager.resolve(type: ConfigurationRepositoryType.self)!)
             }),
             ContainerElement(type: ImpressionServiceType.self, factory: {
-                ImpressionService(preferenceRepository: manager.resolve(type: IAMPreferenceRepository.self)!,
+                ImpressionService(preferenceRepository: manager.resolve(type: AccountRepositoryType.self)!,
                                  configurationRepository: manager.resolve(type: ConfigurationRepositoryType.self)!)
             }),
             ContainerElement(type: CampaignsListManagerType.self, factory: {
