@@ -73,7 +73,7 @@ import Foundation
                 let campaignsListManager = dependencyManager.resolve(type: CampaignsListManagerType.self),
                 let impressionService = dependencyManager.resolve(type: ImpressionServiceType.self),
                 let eventMatcher = dependencyManager.resolve(type: EventMatcherType.self),
-                let preferenceRepository = dependencyManager.resolve(type: IAMPreferenceRepository.self),
+                let preferenceRepository = dependencyManager.resolve(type: AccountRepositoryType.self),
                 let readyCampaignDispatcher = dependencyManager.resolve(type: CampaignDispatcherType.self),
                 let campaignTriggerAgent = dependencyManager.resolve(type: CampaignTriggerAgentType.self),
                 let campaignRepository = dependencyManager.resolve(type: CampaignRepositoryType.self),

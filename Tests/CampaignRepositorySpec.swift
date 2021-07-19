@@ -9,7 +9,7 @@ class CampaignRepositorySpec: QuickSpec {
 
             var campaignRepository: CampaignRepository!
             var userDataCache: UserDataCacheMock!
-            var preferenceRepository: IAMPreferenceRepository!
+            var preferenceRepository: AccountRepository!
             var firstPersistedCampaign: Campaign? {
                 return campaignRepository.list.first
             }
@@ -31,13 +31,13 @@ class CampaignRepositorySpec: QuickSpec {
 
             beforeEach {
                 userDataCache = UserDataCacheMock()
-                preferenceRepository = IAMPreferenceRepository()
+                preferenceRepository = AccountRepository()
                 campaignRepository = CampaignRepository(userDataCache: userDataCache, preferenceRepository: preferenceRepository)
             }
 
             it("will load last user cache data during initialization") {
                 userDataCache.lastUserDataMock = UserDataCacheContainer(campaignData: [testCampaign])
-                campaignRepository = CampaignRepository(userDataCache: userDataCache, preferenceRepository: IAMPreferenceRepository())
+                campaignRepository = CampaignRepository(userDataCache: userDataCache, preferenceRepository: AccountRepository())
                 expect(campaignRepository.list).to(equal([testCampaign]))
             }
 
@@ -108,7 +108,7 @@ class CampaignRepositorySpec: QuickSpec {
                 }
 
                 it("will save updated list to the cache (logged-in user)") {
-                    preferenceRepository.setPreference(IAMPreferenceBuilder().setUserId("user").build())
+                    preferenceRepository.setPreference(UserInfoProviderMock(userID: "user"))
                     campaignRepository.syncWith(list: [testCampaign], timestampMilliseconds: 0)
                     expect(userCache?.campaignData).to(equal([testCampaign]))
                     expect(lastUserCache?.campaignData).to(equal(userCache?.campaignData))
@@ -133,7 +133,7 @@ class CampaignRepositorySpec: QuickSpec {
                 }
 
                 it("will save updated list to the cache (logged-in user)") {
-                    preferenceRepository.setPreference(IAMPreferenceBuilder().setUserId("user").build())
+                    preferenceRepository.setPreference(UserInfoProviderMock(userID: "user"))
                     campaignRepository.syncWith(list: [testCampaign], timestampMilliseconds: 0)
                     campaignRepository.optOutCampaign(testCampaign)
                     expect(userCache?.campaignData?.first?.isOptedOut).to(beTrue())
@@ -170,7 +170,7 @@ class CampaignRepositorySpec: QuickSpec {
                 }
 
                 it("will save updated list to the cache (logged-in user)") {
-                    preferenceRepository.setPreference(IAMPreferenceBuilder().setUserId("user").build())
+                    preferenceRepository.setPreference(UserInfoProviderMock(userID: "user"))
                     campaignRepository.syncWith(list: [testCampaign], timestampMilliseconds: 0)
                     campaignRepository.decrementImpressionsLeftInCampaign(id: testCampaign.id)
                     expect(userCache?.campaignData?.first?.impressionsLeft).to(equal(testCampaign.impressionsLeft - 1))
@@ -198,7 +198,7 @@ class CampaignRepositorySpec: QuickSpec {
                 }
 
                 it("will save updated list to the cache (logged-in user)") {
-                    preferenceRepository.setPreference(IAMPreferenceBuilder().setUserId("user").build())
+                    preferenceRepository.setPreference(UserInfoProviderMock(userID: "user"))
                     campaignRepository.syncWith(list: [testCampaign], timestampMilliseconds: 0)
                     campaignRepository.incrementImpressionsLeftInCampaign(id: testCampaign.id)
                     let userCache = userDataCache.cachedData[preferenceRepository.getUserIdentifiers()]

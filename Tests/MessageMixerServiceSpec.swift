@@ -10,7 +10,7 @@ class MessageMixerServiceSpec: QuickSpec {
         let configData = ConfigData(rolloutPercentage: 100, endpoints: .empty)
 
         var service: MessageMixerService!
-        var preferenceRepository: IAMPreferenceRepository!
+        var preferenceRepository: AccountRepository!
         var configurationRepository: ConfigurationRepository!
         var httpSession: URLSessionMock!
 
@@ -28,7 +28,7 @@ class MessageMixerServiceSpec: QuickSpec {
             beforeEach {
                 URLSessionMock.startMockingURLSession()
 
-                preferenceRepository = IAMPreferenceRepository()
+                preferenceRepository = AccountRepository()
                 configurationRepository = ConfigurationRepository()
                 configurationRepository.saveConfiguration(configData)
                 service = MessageMixerService(preferenceRepository: preferenceRepository,
@@ -183,10 +183,7 @@ class MessageMixerServiceSpec: QuickSpec {
                 }
 
                 it("will send user preferences in the request") {
-                    preferenceRepository.setPreference(IAMPreferenceBuilder()
-                        .setRakutenId("rakutenId")
-                        .setUserId("userId")
-                        .build())
+                    preferenceRepository.setPreference(UserInfoProviderMock(userID: "userId", rakutenId: "rakutenId"))
 
                     sendRequestAndWaitForResponse()
 
@@ -198,9 +195,7 @@ class MessageMixerServiceSpec: QuickSpec {
                 }
 
                 it("will send required headers") {
-                    preferenceRepository.setPreference(IAMPreferenceBuilder()
-                        .setAccessToken("token")
-                        .build())
+                    preferenceRepository.setPreference(UserInfoProviderMock(idToken: "token"))
 
                     sendRequestAndWaitForResponse()
 

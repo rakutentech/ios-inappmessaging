@@ -5,31 +5,71 @@
 @objc public protocol UserInfoProvider {
 
     /**
-     * Only return RAE token if user is logged in. Else return null.
+     * Only return ID token if user is logged in. Else return null.
      *
-     * @return String of RAE token.
+     * @return String of ID token.
      */
-    var provideRaeToken: String? { get }
+    func getIDToken() -> String?
 
     /**
      * Only return user ID used when logging if user is logged in in the current session.
      *
      * @return String of the user ID.
      */
-    var provideUserId: String? { get }
+    func getUserId() -> String?
 
     /**
      * Only return Rakuten ID used in the current session.
      *
      * @return String of the Rakuten ID.
      */
-    var provideRakutenId: String? { get }
+    func getRakutenId() -> String?
 }
 
+// MARK: - Private Properties
 extension UserInfoProvider {
-    // value used to check UserInfoProvider for equality
-    // swiftlint:disable:next legacy_hashing
-    var hashValue: Int {
-        (provideRakutenId ?? "").hashValue ^ (provideUserId ?? "").hashValue
+    /// Converted preferences object from
+    /// an array that can be sent to the backend.
+    /// - Returns: A list of IDs to send in request bodies.
+    var userIdentifiers: [UserIdentifier] {
+        var userIdentifiers = [UserIdentifier]()
+
+        if let rakutenId = getRakutenId() {
+            userIdentifiers.append(
+                UserIdentifier(type: .rakutenId, identifier: rakutenId)
+            )
+        }
+
+        if let userId = getUserId() {
+            userIdentifiers.append(
+                UserIdentifier(type: .userId, identifier: userId)
+            )
+        }
+
+        return userIdentifiers
     }
+}
+
+// MARK: - UserInfoProvider equality
+func == (lhs: UserInfoProvider?, rhs: UserInfoProvider?) -> Bool {
+    switch (lhs, rhs) {
+    case let (l?, r?):
+        return l == r
+    case (nil, nil):
+        return true
+    default:
+        return false
+    }
+}
+
+func != (lhs: UserInfoProvider?, rhs: UserInfoProvider?) -> Bool {
+    !(lhs == rhs)
+}
+
+func == (lhs: UserInfoProvider, rhs: UserInfoProvider) -> Bool {
+    lhs.getRakutenId() == rhs.getRakutenId() && lhs.getUserId() == rhs.getUserId()
+}
+
+func != (lhs: UserInfoProvider, rhs: UserInfoProvider) -> Bool {
+    !(lhs == rhs)
 }

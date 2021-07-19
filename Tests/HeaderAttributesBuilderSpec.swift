@@ -9,7 +9,7 @@ class HeaderAttributesBuilderSpec: QuickSpec {
         describe("HeaderAttributesBuilder") {
 
             var builder: HeaderAttributesBuilder!
-            let preferenceRepository = IAMPreferenceRepository()
+            let preferenceRepository = AccountRepository()
 
             beforeEach {
                 builder = HeaderAttributesBuilder()
@@ -44,17 +44,17 @@ class HeaderAttributesBuilderSpec: QuickSpec {
             context("when calling addAccessToken") {
 
                 it("should return false for nil access token") {
-                    preferenceRepository.setPreference(IAMPreferenceBuilder().setAccessToken(nil).build())
+                    preferenceRepository.setPreference(UserInfoProviderMock(idToken: nil))
                     expect(builder.addAccessToken(preferenceRepository: preferenceRepository)).to(beFalse())
                 }
 
                 it("should return true for any access token id") {
-                    preferenceRepository.setPreference(IAMPreferenceBuilder().setAccessToken("token").build())
+                    preferenceRepository.setPreference(UserInfoProviderMock(idToken: "token"))
                     expect(builder.addAccessToken(preferenceRepository: preferenceRepository)).to(beTrue())
                 }
 
                 it("should append new header attribute") {
-                    preferenceRepository.setPreference(IAMPreferenceBuilder().setAccessToken("token").build())
+                    preferenceRepository.setPreference(UserInfoProviderMock(idToken: "token"))
                     builder.addAccessToken(preferenceRepository: preferenceRepository)
                     expect(builder.build()).to(elementsEqual([HeaderAttribute(key: Constants.Request.Header.authorization, value: "OAuth2 token")]))
                 }
@@ -68,7 +68,7 @@ class HeaderAttributesBuilderSpec: QuickSpec {
 
                 it("should return array with all expected types") {
                     BundleInfoMock.inAppSubscriptionIdMock = "some-id"
-                    preferenceRepository.setPreference(IAMPreferenceBuilder().setAccessToken("token").build())
+                    preferenceRepository.setPreference(UserInfoProviderMock(idToken: "token"))
 
                     builder.addDeviceID()
                     builder.addSubscriptionID(bundleInfo: BundleInfoMock.self)

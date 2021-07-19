@@ -15,7 +15,7 @@ class ImpressionServiceSpec: QuickSpec {
         let campaign = TestHelpers.generateCampaign(id: "test")
 
         var service: ImpressionService!
-        var preferenceRepository: IAMPreferenceRepository!
+        var preferenceRepository: AccountRepositoryType!
         var configurationRepository: ConfigurationRepository!
         var httpSession: URLSessionMock!
         var errorDelegate: ErrorDelegateMock!
@@ -34,7 +34,7 @@ class ImpressionServiceSpec: QuickSpec {
             beforeEach {
                 URLSessionMock.startMockingURLSession()
 
-                preferenceRepository = IAMPreferenceRepository()
+                preferenceRepository = AccountRepository()
                 configurationRepository = ConfigurationRepository()
                 configurationRepository.saveConfiguration(configData)
                 errorDelegate = ErrorDelegateMock()
@@ -126,10 +126,7 @@ class ImpressionServiceSpec: QuickSpec {
                 }
 
                 it("will send user preferences in the request") {
-                    preferenceRepository.setPreference(IAMPreferenceBuilder()
-                        .setRakutenId("rakutenId")
-                        .setUserId("userId")
-                        .build())
+                    preferenceRepository.setPreference(UserInfoProviderMock(userID: "userId", rakutenId: "rakutenId"))
 
                     sendRequestAndWaitForResponse()
 
@@ -142,9 +139,7 @@ class ImpressionServiceSpec: QuickSpec {
                 }
 
                 it("will send required headers") {
-                    preferenceRepository.setPreference(IAMPreferenceBuilder()
-                        .setAccessToken("token")
-                        .build())
+                    preferenceRepository.setPreference(UserInfoProviderMock(idToken: "token"))
 
                     sendRequestAndWaitForResponse()
 

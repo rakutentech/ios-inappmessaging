@@ -14,7 +14,7 @@ class InAppMessagingModuleSpec: QuickSpec {
             var configurationManager: ConfigurationManagerMock!
             var campaignsListManager: CampaignsListManagerMock!
             var impressionService: ImpressionServiceMock!
-            var preferenceRepository: IAMPreferenceRepository!
+            var preferenceRepository: AccountRepository!
             var campaignsValidator: CampaignsValidatorMock!
             var eventMatcher: EventMatcherMock!
             var readyCampaignDispatcher: CampaignDispatcherMock!
@@ -28,7 +28,7 @@ class InAppMessagingModuleSpec: QuickSpec {
                 configurationManager = ConfigurationManagerMock()
                 campaignsListManager = CampaignsListManagerMock()
                 impressionService = ImpressionServiceMock()
-                preferenceRepository = IAMPreferenceRepository()
+                preferenceRepository = AccountRepository()
                 campaignsValidator = CampaignsValidatorMock()
                 eventMatcher = EventMatcherMock()
                 readyCampaignDispatcher = CampaignDispatcherMock()
@@ -179,12 +179,12 @@ class InAppMessagingModuleSpec: QuickSpec {
                     }
 
                     it("should wait synchronously with registerPreference method") {
-                        let preference = IAMPreferenceBuilder().setUserId("user").build()
+                        let preference = UserInfoProviderMock(userID: "user")
                         queue.async {
                             iamModule.registerPreference(preference)
                         }
-                        expect(preferenceRepository.preference).toAfterTimeout(beNil())
-                        expect(preferenceRepository.preference?.hashValue).toEventually(equal(preference.hashValue), timeout: .seconds(2))
+                        expect(preferenceRepository.userInfoProvider).toAfterTimeout(beNil())
+                        expect(preferenceRepository.userInfoProvider).toEventually(equal(preference), timeout: .seconds(2))
                     }
                 }
 
@@ -294,7 +294,7 @@ class InAppMessagingModuleSpec: QuickSpec {
 
                 context("when calling registerPreference") {
 
-                    let aUser = IAMPreferenceBuilder().setUserId("user").build()
+                    let aUser = UserInfoProviderMock(userID: "user")
 
                     context("and module is enabled") {
                         beforeEach {
@@ -307,18 +307,18 @@ class InAppMessagingModuleSpec: QuickSpec {
                             }
 
                             it("will register preference data") {
-                                let preference = IAMPreferenceBuilder().setUserId("user").build()
+                                let preference = UserInfoProviderMock(userID: "user")
                                 iamModule.registerPreference(preference)
-                                expect(preferenceRepository.preference?.hashValue).to(equal(preference.hashValue))
+                                expect(preferenceRepository.userInfoProvider).to(equal(preference))
                             }
 
                             it("will refresh list of campaigns") {
-                                iamModule.registerPreference(IAMPreference())
+                                iamModule.registerPreference(UserInfoProviderMock())
                                 expect(campaignsListManager.wasRefreshListCalled).to(beTrue())
                             }
 
                             it("will reload campaigns repository cache") {
-                                iamModule.registerPreference(IAMPreference())
+                                iamModule.registerPreference(UserInfoProviderMock())
                                 expect(campaignRepository.wasLoadCachedDataCalled).to(beTrue())
                             }
 
@@ -329,8 +329,8 @@ class InAppMessagingModuleSpec: QuickSpec {
                             }
 
                             it("will clear last user data when user logs out or changes to another user") {
-                                [(aUser, nil), (aUser, IAMPreference()),
-                                 (aUser, IAMPreferenceBuilder().setUserId("userB").build())]
+                                [(aUser, nil), (aUser, UserInfoProviderMock()),
+                                 (aUser, UserInfoProviderMock(userID: "userB"))]
                                     .forEach { prefA, prefB in
                                         iamModule.registerPreference(prefA)
                                         campaignRepository.resetFlags()
@@ -340,9 +340,9 @@ class InAppMessagingModuleSpec: QuickSpec {
                             }
 
                             it("will not clear last user data when user did not log out or change to another user") {
-                                [(nil, aUser), (IAMPreference(), aUser),
-                                 (nil, nil), (nil, IAMPreference()),
-                                 (IAMPreference(), nil), (IAMPreference(), IAMPreference())]
+                                [(nil, aUser), (UserInfoProviderMock(), aUser),
+                                 (nil, nil), (nil, UserInfoProviderMock()),
+                                 (UserInfoProviderMock(), nil), (UserInfoProviderMock(), UserInfoProviderMock())]
                                     .forEach { prefA, prefB in
                                         iamModule.registerPreference(prefA)
                                         campaignRepository.resetFlags()
@@ -352,8 +352,8 @@ class InAppMessagingModuleSpec: QuickSpec {
                             }
 
                             it("will clear event list when user logs out or changes to another user") {
-                                [(aUser, nil), (aUser, IAMPreference()),
-                                 (aUser, IAMPreferenceBuilder().setUserId("userB").build())]
+                                [(aUser, nil), (aUser, UserInfoProviderMock()),
+                                 (aUser, UserInfoProviderMock(userID: "userB"))]
                                     .forEach { prefA, prefB in
                                         iamModule.registerPreference(prefA)
                                         eventMatcher.wasClearNonPersistentEventsCalled = false // reset
@@ -363,9 +363,9 @@ class InAppMessagingModuleSpec: QuickSpec {
                             }
 
                             it("will not clear event list when user did not log out or change to another user") {
-                                [(nil, aUser), (IAMPreference(), aUser),
-                                 (nil, nil), (nil, IAMPreference()),
-                                 (IAMPreference(), nil), (IAMPreference(), IAMPreference())]
+                                [(nil, aUser), (UserInfoProviderMock(), aUser),
+                                 (nil, nil), (nil, UserInfoProviderMock()),
+                                 (UserInfoProviderMock(), nil), (UserInfoProviderMock(), UserInfoProviderMock())]
                                     .forEach { prefA, prefB in
                                         iamModule.registerPreference(prefA)
                                         eventMatcher.wasClearNonPersistentEventsCalled = false // reset
@@ -378,25 +378,25 @@ class InAppMessagingModuleSpec: QuickSpec {
                         context("and module is not initialized") {
 
                             it("will register preference data") {
-                                let preference = IAMPreferenceBuilder().setUserId("user").build()
+                                let preference = UserInfoProviderMock(userID: "user")
                                 iamModule.registerPreference(preference)
-                                expect(preferenceRepository.preference?.hashValue).to(equal(preference.hashValue))
+                                expect(preferenceRepository.userInfoProvider).to(equal(preference))
                             }
 
                             it("will not refresh list of campaigns") {
-                                iamModule.registerPreference(IAMPreference())
+                                iamModule.registerPreference(UserInfoProviderMock())
                                 expect(campaignsListManager.wasRefreshListCalled).toAfterTimeout(beFalse())
                             }
 
                             it("will not reload campaigns repository cache") {
-                                iamModule.registerPreference(IAMPreference())
+                                iamModule.registerPreference(UserInfoProviderMock())
                                 expect(campaignRepository.wasLoadCachedDataCalled).to(beFalse())
                             }
 
                             it("will not reset dispatch queue even if new preference has different ids") {
-                                iamModule.registerPreference(IAMPreferenceBuilder().setUserId("user").build())
+                                iamModule.registerPreference(UserInfoProviderMock(userID: "user"))
                                 readyCampaignDispatcher.wasResetQueueCalled = false
-                                iamModule.registerPreference(IAMPreferenceBuilder().setUserId("user2").build())
+                                iamModule.registerPreference(UserInfoProviderMock(userID: "user2"))
                                 expect(readyCampaignDispatcher.wasResetQueueCalled).to(beFalse())
                             }
                         }
@@ -409,18 +409,18 @@ class InAppMessagingModuleSpec: QuickSpec {
                         }
 
                         it("will not register preference data") {
-                            let preference = IAMPreferenceBuilder().setUserId("user").build()
+                            let preference = UserInfoProviderMock(userID: "user")
                             iamModule.registerPreference(preference)
-                            expect(preferenceRepository.preference).toAfterTimeout(beNil())
+                            expect(preferenceRepository.userInfoProvider).toAfterTimeout(beNil())
                         }
 
                         it("will not refresh list of campaigns") {
-                            iamModule.registerPreference(IAMPreference())
+                            iamModule.registerPreference(UserInfoProviderMock())
                             expect(campaignsListManager.wasRefreshListCalled).toAfterTimeout(beFalse())
                         }
 
                         it("will not reload campaigns repository cache") {
-                            iamModule.registerPreference(IAMPreference())
+                            iamModule.registerPreference(UserInfoProviderMock())
                             expect(campaignRepository.wasLoadCachedDataCalled).to(beFalse())
                         }
                     }

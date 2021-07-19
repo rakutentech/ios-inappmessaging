@@ -15,7 +15,7 @@ class DisplayPermissionServiceSpec: QuickSpec {
         let campaign = TestHelpers.generateCampaign(id: "test")
 
         var service: DisplayPermissionService!
-        var preferenceRepository: IAMPreferenceRepository!
+        var preferenceRepository: AccountRepositoryType!
         var configurationRepository: ConfigurationRepository!
         var campaignRepository: CampaignRepositoryMock!
         var httpSession: URLSessionMock!
@@ -34,7 +34,7 @@ class DisplayPermissionServiceSpec: QuickSpec {
             beforeEach {
                 URLSessionMock.startMockingURLSession()
 
-                preferenceRepository = IAMPreferenceRepository()
+                preferenceRepository = AccountRepository()
                 campaignRepository = CampaignRepositoryMock()
                 configurationRepository = ConfigurationRepository()
                 configurationRepository.saveConfiguration(configData)
@@ -154,10 +154,7 @@ class DisplayPermissionServiceSpec: QuickSpec {
                 }
 
                 it("will send user preferences in the request") {
-                    preferenceRepository.setPreference(IAMPreferenceBuilder()
-                        .setRakutenId("rakutenId")
-                        .setUserId("userId")
-                        .build())
+                    preferenceRepository.setPreference(UserInfoProviderMock(userID: "userId", rakutenId: "rakutenId"))
 
                     sendRequestAndWaitForResponse()
 
@@ -169,9 +166,7 @@ class DisplayPermissionServiceSpec: QuickSpec {
                 }
 
                 it("will send required headers") {
-                    preferenceRepository.setPreference(IAMPreferenceBuilder()
-                        .setAccessToken("token")
-                        .build())
+                    preferenceRepository.setPreference(UserInfoProviderMock(idToken: "token"))
 
                     sendRequestAndWaitForResponse()
 

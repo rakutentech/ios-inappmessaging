@@ -124,9 +124,9 @@ Not all identifiers have to be provided.
 
 ```swift
 class AppUserInfoProvider: UserInfoProvider {
-    var provideRaeToken: String? { "27364827346" }
-    var provideUserId: String? { "testaccount@gmail.com" }
-    var provideRakutenId: String? { "testaccount" }
+    func provideIDToken -> String? { "27364827346" }
+    func provideUserId -> String? { "testaccount@gmail.com" }
+    func provideRakutenId -> String? { "testaccount" }
 }
 
 let preference = AppUserInfoProvider()

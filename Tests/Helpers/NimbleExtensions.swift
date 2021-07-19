@@ -1,4 +1,26 @@
 import Nimble
+@testable import RInAppMessaging
+
+func equal<T: UserInfoProvider>(_ expectedValue: T?) -> Predicate<T> {
+    func equal<T>(
+        _ expectedValue: T?,
+        by areEquivalent: @escaping (T, T) -> Bool
+    ) -> Predicate<T> {
+        return Predicate.define("equal <\(stringify(expectedValue))>") { actualExpression, msg in
+            let actualValue = try actualExpression.evaluate()
+            switch (expectedValue, actualValue) {
+            case (nil, _?):
+                return PredicateResult(status: .fail, message: msg.appendedBeNilHint())
+            case (_, nil):
+                return PredicateResult(status: .fail, message: msg)
+            case (let expected?, let actual?):
+                let matches = areEquivalent(expected, actual)
+                return PredicateResult(bool: matches, message: msg)
+            }
+        }
+    }
+    return equal(expectedValue, by: ==)
+}
 
 extension Expectation {
 

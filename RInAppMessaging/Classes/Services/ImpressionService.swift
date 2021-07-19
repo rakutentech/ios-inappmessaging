@@ -16,14 +16,14 @@ internal class ImpressionService: ImpressionServiceType, HttpRequestable, Analyt
         }
     }
 
-    private let preferenceRepository: IAMPreferenceRepository
+    private let preferenceRepository: AccountRepositoryType
     private let configurationRepository: ConfigurationRepositoryType
 
     weak var errorDelegate: ErrorDelegate?
     private(set) var httpSession: URLSession
     var bundleInfo = BundleInfo.self
 
-    init(preferenceRepository: IAMPreferenceRepository,
+    init(preferenceRepository: AccountRepositoryType,
          configurationRepository: ConfigurationRepositoryType) {
 
         self.preferenceRepository = preferenceRepository
