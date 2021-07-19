@@ -21,8 +21,7 @@ platform :ios do
       slack_only_on_failure: true,
       skip_slack: ENV['PREVIOUS_BUILD_STATUS'] == 'error', # var defined in Bitrise step
       output_types: 'json-compilation-database,html,junit',
-      output_files: 'compile_commands.json,report.html,report.junit',
-      xcargs: 'COMPILER_INDEX_STORE_ENABLE=NO') # see https://github.com/oclint/oclint/issues/462
+      output_files: 'compile_commands.json,report.html,report.junit')
 
     scan(
       clean: false,
@@ -34,8 +33,7 @@ platform :ios do
       slack_only_on_failure: true,
       skip_slack: ENV['PREVIOUS_BUILD_STATUS'] == 'error', # var defined in Bitrise step
       output_types: 'json-compilation-database,html,junit',
-      output_files: 'compile_commands.json,report.html,report.junit',
-      xcargs: 'COMPILER_INDEX_STORE_ENABLE=NO') # see https://github.com/oclint/oclint/issues/462
+      output_files: 'compile_commands.json,report.html,report.junit')
 
     lint_module
   end
