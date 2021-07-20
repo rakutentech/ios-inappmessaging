@@ -5,7 +5,7 @@
 	- Changed campaigns to not display when attached image cannot be downloaded. [SDKCF-3977]
 	- Changed campaigns to not display upon display permission request failure. [SDKCF-3976]
 	- Increased clickable area of the IAM close button "x". [SDKCF-3958]
-	- Fixed campaign view incorrectly horizontally scrollable on iPadOS in landscape orientation [SDKCF-4020]
+	- Fixed campaign view incorrectly being horizontally scrollable on iPad in landscape orientation [SDKCF-4020]
 
 ### 4.0.1 (2021-06-30)
 - Improvements:
