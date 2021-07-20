@@ -27,6 +27,7 @@ internal class UserDataCache: UserDataCacheable {
     @AtomicGetSet private var cachedContainers: CacheContainers
     private let persistedDataKey = "IAM_user_cache"
     private let isTestEnvironment = Bundle.tests != nil
+    private let isUITestsEnvironment = CommandLine.arguments.contains(UITestHelper.launchArgument)
 
     init(userDefaults: UserDefaults) {
         self.userDefaults = userDefaults
@@ -72,6 +73,9 @@ internal class UserDataCache: UserDataCacheable {
     }
 
     private func saveData() {
+        guard !isUITestsEnvironment else {
+            return
+        }
         do {
             let encodedData = try JSONEncoder().encode(cachedContainers)
             userDefaults.set(encodedData, forKey: persistedDataKey)

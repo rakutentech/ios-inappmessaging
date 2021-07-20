@@ -36,6 +36,12 @@ internal class ConfigurationManager: ConfigurationManagerType, TaskSchedulable {
     }
 
     func fetchAndSaveConfigData(completion: @escaping (ConfigData) -> Void) {
+        guard !CommandLine.arguments.contains(UITestHelper.launchArgument) else {
+            let result = UITestHelper.mockedGetConfigResponse
+            configurationRepository.saveConfiguration(result.data)
+            completion(result.data)
+            return
+        }
         let retryHandler: () -> Void = { [weak self] in
             self?.fetchAndSaveConfigData(completion: completion)
         }

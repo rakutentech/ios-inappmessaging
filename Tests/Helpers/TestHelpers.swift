@@ -459,6 +459,8 @@ struct TestHelpers {
     }
 }
 
+// MARK: - Extensions
+
 extension NSError {
     static var emptyError: Error {
         return NSError(domain: "", code: 0, userInfo: nil) as Error
