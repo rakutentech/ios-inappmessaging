@@ -38,7 +38,9 @@ internal class CampaignDispatcher: CampaignDispatcherType, TaskSchedulable {
         self.campaignRepository = campaignRepository
 
         let sessionConfig = URLSessionConfiguration.default
-        sessionConfig.timeoutIntervalForRequest = Constants.CampaignMessage.imageResourceRequestTimeoutSeconds
+        sessionConfig.timeoutIntervalForRequest = Constants.CampaignMessage.imageRequestTimeoutSeconds
+        sessionConfig.timeoutIntervalForResource = Constants.CampaignMessage.imageResourceTimeoutSeconds
+        sessionConfig.waitsForConnectivity = true
         sessionConfig.urlCache = URLCache(
             // response must be <= 5% of mem/disk cap in order to committed to cache
             memoryCapacity: URLCache.shared.memoryCapacity,
