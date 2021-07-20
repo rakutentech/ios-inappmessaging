@@ -2,8 +2,8 @@
 
 ### 4.0.2 (2021-07-20)
 - Improvements:
-	- Campaigns now do not display when image can't be downloaded. [SDKCF-3977]
-	- Campaign now do not display on display permission request failure. [SDKCF-3976]
+	- Changed campaigns to not display when image cannot be downloaded. [SDKCF-3977]
+	- Changed campaigns to not display upon display permission request failure. [SDKCF-3976]
 	- Increased clickable area of the IAM close button "x". [SDKCF-3958]
 
 ### 4.0.1 (2021-06-30)
