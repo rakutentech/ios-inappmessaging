@@ -126,10 +126,7 @@ class ImpressionServiceSpec: QuickSpec {
                 }
 
                 it("will send user preferences in the request") {
-                    preferenceRepository.setPreference(IAMPreferenceBuilder()
-                        .setRakutenId("rakutenId")
-                        .setUserId("userId")
-                        .build())
+                    preferenceRepository.setPreference(UserInfoProviderMock(userID: "userId", rakutenId: "rakutenId"))
 
                     sendRequestAndWaitForResponse()
 
@@ -142,9 +139,7 @@ class ImpressionServiceSpec: QuickSpec {
                 }
 
                 it("will send required headers") {
-                    preferenceRepository.setPreference(IAMPreferenceBuilder()
-                        .setAccessToken("token")
-                        .build())
+                    preferenceRepository.setPreference(UserInfoProviderMock(idToken: "token"))
 
                     sendRequestAndWaitForResponse()
 

@@ -83,7 +83,7 @@ class PublicAPISpec: QuickSpec {
                 RInAppMessaging.accessibilityCompatibleDisplay = true
                 RInAppMessaging.closeMessage(clearQueuedCampaigns: true)
                 RInAppMessaging.logEvent(LoginSuccessfulEvent())
-                RInAppMessaging.registerPreference(IAMPreferenceBuilder().setUserId("user").build())
+                RInAppMessaging.registerPreference(UserInfoProviderMock(userID: "user"))
             }
 
             it("will send an error if api methods are called prior to configure()") {
@@ -95,7 +95,7 @@ class PublicAPISpec: QuickSpec {
 
                 RInAppMessaging.closeMessage(clearQueuedCampaigns: true) // 1st error sent
                 RInAppMessaging.logEvent(LoginSuccessfulEvent()) // 2nd error sent
-                RInAppMessaging.registerPreference(IAMPreferenceBuilder().setUserId("user").build()) // 3rd error sent
+                RInAppMessaging.registerPreference(UserInfoProviderMock(userID: "user")) // 3rd error sent
                 expect(errorDelegate.totalErrorNumber).toEventually(equal(3))
             }
 
@@ -106,10 +106,7 @@ class PublicAPISpec: QuickSpec {
             }
 
             it("will register preference when registerPreference() is called") {
-                let preference = IAMPreferenceBuilder()
-                    .setUserId("userID")
-                    .setRakutenId("RID")
-                    .build()
+                let preference = UserInfoProviderMock(userID: "userID", rakutenId: "RID")
                 RInAppMessaging.registerPreference(preference)
                 expect(preferenceRepository.userInfoProvider).toEventually(equal(preference))
             }
@@ -380,7 +377,7 @@ class PublicAPISpec: QuickSpec {
                     expect(dataCache.getUserData(identifiers: [])?.campaignData?.first?.impressionsLeft)
                         .to(equal(1))
 
-                    RInAppMessaging.registerPreference(IAMPreferenceBuilder().setUserId("user").build())
+                    RInAppMessaging.registerPreference(UserInfoProviderMock(userID: "user"))
                     let identifiers = [UserIdentifier(type: .userId, identifier: "user")]
                     expect(dataCache.getUserData(identifiers: identifiers)?.campaignData?.first?.impressionsLeft)
                         .toEventually(equal(2)) // nil -> 2
@@ -393,7 +390,7 @@ class PublicAPISpec: QuickSpec {
                                            eventType: .loginSuccessful,
                                            eventName: "e1",
                                            attributes: [])])
-                    RInAppMessaging.registerPreference(IAMPreferenceBuilder().setUserId("").build())
+                    RInAppMessaging.registerPreference(UserInfoProviderMock(userID: ""))
                     RInAppMessaging.logEvent(LoginSuccessfulEvent())
                     expect(UIApplication.shared.keyWindow?.subviews).toEventually(containElementSatisfying({
                         $0 is BaseView
@@ -401,7 +398,7 @@ class PublicAPISpec: QuickSpec {
                     expect(dataCache.getUserData(identifiers: [UserIdentifier(type: .userId, identifier: "")])?.campaignData?.first?.impressionsLeft)
                         .to(equal(1))
 
-                    RInAppMessaging.registerPreference(IAMPreferenceBuilder().setUserId("user").build())
+                    RInAppMessaging.registerPreference(UserInfoProviderMock(userID: "user"))
                     let identifiers = [UserIdentifier(type: .userId, identifier: "user")]
                     expect(dataCache.getUserData(identifiers: identifiers)?.campaignData?.first?.impressionsLeft)
                         .toEventually(equal(2)) // nil -> 2

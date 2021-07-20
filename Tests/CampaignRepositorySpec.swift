@@ -108,7 +108,7 @@ class CampaignRepositorySpec: QuickSpec {
                 }
 
                 it("will save updated list to the cache (logged-in user)") {
-                    preferenceRepository.setPreference(IAMPreferenceBuilder().setUserId("user").build())
+                    preferenceRepository.setPreference(UserInfoProviderMock(userID: "user"))
                     campaignRepository.syncWith(list: [testCampaign], timestampMilliseconds: 0)
                     expect(userCache?.campaignData).to(equal([testCampaign]))
                     expect(lastUserCache?.campaignData).to(equal(userCache?.campaignData))
@@ -133,7 +133,7 @@ class CampaignRepositorySpec: QuickSpec {
                 }
 
                 it("will save updated list to the cache (logged-in user)") {
-                    preferenceRepository.setPreference(IAMPreferenceBuilder().setUserId("user").build())
+                    preferenceRepository.setPreference(UserInfoProviderMock(userID: "user"))
                     campaignRepository.syncWith(list: [testCampaign], timestampMilliseconds: 0)
                     campaignRepository.optOutCampaign(testCampaign)
                     expect(userCache?.campaignData?.first?.isOptedOut).to(beTrue())
@@ -170,7 +170,7 @@ class CampaignRepositorySpec: QuickSpec {
                 }
 
                 it("will save updated list to the cache (logged-in user)") {
-                    preferenceRepository.setPreference(IAMPreferenceBuilder().setUserId("user").build())
+                    preferenceRepository.setPreference(UserInfoProviderMock(userID: "user"))
                     campaignRepository.syncWith(list: [testCampaign], timestampMilliseconds: 0)
                     campaignRepository.decrementImpressionsLeftInCampaign(id: testCampaign.id)
                     expect(userCache?.campaignData?.first?.impressionsLeft).to(equal(testCampaign.impressionsLeft - 1))
@@ -198,7 +198,7 @@ class CampaignRepositorySpec: QuickSpec {
                 }
 
                 it("will save updated list to the cache (logged-in user)") {
-                    preferenceRepository.setPreference(IAMPreferenceBuilder().setUserId("user").build())
+                    preferenceRepository.setPreference(UserInfoProviderMock(userID: "user"))
                     campaignRepository.syncWith(list: [testCampaign], timestampMilliseconds: 0)
                     campaignRepository.incrementImpressionsLeftInCampaign(id: testCampaign.id)
                     let userCache = userDataCache.cachedData[preferenceRepository.getUserIdentifiers()]

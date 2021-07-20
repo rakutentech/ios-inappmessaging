@@ -1,39 +1,21 @@
 @testable import RInAppMessaging
 
-class IAMPreference: UserInfoProvider {
-    var idToken: String?
+class UserInfoProviderMock: UserInfoProvider {
+    init(idToken: String? = nil, userID: String? = nil, rakutenId: String? = nil) {
+        self.idToken = idToken
+        self.userId = userID
+        self.rakutenId = rakutenId
+    }
+
+    private let idToken: String?
+    private let userId: String?
+    private let rakutenId: String?
+
+    // MARK: - UserInfoProvider
+
     func getIDToken() -> String? { idToken }
-    var userId: String?
     func getUserId() -> String? { userId }
-    var rakutenId: String?
     func getRakutenId() -> String? { rakutenId }
-}
-
-class IAMPreferenceBuilder {
-    private var preference: IAMPreference
-
-    init() {
-        self.preference = IAMPreference()
-    }
-
-    func setRakutenId(_ rakutenId: String?) -> Self {
-        self.preference.rakutenId = rakutenId
-        return self
-    }
-
-    func setUserId(_ userId: String?) -> Self {
-        self.preference.userId = userId
-        return self
-    }
-
-    func setAccessToken(_ accessToken: String?) -> Self {
-        self.preference.idToken = accessToken
-        return self
-    }
-
-    func build() -> IAMPreference {
-        self.preference
-    }
 }
 
 class CampaignsValidatorMock: CampaignsValidatorType {

@@ -44,9 +44,7 @@ class IdRegistrationSpec: QuickSpec {
             it("should have one matching id type and id value") {
 
                 RInAppMessaging.registerPreference(
-                    IAMPreferenceBuilder()
-                        .setUserId("whales and dolphins")
-                        .build()
+                    UserInfoProviderMock(userID: "whales and dolphins")
                 )
 
                 let expected = [UserIdentifier(type: .userId, identifier: "whales and dolphins")]
@@ -56,10 +54,7 @@ class IdRegistrationSpec: QuickSpec {
             it("should have two matching id type and id value") {
 
                 RInAppMessaging.registerPreference(
-                    IAMPreferenceBuilder()
-                        .setUserId("tigers and zebras")
-                        .setRakutenId("whales and dolphins")
-                        .build()
+                    UserInfoProviderMock(userID: "tigers and zebras", rakutenId: "whales and dolphins")
                 )
 
                 let expected = [UserIdentifier(type: .rakutenId, identifier: "whales and dolphins"),
