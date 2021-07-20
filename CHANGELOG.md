@@ -1,6 +1,6 @@
 ## Changelog
 
-### 4.0.2 (2021-07-20)
+### 4.0.2 (2021-07-21)
 - Improvements:
 	- Changed campaigns to not display when attached image cannot be downloaded. [SDKCF-3977]
 	- Changed campaigns to not display upon display permission request failure. [SDKCF-3976]
