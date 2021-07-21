@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>CHANGELOG  Reference</title>
+    <link rel="stylesheet" type="text/css" href="css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="js/jquery.min.js" defer></script>
+    <script src="js/jazzy.js" defer></script>
+    
+    <script src="js/lunr.min.js" defer></script>
+    <script src="js/typeahead.jquery.js" defer></script>
+    <script src="js/jazzy.search.js" defer></script>
+  </head>
+  <body>
+    <a title="CHANGELOG  Reference"></a>
+    <header>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+      <link rel="stylesheet" type="text/css" href="css/version-select.css" />
+      <script src="js/version-select.js" defer></script>
+      <script src="../versions.js"></script>
+      <div class="content-wrapper">
+        <p><a href="index.html">RInAppMessaging Docs</a></p>
+        <div class="version-dropdown">
+          <button onclick="toggleVersionSelect()" class="versionbtn">4.0.2 <i class="fa fa-caret-down"></i></button>
+          <div id="versions" class="version-dropdown-content"></div>
+        </div> 
+        <p class="header-right"><a href="https://github.com/rakutentech/ios-inappmessaging"><img src="img/gh.png"/>View on GitHub</a></p>
+        <p class="header-right">
+          <form role="search" action="search.json">
+            <input type="text" placeholder="Search documentation" data-typeahead>
+          </form>
+        </p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="index.html">RInAppMessaging Reference</a>
+        <img id="carat" src="img/carat.png" />
+        CHANGELOG  Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="Guides.html">Guides</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="changelog.html">CHANGELOG</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="deploy.html">DEPLOY</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="readme.html">README</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Classes/AppStartEvent.html">AppStartEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/CustomAttribute.html">CustomAttribute</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/CustomEvent.html">CustomEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Event.html">Event</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes.html#/c:@M@RInAppMessaging@objc(cs)IAMPreference">IAMPreference</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/IAMPreferenceBuilder.html">IAMPreferenceBuilder</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/LoginSuccessfulEvent.html">LoginSuccessfulEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/PurchaseSuccessfulEvent.html">PurchaseSuccessfulEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/RInAppMessaging.html">RInAppMessaging</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Enums.html">Enumerations</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Enums/Identification.html">Identification</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Protocols/RInAppMessagingDelegate.html">RInAppMessagingDelegate</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Protocols/RInAppMessagingErrorDelegate.html">RInAppMessagingErrorDelegate</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            
+            <h2 id='changelog' class='heading'>Changelog</h2>
+<h3 id='4-0-2-2021-07-21' class='heading'>4.0.2 (2021-07-21)</h3>
+
+<ul>
+<li>Improvements:
+
+<ul>
+<li>Changed campaigns to not display when attached image cannot be downloaded. [SDKCF-3977]</li>
+<li>Changed campaigns to not display upon display permission request failure. [SDKCF-3976]</li>
+<li>Increased clickable area of the IAM close button &ldquo;x&rdquo;. [SDKCF-3958]</li>
+<li>Fixed campaign view incorrectly being horizontally scrollable on iPad in landscape orientation [SDKCF-4020]</li>
+</ul></li>
+</ul>
+<h3 id='4-0-1-2021-06-30' class='heading'>4.0.1 (2021-06-30)</h3>
+
+<ul>
+<li>Improvements:
+
+<ul>
+<li>Added recommendation to README that apps should use a remote feature flag to enable/disable the SDK. [SDKCF-3938]</li>
+</ul></li>
+</ul>
+<h3 id='4-0-0-2021-06-22' class='heading'>4.0.0 (2021-06-22)</h3>
+
+<p><strong>Breaking change:</strong> Config API contract has changed and now requires the v2 GET endpoint. The SDK will not work with the v1 endpoint.</p>
+
+<ul>
+<li>Improvements:
+
+<ul>
+<li>Updated company name references. [SDKCF-3550]</li>
+<li>Added handling for getConfig response status codes 400 and 404. [SDKCF-3884]</li>
+<li>Changed Config API call to be a /GET with query params. This allows the backend to filter requests if required. [SDKCF-3652]</li>
+<li>Added handling for &ldquo;429 Too Many Requests&rdquo; response to Config/Ping API requests. When status code 429 is received by the SDK it will start expontential backoff (plus a random factor) retries to space out the requests to the backend. [SDKCF-3654]</li>
+<li>Campaign opt-out &amp; max impression tracking logic is now handled solely on client side. This change reduces the backend&rsquo;s load per request. [SDKCF-3656]</li>
+<li>Added support for rollout percentage value received in Config API response. This allows the backend to gradually increase campaign distribution. [SDKCF-3663]</li>
+<li>Added subscription key in Config API request header to enable better filtering of requests. [SDKCF-3716]</li>
+</ul></li>
+</ul><div class="aside aside-bug">
+    <p class="aside-title">Bug</p>
+    Bug fixes:
+
+<ul>
+<li>Removed canOpenURL check for redirect and deeplink buttons [SDKCF-3848]</li>
+<li>Fixed rarely occurring threading crashes in dependency manager by using a static queue for access. [SDKCF-3646]</li>
+</ul>
+
+</div>
+<h3 id='3-0-0-2021-02-10' class='heading'>3.0.0 (2021-02-10)</h3>
+
+<p><strong>Breaking change:</strong> Minimum supported iOS version is now 11.0 [SDKCF-3182]</p>
+
+<ul>
+<li>Status bar overlay in Full Screen campaigns is now present in all layout types. The color is adjusted to status bar style (dark or light) - this feature is available only on iOS 13+. [SDKCF-3203, SDKCF-3175]</li>
+<li>Added new API method to close campaign&rsquo;s message manually [SDKCF-3201]</li>
+<li>Improvements:
+
+<ul>
+<li>Added integration tests [SDKCF-3109]</li>
+<li>Moved CI from Travis to Bitrise</li>
+<li>Improved README [SDKCF-3062, SDKCF-3179]</li>
+<li>Improved Sample app secrets setup</li>
+<li>Reduced a chance for user to change screen when campaign is being displayed/animated [SDKCF-3027]</li>
+</ul></li>
+</ul><div class="aside aside-bug">
+    <p class="aside-title">Bug</p>
+    Bug fixes:
+
+<ul>
+<li>Fixed an issue when SDK localization files interfered with host app&rsquo;s localization [SDKCF-3139]</li>
+<li>Fixed campaign dispatch logic that might have caused an unwanted delay between messages [SDKCF-3007]</li>
+</ul>
+
+</div>
+<h3 id='2-1-0-2020-11-11' class='heading'>2.1.0 (2020-11-11)</h3>
+
+<ul>
+<li>Added a campaign&rsquo;s context feature - a phrase enclosed in square brackets added to the campaign&rsquo;s title. Campaigns with contexts can be optionally validated by implementing a new method from the SDK. Validation occurs before displaying the message and decides about showing that message or not. [SDKCF-2871]</li>
+<li>Improvements:
+
+<ul>
+<li>Updated the locale parameter format in backend http requests [SDKCF-2401]</li>
+<li>Improved unit tests code coverage [SDKCF-2245]</li>
+<li>Improved campaign synchronization logic [SDKCF-2467]</li>
+<li>Other minor improvements like: using xcconfig to set up secrets, Xcode 12 updates</li>
+</ul></li>
+</ul><div class="aside aside-bug">
+    <p class="aside-title">Bug</p>
+    Bug fixes:
+
+<ul>
+<li>Fixed a bug where bottom body margin in Modal campaigns layout was missing [SDKCF-2496]</li>
+<li>Full Screen campaign content is now not overlapping with system status bar [SDKCF-2444]</li>
+<li>Fixed an issue when UI was blocked because of no internet connection [SDKCF-2842]</li>
+<li>Fixed an issue when a user was able to see a message from previous user&rsquo;s cached data [SDKCF-2535]</li>
+</ul>
+
+</div>
+<h3 id='2-0-0-2020-06-30' class='heading'>2.0.0 (2020-06-30)</h3>
+
+<ul>
+<li>Initial open sourced release</li>
+<li>This version is a major refactor. Highlights include:
+
+<ul>
+<li>Improved maintainability, testability and error handling</li>
+<li>Removed 3rd party dependencies</li>
+<li>Added CI automation with Fastlane/travis</li>
+</ul></li>
+</ul>
+<h4 id='note-previous-sdk-versions-up-to-and-including-the-most-recently-published-version-1-4-0-were-named-code-inappmessaging-code' class='heading'>Note: Previous SDK versions up to and including the most recently published version 1.4.0 were named <code>InAppMessaging</code>.</h4>
+
+          </section>
+        </section>
+        <section id="footer">
+          <p>&copy; 2021 <a class="link" href="https://github.com/rakutentech/ios-inappmessaging" target="_blank" rel="external">Rakuten Group, Inc.</a>. All rights reserved. (Last updated: 2021-07-21)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.7</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>
