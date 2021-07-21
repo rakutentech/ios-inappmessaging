@@ -1,5 +1,12 @@
 ## Changelog
 
+### 4.0.2 (2021-07-21)
+- Improvements:
+	- Changed campaigns to not display when attached image cannot be downloaded. [SDKCF-3977]
+	- Changed campaigns to not display upon display permission request failure. [SDKCF-3976]
+	- Increased clickable area of the IAM close button "x". [SDKCF-3958]
+	- Fixed campaign view incorrectly being horizontally scrollable on iPad in landscape orientation [SDKCF-4020]
+
 ### 4.0.1 (2021-06-30)
 - Improvements:
     - Added recommendation to README that apps should use a remote feature flag to enable/disable the SDK. [SDKCF-3938]
