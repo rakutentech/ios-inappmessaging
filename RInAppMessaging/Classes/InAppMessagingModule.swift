@@ -99,7 +99,7 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
 
         if BundleInfo.applicationId?.starts(with: "jp.co.rakuten") == true, Bundle.tests == nil {
             assert(preference?.getIDToken() == nil || preference?.getIDToken() != nil && preference?.getUserId() != nil,
-                            "provideUserId must be present when provideRaeToken is specified")
+                            "userId must be present when idToken is specified")
         }
 
         preferenceRepository.setPreference(preference)
