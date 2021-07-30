@@ -97,8 +97,8 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
         }
 
         if BundleInfo.applicationId?.starts(with: "jp.co.rakuten") == true, Bundle.tests == nil {
-            assert(preference?.getIDToken() == nil || preference?.getIDToken() != nil && preference?.getUserId() != nil,
-                            "userId must be present when idToken is specified")
+            assert(preference?.getAuthToken() == nil || preference?.getAuthToken() != nil && preference?.getUserId() != nil,
+                            "userId must be present when authToken is specified")
         }
 
         preferenceRepository.setPreference(preference)

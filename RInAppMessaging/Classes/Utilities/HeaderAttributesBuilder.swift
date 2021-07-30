@@ -22,10 +22,10 @@ struct HeaderAttributesBuilder {
 
     @discardableResult
     mutating func addAccessToken(preferenceRepository: AccountRepositoryType) -> Bool {
-        guard let idToken = preferenceRepository.idToken else {
+        guard let authToken = preferenceRepository.userInfoProvider?.getAuthToken() else {
             return false
         }
-        addedHeaders.append(HeaderAttribute(key: Keys.authorization, value: "OAuth2 \(idToken)"))
+        addedHeaders.append(HeaderAttribute(key: Keys.authorization, value: "OAuth2 \(authToken)"))
         return true
     }
 

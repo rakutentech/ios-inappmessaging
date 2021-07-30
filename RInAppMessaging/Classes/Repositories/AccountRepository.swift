@@ -1,11 +1,7 @@
 /// Repository to hold `UserInfoProvider`.
 protocol AccountRepositoryType {
-    /// Access token from preference object.
-    /// - Returns: Access token as a string (Optional).
-    var idToken: String? { get }
     var userInfoProvider: UserInfoProvider? { get }
     var userInfoHash: UserInfoProvider? { get }
-//    var hasLogoutOrUserChanged: Bool { get }
 
     func getUserIdentifiers() -> [UserIdentifier]
 
@@ -29,14 +25,11 @@ extension AccountRepositoryType {
     }
 }
 
-class AccountRepository: AccountRepositoryType {
+final class AccountRepository: AccountRepositoryType {
     var userInfoProvider: UserInfoProvider?
     var userInfoHash: UserInfoProvider?
 
     // MARK: - AccountRepositoryType
-    var idToken: String? {
-        userInfoProvider?.getIDToken()
-    }
     func getUserIdentifiers() -> [UserIdentifier] {
         updateUserInfo()
         return userInfoProvider?.userIdentifiers ?? []

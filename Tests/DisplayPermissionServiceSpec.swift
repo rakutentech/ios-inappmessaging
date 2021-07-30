@@ -166,7 +166,7 @@ class DisplayPermissionServiceSpec: QuickSpec {
                 }
 
                 it("will send required headers") {
-                    preferenceRepository.setPreference(UserInfoProviderMock(idToken: "token"))
+                    preferenceRepository.setPreference(UserInfoProviderMock(authToken: "token"))
 
                     sendRequestAndWaitForResponse()
 

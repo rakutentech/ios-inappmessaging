@@ -118,15 +118,15 @@ A preference is what will allow IAM to identify users for targeting and segmenta
 3.  AccessToken - This is the token provided by the internal RAuthentication SDK as the "accessToken" value
 
 To help IAM identify users, please set a new preference every time a user changes their login state i.e. when they log in or log out.  
-After logout is complete please call  `registerPreference()` with nil parameter.  
+After logout is complete, please call `registerPreference()` with a `nil` parameter.  
 Not all identifiers have to be provided.  
-**NOTE:** For our internal users - for user targeting you must provide an accessToken. If you are setting an accessToken you must also provide associated userId in `UserInfoProvider`.
+**NOTE:** For our internal users - for user targeting you must provide an `authToken`. If you are setting an `authToken` you must also provide associated `userId` in `UserInfoProvider`.
 
 ```swift
 class AppUserInfoProvider: UserInfoProvider {
-    func provideIDToken -> String? { "27364827346" }
-    func provideUserId -> String? { "testaccount@gmail.com" }
-    func provideRakutenId -> String? { "testaccount" }
+    func getAuthToken() -> String? { "27364827346" }
+    func getUserId() -> String? { "testaccount@gmail.com" }
+    func getRakutenId() -> String? { "testaccount" }
 }
 
 let preference = AppUserInfoProvider()

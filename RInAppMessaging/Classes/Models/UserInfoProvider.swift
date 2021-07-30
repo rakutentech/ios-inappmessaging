@@ -5,11 +5,11 @@
 @objc public protocol UserInfoProvider {
 
     /**
-     * Only return ID token if user is logged in. Else return null.
+     * Only return auth token if user is logged in. Else return null.
      *
-     * @return String of ID token.
+     * @return String of auth token.
      */
-    func getIDToken() -> String?
+    func getAuthToken() -> String?
 
     /**
      * Only return user ID used when logging if user is logged in in the current session.
@@ -51,6 +51,7 @@ extension UserInfoProvider {
 }
 
 // MARK: - UserInfoProvider equality
+@inlinable
 func == (lhs: UserInfoProvider?, rhs: UserInfoProvider?) -> Bool {
     switch (lhs, rhs) {
     case let (l?, r?):
@@ -62,14 +63,17 @@ func == (lhs: UserInfoProvider?, rhs: UserInfoProvider?) -> Bool {
     }
 }
 
+@inlinable
 func != (lhs: UserInfoProvider?, rhs: UserInfoProvider?) -> Bool {
     !(lhs == rhs)
 }
 
+@inlinable
 func == (lhs: UserInfoProvider, rhs: UserInfoProvider) -> Bool {
     lhs.getRakutenId() == rhs.getRakutenId() && lhs.getUserId() == rhs.getUserId()
 }
 
+@inlinable
 func != (lhs: UserInfoProvider, rhs: UserInfoProvider) -> Bool {
     !(lhs == rhs)
 }

@@ -1,19 +1,19 @@
 @testable import RInAppMessaging
 
 class UserInfoProviderMock: UserInfoProvider {
-    init(idToken: String? = nil, userID: String? = nil, rakutenId: String? = nil) {
-        self.idToken = idToken
+    init(authToken: String? = nil, userID: String? = nil, rakutenId: String? = nil) {
+        self.authToken = authToken
         self.userId = userID
         self.rakutenId = rakutenId
     }
 
-    private let idToken: String?
+    private let authToken: String?
     private let userId: String?
     private let rakutenId: String?
 
     // MARK: - UserInfoProvider
 
-    func getIDToken() -> String? { idToken }
+    func getAuthToken() -> String? { authToken }
     func getUserId() -> String? { userId }
     func getRakutenId() -> String? { rakutenId }
 }
