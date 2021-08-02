@@ -89,6 +89,18 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         didSet {
             exitButton.invertedColors = hasImage
             imageView.isHidden = !hasImage
+            
+            if hasImage {
+                let high  = UIView()
+                high.backgroundColor = .yellow.withAlphaComponent(0.5)
+                
+                addSubview(high)
+                high.translatesAutoresizingMaskIntoConstraints = false
+                high.centerXAnchor.constraint(equalTo: exitButton.centerXAnchor).isActive = true
+                high.centerYAnchor.constraint(equalTo: exitButton.centerYAnchor).isActive = true
+                high.widthAnchor.constraint(equalToConstant: exitButton.bounds.width).isActive = true
+                high.heightAnchor.constraint(equalToConstant: exitButton.bounds.height).isActive = true
+            }
         }
     }
 
