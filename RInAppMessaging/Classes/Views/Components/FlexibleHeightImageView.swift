@@ -13,7 +13,7 @@ internal class FlexibleHeightImageView: UIImageView {
         let width = super.intrinsicContentSize.width
         let ratio = image.size.height / image.size.width
 
-        return CGSize(width: width, height: bounds.width * ratio)
+        return CGSize(width: width, height: bounds.width * ratio).integral
     }
 
     override func layoutSubviews() {
