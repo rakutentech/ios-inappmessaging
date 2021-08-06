@@ -55,7 +55,6 @@
 		45DA01AD23D5831900A27CC6 /* ConfigurationManagerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA01AC23D5831900A27CC6 /* ConfigurationManagerSpec.swift */; };
 		45EA720525B71FA2001B2049 /* UIApplicationExtensionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45EA720425B71FA2001B2049 /* UIApplicationExtensionSpec.swift */; };
 		45EA720D25B72002001B2049 /* UIViewExtensionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45EA720C25B72002001B2049 /* UIViewExtensionSpec.swift */; };
-		4B8F47C326B29ECA0029FA2E /* CoreGraphicsExtensionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B8F47C226B29ECA0029FA2E /* CoreGraphicsExtensionSpec.swift */; };
 		607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD51AFB9204008FA782 /* AppDelegate.swift */; };
 		607FACD81AFB9204008FA782 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD71AFB9204008FA782 /* ViewController.swift */; };
 		607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 607FACD91AFB9204008FA782 /* Main.storyboard */; };
@@ -139,7 +138,6 @@
 		45DA01AC23D5831900A27CC6 /* ConfigurationManagerSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationManagerSpec.swift; sourceTree = "<group>"; };
 		45EA720425B71FA2001B2049 /* UIApplicationExtensionSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIApplicationExtensionSpec.swift; sourceTree = "<group>"; };
 		45EA720C25B72002001B2049 /* UIViewExtensionSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewExtensionSpec.swift; sourceTree = "<group>"; };
-		4B8F47C226B29ECA0029FA2E /* CoreGraphicsExtensionSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreGraphicsExtensionSpec.swift; sourceTree = "<group>"; };
 		607FACD01AFB9204008FA782 /* RInAppMessaging_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RInAppMessaging_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACD41AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		607FACD51AFB9204008FA782 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -286,7 +284,6 @@
 				45ADA53D247CFE9E00A9E2A3 /* ConfigurationRepositorySpec.swift */,
 				459B227B245289F300D218CE /* ConfigurationServiceSpec.swift */,
 				D9F418282110FD9F00E2158F /* ConfigurationSpec.swift */,
-				4B8F47C226B29ECA0029FA2E /* CoreGraphicsExtensionSpec.swift */,
 				459DE86B2407B5750002F451 /* CustomEventSpec.swift */,
 				45491058247F58660019864D /* CustomAttributeSpec.swift */,
 				4516601123CD411300310181 /* DependencyManagerSpec.swift */,
@@ -534,7 +531,6 @@
 				459B228024528A6900D218CE /* ImpressionServiceSpec.swift in Sources */,
 				4557A8B1257E544C00C9D241 /* IAMPreferenceSpec.swift in Sources */,
 				451E93A2248E3D3D00545D6B /* NimbleExtensions.swift in Sources */,
-				4B8F47C326B29ECA0029FA2E /* CoreGraphicsExtensionSpec.swift in Sources */,
 				D911DC4F211115730082B950 /* ConfigurationSpec.swift in Sources */,
 				45563B03240614AE004EAFD3 /* ReadyCampaignDispatcherSpec.swift in Sources */,
 				456FE1E924288C6500304872 /* CampaignTriggerAgentSpec.swift in Sources */,
