@@ -6,7 +6,7 @@ import UIKit
 internal class FlexibleHeightImageView: UIImageView {
 
     override var intrinsicContentSize: CGSize {
-        guard let image = image, contentMode == .scaleAspectFit else {
+        guard let image = image, contentMode == .scaleAspectFill else {
             return super.intrinsicContentSize
         }
 
