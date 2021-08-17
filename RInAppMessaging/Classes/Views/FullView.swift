@@ -135,7 +135,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
 
         if let image = viewModel.image {
             hasImage = true
-            imageView.contentMode = .scaleAspectFit
+            imageView.contentMode = .scaleAspectFill
             imageView.image = image
         } else {
             hasImage = false
