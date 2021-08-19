@@ -40,7 +40,7 @@ internal enum Constants {
 
     enum RAnalytics {
         static let impressions = "InAppMessaging_impressions"
-        static let events = "InAppMessaging_events"
+        static let loggedEvent = "InAppMessaging_triggeredEvent"
     }
 
     enum Retry {
