@@ -77,7 +77,7 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
             return
         }
 
-        sendEventName(Constants.RAnalytics.events, event.analyticsParameters)
+        sendEventName(Constants.RAnalytics.loggedEvent, event.analyticsParameters)
 
         guard isInitialized else {
             // Events that were logged after first getConfig request failed,
