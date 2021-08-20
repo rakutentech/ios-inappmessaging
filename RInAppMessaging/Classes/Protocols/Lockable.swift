@@ -1,3 +1,5 @@
+import Foundation
+
 /// Protocol to mark object that have resources that can be thread locked
 internal protocol Lockable {
     var resourcesToLock: [LockableResource] { get }

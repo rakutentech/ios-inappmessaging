@@ -1,8 +1,10 @@
+import Foundation
+
 /// This wrapper ensures synchronized access to the value only for getter and setter.
 /// Mutating functions, subscript, incrementation etc. are not synchronized by default -
 /// use `mutate` function to ensure operation atomicity.
 @propertyWrapper
-struct AtomicGetSet<Value> {
+class AtomicGetSet<Value> {
     private let queue = PropertyQueueGenerator.spawnQueue(domain: "IAM.AtomicProperty")
     private var value: Value
 
@@ -15,12 +17,12 @@ struct AtomicGetSet<Value> {
             return queue.sync { value }
         }
         set {
-            queue.sync { value = newValue }
+            queue.sync(flags: .barrier) { value = newValue }
         }
     }
 
-    mutating func mutate(_ mutation: (inout Value) -> Void) {
-        queue.sync {
+    func mutate(_ mutation: (inout Value) -> Void) {
+        queue.sync(flags: .barrier) {
             mutation(&value)
         }
     }
@@ -31,6 +33,6 @@ private struct PropertyQueueGenerator {
 
     static func spawnQueue(domain: String) -> DispatchQueue {
         lastQueueNumber += 1
-        return DispatchQueue(label: domain + "\(lastQueueNumber))")
+        return DispatchQueue(label: domain + "\(lastQueueNumber))", attributes: .concurrent)
     }
 }
