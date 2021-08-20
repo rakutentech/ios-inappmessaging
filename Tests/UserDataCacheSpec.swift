@@ -92,11 +92,15 @@ class UserDataCacheSpec: QuickSpec {
                     var queue1IsDone = false
                     var queue2IsDone = false
                     queue1.async {
-                        userCache.cacheCampaignData([], userIdentifiers: [])
+                        for _ in 1...1000 {
+                            userCache.cacheCampaignData([], userIdentifiers: [])
+                        }
                         DispatchQueue.main.async { queue1IsDone = true }
                     }
                     queue2.async {
-                        userCache.cacheCampaignData([], userIdentifiers: [])
+                        for _ in 1...1000 {
+                            userCache.cacheCampaignData([], userIdentifiers: [])
+                        }
                         DispatchQueue.main.async { queue2IsDone = true }
                     }
                     expect(queue1IsDone).toEventually(beTrue())
