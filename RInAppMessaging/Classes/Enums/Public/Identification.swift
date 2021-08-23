@@ -1,5 +1,5 @@
-@objc public enum Identification: Int, Codable {
+internal enum Identification: Int, Codable {
     case rakutenId = 1
-    case easyId
+    case idTrackingIdentifier
     case userId
 }

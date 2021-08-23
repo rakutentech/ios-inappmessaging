@@ -6,6 +6,7 @@
     }
     var rakutenId: String?
     var userId: String?
+    var idTrackingIdentifier: String?
     var accessToken: String?
 
     internal func diff(_ otherPreference: IAMPreference?) -> [Field] {
@@ -17,6 +18,9 @@
             diff.append(.userId)
         }
         if otherPreference?.accessToken != accessToken {
+            diff.append(.accessToken)
+        }
+        if otherPreference?.idTrackingIdentifier != idTrackingIdentifier {
             diff.append(.accessToken)
         }
 

@@ -157,14 +157,16 @@ class DisplayPermissionServiceSpec: QuickSpec {
                     preferenceRepository.setPreference(IAMPreferenceBuilder()
                         .setRakutenId("rakutenId")
                         .setUserId("userId")
+                        .setIDTrackingIdentifier("identity")
                         .build())
 
                     sendRequestAndWaitForResponse()
 
                     let request = httpSession.decodeSentData(modelType: DisplayPermissionRequest.self)
 
-                    expect(request?.userIdentifiers).to(equal([
+                    expect(request?.userIdentifiers).to(elementsEqualOrderAgnostic([
                         UserIdentifier(type: .rakutenId, identifier: "rakutenId"),
+                        UserIdentifier(type: .idTrackingIdentifier, identifier: "identity"),
                         UserIdentifier(type: .userId, identifier: "userId")]))
                 }
 

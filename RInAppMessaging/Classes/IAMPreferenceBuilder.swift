@@ -26,10 +26,18 @@
     }
 
     @objc @discardableResult
+    public func setIDTrackingIdentifier(_ idTrackingIdentifier: String?) -> IAMPreferenceBuilder {
+        self.preference.idTrackingIdentifier = idTrackingIdentifier
+        return self
+    }
+
+    @objc @discardableResult
     public func build() -> IAMPreference {
         if BundleInfo.applicationId?.starts(with: "jp.co.rakuten") == true, Bundle.tests == nil {
             assert(preference.accessToken == nil || preference.accessToken != nil && preference.userId != nil,
                    "userId must be present when accessToken is specified")
+            assert(!(preference.idTrackingIdentifier != nil && preference.accessToken != nil),
+                   "accessToken and idTrackingIdentifier shouldn't be used at the same time")
         }
         return self.preference
     }
