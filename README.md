@@ -128,7 +128,7 @@ let preference = IAMPreferenceBuilder()
     .setUserId("testaccount@gmail.com")
     .setRakutenId("testaccount")
     .setAccessToken("27364827346")
-    .setIDTrackingIdentifier("998236")
+    // .setIDTrackingIdentifier("998236")
     .build()
 
 RInAppMessaging.registerPreference(preference)
