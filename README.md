@@ -121,7 +121,7 @@ A preference is what will allow IAM to identify users for targeting and segmenta
 To help IAM identify users, please set a new preference every time a user changes their login state i.e. when they log in or log out.  
 After logout is complete please call  `registerPreference()` with nil parameter.  
 Not all identifiers have to be provided.  
-**NOTE:** For our internal users - for user targeting you must provide an accessToken. If you are setting an accessToken you must also provide associated userId in `IAMPreference`. Setting accessToken and idTrackingIdentifier at the same time may lead to unwanted behaviour.
+**NOTE:** For our internal users - to enable user targeting when you are using the internal RAuthentication SDK, you must provide an accessToken along with associated userId in `IAMPreferenceBuilder`.
 
 ```swift
 let preference = IAMPreferenceBuilder()
