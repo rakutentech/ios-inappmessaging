@@ -2,7 +2,7 @@
 /// identifiers such as User ID.
 @objc public class IAMPreference: NSObject {
     internal enum Field {
-        case rakutenId, userId, accessToken
+        case rakutenId, userId, accessToken, idTrackingIdentifier
     }
     var rakutenId: String?
     var userId: String?
@@ -21,7 +21,7 @@
             diff.append(.accessToken)
         }
         if otherPreference?.idTrackingIdentifier != idTrackingIdentifier {
-            diff.append(.accessToken)
+            diff.append(.idTrackingIdentifier)
         }
 
         return diff
