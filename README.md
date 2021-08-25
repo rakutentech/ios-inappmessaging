@@ -46,9 +46,9 @@ We recommend, as good engineering practice, that you integrate with a remote con
 The SDK provides 3 public methods for the host applications to use:
 
 1. `configure()`
-2. `logEvent()`
-3. `registerPreference()`
-4. `closeMessage()`
+1. `logEvent()`
+1. `registerPreference()`
+1. `closeMessage()`
 
 ### **configure()**  
 This method initializes the SDK and should be placed in your AppDelegate's `didFinishLaunchingWithOptions`.
@@ -114,25 +114,46 @@ RInAppMessaging.logEvent(CustomEvent(withName: "any_event_name_here", withCustom
 A preference is what will allow IAM to identify users for targeting and segmentation. At the moment, IAM will take in any of the following identifiers:
 
 1.  RakutenID - Any value that is considered by the app as user identifier.
-2.  UserID - The ID when registering a Rakuten account. e.g. an email address
-2.  IDTrackingIdentifier - The value provided by the internal identity SDK as the "tracking identifier" value.
-3.  AccessToken - This is the token provided by the internal RAuthentication SDK as the "accessToken" value
+1.  UserID - The ID when registering a Rakuten account. e.g. an email address
+1.  IDTrackingIdentifier - The value provided by the internal identity SDK as the "tracking identifier" value.
+1.  AccessToken - This is the token provided by the internal RAuthentication SDK as the "accessToken" value
 
 To help IAM identify users, please set a new preference every time a user changes their login state i.e. when they log in or log out.  
 After logout is complete please call  `registerPreference()` with nil parameter.  
-Not all identifiers have to be provided.  
-**NOTE:** For our internal users - to enable user targeting when you are using the internal RAuthentication SDK, you must provide an accessToken along with associated userId in `IAMPreferenceBuilder`.
+Not all identifiers have to be provided.
+
+#### Using the internal RAuthentication SDK
+To enable user targeting, you must provide an accessToken along with associated userId in `IAMPreferenceBuilder`.
 
 ```swift
 let preference = IAMPreferenceBuilder()
     .setUserId("testaccount@gmail.com")
-    .setRakutenId("testaccount")
     .setAccessToken("27364827346")
-    // .setIDTrackingIdentifier("998236")
     .build()
 
 RInAppMessaging.registerPreference(preference)
 ```
+
+#### Using the internal Identity SDK
+
+```swift
+let preference = IAMPreferenceBuilder()
+    .setIDTrackingIdentifier("998236")
+    .build()
+
+RInAppMessaging.registerPreference(preference)
+```
+
+#### Generic example using RakutenID
+
+```swift
+let preference = IAMPreferenceBuilder()
+    .setRakutenId("testaccount")
+    .build()
+
+RInAppMessaging.registerPreference(preference)
+```
+
 
 ### **closeMessage()**
 
@@ -242,6 +263,7 @@ Campaign impressions (displays) are counted locally for each user. Meaning that 
   * Ensure you provide *userId* or *rakutenId* or *idTrackingIdentifier* in `IAMPreference`.
   * If you set an *accessToken* you **must also** provide associated *userId*. (Rakuten developers only)
   * Ensure you are not providing *accessToken* and *idTrackingIdentifier* at the same time. (Rakuten developers only)
+  * IAM SDK is not able to verify if provided accessToken is invalid or not matching userId.
 * Status bar characters and icons are not visible when Full-Screen campaign is presented
   * If your app is running on iOS version below 13.0 you need to either change background color of the campaign or set proper `preferredStatusbarStyle` in the top-most view controller. (for iOS versions above 13.0 this issue is handled internally by the SDK)
 
