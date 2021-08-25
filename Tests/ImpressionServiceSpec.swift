@@ -129,6 +129,7 @@ class ImpressionServiceSpec: QuickSpec {
                     preferenceRepository.setPreference(IAMPreferenceBuilder()
                         .setRakutenId("rakutenId")
                         .setUserId("userId")
+                        .setIDTrackingIdentifier("identity")
                         .build())
 
                     sendRequestAndWaitForResponse()
@@ -136,8 +137,9 @@ class ImpressionServiceSpec: QuickSpec {
                     expect(httpSession.decodeSentData(modelType: ImpressionRequest.self))
                         .toEventuallyNot(beNil())
                     let request = httpSession.decodeSentData(modelType: ImpressionRequest.self)
-                    expect(request?.userIdentifiers).to(equal([
+                    expect(request?.userIdentifiers).to(elementsEqualOrderAgnostic([
                         UserIdentifier(type: .rakutenId, identifier: "rakutenId"),
+                        UserIdentifier(type: .idTrackingIdentifier, identifier: "identity"),
                         UserIdentifier(type: .userId, identifier: "userId")]))
                 }
 

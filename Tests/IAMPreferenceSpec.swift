@@ -43,6 +43,53 @@ class IAMPreferenceSpec: QuickSpec {
                     expect(diff).to(beEmpty())
                 }
             }
+
+            context("when calling build()") {
+
+                it("will populate all IAMPreference properties") {
+                    let preference = IAMPreferenceBuilder()
+                        .setUserId("userId")
+                        .setRakutenId("rakutenId")
+                        .setAccessToken("accessToken")
+                        .setIDTrackingIdentifier("id")
+                        .build()
+
+                    expect(preference.accessToken).to(equal("accessToken"))
+                    expect(preference.userId).to(equal("userId"))
+                    expect(preference.rakutenId).to(equal("rakutenId"))
+                    expect(preference.idTrackingIdentifier).to(equal("id"))
+                }
+
+                it("will contain nil properties for empty preference") {
+                    let preference = IAMPreferenceBuilder().build()
+                    expect(preference.accessToken).to(beNil())
+                    expect(preference.userId).to(beNil())
+                    expect(preference.rakutenId).to(beNil())
+                    expect(preference.idTrackingIdentifier).to(beNil())
+                }
+
+                context("and assertions are checked") {
+                    it("will thow an error if accessToken was specified without userId (for Rakuten apps)") {
+                        let builder = IAMPreferenceBuilder().setAccessToken("access-token")
+                        expect(builder.checkAssertions()).to(throwAssertion())
+                    }
+
+                    it("will thow an error if accessToken was specified with empty userId (for Rakuten apps)") {
+                        let builder = IAMPreferenceBuilder().setAccessToken("access-token").setUserId("")
+                        expect(builder.checkAssertions()).to(throwAssertion())
+                    }
+
+                    it("will thow an error if accessToken was specified with idTrackingIdentifier (for Rakuten apps)") {
+                        let builder = IAMPreferenceBuilder().setAccessToken("access-token").setIDTrackingIdentifier("tracking-id")
+                        expect(builder.checkAssertions()).to(throwAssertion())
+                    }
+
+                    it("will not thow an error for empty preference") {
+                        let builder = IAMPreferenceBuilder()
+                        expect(builder.checkAssertions()).toNot(throwAssertion())
+                    }
+                }
+            }
         }
     }
 }

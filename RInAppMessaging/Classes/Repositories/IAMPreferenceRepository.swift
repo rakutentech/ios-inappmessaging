@@ -30,6 +30,12 @@ internal class IAMPreferenceRepository {
             )
         }
 
+        if let idTrackingIdentifier = preference.idTrackingIdentifier {
+            userIdentifiers.append(
+                UserIdentifier(type: .idTrackingIdentifier, identifier: idTrackingIdentifier)
+            )
+        }
+
         return userIdentifiers
     }
 
