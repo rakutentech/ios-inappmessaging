@@ -44,7 +44,7 @@
     }
 
     /// Builds `IAMPreference` object with provided user data.
-    /// Note: “Throws an assertion in debug mode when the preference id setter requirements are not met.
+    /// Note: Throws an assertion in debug mode when the preference id setter requirements are not met.
     /// See [setAccessToken](x-source-tag://setAccessToken) and [setIDTrackingIdentifier](x-source-tag://setIDTrackingIdentifier).
     /// - Returns: `IAMPreference` object to be used with `registerPreference()` method.
     @objc @discardableResult

@@ -148,7 +148,7 @@ RInAppMessaging.registerPreference(preference)
 
 ```swift
 let preference = IAMPreferenceBuilder()
-    .setRakutenId("testaccount")
+    .setRakutenId("my-service-specific-id")
     .build()
 
 RInAppMessaging.registerPreference(preference)

@@ -52,7 +52,7 @@ class IAMPreferenceSpec: QuickSpec {
                         .setRakutenId("rakutenId")
                         .setAccessToken("accessToken")
                         .setIDTrackingIdentifier("id")
-                        .build() // using mocked .build() to allow accessToken and idTrackingIdentifier to be set together
+                        .build()
 
                     expect(preference.accessToken).to(equal("accessToken"))
                     expect(preference.userId).to(equal("userId"))
