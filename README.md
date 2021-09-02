@@ -37,8 +37,6 @@ To use the module you must set the following values in your app's `Info.plist`:
 | `InAppMessagingAppSubscriptionID` | your_subscription_key |
 | `InAppMessagingConfigurationURL` | Endpoint for fetching the configuration |
 
-⚠️ Targeted campaigns not showing? When using the staging dashboard and internal RAuthentication/Identity SDK's staging environment, you must specify the corresponding staging values here.
-
 
 ## **Enable and disable the SDK remotely**
 We recommend, as good engineering practice, that you integrate with a remote config service so that you can fetch a feature flag, e.g. `Enable_IAM_SDK`, and use its value to dynamically enable/disable the SDK without making an app release. There are many remote config services on the market, both free and paid.
