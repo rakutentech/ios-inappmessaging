@@ -111,38 +111,16 @@ RInAppMessaging.logEvent(CustomEvent(withName: "any_event_name_here", withCustom
 
 ### **registerPreference()**
 
-A preference is what will allow IAM to identify users for targeting and segmentation. At the moment, IAM will take in any of the following identifiers:
+A preference is what will allow IAM to identify users for targeting and segmentation. At the moment, IAM will take in any of the following identifiers (not all need to be provided):
 
 1.  RakutenID - Any value that is considered by the app as user identifier.
 1.  UserID - The ID when registering a Rakuten account. e.g. an email address
-1.  IDTrackingIdentifier - The value provided by the internal identity SDK as the "tracking identifier" value.
+1.  IDTrackingIdentifier - The value provided by the internal ID SDK as the "tracking identifier" value.
 1.  AccessToken - This is the token provided by the internal RAuthentication SDK as the "accessToken" value
 
 To help IAM identify users, please set a new preference every time a user changes their login state i.e. when they log in or log out.  
 After logout is complete please call  `registerPreference()` with nil parameter.  
-Not all identifiers have to be provided.
-
-#### Using the internal RAuthentication SDK
-To enable user targeting, you must provide an accessToken along with associated userId in `IAMPreferenceBuilder`.
-
-```swift
-let preference = IAMPreferenceBuilder()
-    .setUserId("testaccount@gmail.com")
-    .setAccessToken("27364827346")
-    .build()
-
-RInAppMessaging.registerPreference(preference)
-```
-
-#### Using the internal Identity SDK
-
-```swift
-let preference = IAMPreferenceBuilder()
-    .setIDTrackingIdentifier("998236")
-    .build()
-
-RInAppMessaging.registerPreference(preference)
-```
+Preferences are not persisted so this function needs to be called on every launch.
 
 #### Generic example using RakutenID
 
