@@ -1,0 +1,208 @@
+{
+  "warnings": [
+    {
+      "file": "/Users/vagrant/git/RInAppMessaging/Classes/Enums/Public/Identification.swift",
+      "line": 3,
+      "symbol": "Identification.rakutenId",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/vagrant/git/RInAppMessaging/Classes/Enums/Public/Identification.swift",
+      "line": 4,
+      "symbol": "Identification.idTrackingIdentifier",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/vagrant/git/RInAppMessaging/Classes/Enums/Public/Identification.swift",
+      "line": 5,
+      "symbol": "Identification.userId",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/vagrant/git/RInAppMessaging/Classes/Events/AppStartEvent.swift",
+      "line": 13,
+      "symbol": "AppStartEvent.init()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/vagrant/git/RInAppMessaging/Classes/Events/AppStartEvent.swift",
+      "line": 24,
+      "symbol": "AppStartEvent.init(from:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/vagrant/git/RInAppMessaging/Classes/Events/AppStartEvent.swift",
+      "line": 28,
+      "symbol": "AppStartEvent.encode(to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/vagrant/git/RInAppMessaging/Classes/Events/CustomEvent.swift",
+      "line": 21,
+      "symbol": "CustomEvent.init(withName:withCustomAttributes:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/vagrant/git/RInAppMessaging/Classes/Events/CustomEvent.swift",
+      "line": 41,
+      "symbol": "CustomEvent.init(from:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/vagrant/git/RInAppMessaging/Classes/Events/CustomEvent.swift",
+      "line": 45,
+      "symbol": "CustomEvent.encode(to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/vagrant/git/RInAppMessaging/Classes/Events/CustomEvent.swift",
+      "line": 49,
+      "symbol": "CustomEvent.isEqual(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/vagrant/git/RInAppMessaging/Classes/Events/Event.swift",
+      "line": 32,
+      "symbol": "Event.isEqual(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/vagrant/git/RInAppMessaging/Classes/Events/Event.swift",
+      "line": 40,
+      "symbol": "Event.hash",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/vagrant/git/RInAppMessaging/Classes/Events/LoginSuccessfulEvent.swift",
+      "line": 13,
+      "symbol": "LoginSuccessfulEvent.init()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/vagrant/git/RInAppMessaging/Classes/Events/LoginSuccessfulEvent.swift",
+      "line": 24,
+      "symbol": "LoginSuccessfulEvent.init(from:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/vagrant/git/RInAppMessaging/Classes/Events/LoginSuccessfulEvent.swift",
+      "line": 28,
+      "symbol": "LoginSuccessfulEvent.encode(to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/vagrant/git/RInAppMessaging/Classes/Events/PurchaseSuccessfulEvent.swift",
+      "line": 38,
+      "symbol": "PurchaseSuccessfulEvent.init()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/vagrant/git/RInAppMessaging/Classes/Events/PurchaseSuccessfulEvent.swift",
+      "line": 60,
+      "symbol": "PurchaseSuccessfulEvent.init(from:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/vagrant/git/RInAppMessaging/Classes/Events/PurchaseSuccessfulEvent.swift",
+      "line": 64,
+      "symbol": "PurchaseSuccessfulEvent.encode(to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/vagrant/git/RInAppMessaging/Classes/Events/PurchaseSuccessfulEvent.swift",
+      "line": 69,
+      "symbol": "PurchaseSuccessfulEvent.setPurchaseAmount(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/vagrant/git/RInAppMessaging/Classes/Events/PurchaseSuccessfulEvent.swift",
+      "line": 75,
+      "symbol": "PurchaseSuccessfulEvent.setNumberOfItems(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/vagrant/git/RInAppMessaging/Classes/Events/PurchaseSuccessfulEvent.swift",
+      "line": 81,
+      "symbol": "PurchaseSuccessfulEvent.setCurrencyCode(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/vagrant/git/RInAppMessaging/Classes/Events/PurchaseSuccessfulEvent.swift",
+      "line": 87,
+      "symbol": "PurchaseSuccessfulEvent.setItemList(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/vagrant/git/RInAppMessaging/Classes/IAMPreferenceBuilder.swift",
+      "line": 6,
+      "symbol": "IAMPreferenceBuilder.init()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/vagrant/git/RInAppMessaging/Classes/Models/CustomAttribute.swift",
+      "line": 17,
+      "symbol": "CustomAttribute.init(withKeyName:withStringValue:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/vagrant/git/RInAppMessaging/Classes/Models/CustomAttribute.swift",
+      "line": 24,
+      "symbol": "CustomAttribute.init(withKeyName:withIntValue:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/vagrant/git/RInAppMessaging/Classes/Models/CustomAttribute.swift",
+      "line": 31,
+      "symbol": "CustomAttribute.init(withKeyName:withDoubleValue:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/vagrant/git/RInAppMessaging/Classes/Models/CustomAttribute.swift",
+      "line": 38,
+      "symbol": "CustomAttribute.init(withKeyName:withBoolValue:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/vagrant/git/RInAppMessaging/Classes/Models/CustomAttribute.swift",
+      "line": 45,
+      "symbol": "CustomAttribute.init(withKeyName:withTimeInMilliValue:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/vagrant/git/RInAppMessaging/Classes/Models/CustomAttribute.swift",
+      "line": 51,
+      "symbol": "CustomAttribute.isEqual(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    }
+  ],
+  "source_directory": "/Users/vagrant/git"
+}
