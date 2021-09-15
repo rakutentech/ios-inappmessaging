@@ -1,5 +1,16 @@
 ## Changelog
 
+### 5.0.0 (2021-09-15)
+**Breaking change:** Changed public `Identification` enum member `easyId` to `idTrackingIdentifier`.
+- Features:
+	- Added support for ID tracking identifier. [SDKCF-4072]
+- Improvements:
+	- Modified AtomicGetSet wrapper to use a concurrent queue with barrier to ensure safe writes.
+	- Increased HTTP resource request timeouts to more reasonable values.
+	- Added [mobsfscan](https://github.com/MobSF/mobsfscan) automatic code scanning for security issues.
+- Bug fixes:
+	- Fixed large image display issue in campaigns. [SDKCF-4022]
+
 ### 4.0.2 (2021-07-21)
 - Improvements:
 	- Changed campaigns to not display when attached image cannot be downloaded. [SDKCF-3977]
