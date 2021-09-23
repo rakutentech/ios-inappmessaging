@@ -1,10 +1,10 @@
 /// Class represents bootstrap behaviour and main functionality of InAppMessaging.
 internal class InAppMessagingModule: AnalyticsBroadcaster,
-    ErrorDelegate, CampaignDispatcherDelegate {
+    ErrorDelegate, CampaignDispatcherDelegate, UserChangeObserver {
 
     private var configurationManager: ConfigurationManagerType
     private var campaignsListManager: CampaignsListManagerType
-    private let preferenceRepository: IAMPreferenceRepository
+    private let accountRepository: AccountRepositoryType
     private let eventMatcher: EventMatcherType
     private var readyCampaignDispatcher: CampaignDispatcherType
     private var impressionService: ImpressionServiceType
@@ -23,7 +23,7 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
     init(configurationManager: ConfigurationManagerType,
          campaignsListManager: CampaignsListManagerType,
          impressionService: ImpressionServiceType,
-         preferenceRepository: IAMPreferenceRepository,
+         accountRepository: AccountRepositoryType,
          eventMatcher: EventMatcherType,
          readyCampaignDispatcher: CampaignDispatcherType,
          campaignTriggerAgent: CampaignTriggerAgentType,
@@ -33,7 +33,7 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
 
         self.configurationManager = configurationManager
         self.campaignsListManager = campaignsListManager
-        self.preferenceRepository = preferenceRepository
+        self.accountRepository = accountRepository
         self.eventMatcher = eventMatcher
         self.readyCampaignDispatcher = readyCampaignDispatcher
         self.impressionService = impressionService
@@ -46,6 +46,7 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
         self.campaignsListManager.errorDelegate = self
         self.impressionService.errorDelegate = self
         self.readyCampaignDispatcher.delegate = self
+        self.accountRepository.registerAccountUpdateObserver(self)
     }
 
     // should be called once
@@ -86,30 +87,23 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
             return
         }
 
+        checkUserChanges()
         eventMatcher.matchAndStore(event: event)
         campaignTriggerAgent.validateAndTriggerCampaigns()
     }
 
-    func registerPreference(_ preference: IAMPreference?) {
+    func registerPreference(_ preference: UserInfoProvider) {
         guard isEnabled else {
             return
         }
 
-        let oldUserIdentifiers = preferenceRepository.getUserIdentifiers()
-        let diff = preferenceRepository.preference?.diff(preference)
-        preferenceRepository.setPreference(preference)
+        accountRepository.setPreference(preference)
 
         guard isInitialized else {
             return
         }
 
-        let isLogoutOrUserChange = (preferenceRepository.getUserIdentifiers().isEmpty || diff?.isEmpty == false) && !oldUserIdentifiers.isEmpty
-        if isLogoutOrUserChange {
-            campaignRepository.clearLastUserData()
-            eventMatcher.clearNonPersistentEvents()
-        }
-        campaignRepository.loadCachedData(syncWithLastUserData: false)
-        campaignsListManager.refreshList()
+        checkUserChanges()
     }
 
     func closeMessage(clearQueuedCampaigns: Bool) {
@@ -117,6 +111,14 @@ internal class InAppMessagingModule: AnalyticsBroadcaster,
             readyCampaignDispatcher.resetQueue()
         }
         router.discardDisplayedCampaign()
+    }
+
+    // visible for testing
+    func checkUserChanges() {
+        if accountRepository.updateUserInfo() {
+            campaignRepository.loadCachedData(syncWithLastUserData: false)
+            campaignsListManager.refreshList()
+        }
     }
 
     private func flushEventBuffer(discardEvents: Bool) {
@@ -162,5 +164,14 @@ extension InAppMessagingModule {
             return false
         }
         return randomizer.dice <= config.rolloutPercentage
+    }
+}
+
+// MARK: - UserChangeObserver
+extension InAppMessagingModule {
+
+    func didUserChangeOrLogout() {
+        campaignRepository.clearLastUserData()
+        eventMatcher.clearNonPersistentEvents()
     }
 }

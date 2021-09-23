@@ -41,7 +41,7 @@ internal class CampaignRepository: CampaignRepositoryType {
     static let lastUser = [UserIdentifier(type: .userId, identifier: "IAM.lastUser!@#")]
 
     private let userDataCache: UserDataCacheable
-    private let preferenceRepository: IAMPreferenceRepository
+    private let accountRepository: AccountRepositoryType
     private let campaigns = LockableObject([Campaign]())
     private(set) var lastSyncInMilliseconds: Int64?
 
@@ -52,9 +52,9 @@ internal class CampaignRepository: CampaignRepositoryType {
         return [campaigns]
     }
 
-    init(userDataCache: UserDataCacheable, preferenceRepository: IAMPreferenceRepository) {
+    init(userDataCache: UserDataCacheable, accountRepository: AccountRepositoryType) {
         self.userDataCache = userDataCache
-        self.preferenceRepository = preferenceRepository
+        self.accountRepository = accountRepository
 
         loadCachedData(syncWithLastUserData: true)
     }
@@ -118,7 +118,7 @@ internal class CampaignRepository: CampaignRepositoryType {
     }
 
     func loadCachedData(syncWithLastUserData: Bool) {
-        var cachedData = userDataCache.getUserData(identifiers: preferenceRepository.getUserIdentifiers())?.campaignData ?? []
+        var cachedData = userDataCache.getUserData(identifiers: accountRepository.getUserIdentifiers())?.campaignData ?? []
         if syncWithLastUserData {
             userDataCache.getUserData(identifiers: CampaignRepository.lastUser)?.campaignData?.forEach({ lastUserCampaign in
                 if let existingCampaignIndex = cachedData.firstIndex(where: { $0.id == lastUserCampaign.id }) {
@@ -158,7 +158,7 @@ internal class CampaignRepository: CampaignRepositoryType {
     }
 
     private func saveDataToCache(_ list: [Campaign]) {
-        let user = preferenceRepository.getUserIdentifiers()
+        let user = accountRepository.getUserIdentifiers()
         userDataCache.cacheCampaignData(list, userIdentifiers: user)
         userDataCache.cacheCampaignData(list, userIdentifiers: CampaignRepository.lastUser)
     }

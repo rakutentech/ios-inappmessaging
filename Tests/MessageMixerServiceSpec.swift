@@ -8,9 +8,11 @@ class MessageMixerServiceSpec: QuickSpec {
 
         let requestQueue = DispatchQueue(label: "iam.test.request")
         let configData = ConfigData(rolloutPercentage: 100, endpoints: .empty)
+        let accountRepository = AccountRepository(userDataCache: UserDataCacheMock())
+        let userInfoProvider = UserInfoProviderMock()
+        accountRepository.setPreference(userInfoProvider)
 
         var service: MessageMixerService!
-        var preferenceRepository: IAMPreferenceRepository!
         var configurationRepository: ConfigurationRepository!
         var httpSession: URLSessionMock!
 
@@ -28,10 +30,10 @@ class MessageMixerServiceSpec: QuickSpec {
             beforeEach {
                 URLSessionMock.startMockingURLSession()
 
-                preferenceRepository = IAMPreferenceRepository()
+                userInfoProvider.clear()
                 configurationRepository = ConfigurationRepository()
                 configurationRepository.saveConfiguration(configData)
-                service = MessageMixerService(preferenceRepository: preferenceRepository,
+                service = MessageMixerService(accountRepository: accountRepository,
                                               configurationRepository: configurationRepository)
                 httpSession = URLSessionMock.mock(originalInstance: service.httpSession)
             }
@@ -183,26 +185,20 @@ class MessageMixerServiceSpec: QuickSpec {
                 }
 
                 it("will send user preferences in the request") {
-                    preferenceRepository.setPreference(IAMPreferenceBuilder()
-                        .setRakutenId("rakutenId")
-                        .setUserId("userId")
-                        .setIDTrackingIdentifier("identity")
-                        .build())
+                    userInfoProvider.userID = "userId"
+                    userInfoProvider.idTrackingIdentifier = "tracking-id"
 
                     sendRequestAndWaitForResponse()
 
                     let request = httpSession.decodeSentData(modelType: PingRequest.self)
 
                     expect(request?.userIdentifiers).to(elementsEqualOrderAgnostic([
-                        UserIdentifier(type: .rakutenId, identifier: "rakutenId"),
-                        UserIdentifier(type: .idTrackingIdentifier, identifier: "identity"),
+                        UserIdentifier(type: .idTrackingIdentifier, identifier: "tracking-id"),
                         UserIdentifier(type: .userId, identifier: "userId")]))
                 }
 
                 it("will send required headers") {
-                    preferenceRepository.setPreference(IAMPreferenceBuilder()
-                        .setAccessToken("token")
-                        .build())
+                    userInfoProvider.accessToken = "token"
 
                     sendRequestAndWaitForResponse()
 

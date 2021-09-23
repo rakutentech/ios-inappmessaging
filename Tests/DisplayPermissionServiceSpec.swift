@@ -13,9 +13,11 @@ class DisplayPermissionServiceSpec: QuickSpec {
                                         displayPermission: URL(string: "https://permission.url")!,
                                         impression: nil))
         let campaign = TestHelpers.generateCampaign(id: "test")
+        let accountRepository = AccountRepository(userDataCache: UserDataCacheMock())
+        let userInfoProvider = UserInfoProviderMock()
+        accountRepository.setPreference(userInfoProvider)
 
         var service: DisplayPermissionService!
-        var preferenceRepository: IAMPreferenceRepository!
         var configurationRepository: ConfigurationRepository!
         var campaignRepository: CampaignRepositoryMock!
         var httpSession: URLSessionMock!
@@ -34,12 +36,12 @@ class DisplayPermissionServiceSpec: QuickSpec {
             beforeEach {
                 URLSessionMock.startMockingURLSession()
 
-                preferenceRepository = IAMPreferenceRepository()
+                userInfoProvider.clear()
                 campaignRepository = CampaignRepositoryMock()
                 configurationRepository = ConfigurationRepository()
                 configurationRepository.saveConfiguration(configData)
                 service = DisplayPermissionService(campaignRepository: campaignRepository,
-                                                   preferenceRepository: preferenceRepository,
+                                                   accountRepository: accountRepository,
                                                    configurationRepository: configurationRepository)
                 httpSession = URLSessionMock.mock(originalInstance: service.httpSession)
             }
@@ -154,26 +156,20 @@ class DisplayPermissionServiceSpec: QuickSpec {
                 }
 
                 it("will send user preferences in the request") {
-                    preferenceRepository.setPreference(IAMPreferenceBuilder()
-                        .setRakutenId("rakutenId")
-                        .setUserId("userId")
-                        .setIDTrackingIdentifier("identity")
-                        .build())
+                    userInfoProvider.userID = "userId"
+                    userInfoProvider.idTrackingIdentifier = "tracking-id"
 
                     sendRequestAndWaitForResponse()
 
                     let request = httpSession.decodeSentData(modelType: DisplayPermissionRequest.self)
 
                     expect(request?.userIdentifiers).to(elementsEqualOrderAgnostic([
-                        UserIdentifier(type: .rakutenId, identifier: "rakutenId"),
-                        UserIdentifier(type: .idTrackingIdentifier, identifier: "identity"),
+                        UserIdentifier(type: .idTrackingIdentifier, identifier: "tracking-id"),
                         UserIdentifier(type: .userId, identifier: "userId")]))
                 }
 
                 it("will send required headers") {
-                    preferenceRepository.setPreference(IAMPreferenceBuilder()
-                        .setAccessToken("token")
-                        .build())
+                    userInfoProvider.accessToken = "token"
 
                     sendRequestAndWaitForResponse()
 

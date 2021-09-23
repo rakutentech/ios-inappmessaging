@@ -14,7 +14,7 @@ class InAppMessagingModuleSpec: QuickSpec {
             var configurationManager: ConfigurationManagerMock!
             var campaignsListManager: CampaignsListManagerMock!
             var impressionService: ImpressionServiceMock!
-            var preferenceRepository: IAMPreferenceRepository!
+            var accountRepository: AccountRepositorySpy!
             var campaignsValidator: CampaignsValidatorMock!
             var eventMatcher: EventMatcherMock!
             var readyCampaignDispatcher: CampaignDispatcherMock!
@@ -28,7 +28,7 @@ class InAppMessagingModuleSpec: QuickSpec {
                 configurationManager = ConfigurationManagerMock()
                 campaignsListManager = CampaignsListManagerMock()
                 impressionService = ImpressionServiceMock()
-                preferenceRepository = IAMPreferenceRepository()
+                accountRepository = AccountRepositorySpy()
                 campaignsValidator = CampaignsValidatorMock()
                 eventMatcher = EventMatcherMock()
                 readyCampaignDispatcher = CampaignDispatcherMock()
@@ -42,7 +42,7 @@ class InAppMessagingModuleSpec: QuickSpec {
                 iamModule = InAppMessagingModule(configurationManager: configurationManager,
                                                  campaignsListManager: campaignsListManager,
                                                  impressionService: impressionService,
-                                                 preferenceRepository: preferenceRepository,
+                                                 accountRepository: accountRepository,
                                                  eventMatcher: eventMatcher,
                                                  readyCampaignDispatcher: readyCampaignDispatcher,
                                                  campaignTriggerAgent: campaignTriggerAgent,
@@ -179,12 +179,12 @@ class InAppMessagingModuleSpec: QuickSpec {
                     }
 
                     it("should wait synchronously with registerPreference method") {
-                        let preference = IAMPreferenceBuilder().setUserId("user").build()
+                        let preference = UserInfoProviderMock()
                         queue.async {
                             iamModule.registerPreference(preference)
                         }
-                        expect(preferenceRepository.preference).toAfterTimeout(beNil())
-                        expect(preferenceRepository.preference).toEventually(equal(preference), timeout: .seconds(2))
+                        expect(accountRepository.userInfoProvider).toAfterTimeout(beNil())
+                        expect(accountRepository.userInfoProvider).toEventually(beIdenticalTo(preference), timeout: .seconds(2))
                     }
                 }
 
@@ -248,6 +248,15 @@ class InAppMessagingModuleSpec: QuickSpec {
                                 iamModule.logEvent(PurchaseSuccessfulEvent())
                                 expect(readyCampaignDispatcher.wasDispatchCalled).to(beTrue())
                             }
+
+                            it("will call checkUserChanges()") {
+                                iamModule.logEvent(PurchaseSuccessfulEvent())
+                                // checkUserChanges() always calls AccountRepository.updateUserInfo().
+                                // This is a workaround for checking if the method was called on a real InAppMessagingModule's instance.
+                                // Checking this method call instead of testing a cause will significantly reduce the amount
+                                // of test cases in this spec.
+                                expect(accountRepository.wasUpdateUserInfoCalled).to(beTrue())
+                            }
                         }
 
                         context("and module is not initialized") {
@@ -265,6 +274,11 @@ class InAppMessagingModuleSpec: QuickSpec {
                             it("will not call dispatchAllIfNeeded") {
                                 iamModule.logEvent(PurchaseSuccessfulEvent())
                                 expect(readyCampaignDispatcher.wasDispatchCalled).toAfterTimeout(beFalse())
+                            }
+
+                            it("will not call checkUserChanges()") {
+                                iamModule.logEvent(PurchaseSuccessfulEvent())
+                                expect(accountRepository.wasUpdateUserInfoCalled).to(beFalse())
                             }
                         }
                     }
@@ -289,12 +303,21 @@ class InAppMessagingModuleSpec: QuickSpec {
                             iamModule.logEvent(PurchaseSuccessfulEvent())
                             expect(readyCampaignDispatcher.wasDispatchCalled).toAfterTimeout(beFalse())
                         }
+
+                        it("will not call checkUserChanges()") {
+                            iamModule.logEvent(PurchaseSuccessfulEvent())
+                            expect(accountRepository.wasUpdateUserInfoCalled).to(beFalse())
+                        }
                     }
                 }
 
                 context("when calling registerPreference") {
 
-                    let aUser = IAMPreferenceBuilder().setUserId("user").build()
+                    let aUser: UserInfoProvider = {
+                        let user = UserInfoProviderMock()
+                        user.userID = "user"
+                        return user
+                    }()
 
                     context("and module is enabled") {
                         beforeEach {
@@ -307,97 +330,30 @@ class InAppMessagingModuleSpec: QuickSpec {
                             }
 
                             it("will register preference data") {
-                                let preference = IAMPreferenceBuilder().setUserId("user").build()
-                                iamModule.registerPreference(preference)
-                                expect(preferenceRepository.preference).to(equal(preference))
-                            }
-
-                            it("will refresh list of campaigns") {
-                                iamModule.registerPreference(IAMPreference())
-                                expect(campaignsListManager.wasRefreshListCalled).to(beTrue())
-                            }
-
-                            it("will reload campaigns repository cache") {
-                                iamModule.registerPreference(IAMPreference())
-                                expect(campaignRepository.wasLoadCachedDataCalled).to(beTrue())
-                            }
-
-                            it("will reload campaigns repository cache with syncWithLastUserData set to false") {
                                 iamModule.registerPreference(aUser)
-                                expect(campaignRepository.wasLoadCachedDataCalled).to(beTrue())
-                                expect(campaignRepository.loadCachedDataParameters).to(equal((false)))
+                                expect(accountRepository.userInfoProvider).to(beIdenticalTo(aUser))
                             }
 
-                            it("will clear last user data when user logs out or changes to another user") {
-                                [(aUser, nil), (aUser, IAMPreference()),
-                                 (aUser, IAMPreferenceBuilder().setUserId("userB").build())]
-                                    .forEach { prefA, prefB in
-                                        iamModule.registerPreference(prefA)
-                                        campaignRepository.resetFlags()
-                                        iamModule.registerPreference(prefB)
-                                        expect(campaignRepository.wasClearLastUserDataCalled).to(beTrue())
-                                    }
-                            }
-
-                            it("will not clear last user data when user did not log out or change to another user") {
-                                [(nil, aUser), (IAMPreference(), aUser),
-                                 (nil, nil), (nil, IAMPreference()),
-                                 (IAMPreference(), nil), (IAMPreference(), IAMPreference())]
-                                    .forEach { prefA, prefB in
-                                        iamModule.registerPreference(prefA)
-                                        campaignRepository.resetFlags()
-                                        iamModule.registerPreference(prefB)
-                                        expect(campaignRepository.wasClearLastUserDataCalled).to(beFalse())
-                                    }
-                            }
-
-                            it("will clear event list when user logs out or changes to another user") {
-                                [(aUser, nil), (aUser, IAMPreference()),
-                                 (aUser, IAMPreferenceBuilder().setUserId("userB").build())]
-                                    .forEach { prefA, prefB in
-                                        iamModule.registerPreference(prefA)
-                                        eventMatcher.wasClearNonPersistentEventsCalled = false // reset
-                                        iamModule.registerPreference(prefB)
-                                        expect(eventMatcher.wasClearNonPersistentEventsCalled).to(beTrue())
-                                    }
-                            }
-
-                            it("will not clear event list when user did not log out or change to another user") {
-                                [(nil, aUser), (IAMPreference(), aUser),
-                                 (nil, nil), (nil, IAMPreference()),
-                                 (IAMPreference(), nil), (IAMPreference(), IAMPreference())]
-                                    .forEach { prefA, prefB in
-                                        iamModule.registerPreference(prefA)
-                                        eventMatcher.wasClearNonPersistentEventsCalled = false // reset
-                                        iamModule.registerPreference(prefB)
-                                        expect(eventMatcher.wasClearNonPersistentEventsCalled).to(beFalse())
-                                    }
+                            it("will call checkUserChanges()") {
+                                iamModule.registerPreference(aUser)
+                                // checkUserChanges() always calls AccountRepository.updateUserInfo().
+                                // This is a workaround for checking if the method was called on a real InAppMessagingModule's instance.
+                                // Checking this method call instead of testing a cause will significantly reduce the amount
+                                // of test cases in this spec.
+                                expect(accountRepository.wasUpdateUserInfoCalled).to(beTrue())
                             }
                         }
 
                         context("and module is not initialized") {
 
                             it("will register preference data") {
-                                let preference = IAMPreferenceBuilder().setUserId("user").build()
-                                iamModule.registerPreference(preference)
-                                expect(preferenceRepository.preference).to(equal(preference))
+                                iamModule.registerPreference(aUser)
+                                expect(accountRepository.userInfoProvider).to(beIdenticalTo(aUser))
                             }
 
-                            it("will not refresh list of campaigns") {
-                                iamModule.registerPreference(IAMPreference())
-                                expect(campaignsListManager.wasRefreshListCalled).toAfterTimeout(beFalse())
-                            }
-
-                            it("will not reload campaigns repository cache") {
-                                iamModule.registerPreference(IAMPreference())
-                                expect(campaignRepository.wasLoadCachedDataCalled).to(beFalse())
-                            }
-
-                            it("will not reset dispatch queue even if new preference has different ids") {
-                                iamModule.registerPreference(IAMPreferenceBuilder().setUserId("user").build())
-                                readyCampaignDispatcher.wasResetQueueCalled = false
-                                iamModule.registerPreference(IAMPreferenceBuilder().setUserId("user2").build())
-                                expect(readyCampaignDispatcher.wasResetQueueCalled).to(beFalse())
+                            it("will not call checkUserChanges()") {
+                                iamModule.registerPreference(aUser)
+                                expect(accountRepository.wasUpdateUserInfoCalled).to(beFalse())
                             }
                         }
                     }
@@ -409,19 +365,13 @@ class InAppMessagingModuleSpec: QuickSpec {
                         }
 
                         it("will not register preference data") {
-                            let preference = IAMPreferenceBuilder().setUserId("user").build()
-                            iamModule.registerPreference(preference)
-                            expect(preferenceRepository.preference).toAfterTimeout(beNil())
+                            iamModule.registerPreference(aUser)
+                            expect(accountRepository.userInfoProvider).to(beNil())
                         }
 
-                        it("will not refresh list of campaigns") {
-                            iamModule.registerPreference(IAMPreference())
-                            expect(campaignsListManager.wasRefreshListCalled).toAfterTimeout(beFalse())
-                        }
-
-                        it("will not reload campaigns repository cache") {
-                            iamModule.registerPreference(IAMPreference())
-                            expect(campaignRepository.wasLoadCachedDataCalled).to(beFalse())
+                        it("will not call checkUserChanges()") {
+                            iamModule.registerPreference(aUser)
+                            expect(accountRepository.wasUpdateUserInfoCalled).to(beFalse())
                         }
                     }
                 }
@@ -444,6 +394,190 @@ class InAppMessagingModuleSpec: QuickSpec {
 
                         iamModule.closeMessage(clearQueuedCampaigns: false)
                         expect(readyCampaignDispatcher.wasResetQueueCalled).to(beFalse())
+                    }
+                }
+
+                context("when calling checkUserChanges()") {
+
+                    it("will call updateUserInfo()") {
+                        iamModule.checkUserChanges()
+                        expect(accountRepository.wasUpdateUserInfoCalled).to(beTrue())
+                    }
+
+                    it("will not reset dispatch queue even if new preference has different ids") {
+                        let aUser = UserInfoProviderMock()
+                        aUser.userID = "userA"
+                        accountRepository.setPreference(aUser)
+                        accountRepository.updateUserInfo() // initial call
+                        aUser.userID = "userB"
+                        readyCampaignDispatcher.wasResetQueueCalled = false
+                        iamModule.checkUserChanges()
+                        expect(readyCampaignDispatcher.wasResetQueueCalled).to(beFalse())
+                    }
+
+                    context("when user was updated") {
+                        beforeEach {
+                            let aUser = UserInfoProviderMock()
+                            aUser.userID = "userA"
+                            accountRepository.setPreference(aUser)
+                            accountRepository.updateUserInfo() // initial call
+                            aUser.userID = "userB"
+                        }
+
+                        it("will refresh list of campaigns") {
+                            iamModule.checkUserChanges()
+                            expect(campaignsListManager.wasRefreshListCalled).to(beTrue())
+                        }
+
+                        it("will reload campaigns repository cache with syncWithLastUserData set to false") {
+                            campaignRepository.resetFlags()
+                            iamModule.checkUserChanges()
+                            expect(campaignRepository.wasLoadCachedDataCalled).to(beTrue())
+                            expect(campaignRepository.loadCachedDataParameters).to(equal((false)))
+                        }
+
+                        it("will clear last user data") {
+                            campaignRepository.resetFlags()
+                            iamModule.checkUserChanges()
+                            expect(campaignRepository.wasClearLastUserDataCalled).to(beTrue())
+                        }
+
+                        it("will clear event list") {
+                            eventMatcher.wasClearNonPersistentEventsCalled = false // reset
+                            iamModule.checkUserChanges()
+                            expect(eventMatcher.wasClearNonPersistentEventsCalled).to(beTrue())
+                        }
+                    }
+
+                    context("when user logs out") {
+                        beforeEach {
+                            let aUser = UserInfoProviderMock()
+                            aUser.userID = "userA"
+                            accountRepository.setPreference(aUser)
+                            accountRepository.updateUserInfo() // initial call
+                            aUser.userID = nil
+                        }
+
+                        it("will refresh list of campaigns") {
+                            iamModule.checkUserChanges()
+                            expect(campaignsListManager.wasRefreshListCalled).to(beTrue())
+                        }
+
+                        it("will reload campaigns repository cache with syncWithLastUserData set to false") {
+                            campaignRepository.resetFlags()
+                            iamModule.checkUserChanges()
+                            expect(campaignRepository.wasLoadCachedDataCalled).to(beTrue())
+                            expect(campaignRepository.loadCachedDataParameters).to(equal((false)))
+                        }
+
+                        it("will clear last user data") {
+                            campaignRepository.resetFlags()
+                            iamModule.checkUserChanges()
+                            expect(campaignRepository.wasClearLastUserDataCalled).to(beTrue())
+                        }
+
+                        it("will clear event list") {
+                            eventMatcher.wasClearNonPersistentEventsCalled = false // reset
+                            iamModule.checkUserChanges()
+                            expect(eventMatcher.wasClearNonPersistentEventsCalled).to(beTrue())
+                        }
+                    }
+
+                    context("when user is registered for the first time") {
+                        beforeEach {
+                            let aUser = UserInfoProviderMock()
+                            aUser.userID = "userA"
+                            accountRepository.setPreference(aUser)
+                        }
+
+                        it("will refresh list of campaigns") {
+                            iamModule.checkUserChanges()
+                            expect(campaignsListManager.wasRefreshListCalled).to(beTrue())
+                        }
+
+                        it("will reload campaigns repository cache with syncWithLastUserData set to false") {
+                            campaignRepository.resetFlags()
+                            iamModule.checkUserChanges()
+                            expect(campaignRepository.wasLoadCachedDataCalled).to(beTrue())
+                            expect(campaignRepository.loadCachedDataParameters).to(equal((false)))
+                        }
+
+                        it("will not clear last user data") {
+                            campaignRepository.resetFlags()
+                            iamModule.checkUserChanges()
+                            expect(campaignRepository.wasClearLastUserDataCalled).to(beFalse())
+                        }
+
+                        it("will not clear event list") {
+                            eventMatcher.wasClearNonPersistentEventsCalled = false // reset
+                            iamModule.checkUserChanges()
+                            expect(eventMatcher.wasClearNonPersistentEventsCalled).to(beFalse())
+                        }
+                    }
+
+                    context("when user did not change") {
+                        beforeEach {
+                            let aUser = UserInfoProviderMock()
+                            aUser.userID = "userA"
+                            accountRepository.setPreference(aUser)
+                            accountRepository.updateUserInfo() // initial call
+                        }
+
+                        it("will not refresh list of campaigns") {
+                            iamModule.checkUserChanges()
+                            expect(campaignsListManager.wasRefreshListCalled).to(beFalse())
+                        }
+
+                        it("will not reload campaigns repository cache") {
+                            campaignRepository.resetFlags()
+                            iamModule.checkUserChanges()
+                            expect(campaignRepository.wasLoadCachedDataCalled).to(beFalse())
+                        }
+
+                        it("will not clear last user data") {
+                            campaignRepository.resetFlags()
+                            iamModule.checkUserChanges()
+                            expect(campaignRepository.wasClearLastUserDataCalled).to(beFalse())
+                        }
+
+                        it("will not clear event list") {
+                            eventMatcher.wasClearNonPersistentEventsCalled = false // reset
+                            iamModule.checkUserChanges()
+                            expect(eventMatcher.wasClearNonPersistentEventsCalled).to(beFalse())
+                        }
+                    }
+
+                    context("when only access token was updated") {
+                        beforeEach {
+                            let aUser = UserInfoProviderMock()
+                            aUser.userID = "userA"
+                            accountRepository.setPreference(aUser)
+                            accountRepository.updateUserInfo() // initial call
+                            aUser.accessToken = "token"
+                        }
+
+                        it("will not refresh list of campaigns") {
+                            iamModule.checkUserChanges()
+                            expect(campaignsListManager.wasRefreshListCalled).to(beFalse())
+                        }
+
+                        it("will not reload campaigns repository cache") {
+                            campaignRepository.resetFlags()
+                            iamModule.checkUserChanges()
+                            expect(campaignRepository.wasLoadCachedDataCalled).to(beFalse())
+                        }
+
+                        it("will not clear last user data") {
+                            campaignRepository.resetFlags()
+                            iamModule.checkUserChanges()
+                            expect(campaignRepository.wasClearLastUserDataCalled).to(beFalse())
+                        }
+
+                        it("will not clear event list") {
+                            eventMatcher.wasClearNonPersistentEventsCalled = false // reset
+                            iamModule.checkUserChanges()
+                            expect(eventMatcher.wasClearNonPersistentEventsCalled).to(beFalse())
+                        }
                     }
                 }
 

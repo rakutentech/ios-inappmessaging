@@ -40,12 +40,14 @@ internal enum MainContainerFactory {
             }),
             ContainerElement(type: CampaignRepositoryType.self, factory: {
                 CampaignRepository(userDataCache: manager.resolve(type: UserDataCacheable.self)!,
-                                   preferenceRepository: manager.resolve(type: IAMPreferenceRepository.self)!)
+                                   accountRepository: manager.resolve(type: AccountRepositoryType.self)!)
             }),
             ContainerElement(type: EventMatcherType.self, factory: {
                 EventMatcher(campaignRepository: manager.resolve(type: CampaignRepositoryType.self)!)
             }),
-            ContainerElement(type: IAMPreferenceRepository.self, factory: { IAMPreferenceRepository() }),
+            ContainerElement(type: AccountRepositoryType.self, factory: {
+                AccountRepository(userDataCache: manager.resolve(type: UserDataCacheable.self)!)
+            }),
             ContainerElement(type: ConfigurationServiceType.self, factory: {
                 guard let configURL = getValidConfigURL() else {
                     assertionFailure("Configuration URL in Info.plist is missing")
@@ -58,7 +60,7 @@ internal enum MainContainerFactory {
             ContainerElement(type: DisplayPermissionServiceType.self, factory: {
                 DisplayPermissionService(
                     campaignRepository: manager.resolve(type: CampaignRepositoryType.self)!,
-                    preferenceRepository: manager.resolve(type: IAMPreferenceRepository.self)!,
+                    accountRepository: manager.resolve(type: AccountRepositoryType.self)!,
                     configurationRepository: manager.resolve(type: ConfigurationRepositoryType.self)!)
             }),
             ContainerElement(type: RouterType.self, factory: {
@@ -69,16 +71,16 @@ internal enum MainContainerFactory {
             }),
             ContainerElement(type: CampaignDispatcherType.self, factory: {
                 CampaignDispatcher(router: manager.resolve(type: RouterType.self)!,
-                                        permissionService: manager.resolve(type: DisplayPermissionServiceType.self)!,
-                                        campaignRepository: manager.resolve(type: CampaignRepositoryType.self)!)
+                                   permissionService: manager.resolve(type: DisplayPermissionServiceType.self)!,
+                                   campaignRepository: manager.resolve(type: CampaignRepositoryType.self)!)
             }),
             ContainerElement(type: MessageMixerServiceType.self, factory: {
-                MessageMixerService(preferenceRepository: manager.resolve(type: IAMPreferenceRepository.self)!,
-                                   configurationRepository: manager.resolve(type: ConfigurationRepositoryType.self)!)
+                MessageMixerService(accountRepository: manager.resolve(type: AccountRepositoryType.self)!,
+                                    configurationRepository: manager.resolve(type: ConfigurationRepositoryType.self)!)
             }),
             ContainerElement(type: ImpressionServiceType.self, factory: {
-                ImpressionService(preferenceRepository: manager.resolve(type: IAMPreferenceRepository.self)!,
-                                 configurationRepository: manager.resolve(type: ConfigurationRepositoryType.self)!)
+                ImpressionService(accountRepository: manager.resolve(type: AccountRepositoryType.self)!,
+                                  configurationRepository: manager.resolve(type: ConfigurationRepositoryType.self)!)
             }),
             ContainerElement(type: CampaignsListManagerType.self, factory: {
                 CampaignsListManager(campaignRepository: manager.resolve(type: CampaignRepositoryType.self)!,

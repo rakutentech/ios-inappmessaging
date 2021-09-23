@@ -73,7 +73,7 @@ import Foundation
                 let campaignsListManager = dependencyManager.resolve(type: CampaignsListManagerType.self),
                 let impressionService = dependencyManager.resolve(type: ImpressionServiceType.self),
                 let eventMatcher = dependencyManager.resolve(type: EventMatcherType.self),
-                let preferenceRepository = dependencyManager.resolve(type: IAMPreferenceRepository.self),
+                let accountRepository = dependencyManager.resolve(type: AccountRepositoryType.self),
                 let readyCampaignDispatcher = dependencyManager.resolve(type: CampaignDispatcherType.self),
                 let campaignTriggerAgent = dependencyManager.resolve(type: CampaignTriggerAgentType.self),
                 let campaignRepository = dependencyManager.resolve(type: CampaignRepositoryType.self),
@@ -88,7 +88,7 @@ import Foundation
             initializedModule = InAppMessagingModule(configurationManager: configurationManager,
                                                      campaignsListManager: campaignsListManager,
                                                      impressionService: impressionService,
-                                                     preferenceRepository: preferenceRepository,
+                                                     accountRepository: accountRepository,
                                                      eventMatcher: eventMatcher,
                                                      readyCampaignDispatcher: readyCampaignDispatcher,
                                                      campaignTriggerAgent: campaignTriggerAgent,
@@ -115,16 +115,21 @@ import Foundation
         }
     }
 
-    /// Register user preference to the IAM SDK.
-    /// - Parameter preference: Preferences of the user.
-    @objc public static func registerPreference(_ preference: IAMPreference?) {
+    /// Register user preference object to the IAM SDK.
+    ///
+    /// Registered object should be updated to reflect current user session state.
+    /// There is no need to call this method again, unless new `UserInfoProvider` object has been created.
+    /// - Note: This method creates a strong reference to provided object.
+    /// - Parameter provider: object that will always contain up-to-date user information.
+    @objc public static func registerPreference(_ provider: UserInfoProvider) {
         inAppQueue.async {
             notifyIfModuleNotInitialized()
-            initializedModule?.registerPreference(preference)
+            initializedModule?.registerPreference(provider)
         }
     }
 
     /// Close currently displayed campaign's message.
+    ///
     /// This method should be called when app needs to force-close the displayed message without user action.
     /// Campaign's impressions won't be sent (i.e. the message won't be counted as displayed)
     /// - Parameter clearQueuedCampaigns: when set to true, it will clear also the list of campaigns that were

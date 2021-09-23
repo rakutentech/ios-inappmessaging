@@ -11,16 +11,16 @@ internal enum MessageMixerServiceError: Error {
 
 internal class MessageMixerService: MessageMixerServiceType, HttpRequestable {
 
-    private let preferenceRepository: IAMPreferenceRepository
+    private let accountRepository: AccountRepositoryType
     private let configurationRepository: ConfigurationRepositoryType
 
     private(set) var httpSession: URLSession
     var bundleInfo = BundleInfo.self
 
-    init(preferenceRepository: IAMPreferenceRepository,
+    init(accountRepository: AccountRepositoryType,
          configurationRepository: ConfigurationRepositoryType) {
 
-        self.preferenceRepository = preferenceRepository
+        self.accountRepository = accountRepository
         self.configurationRepository = configurationRepository
         httpSession = URLSession(configuration: configurationRepository.defaultHttpSessionConfiguration)
     }
@@ -77,7 +77,7 @@ extension MessageMixerService {
         }
 
         let pingRequest = PingRequest(
-            userIdentifiers: preferenceRepository.getUserIdentifiers(),
+            userIdentifiers: accountRepository.getUserIdentifiers(),
             appVersion: appVersion)
 
         do {
@@ -93,7 +93,7 @@ extension MessageMixerService {
         var builder = HeaderAttributesBuilder()
         builder.addSubscriptionID(bundleInfo: bundleInfo)
         builder.addDeviceID()
-        builder.addAccessToken(preferenceRepository: preferenceRepository)
+        builder.addAccessToken(accountRepository: accountRepository)
 
         return builder.build()
     }

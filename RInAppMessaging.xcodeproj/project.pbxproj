@@ -50,7 +50,8 @@
 		45563B03240614AE004EAFD3 /* ReadyCampaignDispatcherSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45563B02240614AE004EAFD3 /* ReadyCampaignDispatcherSpec.swift */; };
 		45563B0724064D78004EAFD3 /* CampaignRepositorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45563B0624064D78004EAFD3 /* CampaignRepositorySpec.swift */; };
 		45563B0924064D98004EAFD3 /* LockableSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45563B0824064D98004EAFD3 /* LockableSpec.swift */; };
-		4557A8B1257E544C00C9D241 /* IAMPreferenceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4557A8B0257E544C00C9D241 /* IAMPreferenceSpec.swift */; };
+		4557A8B1257E544C00C9D241 /* AccountRepositorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4557A8B0257E544C00C9D241 /* AccountRepositorySpec.swift */; };
+		4560062C26FB968B003227FE /* UserInfoProviderSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4560062B26FB968B003227FE /* UserInfoProviderSpec.swift */; };
 		456FE1E72428513200304872 /* ErrorReportableSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456FE1E62428513200304872 /* ErrorReportableSpec.swift */; };
 		456FE1E924288C6500304872 /* CampaignTriggerAgentSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456FE1E824288C6500304872 /* CampaignTriggerAgentSpec.swift */; };
 		456FE1EB2428C51E00304872 /* CommonUtilitySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456FE1EA2428C51E00304872 /* CommonUtilitySpec.swift */; };
@@ -90,7 +91,6 @@
 		607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDE1AFB9204008FA782 /* LaunchScreen.xib */; };
 		C9827558262C423C00476505 /* BackoffSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9827557262C423C00476505 /* BackoffSpec.swift */; };
 		D911DC4F211115730082B950 /* ConfigurationSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9F418282110FD9F00E2158F /* ConfigurationSpec.swift */; };
-		D911DC5821115B410082B950 /* IdRegistrationSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = D911DC56211159DE0082B950 /* IdRegistrationSpec.swift */; };
 		D920D8C92277B80F008FB38D /* SecondPageViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D920D8C82277B80F008FB38D /* SecondPageViewController.xib */; };
 		D920D8CB2277B965008FB38D /* SecondPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D920D8CA2277B965008FB38D /* SecondPageViewController.swift */; };
 		D924268722D91C15002F50D3 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = D924268522D91C15002F50D3 /* Localizable.strings */; };
@@ -157,7 +157,8 @@
 		45563B02240614AE004EAFD3 /* ReadyCampaignDispatcherSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadyCampaignDispatcherSpec.swift; sourceTree = "<group>"; };
 		45563B0624064D78004EAFD3 /* CampaignRepositorySpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CampaignRepositorySpec.swift; sourceTree = "<group>"; };
 		45563B0824064D98004EAFD3 /* LockableSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockableSpec.swift; sourceTree = "<group>"; };
-		4557A8B0257E544C00C9D241 /* IAMPreferenceSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IAMPreferenceSpec.swift; sourceTree = "<group>"; };
+		4557A8B0257E544C00C9D241 /* AccountRepositorySpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountRepositorySpec.swift; sourceTree = "<group>"; };
+		4560062B26FB968B003227FE /* UserInfoProviderSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoProviderSpec.swift; sourceTree = "<group>"; };
 		456FE1E62428513200304872 /* ErrorReportableSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorReportableSpec.swift; sourceTree = "<group>"; };
 		456FE1E824288C6500304872 /* CampaignTriggerAgentSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CampaignTriggerAgentSpec.swift; sourceTree = "<group>"; };
 		456FE1EA2428C51E00304872 /* CommonUtilitySpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonUtilitySpec.swift; sourceTree = "<group>"; };
@@ -205,7 +206,6 @@
 		6DA608F3248603BA00A8260D /* Example-Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Example-Debug.xcconfig"; sourceTree = "<group>"; };
 		6DA608F424860B7F00A8260D /* Example-Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Example-Release.xcconfig"; sourceTree = "<group>"; };
 		C9827557262C423C00476505 /* BackoffSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackoffSpec.swift; sourceTree = "<group>"; };
-		D911DC56211159DE0082B950 /* IdRegistrationSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdRegistrationSpec.swift; sourceTree = "<group>"; };
 		D920D8C82277B80F008FB38D /* SecondPageViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SecondPageViewController.xib; sourceTree = "<group>"; };
 		D920D8CA2277B965008FB38D /* SecondPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondPageViewController.swift; sourceTree = "<group>"; };
 		D924268022D91046002F50D3 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Main.strings; sourceTree = "<group>"; };
@@ -407,8 +407,8 @@
 				4538BAE226282DE4009952BE /* GetConfigResponseSpec.swift */,
 				45A86D0E2669877F00D0C43F /* HeaderAttributesBuilderSpec.swift */,
 				45357AF6245AD49E007D8FDC /* HttpRequestableSpec.swift */,
-				4557A8B0257E544C00C9D241 /* IAMPreferenceSpec.swift */,
-				D911DC56211159DE0082B950 /* IdRegistrationSpec.swift */,
+				4557A8B0257E544C00C9D241 /* AccountRepositorySpec.swift */,
+				4560062B26FB968B003227FE /* UserInfoProviderSpec.swift */,
 				459B227F24528A6900D218CE /* ImpressionServiceSpec.swift */,
 				45ADA53F247D076E00A9E2A3 /* InAppMessagingModuleSpec.swift */,
 				4595F4F3262DE12C0001F30B /* KeyHasherSpec.swift */,
@@ -709,7 +709,7 @@
 				45BDFD052421EE7B004DEA0C /* SharedMocks.swift in Sources */,
 				457524022637342300C47300 /* AtomicWrapperSpec.swift in Sources */,
 				459B228024528A6900D218CE /* ImpressionServiceSpec.swift in Sources */,
-				4557A8B1257E544C00C9D241 /* IAMPreferenceSpec.swift in Sources */,
+				4557A8B1257E544C00C9D241 /* AccountRepositorySpec.swift in Sources */,
 				451E93A2248E3D3D00545D6B /* NimbleExtensions.swift in Sources */,
 				D911DC4F211115730082B950 /* ConfigurationSpec.swift in Sources */,
 				45563B03240614AE004EAFD3 /* ReadyCampaignDispatcherSpec.swift in Sources */,
@@ -730,7 +730,6 @@
 				4595F4F4262DE12C0001F30B /* KeyHasherSpec.swift in Sources */,
 				4534947223C6ABF700189A81 /* SerializationSpec.swift in Sources */,
 				45A86D0F2669877F00D0C43F /* HeaderAttributesBuilderSpec.swift in Sources */,
-				D911DC5821115B410082B950 /* IdRegistrationSpec.swift in Sources */,
 				45EA720525B71FA2001B2049 /* UIApplicationExtensionSpec.swift in Sources */,
 				45AFB308246CFB640080D21B /* LocaleSpec.swift in Sources */,
 				4516601D23CD740300310181 /* MainContainerSpec.swift in Sources */,
@@ -746,6 +745,7 @@
 				45ADA53E247CFE9E00A9E2A3 /* ConfigurationRepositorySpec.swift in Sources */,
 				45EA720D25B72002001B2049 /* UIViewExtensionSpec.swift in Sources */,
 				459B227E24528A5100D218CE /* MessageMixerServiceSpec.swift in Sources */,
+				4560062C26FB968B003227FE /* UserInfoProviderSpec.swift in Sources */,
 				45491059247F58660019864D /* CustomAttributeSpec.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

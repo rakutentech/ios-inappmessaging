@@ -432,7 +432,56 @@ class UserDataCacheMock: UserDataCacheable {
         cachedData[userIdentifiers] = UserDataCacheContainer(displayPermissionData: [campaignID: data])
     }
 
+    func userHash(from identifiers: [UserIdentifier]) -> String {
+        return identifiers.map({ $0.identifier }).joined()
+    }
+
     func deleteUserData(identifiers: [UserIdentifier]) { }
+}
+
+class UserInfoProviderMock: UserInfoProvider {
+    var accessToken: String?
+    var userID: String?
+    var idTrackingIdentifier: String?
+
+    func getAccessToken() -> String? { accessToken }
+
+    func getUserID() -> String? { userID }
+
+    func getIDTrackingIdentifier() -> String? { idTrackingIdentifier }
+
+    func clear() {
+        accessToken = nil
+        userID = nil
+        idTrackingIdentifier = nil
+    }
+}
+
+class AccountRepositorySpy: AccountRepositoryType {
+    let realAccountRepository = AccountRepository(userDataCache: UserDataCacheMock())
+    private(set) var wasUpdateUserInfoCalled = false
+
+    var userInfoProvider: UserInfoProvider? {
+        realAccountRepository.userInfoProvider
+    }
+
+    @discardableResult
+    func updateUserInfo() -> Bool {
+        wasUpdateUserInfoCalled = true
+        return realAccountRepository.updateUserInfo()
+    }
+
+    func setPreference(_ preference: UserInfoProvider) {
+        realAccountRepository.setPreference(preference)
+    }
+
+    func registerAccountUpdateObserver(_ observer: UserChangeObserver) {
+        realAccountRepository.registerAccountUpdateObserver(observer)
+    }
+
+    func getUserIdentifiers() -> [UserIdentifier] {
+        realAccountRepository.getUserIdentifiers()
+    }
 }
 
 extension EndpointURL {
