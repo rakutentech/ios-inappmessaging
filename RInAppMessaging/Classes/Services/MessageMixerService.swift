@@ -33,10 +33,6 @@ internal class MessageMixerService: MessageMixerServiceType, HttpRequestable {
             return .failure(.invalidConfiguration)
         }
 
-        guard mixerServerUrl != UITestHelper.mockedEndpoints.ping else {
-            return .success(UITestHelper.mockedPingResponse)
-        }
-
         let response = requestFromServerSync(
             url: mixerServerUrl,
             httpMethod: .post,

@@ -1,0 +1,51 @@
+{
+    "currentPingMillis": 0,
+    "nextPingMillis": 3600000,
+    "data": [
+        {
+            "campaignData": {
+                "campaignId": "modal-image-only",
+                "maxImpressions": 999,
+                "type": 1,
+                "isTest": true,
+                "triggers": [
+                    {
+                        "type": 1,
+                        "eventType": 2,
+                        "eventName": "Login Successful Event",
+                        "attributes": []
+                    }
+                ],
+                "messagePayload": {
+                    "title": "test",
+                    "messageBody": "",
+                    "header": "",
+                    "titleColor": "#000000",
+                    "headerColor": "#000000",
+                    "messageBodyColor": "#000000",
+                    "backgroundColor": "#ffffff",
+                    "frameColor": "#ffffff",
+                    "resource": {
+                        "assetsUrl": "",
+                        "imageUrl": "http://localhost:6789/image.jpg",
+                        "cropType": 2
+                    },
+                    "messageSettings": {
+                        "displaySettings": {
+                            "slideFrom": 1,
+                            "endTimeMillis": 0,
+                            "orientation": 1,
+                            "textAlign": 2,
+                            "optOut": false,
+                            "delay": 0,
+                            "html": false
+                        },
+                        "controlSettings": {
+                            "buttons": []
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

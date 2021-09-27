@@ -1,25 +1,37 @@
-import XCTest
 import Quick
 import Nimble
+import class Shock.MockServer
 
 class ModalViewSpec: QuickSpec {
 
     override func spec() {
 
+        var mockServer: MockServer!
         var app: XCUIApplication!
         var iamView: XCUIElement {
             app.otherElements.element(matching: NSPredicate(format: "identifier BEGINSWITH[cd] 'IAMView'"))
         }
 
-        func launchAppIfNecessary(args: String) {
-            guard app == nil || !app.launchArguments.joined(separator: " ").contains(args) else {
+        func launchAppIfNecessary(context: String) {
+            mockServer.setup(route: MockServerHelper.pingRouteMock(jsonStub: context))
+            mockServer.start()
+
+            guard app == nil || !app.launchArguments.joined(separator: " ").contains(context) else {
                 return
             }
             self.continueAfterFailure = false
             app = XCUIApplication()
             app.launchArguments.append("--uitesting")
-            app.launchArguments.append(args)
+            app.launchArguments.append("-context \(context)")
             app.launch()
+        }
+
+        beforeEach {
+            mockServer = MockServerHelper.setupNewServer(route: MockServerHelper.standardRouting)
+        }
+
+        afterEach {
+            mockServer.stop()
         }
 
         describe("Modal campaign view") {
@@ -27,7 +39,7 @@ class ModalViewSpec: QuickSpec {
             context("when clicking X button") {
 
                 beforeEach {
-                    launchAppIfNecessary(args: "-campaignType modal-text-only")
+                    launchAppIfNecessary(context: "modal-text-only")
                     if !iamView.exists {
                         app.buttons["login_successful"].tap()
                         expect(iamView.exists).toEventually(beTrue())
@@ -56,7 +68,7 @@ class ModalViewSpec: QuickSpec {
             context("without controls") {
 
                 beforeEach {
-                    launchAppIfNecessary(args: "-campaignType modal-text-only")
+                    launchAppIfNecessary(context: "modal-text-only")
                     if !iamView.exists {
                         app.buttons["login_successful"].tap()
                         expect(iamView.exists).toEventually(beTrue())
@@ -76,7 +88,7 @@ class ModalViewSpec: QuickSpec {
             context("with action butttons") {
 
                 beforeEach {
-                    launchAppIfNecessary(args: "-campaignType modal-controls")
+                    launchAppIfNecessary(context: "modal-controls")
                     if !iamView.exists {
                         app.buttons["custom_test"].tap()
                         expect(iamView.exists).toEventually(beTrue())
@@ -109,7 +121,7 @@ class ModalViewSpec: QuickSpec {
             context("with opt-out option") {
 
                 beforeEach {
-                    launchAppIfNecessary(args: "-campaignType modal-controls")
+                    launchAppIfNecessary(context: "modal-controls")
                     if !iamView.exists {
                         expect(app.buttons["custom_test"].exists).to(beTrue())
                         app.buttons["custom_test"].tap()
@@ -136,7 +148,7 @@ class ModalViewSpec: QuickSpec {
                 }
 
                 beforeEach {
-                    launchAppIfNecessary(args: "-campaignType modal-text-only")
+                    launchAppIfNecessary(context: "modal-text-only")
                     if !iamView.exists {
                         app.buttons["login_successful"].tap()
                         expect(iamView.exists).toEventually(beTrue())
@@ -159,7 +171,7 @@ class ModalViewSpec: QuickSpec {
                 }
 
                 beforeEach {
-                    launchAppIfNecessary(args: "-campaignType modal-text-image")
+                    launchAppIfNecessary(context: "modal-text-image")
                     if !iamView.exists {
                         app.buttons["login_successful"].tap()
                         expect(iamView.exists).toEventually(beTrue())
@@ -182,7 +194,7 @@ class ModalViewSpec: QuickSpec {
                 }
 
                 beforeEach {
-                    launchAppIfNecessary(args: "-campaignType modal-image-only")
+                    launchAppIfNecessary(context: "modal-image-only")
                     if !iamView.exists {
                         app.buttons["login_successful"].tap()
                         expect(iamView.exists).toEventually(beTrue())

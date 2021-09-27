@@ -38,10 +38,6 @@ internal class ImpressionService: ImpressionServiceType, HttpRequestable, Analyt
             return
         }
 
-        guard impressionEndpoint != UITestHelper.mockedEndpoints.impression else {
-            return
-        }
-
         let parameters: [String: Any] = [
             Keys.Params.impression: impressions,
             Keys.Params.campaign: campaignData

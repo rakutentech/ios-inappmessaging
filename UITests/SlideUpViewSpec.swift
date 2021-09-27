@@ -1,24 +1,37 @@
 import Quick
 import Nimble
+import class Shock.MockServer
 
 class SlideUpViewSpec: QuickSpec {
 
     override func spec() {
 
+        var mockServer: MockServer!
         var app: XCUIApplication!
         var iamView: XCUIElement {
             app.otherElements["IAMView-SlideUp"]
         }
 
-        func launchAppIfNecessary(args: String) {
-            guard app == nil || !app.launchArguments.joined(separator: " ").contains(args) else {
+        func launchAppIfNecessary(context: String) {
+            mockServer.setup(route: MockServerHelper.pingRouteMock(jsonStub: context))
+            mockServer.start()
+
+            guard app == nil || !app.launchArguments.joined(separator: " ").contains(context) else {
                 return
             }
             self.continueAfterFailure = false
             app = XCUIApplication()
             app.launchArguments.append("--uitesting")
-            app.launchArguments.append(args)
+            app.launchArguments.append("-context \(context)")
             app.launch()
+        }
+
+        beforeEach {
+            mockServer = MockServerHelper.setupNewServer(route: MockServerHelper.standardRouting)
+        }
+
+        afterEach {
+            mockServer.stop()
         }
 
         describe("Slide-up campaign view") {
@@ -26,7 +39,7 @@ class SlideUpViewSpec: QuickSpec {
             context("when clicking X button") {
 
                 beforeEach {
-                    launchAppIfNecessary(args: "-campaignType slide-up-close")
+                    launchAppIfNecessary(context: "slide-up-close")
                     if !iamView.exists {
                         app.buttons["login_successful"].tap()
                         expect(iamView.exists).toEventually(beTrue())
@@ -55,7 +68,7 @@ class SlideUpViewSpec: QuickSpec {
             context("with redirect action") {
 
                 beforeEach {
-                    launchAppIfNecessary(args: "-campaignType slide-up-close")
+                    launchAppIfNecessary(context: "slide-up-close")
                     if !iamView.exists {
                         app.buttons["login_successful"].tap()
                         expect(iamView.exists).toEventually(beTrue())
@@ -71,7 +84,7 @@ class SlideUpViewSpec: QuickSpec {
             context("with trigger action") {
 
                 beforeEach {
-                    launchAppIfNecessary(args: "-campaignType slide-up-trigger")
+                    launchAppIfNecessary(context: "slide-up-trigger")
                     if !iamView.exists {
                         app.buttons["custom_test"].tap()
                         expect(iamView.exists).toEventually(beTrue())

@@ -71,9 +71,6 @@ internal class UserDataCache: UserDataCacheable {
     }
 
     private func saveData() {
-        guard !Environment.isUITestEnvironment else {
-            return
-        }
         do {
             let encodedData = try JSONEncoder().encode(cachedContainers)
             userDefaults.set(encodedData, forKey: persistedDataKey)
