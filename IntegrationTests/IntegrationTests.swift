@@ -37,7 +37,7 @@ class IntegrationTests: XCTestCase {
             do {
                 response = try result?.get()
                 configRepo?.saveConfiguration(response!)
-            } catch (let error) {
+            } catch {
                 XCTFail("Couldn't get a response from configuration service. Error: \(error)")
                 response = nil
             }
@@ -64,7 +64,7 @@ class IntegrationTests: XCTestCase {
             let response: PingResponse?
             do {
                 response = try result?.get()
-            } catch (let error) {
+            } catch {
                 XCTFail("Couldn't get a response from message mixer service. Error: \(error)")
                 response = nil
             }

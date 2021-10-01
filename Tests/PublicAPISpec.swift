@@ -66,9 +66,7 @@ class PublicAPISpec: QuickSpec {
         afterEach {
             RInAppMessaging.deinitializeModule()
             UserDefaults.standard.removePersistentDomain(forName: "PublicAPISpec")
-            UIApplication.shared.keyWindow?.subviews
-                .filter { $0 is BaseView }
-                .forEach { $0.removeFromSuperview() }
+            UIApplication.shared.getKeyWindow()?.findIAMViewSubview()?.removeFromSuperview()
         }
 
         describe("RInAppMessaging") {
@@ -180,23 +178,21 @@ class PublicAPISpec: QuickSpec {
                 RInAppMessaging.logEvent(LoginSuccessfulEvent())
                 RInAppMessaging.logEvent(LoginSuccessfulEvent())
 
-                expect(UIApplication.shared.keyWindow?.subviews).toEventually(containElementSatisfying({
+                expect(UIApplication.shared.getKeyWindow()?.subviews).toEventually(containElementSatisfying({
                     if let view = $0 as? BaseView {
                         view.dismiss()
                         return true
                     }
                     return false
                 }), timeout: .seconds(3))
-                expect(UIApplication.shared.keyWindow?.subviews).toEventually(containElementSatisfying({
+                expect(UIApplication.shared.getKeyWindow()?.subviews).toEventually(containElementSatisfying({
                     if let view = $0 as? BaseView {
                         view.dismiss()
                         return true
                     }
                     return false
                 }))
-                expect(UIApplication.shared.keyWindow?.subviews).toAfterTimeoutNot(containElementSatisfying({
-                    $0 is BaseView
-                }))
+                expect(UIApplication.shared.getKeyWindow()?.findIAMViewSubview()).toAfterTimeout(beNil())
             }
 
             context("when calling closeMessage") {
@@ -204,19 +200,16 @@ class PublicAPISpec: QuickSpec {
                 it("will remove displayed campaign's view from hierarchy") {
                     generateAndDisplayLoginCampaigns(count: 1, addContexts: false)
 
-                    expect(UIApplication.shared.keyWindow?.subviews).toEventually(containElementSatisfying({
-                        $0 is BaseView
-                    }))
+                    expect(UIApplication.shared.getKeyWindow()?.findIAMViewSubview()).toEventuallyNot(beNil())
                     RInAppMessaging.closeMessage()
-                    expect(UIApplication.shared.keyWindow?.subviews).toEventuallyNot(containElementSatisfying({
-                        $0 is BaseView
-                    }))
+                    expect(UIApplication.shared.getKeyWindow()?.findIAMViewSubview()).toEventually(beNil())
                 }
 
                 it("will restore/increment impressionsLeft in closed campaign") {
                     generateAndDisplayLoginCampaigns(count: 1, addContexts: false)
 
-                    expect(campaignRepository.list.first?.impressionsLeft).toEventually(equal(1))
+                    expect(UIApplication.shared.getKeyWindow()?.findIAMViewSubview()).toEventuallyNot(beNil())
+                    expect(campaignRepository.list.first?.impressionsLeft).to(equal(1))
                     RInAppMessaging.closeMessage()
                     expect(campaignRepository.list.first?.impressionsLeft).toEventually(equal(2))
                 }
@@ -240,7 +233,7 @@ class PublicAPISpec: QuickSpec {
                     delegate.shouldShowCampaign = true
                     generateAndDisplayLoginCampaigns(count: 2, addContexts: true)
 
-                    expect(UIApplication.shared.keyWindow?.subviews).toEventually(containElementSatisfying({
+                    expect(UIApplication.shared.getKeyWindow()?.subviews).toEventually(containElementSatisfying({
                         if let view = $0 as? BaseView {
                             view.dismiss()
                             return true
@@ -254,8 +247,7 @@ class PublicAPISpec: QuickSpec {
                     delegate.shouldShowCampaign = false
                     generateAndDisplayLoginCampaigns(count: 2, addContexts: true)
 
-                    expect(UIApplication.shared.keyWindow?.subviews)
-                        .toAfterTimeout(allPass({ !($0 is BaseView) }))
+                    expect(UIApplication.shared.getKeyWindow()?.findIAMViewSubview()).toAfterTimeout(beNil())
                     expect(delegate.shouldShowCampaignCallCount).toAfterTimeout(equal(2))
                 }
 
@@ -286,7 +278,7 @@ class PublicAPISpec: QuickSpec {
 
             context("caching") {
                 afterEach {
-                    UIApplication.shared.keyWindow?.subviews
+                    UIApplication.shared.getKeyWindow()?.subviews
                         .filter { $0 is BaseView }
                         .forEach { $0.removeFromSuperview() }
                 }
@@ -294,7 +286,7 @@ class PublicAPISpec: QuickSpec {
                 it("will show a message if impressionsLeft was greater than 0 in the last session") {
                     generateAndDisplayLoginCampaigns(count: 1, addContexts: false)
 
-                    expect(UIApplication.shared.keyWindow?.subviews).toEventually(containElementSatisfying({
+                    expect(UIApplication.shared.getKeyWindow()?.subviews).toEventually(containElementSatisfying({
                         if let view = $0 as? BaseView {
                             view.dismiss()
                             return true
@@ -308,9 +300,7 @@ class PublicAPISpec: QuickSpec {
                     expect(campaignRepository.list.first?.impressionsLeft).to(equal(1))
                     generateAndDisplayLoginCampaigns(count: 1, addContexts: false)
 
-                    expect(UIApplication.shared.keyWindow?.subviews).toEventually(containElementSatisfying({
-                        $0 is BaseView
-                    }))
+                    expect(UIApplication.shared.getKeyWindow()?.findIAMViewSubview()).toEventuallyNot(beNil())
                 }
 
                 it("will not show a message if impressionsLeft was 0 in the last session") {
@@ -324,7 +314,7 @@ class PublicAPISpec: QuickSpec {
                     campaignsListManager.refreshList()
                     RInAppMessaging.logEvent(LoginSuccessfulEvent())
 
-                    expect(UIApplication.shared.keyWindow?.subviews).toEventually(containElementSatisfying({
+                    expect(UIApplication.shared.getKeyWindow()?.subviews).toEventually(containElementSatisfying({
                         if let view = $0 as? BaseView {
                             view.dismiss()
                             return true
@@ -339,14 +329,13 @@ class PublicAPISpec: QuickSpec {
                     expect(campaignRepository.list).to(haveCount(1))
                     RInAppMessaging.logEvent(LoginSuccessfulEvent())
 
-                    expect(UIApplication.shared.keyWindow?.subviews)
-                        .toAfterTimeout(allPass({ !($0 is BaseView) }))
+                    expect(UIApplication.shared.getKeyWindow()?.findIAMViewSubview()).toAfterTimeout(beNil())
                 }
 
                 it("will not show a message if user opted out from it in the last session") {
                     generateAndDisplayLoginCampaigns(count: 1, addContexts: false)
 
-                    expect(UIApplication.shared.keyWindow?.subviews).toEventually(containElementSatisfying({
+                    expect(UIApplication.shared.getKeyWindow()?.subviews).toEventually(containElementSatisfying({
                         if let view = $0 as? BaseView {
                             view.basePresenter.optOutCampaign()
                             view.dismiss()
@@ -360,8 +349,7 @@ class PublicAPISpec: QuickSpec {
                     expect(campaignRepository.list).to(haveCount(1))
                     generateAndDisplayLoginCampaigns(count: 1, addContexts: false)
 
-                    expect(UIApplication.shared.keyWindow?.subviews)
-                        .toAfterTimeout(allPass({ !($0 is BaseView) }))
+                    expect(UIApplication.shared.getKeyWindow()?.findIAMViewSubview()).toAfterTimeout(beNil())
                 }
 
                 // As it may contain outdated information (especially after logout)
@@ -374,9 +362,8 @@ class PublicAPISpec: QuickSpec {
                                            attributes: [])])
                     RInAppMessaging.registerPreference(nil)
                     RInAppMessaging.logEvent(LoginSuccessfulEvent())
-                    expect(UIApplication.shared.keyWindow?.subviews).toEventually(containElementSatisfying({
-                        $0 is BaseView
-                    })) // wait
+
+                    expect(UIApplication.shared.getKeyWindow()?.findIAMViewSubview()).toEventuallyNot(beNil())
                     expect(dataCache.getUserData(identifiers: [])?.campaignData?.first?.impressionsLeft)
                         .to(equal(1))
 
@@ -395,9 +382,8 @@ class PublicAPISpec: QuickSpec {
                                            attributes: [])])
                     RInAppMessaging.registerPreference(IAMPreferenceBuilder().setUserId("").build())
                     RInAppMessaging.logEvent(LoginSuccessfulEvent())
-                    expect(UIApplication.shared.keyWindow?.subviews).toEventually(containElementSatisfying({
-                        $0 is BaseView
-                    })) // wait
+
+                    expect(UIApplication.shared.getKeyWindow()?.findIAMViewSubview()).toEventuallyNot(beNil())
                     expect(dataCache.getUserData(identifiers: [UserIdentifier(type: .userId, identifier: "")])?.campaignData?.first?.impressionsLeft)
                         .to(equal(1))
 

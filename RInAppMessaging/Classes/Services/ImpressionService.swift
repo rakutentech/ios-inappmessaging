@@ -33,7 +33,7 @@ internal class ImpressionService: ImpressionServiceType, HttpRequestable, Analyt
 
     func pingImpression(impressions: [Impression], campaignData: CampaignData) {
 
-        guard let pingImpressionEndpoint = configurationRepository.getEndpoints()?.impression else {
+        guard let impressionEndpoint = configurationRepository.getEndpoints()?.impression else {
             reportError(description: "Error retrieving InAppMessaging Impression URL", data: nil)
             return
         }
@@ -50,7 +50,7 @@ internal class ImpressionService: ImpressionServiceType, HttpRequestable, Analyt
         )
 
         requestFromServer(
-            url: pingImpressionEndpoint,
+            url: impressionEndpoint,
             httpMethod: .post,
             parameters: parameters,
             addtionalHeaders: buildRequestHeader(),

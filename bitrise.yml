@@ -17,7 +17,7 @@ workflows:
     after_run:
     - _report
     steps:
-    - fastlane@2:
+    - fastlane@3:
         inputs:
         - update_fastlane: 'false'
         - lane: ci

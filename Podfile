@@ -7,12 +7,19 @@ target 'RInAppMessaging_Example' do
   pod 'RInAppMessaging', :path => '.'
   pod 'SwiftLint', '~> 0.42'
 
-  target 'Tests' do
+  abstract_target 'Tests-Common' do
     pod 'Quick'
     pod 'Nimble'
-  end
 
-  target 'IntegrationTests' do
+    target 'Tests' do
+    end
+
+    target 'UITests' do
+      pod 'Shock', '~> 6.0'
+    end
+
+    target 'IntegrationTests' do
+    end
   end
 end
 

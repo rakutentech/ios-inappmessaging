@@ -5,12 +5,8 @@ internal enum MainContainerFactory {
 
     private typealias ContainerElement = DependencyManager.ContainerElement
 
-    private static var isTestEnvironment: Bool {
-        return Bundle.tests != nil
-    }
-
     private static func getValidConfigURL() -> URL? {
-        guard !isTestEnvironment else {
+        guard !Environment.isTestEnvironment else {
             return URL(string: "config.com")
         }
         guard let configURLString = BundleInfo.inAppConfigurationURL, !configURLString.isEmpty else {

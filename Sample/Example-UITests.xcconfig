@@ -1,0 +1,6 @@
+#include "Pods/Target Support Files/Pods-RInAppMessaging_Example/Pods-RInAppMessaging_Example.uitests.xcconfig"
+
+#include "../../InAppMessaging-Secrets.xcconfig"
+
+// override secrets
+RIAM_CONFIG_URL=http:/$()/localhost:6789/config
