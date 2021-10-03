@@ -170,7 +170,7 @@ extension InAppMessagingModule {
 // MARK: - UserChangeObserver
 extension InAppMessagingModule {
 
-    func didUserChangeOrLogout() {
+    func userDidChangeOrLogout() {
         campaignRepository.clearLastUserData()
         eventMatcher.clearNonPersistentEvents()
     }

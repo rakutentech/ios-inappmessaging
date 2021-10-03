@@ -11,7 +11,7 @@ internal protocol AccountRepositoryType {
 }
 
 internal protocol UserChangeObserver: AnyObject {
-    func didUserChangeOrLogout()
+    func userDidChangeOrLogout()
 }
 
 final class AccountRepository: AccountRepositoryType {
@@ -51,7 +51,7 @@ final class AccountRepository: AccountRepositoryType {
 
         let emptyHash = userDataCache.userHash(from: [])
         if currentHash != emptyHash && (newHash == emptyHash || currentHash != newHash) {
-            observers.forEach { $0.value?.didUserChangeOrLogout() }
+            observers.forEach { $0.value?.userDidChangeOrLogout() }
         }
 
         userInfoHash = newHash

@@ -118,7 +118,7 @@ import Foundation
     /// Register user preference object to the IAM SDK.
     ///
     /// Registered object should be updated to reflect current user session state.
-    /// There is no need to call this method again, unless new `UserInfoProvider` object has been created.
+    /// Should only be called once unless new `UserInfoProvider` object has been created.
     /// - Note: This method creates a strong reference to provided object.
     /// - Parameter provider: object that will always contain up-to-date user information.
     @objc public static func registerPreference(_ provider: UserInfoProvider) {

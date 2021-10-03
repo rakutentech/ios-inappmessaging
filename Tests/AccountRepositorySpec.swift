@@ -277,7 +277,7 @@ class AccountRepositorySpec: QuickSpec {
 private class UserChangeObserverSpy: UserChangeObserver {
     var didReceiveUpdate = false
 
-    func didUserChangeOrLogout() {
+    func userDidChangeOrLogout() {
         didReceiveUpdate = true
     }
 }
