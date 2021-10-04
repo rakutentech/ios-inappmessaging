@@ -101,7 +101,7 @@ class AccountRepositorySpec: QuickSpec {
                     expect(accountRepository.updateUserInfo()).to(beTrue())
                 }
 
-                it("will return false if userID stayed the same changed") {
+                it("will return false if userID stayed the same") {
                     let userInfoProvider = UserInfoProviderMock()
                     userInfoProvider.userID = "user"
                     accountRepository.setPreference(userInfoProvider)
@@ -118,7 +118,7 @@ class AccountRepositorySpec: QuickSpec {
                     expect(accountRepository.updateUserInfo()).to(beTrue())
                 }
 
-                it("will return false if idTrackingTdentifier stayed the same changed") {
+                it("will return false if idTrackingTdentifier stayed the same") {
                     let userInfoProvider = UserInfoProviderMock()
                     userInfoProvider.idTrackingIdentifier = "tracking-id"
                     accountRepository.setPreference(userInfoProvider)
@@ -126,7 +126,7 @@ class AccountRepositorySpec: QuickSpec {
                     expect(accountRepository.updateUserInfo()).to(beFalse())
                 }
 
-                it("will return false if idTrackingTdentifier and userId stayed the same changed") {
+                it("will return false if idTrackingTdentifier and userId stayed the same") {
                     let userInfoProvider = UserInfoProviderMock()
                     userInfoProvider.idTrackingIdentifier = "tracking-id"
                     userInfoProvider.userID = "user"

@@ -89,7 +89,7 @@ class UserInfoProviderSpec: QuickSpec {
                     expect(userInfoProviderA == userInfoProviderB).to(beFalse())
                 }
 
-                it("will return true for the same isTrackingIdentifiers") {
+                it("will return true for the same idTrackingIdentifiers") {
                     userInfoProviderA.idTrackingIdentifier = "tracking-id"
                     userInfoProviderB.idTrackingIdentifier = "tracking-id"
                     expect(userInfoProviderA == userInfoProviderB).to(beTrue())
@@ -101,7 +101,7 @@ class UserInfoProviderSpec: QuickSpec {
                     expect(userInfoProviderA == userInfoProviderB).to(beTrue())
                 }
 
-                it("will return false for different isTrackingIdentifiers") {
+                it("will return false for different idTrackingIdentifiers") {
                     userInfoProviderA.idTrackingIdentifier = "identityA"
                     userInfoProviderB.idTrackingIdentifier = "identityB"
                     expect(userInfoProviderA == userInfoProviderB).to(beFalse())
