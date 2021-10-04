@@ -130,41 +130,6 @@ class UserDataCacheSpec: QuickSpec {
                     expect(userCache.getUserData(identifiers: userA)).toNot(equal(userCache.getUserData(identifiers: userB)))
                 }
 
-                it("will use separate containers for different rakutenIds") {
-                    let userA = [UserIdentifier(type: .rakutenId, identifier: "rakutenId1")]
-                    let userB = [UserIdentifier(type: .rakutenId, identifier: "rakutenId2")]
-                    userCache.cacheCampaignData(campaignsDataA, userIdentifiers: userA)
-                    userCache.cacheCampaignData(campaignsDataB, userIdentifiers: userB)
-
-                    expect(userCache.getUserData(identifiers: userA)).toNot(equal(userCache.getUserData(identifiers: userB)))
-                }
-
-                it("will use separate containers for the same userId with different rakutenId") {
-                    let userA = [UserIdentifier(type: .userId, identifier: "userId1"), UserIdentifier(type: .rakutenId, identifier: "rakutenId1")]
-                    let userB = [UserIdentifier(type: .userId, identifier: "userId1"), UserIdentifier(type: .rakutenId, identifier: "rakutenId2")]
-                    userCache.cacheCampaignData(campaignsDataA, userIdentifiers: userA)
-                    userCache.cacheCampaignData(campaignsDataB, userIdentifiers: userB)
-
-                    expect(userCache.getUserData(identifiers: userA)).toNot(equal(userCache.getUserData(identifiers: userB)))
-                }
-
-                it("will use separate containers for the same rakutenId if also other id is present in one of them") {
-                    let userA = [UserIdentifier(type: .userId, identifier: "userId1"), UserIdentifier(type: .rakutenId, identifier: "rakutenId1")]
-                    let userB = [UserIdentifier(type: .userId, identifier: "userId1")]
-                    userCache.cacheCampaignData(campaignsDataA, userIdentifiers: userA)
-                    userCache.cacheCampaignData(campaignsDataB, userIdentifiers: userB)
-
-                    expect(userCache.getUserData(identifiers: userA)).toNot(equal(userCache.getUserData(identifiers: userB)))
-                }
-
-                it("will use the same container for the same (userId, rakutenId) set") {
-                    let userA = [UserIdentifier(type: .userId, identifier: "userId1"), UserIdentifier(type: .rakutenId, identifier: "rakutenId2")]
-                    let userB = [UserIdentifier(type: .rakutenId, identifier: "rakutenId2"), UserIdentifier(type: .userId, identifier: "userId1")]
-                    userCache.cacheCampaignData(campaignsDataA, userIdentifiers: userA)
-
-                    expect(userCache.getUserData(identifiers: userA)).to(equal(userCache.getUserData(identifiers: userB)))
-                }
-
                 it("will use separate containers for different idTrackingIds") {
                     let userA = [UserIdentifier(type: .idTrackingIdentifier, identifier: "idTrackingId1")]
                     let userB = [UserIdentifier(type: .idTrackingIdentifier, identifier: "idTrackingId2")]
@@ -178,17 +143,6 @@ class UserDataCacheSpec: QuickSpec {
                     let userA = [UserIdentifier(type: .userId, identifier: "userId1"),
                                  UserIdentifier(type: .idTrackingIdentifier, identifier: "idTrackingId1")]
                     let userB = [UserIdentifier(type: .userId, identifier: "userId1"),
-                                 UserIdentifier(type: .idTrackingIdentifier, identifier: "idTrackingId2")]
-                    userCache.cacheCampaignData(campaignsDataA, userIdentifiers: userA)
-                    userCache.cacheCampaignData(campaignsDataB, userIdentifiers: userB)
-
-                    expect(userCache.getUserData(identifiers: userA)).toNot(equal(userCache.getUserData(identifiers: userB)))
-                }
-
-                it("will use separate containers for the same rakutenId with different idTrackingId") {
-                    let userA = [UserIdentifier(type: .rakutenId, identifier: "rakutenId1"),
-                                 UserIdentifier(type: .idTrackingIdentifier, identifier: "idTrackingId1")]
-                    let userB = [UserIdentifier(type: .rakutenId, identifier: "rakutenId1"),
                                  UserIdentifier(type: .idTrackingIdentifier, identifier: "idTrackingId2")]
                     userCache.cacheCampaignData(campaignsDataA, userIdentifiers: userA)
                     userCache.cacheCampaignData(campaignsDataB, userIdentifiers: userB)

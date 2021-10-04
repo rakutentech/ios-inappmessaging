@@ -13,9 +13,11 @@ class ImpressionServiceSpec: QuickSpec {
                                         displayPermission: nil,
                                         impression: URL(string: "https://impression.url")!))
         let campaign = TestHelpers.generateCampaign(id: "test")
+        let accountRepository = AccountRepository(userDataCache: UserDataCacheMock())
+        let userInfoProvider = UserInfoProviderMock()
+        accountRepository.setPreference(userInfoProvider)
 
         var service: ImpressionService!
-        var preferenceRepository: IAMPreferenceRepository!
         var configurationRepository: ConfigurationRepository!
         var httpSession: URLSessionMock!
         var errorDelegate: ErrorDelegateMock!
@@ -34,11 +36,11 @@ class ImpressionServiceSpec: QuickSpec {
             beforeEach {
                 URLSessionMock.startMockingURLSession()
 
-                preferenceRepository = IAMPreferenceRepository()
+                userInfoProvider.clear()
                 configurationRepository = ConfigurationRepository()
                 configurationRepository.saveConfiguration(configData)
                 errorDelegate = ErrorDelegateMock()
-                service = ImpressionService(preferenceRepository: preferenceRepository,
+                service = ImpressionService(accountRepository: accountRepository,
                                             configurationRepository: configurationRepository)
                 service.errorDelegate = errorDelegate
                 httpSession = URLSessionMock.mock(originalInstance: service.httpSession)
@@ -126,11 +128,8 @@ class ImpressionServiceSpec: QuickSpec {
                 }
 
                 it("will send user preferences in the request") {
-                    preferenceRepository.setPreference(IAMPreferenceBuilder()
-                        .setRakutenId("rakutenId")
-                        .setUserId("userId")
-                        .setIDTrackingIdentifier("identity")
-                        .build())
+                    userInfoProvider.userID = "userId"
+                    userInfoProvider.idTrackingIdentifier = "tracking-id"
 
                     sendRequestAndWaitForResponse()
 
@@ -138,15 +137,12 @@ class ImpressionServiceSpec: QuickSpec {
                         .toEventuallyNot(beNil())
                     let request = httpSession.decodeSentData(modelType: ImpressionRequest.self)
                     expect(request?.userIdentifiers).to(elementsEqualOrderAgnostic([
-                        UserIdentifier(type: .rakutenId, identifier: "rakutenId"),
-                        UserIdentifier(type: .idTrackingIdentifier, identifier: "identity"),
+                        UserIdentifier(type: .idTrackingIdentifier, identifier: "tracking-id"),
                         UserIdentifier(type: .userId, identifier: "userId")]))
                 }
 
                 it("will send required headers") {
-                    preferenceRepository.setPreference(IAMPreferenceBuilder()
-                        .setAccessToken("token")
-                        .build())
+                    userInfoProvider.accessToken = "token"
 
                     sendRequestAndWaitForResponse()
 

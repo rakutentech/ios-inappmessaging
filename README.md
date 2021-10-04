@@ -111,24 +111,33 @@ RInAppMessaging.logEvent(CustomEvent(withName: "any_event_name_here", withCustom
 
 ### **registerPreference()**
 
-A preference is what will allow IAM to identify users for targeting and segmentation. At the moment, IAM will take in any of the following identifiers (not all need to be provided):
+A preference is what will allow IAM to identify users for targeting and segmentation. Preference object should implement `UserInfoProvider` protocol and provide any of the following identifiers (not all need to be provided):
 
-1.  RakutenID - Any value that is considered by the app as user identifier.
-1.  UserID - The ID when registering a Rakuten account. e.g. an email address
+1.  UserID - An unique identifier associated with user membership. Usually it's the name used in login process (e.g. an email address).
 1.  IDTrackingIdentifier - The value provided by the internal ID SDK as the "tracking identifier" value.
 1.  AccessToken - This is the token provided by the internal RAuthentication SDK as the "accessToken" value
 
-To help IAM identify users, please set a new preference every time a user changes their login state i.e. when they log in or log out.  
-After logout is complete please call  `registerPreference()` with nil parameter.  
+The preference object can be set once per app session. IAM SDK will read object's properties on demand.
+
+To help IAM identify users, please keep user information in the preference object up to date.
+After logout is complete please ensure that all `UserInfoProvider` methods in the preference object return `nil`.  
 Preferences are not persisted so this function needs to be called on every launch.
 
-#### Generic example using RakutenID
+#### Generic example using UserID
 
 ```swift
-let preference = IAMPreferenceBuilder()
-    .setRakutenId("my-service-specific-id")
-    .build()
+import RInAppMessaging
 
+class UserPreference: UserInfoProvider {
+    func getUserID() -> String? { 
+        "member-id" 
+    }
+
+    func getIDTrackingIdentifier() -> String? { nil }
+    func getAccessToken() -> String? { nil }
+}
+
+let preference = UserPreference()
 RInAppMessaging.registerPreference(preference)
 ```
 
@@ -219,7 +228,7 @@ func application(_ application: UIApplication, didFinishLaunchingWithOptions lau
 
 ## User cache
 
-Each user has a separate cache container that is persisted in UserDefaults. Each combination of rakutenId, userId and idTrackingIdentifier is treated as a different user including a special - anonymous user - that represents non logged-in user (rakutenId, userId and idTrackingIdentifier are null or empty).
+Each user has a separate cache container that is persisted in UserDefaults. Each combination of userId and idTrackingIdentifier is treated as a different user including a special - anonymous user - that represents non logged-in user (userId and idTrackingIdentifier are null or empty).
 The cache stores data from ping response enriched with impressions counter and opt-out status.
 Calling `registerPerference()` reloads the cache and refreshes the list of available campaigns (with ping request).
 
@@ -236,9 +245,9 @@ Campaign impressions (displays) are counted locally for each user. Meaning that 
 * Configuration service returns `RequestError.missingMetadata` error
   * Ensure that IAM SDK is integrated properly (not as a static library)
 * If you receive HTTP error 401
-  * If you are providing an access token in `IAMPreference` make sure that it comes from PROD endpoint. (this applies only to Rakuten developers)
+  * If you are providing an access token in `UserInfoProvider` make sure that it comes from PROD endpoint. (this applies only to Rakuten developers)
 * If user targeting is not working
-  * Ensure you provide *userId* or *rakutenId* or *idTrackingIdentifier* in `IAMPreference`.
+  * Ensure you provide *userId* or *idTrackingIdentifier* in `UserInfoProvider` object.
   * If you set an *accessToken* you **must also** provide associated *userId*. (Rakuten developers only)
   * Ensure you are not providing *accessToken* and *idTrackingIdentifier* at the same time. (Rakuten developers only)
   * IAM SDK is not able to verify if provided accessToken is invalid or not matching userId.

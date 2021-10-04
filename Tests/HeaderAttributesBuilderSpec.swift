@@ -9,12 +9,14 @@ class HeaderAttributesBuilderSpec: QuickSpec {
         describe("HeaderAttributesBuilder") {
 
             var builder: HeaderAttributesBuilder!
-            let preferenceRepository = IAMPreferenceRepository()
+            let accountRepository = AccountRepository(userDataCache: UserDataCacheMock())
+            let userInfoProvider = UserInfoProviderMock()
+            accountRepository.setPreference(userInfoProvider)
 
             beforeEach {
                 builder = HeaderAttributesBuilder()
                 BundleInfoMock.reset()
-                preferenceRepository.setPreference(nil)
+                userInfoProvider.clear()
             }
 
             context("when calling addSubscriptionID") {
@@ -44,18 +46,18 @@ class HeaderAttributesBuilderSpec: QuickSpec {
             context("when calling addAccessToken") {
 
                 it("should return false for nil access token") {
-                    preferenceRepository.setPreference(IAMPreferenceBuilder().setAccessToken(nil).build())
-                    expect(builder.addAccessToken(preferenceRepository: preferenceRepository)).to(beFalse())
+                    userInfoProvider.accessToken = nil
+                    expect(builder.addAccessToken(accountRepository: accountRepository)).to(beFalse())
                 }
 
                 it("should return true for any access token id") {
-                    preferenceRepository.setPreference(IAMPreferenceBuilder().setAccessToken("token").build())
-                    expect(builder.addAccessToken(preferenceRepository: preferenceRepository)).to(beTrue())
+                    userInfoProvider.accessToken = "token"
+                    expect(builder.addAccessToken(accountRepository: accountRepository)).to(beTrue())
                 }
 
                 it("should append new header attribute") {
-                    preferenceRepository.setPreference(IAMPreferenceBuilder().setAccessToken("token").build())
-                    builder.addAccessToken(preferenceRepository: preferenceRepository)
+                    userInfoProvider.accessToken = "token"
+                    builder.addAccessToken(accountRepository: accountRepository)
                     expect(builder.build()).to(elementsEqual([HeaderAttribute(key: Constants.Request.Header.authorization, value: "OAuth2 token")]))
                 }
             }
@@ -68,11 +70,11 @@ class HeaderAttributesBuilderSpec: QuickSpec {
 
                 it("should return array with all expected types") {
                     BundleInfoMock.inAppSubscriptionIdMock = "some-id"
-                    preferenceRepository.setPreference(IAMPreferenceBuilder().setAccessToken("token").build())
+                    userInfoProvider.accessToken = "token"
 
                     builder.addDeviceID()
                     builder.addSubscriptionID(bundleInfo: BundleInfoMock.self)
-                    builder.addAccessToken(preferenceRepository: preferenceRepository)
+                    builder.addAccessToken(accountRepository: accountRepository)
 
                     expect(builder.build()).to(contain(HeaderAttribute(key: Constants.Request.Header.subscriptionID, value: "some-id")))
                     expect(builder.build()).to(contain(HeaderAttribute(key: Constants.Request.Header.authorization, value: "OAuth2 token")))

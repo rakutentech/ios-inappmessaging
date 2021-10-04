@@ -3,6 +3,7 @@ internal protocol UserDataCacheable: AnyObject {
     func cacheCampaignData(_ data: [Campaign], userIdentifiers: [UserIdentifier])
     func cacheDisplayPermissionData(_ data: DisplayPermissionResponse, campaignID: String, userIdentifiers: [UserIdentifier])
     func deleteUserData(identifiers: [UserIdentifier])
+    func userHash(from identifiers: [UserIdentifier]) -> String
 }
 
 internal struct UserDataCacheContainer: Codable, Equatable {
@@ -45,11 +46,11 @@ internal class UserDataCache: UserDataCacheable {
     }
 
     func getUserData(identifiers: [UserIdentifier]) -> UserDataCacheContainer? {
-        cachedContainers[userKey(from: identifiers)]
+        cachedContainers[userHash(from: identifiers)]
     }
 
     func cacheCampaignData(_ data: [Campaign], userIdentifiers: [UserIdentifier]) {
-        let cacheKey = userKey(from: userIdentifiers)
+        let cacheKey = userHash(from: userIdentifiers)
         var currentData = cachedContainers[cacheKey] ?? UserDataCacheContainer()
         currentData.campaignData = data
         cachedContainers[cacheKey] = currentData
@@ -57,7 +58,7 @@ internal class UserDataCache: UserDataCacheable {
     }
 
     func cacheDisplayPermissionData(_ data: DisplayPermissionResponse, campaignID: String, userIdentifiers: [UserIdentifier]) {
-        let cacheKey = userKey(from: userIdentifiers)
+        let cacheKey = userHash(from: userIdentifiers)
         var currentData = cachedContainers[cacheKey] ?? UserDataCacheContainer()
         currentData.displayPermissionData[campaignID] = data
         cachedContainers[cacheKey] = currentData
@@ -65,22 +66,12 @@ internal class UserDataCache: UserDataCacheable {
     }
 
     func deleteUserData(identifiers: [UserIdentifier]) {
-        let cacheKey = userKey(from: identifiers)
+        let cacheKey = userHash(from: identifiers)
         cachedContainers[cacheKey] = nil
         saveData()
     }
 
-    private func saveData() {
-        do {
-            let encodedData = try JSONEncoder().encode(cachedContainers)
-            userDefaults.set(encodedData, forKey: persistedDataKey)
-        } catch {
-            Logger.debug("UserDataCache encoding failed! \(error)")
-            assertionFailure()
-        }
-    }
-
-    private func userKey(from identifiers: [UserIdentifier]) -> String {
+    func userHash(from identifiers: [UserIdentifier]) -> String {
         var hasher = KeyHasher()
         identifiers.map({ $0.identifier }).sorted().forEach {
             hasher.combine($0)
@@ -91,5 +82,15 @@ internal class UserDataCache: UserDataCacheable {
         hasher.salt = salt
 
         return hasher.generateHash()
+    }
+
+    private func saveData() {
+        do {
+            let encodedData = try JSONEncoder().encode(cachedContainers)
+            userDefaults.set(encodedData, forKey: persistedDataKey)
+        } catch {
+            Logger.debug("UserDataCache encoding failed! \(error)")
+            assertionFailure()
+        }
     }
 }

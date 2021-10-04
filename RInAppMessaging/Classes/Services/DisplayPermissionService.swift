@@ -5,7 +5,7 @@ internal protocol DisplayPermissionServiceType {
 internal class DisplayPermissionService: DisplayPermissionServiceType, HttpRequestable {
 
     private let campaignRepository: CampaignRepositoryType
-    private let preferenceRepository: IAMPreferenceRepository
+    private let accountRepository: AccountRepositoryType
     private let configurationRepository: ConfigurationRepositoryType
 
     private(set) var httpSession: URLSession
@@ -13,11 +13,11 @@ internal class DisplayPermissionService: DisplayPermissionServiceType, HttpReque
     var bundleInfo = BundleInfo.self
 
     init(campaignRepository: CampaignRepositoryType,
-         preferenceRepository: IAMPreferenceRepository,
+         accountRepository: AccountRepositoryType,
          configurationRepository: ConfigurationRepositoryType) {
 
         self.campaignRepository = campaignRepository
-        self.preferenceRepository = preferenceRepository
+        self.accountRepository = accountRepository
         self.configurationRepository = configurationRepository
         httpSession = URLSession(configuration: configurationRepository.defaultHttpSessionConfiguration)
     }
@@ -76,7 +76,7 @@ extension DisplayPermissionService {
 
         let permissionRequest = DisplayPermissionRequest(subscriptionId: subscriptionId,
                                                          campaignId: campaignId,
-                                                         userIdentifiers: preferenceRepository.getUserIdentifiers(),
+                                                         userIdentifiers: accountRepository.getUserIdentifiers(),
                                                          platform: .ios,
                                                          appVersion: appVersion,
                                                          sdkVersion: sdkVersion,
@@ -94,7 +94,7 @@ extension DisplayPermissionService {
     private func buildRequestHeader() -> [HeaderAttribute] {
         var builder = HeaderAttributesBuilder()
         builder.addSubscriptionID(bundleInfo: bundleInfo)
-        builder.addAccessToken(preferenceRepository: preferenceRepository)
+        builder.addAccessToken(accountRepository: accountRepository)
 
         return builder.build()
     }
