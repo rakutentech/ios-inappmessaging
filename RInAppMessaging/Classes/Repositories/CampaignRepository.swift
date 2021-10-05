@@ -62,10 +62,18 @@ internal class CampaignRepository: CampaignRepositoryType {
     func syncWith(list: [Campaign], timestampMilliseconds: Int64) {
         lastSyncInMilliseconds = timestampMilliseconds
         let oldList = self.campaigns.get()
-        var newList = [Campaign]()
+        var updatedList = [Campaign]()
+
+        let (testCampaigns, newCampaigns) = list.reduce(into: ([Campaign](), [Campaign]())) { partialResult, campaign in
+            if campaign.data.isTest {
+                partialResult.0.append(campaign)
+            } else {
+                partialResult.1.append(campaign)
+            }
+        }
 
         let retainImpressionsLeftValue = true // Left for feature flag functionality
-        list.forEach { newCampaign in
+        newCampaigns.forEach { newCampaign in
             var updatedCampaign = newCampaign
             if let oldCampaign = oldList.first(where: { $0.id == newCampaign.id }) {
                 updatedCampaign = Campaign.updatedCampaign(updatedCampaign, asOptedOut: oldCampaign.isOptedOut)
@@ -79,10 +87,10 @@ internal class CampaignRepository: CampaignRepositoryType {
                     updatedCampaign = Campaign.updatedCampaign(updatedCampaign, withImpressionLeft: newImpressionsLeft)
                 }
             }
-            newList.append(updatedCampaign)
+            updatedList.append(updatedCampaign)
         }
-        self.campaigns.set(value: newList)
-        saveDataToCache(newList)
+        self.campaigns.set(value: updatedList + testCampaigns)
+        saveDataToCache(updatedList)
     }
 
     @discardableResult
@@ -96,7 +104,10 @@ internal class CampaignRepository: CampaignRepositoryType {
         let updatedCampaign = Campaign.updatedCampaign(campaign, asOptedOut: true)
         list[index] = updatedCampaign
         self.campaigns.set(value: list)
-        saveDataToCache(list)
+
+        if !campaign.data.isTest {
+            saveDataToCache(list)
+        }
 
         return updatedCampaign
     }
@@ -152,7 +163,10 @@ internal class CampaignRepository: CampaignRepositoryType {
         let updatedCampaign = Campaign.updatedCampaign(campaign, withImpressionLeft: newValue)
         list[index] = updatedCampaign
         campaigns.set(value: list)
-        saveDataToCache(list)
+
+        if !campaign.data.isTest {
+            saveDataToCache(list)
+        }
 
         return updatedCampaign
     }

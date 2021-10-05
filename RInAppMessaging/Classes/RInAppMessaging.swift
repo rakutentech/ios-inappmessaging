@@ -123,7 +123,6 @@ import Foundation
     /// - Parameter provider: object that will always contain up-to-date user information.
     @objc public static func registerPreference(_ provider: UserInfoProvider) {
         inAppQueue.async {
-            notifyIfModuleNotInitialized()
             initializedModule?.registerPreference(provider)
         }
     }
