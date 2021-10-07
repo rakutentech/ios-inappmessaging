@@ -1,5 +1,6 @@
 import Quick
 import Nimble
+import class RSDKUtils.TypedDependencyManager
 @testable import RInAppMessaging
 
 class PublicAPISpec: QuickSpec {
@@ -17,18 +18,18 @@ class PublicAPISpec: QuickSpec {
         var dataCache: UserDataCache!
         var delegate: Delegate!
 
-        func mockContainer() -> DependencyManager.Container {
-            return DependencyManager.Container([
-                DependencyManager.ContainerElement(type: DisplayPermissionServiceType.self, factory: { DisplayPermissionServiceMock() }),
-                DependencyManager.ContainerElement(type: ConfigurationManagerType.self, factory: { configurationManager }),
-                DependencyManager.ContainerElement(type: MessageMixerServiceType.self, factory: { messageMixerService }),
-                DependencyManager.ContainerElement(type: EventMatcherType.self, factory: { eventMatcher }),
-                DependencyManager.ContainerElement(type: UserDataCacheable.self, factory: { dataCache })
+        func mockContainer() -> TypedDependencyManager.Container {
+            return TypedDependencyManager.Container([
+                TypedDependencyManager.ContainerElement(type: DisplayPermissionServiceType.self, factory: { DisplayPermissionServiceMock() }),
+                TypedDependencyManager.ContainerElement(type: ConfigurationManagerType.self, factory: { configurationManager }),
+                TypedDependencyManager.ContainerElement(type: MessageMixerServiceType.self, factory: { messageMixerService }),
+                TypedDependencyManager.ContainerElement(type: EventMatcherType.self, factory: { eventMatcher }),
+                TypedDependencyManager.ContainerElement(type: UserDataCacheable.self, factory: { dataCache })
             ])
         }
 
         func reinitializeSDK(onDependencyResolved: (() -> Void)? = nil) {
-            let dependencyManager = DependencyManager()
+            let dependencyManager = TypedDependencyManager()
             dependencyManager.appendContainer(MainContainerFactory.create(dependencyManager: dependencyManager))
             dependencyManager.appendContainer(mockContainer())
             configurationManager = ConfigurationManagerMock()

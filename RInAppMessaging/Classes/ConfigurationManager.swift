@@ -1,4 +1,5 @@
 import Foundation
+import RSDKUtils
 
 internal protocol ConfigurationManagerType: AnyObject, ErrorReportable {
     func fetchAndSaveConfigData(completion: @escaping (ConfigData) -> Void)

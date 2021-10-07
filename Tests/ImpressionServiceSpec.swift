@@ -1,5 +1,6 @@
 import Quick
 import Nimble
+import RSDKUtils
 @testable import RInAppMessaging
 
 class ImpressionServiceSpec: QuickSpec {

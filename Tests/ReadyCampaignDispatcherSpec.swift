@@ -1,5 +1,6 @@
 import Quick
 import Nimble
+import class RSDKUtils.URLSessionMock
 @testable import RInAppMessaging
 
 class ReadyCampaignDispatcherSpec: QuickSpec {

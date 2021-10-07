@@ -1,9 +1,10 @@
 import Foundation
+import RSDKUtils
 
 /// Collection of methods used to create a container which handles all dependencies in standard SDK usage
 internal enum MainContainerFactory {
 
-    private typealias ContainerElement = DependencyManager.ContainerElement
+    private typealias ContainerElement = TypedDependencyManager.ContainerElement
 
     private static func getValidConfigURL() -> URL? {
         guard !Environment.isTestEnvironment else {
@@ -15,7 +16,7 @@ internal enum MainContainerFactory {
         return URL(string: configURLString)
     }
 
-    static func create(dependencyManager manager: DependencyManager) -> DependencyManager.Container {
+    static func create(dependencyManager manager: TypedDependencyManager) -> TypedDependencyManager.Container {
 
         var elements = [
             ContainerElement(type: CommonUtility.self, factory: { CommonUtility() }),
@@ -113,6 +114,6 @@ internal enum MainContainerFactory {
             }, transient: true)
         ])
 
-        return DependencyManager.Container(elements)
+        return TypedDependencyManager.Container(elements)
     }
 }

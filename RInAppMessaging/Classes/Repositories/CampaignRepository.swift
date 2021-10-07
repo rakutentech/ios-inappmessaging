@@ -1,3 +1,6 @@
+import Foundation
+import RSDKUtils
+
 internal protocol CampaignRepositoryType: AnyObject, Lockable {
     var list: [Campaign] { get }
     var lastSyncInMilliseconds: Int64? { get }

@@ -1,3 +1,5 @@
+import protocol RSDKUtils.Lockable
+
 /// Struct that provides common utility methods for RakutenInAppMessaging module.
 internal struct CommonUtility {
 

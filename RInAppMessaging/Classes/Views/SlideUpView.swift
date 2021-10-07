@@ -49,7 +49,7 @@ internal class SlideUpView: UIView, SlideUpViewType {
     }
 
     override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-        if isTouchInside(touchPoint: point, from: self, targetView: exitButton, touchAreaSize: UIConstants.exitButtonTouchAreaSize) {
+        if exitButton?.isTouchInside(touchPoint: point, from: self, touchAreaSize: UIConstants.exitButtonTouchAreaSize) == true {
             return exitButton
         }
         return super.hitTest(point, with: event)

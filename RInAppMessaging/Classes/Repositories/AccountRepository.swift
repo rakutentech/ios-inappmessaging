@@ -1,3 +1,5 @@
+import class RSDKUtils.WeakWrapper
+
 /// Repository to hold `UserInfoProvider`.
 internal protocol AccountRepositoryType {
     var userInfoProvider: UserInfoProvider? { get }

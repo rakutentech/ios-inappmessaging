@@ -1,4 +1,5 @@
 import UIKit
+import class RSDKUtils.TypedDependencyManager
 
 internal protocol RouterType: AnyObject {
     var accessibilityCompatibleDisplay: Bool { get set }
@@ -22,11 +23,11 @@ internal protocol RouterType: AnyObject {
 /// Handles all the displaying logic of the SDK.
 internal class Router: RouterType {
 
-    private let dependencyManager: DependencyManager
+    private let dependencyManager: TypedDependencyManager
     private let displayQueue = DispatchQueue(label: "IAM.MessageLoader")
     var accessibilityCompatibleDisplay = false
 
-    init(dependencyManager: DependencyManager) {
+    init(dependencyManager: TypedDependencyManager) {
         self.dependencyManager = dependencyManager
     }
 

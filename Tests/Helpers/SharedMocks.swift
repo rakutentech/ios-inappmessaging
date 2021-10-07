@@ -1,3 +1,4 @@
+import RSDKUtils
 @testable import RInAppMessaging
 
 class CampaignsValidatorMock: CampaignsValidatorType {
@@ -229,118 +230,6 @@ class ImpressionServiceMock: ImpressionServiceType {
     }
 }
 
-class URLSessionMock: URLSession {
-
-    typealias SessionTaskCompletion = (Data?, URLResponse?, Error?) -> Void
-
-    static var swizzledMethods: (Method, Method)?
-    private static var mockSessionLinks = [URLSession: WeakWrapper<URLSessionMock>]()
-
-    private let originalInstance: URLSession?
-
-    @objc var sentRequest: URLRequest?
-    var httpResponse: HTTPURLResponse?
-    var responseData: Data?
-    var responseError: Error?
-
-    static func mock(originalInstance: URLSession) -> URLSessionMock {
-        if let existingMock = URLSessionMock.mockSessionLinks[originalInstance]?.value {
-            return existingMock
-        } else {
-            let newMock = URLSessionMock(originalInstance: originalInstance)
-            URLSessionMock.mockSessionLinks[originalInstance] = WeakWrapper(value: newMock)
-            return newMock
-        }
-    }
-
-    private init(originalInstance: URLSession) {
-        self.originalInstance = originalInstance
-        super.init()
-    }
-
-    static func startMockingURLSession() {
-        guard swizzledMethods == nil else {
-            return
-        }
-
-        let originalMethod = class_getInstanceMethod(
-            URLSession.self,
-            #selector(URLSession().dataTask(with:completionHandler:)
-                as (URLRequest, @escaping SessionTaskCompletion) -> URLSessionDataTask))!
-
-        let dummyObject = URLSessionMock(originalInstance: URLSession())
-        let swizzledMethod = class_getInstanceMethod(
-            URLSessionMock.self,
-            #selector(dummyObject.dataTask(with:completionHandler:)
-                as (URLRequest, @escaping SessionTaskCompletion) -> URLSessionDataTask))!
-
-        swizzledMethods = (originalMethod, swizzledMethod)
-        method_exchangeImplementations(originalMethod, swizzledMethod)
-    }
-
-    static func stopMockingURLSession() {
-        guard let swizzledMethods = swizzledMethods else {
-            return
-        }
-        method_exchangeImplementations(swizzledMethods.0, swizzledMethods.1)
-        self.swizzledMethods = nil
-    }
-
-    func decodeSentData<T: Decodable>(modelType: T.Type) -> T? {
-        guard let httpBody = sentRequest?.httpBody else {
-            return nil
-        }
-        return try? JSONDecoder().decode(modelType.self, from: httpBody)
-    }
-
-    func decodeQueryItems<T: Decodable>(modelType: T.Type) -> T? {
-        guard let url = sentRequest?.url,
-              let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: true),
-              let queryItems = urlComponents.queryItems else {
-            return nil
-        }
-        let array = queryItems.map { item -> String? in
-            guard let value = item.value else {
-                return nil
-            }
-            if let intValue = Int(value) {
-                return "\"\(item.name)\": \(intValue)"
-            }
-            return "\"\(item.name)\": \"\(value)\""
-        }.compactMap { $0 }
-        guard let jsonData = "{\(array.joined(separator: ","))}".data(using: .utf8) else {
-            return nil
-        }
-        return try? JSONDecoder().decode(modelType.self, from: jsonData)
-    }
-
-    override func dataTask(
-        with request: URLRequest,
-        completionHandler: @escaping SessionTaskCompletion) -> URLSessionDataTask {
-
-        let mockedSession: URLSessionMock?
-        if self.responds(to: #selector(getter: sentRequest)) {
-            mockedSession = self // not swizzled
-        } else {
-            mockedSession = URLSessionMock.mockSessionLinks[self]?.value
-        }
-
-        let originalSession = mockedSession?.originalInstance ?? URLSession.shared
-        guard let mockContainer = mockedSession else {
-            return originalSession.dataTask(with: request)
-        }
-
-        mockContainer.sentRequest = request
-        completionHandler(mockContainer.responseData,
-                          mockContainer.httpResponse,
-                          mockContainer.responseError)
-
-        let dummyRequest = URLRequest(url: URL(string: "about:blank")!)
-        // URLSessionDataTask object must be created by an URLSession object
-        return originalSession.dataTask(with: dummyRequest)
-    }
-}
-
 class BundleInfoMock: BundleInfo {
     static var applicationIdMock: String? = "app.id"
     static var appVersionMock: String? = "1.2.3"
@@ -497,5 +386,26 @@ final class RandomizerMock: RandomizerType {
     var returnedValue: UInt = 0
     var dice: UInt {
         returnedValue
+    }
+}
+
+final class LockableTestObject: Lockable {
+    var resourcesToLock: [LockableResource] {
+        return [resource]
+    }
+    let resource = LockableObject([Int]())
+
+    func append(_ number: Int) {
+        var resource = self.resource.get()
+        resource.append(number)
+        self.resource.set(value: resource)
+    }
+
+    func lockResources() {
+        resourcesToLock.forEach { $0.lock() }
+    }
+
+    func unlockResources() {
+        resourcesToLock.forEach { $0.unlock() }
     }
 }

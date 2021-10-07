@@ -1,5 +1,6 @@
 import Quick
 import Nimble
+import class RSDKUtils.TypedDependencyManager
 @testable import RInAppMessaging
 
 /// Tests for behavior of the SDK when supplied with different configuration responses.
@@ -10,14 +11,14 @@ class ConfigurationSpec: QuickSpec {
 
             var configurationManager: ConfigurationManagerMock!
             var mockMessageMixer: MessageMixerServiceMock!
-            var dependencyManager: DependencyManager!
+            var dependencyManager: TypedDependencyManager!
 
-            func mockContainer() -> DependencyManager.Container {
-                return DependencyManager.Container([
-                    DependencyManager.ContainerElement(type: ConfigurationManagerType.self, factory: {
+            func mockContainer() -> TypedDependencyManager.Container {
+                return TypedDependencyManager.Container([
+                    TypedDependencyManager.ContainerElement(type: ConfigurationManagerType.self, factory: {
                         return configurationManager
                     }),
-                    DependencyManager.ContainerElement(type: MessageMixerServiceType.self, factory: {
+                    TypedDependencyManager.ContainerElement(type: MessageMixerServiceType.self, factory: {
                         return mockMessageMixer
                     })
                 ])
@@ -25,7 +26,7 @@ class ConfigurationSpec: QuickSpec {
 
             beforeEach {
                 mockMessageMixer = MessageMixerServiceMock()
-                dependencyManager = DependencyManager()
+                dependencyManager = TypedDependencyManager()
                 configurationManager = ConfigurationManagerMock()
                 RInAppMessaging.deinitializeModule()
                 dependencyManager.appendContainer(MainContainerFactory.create(dependencyManager: dependencyManager))

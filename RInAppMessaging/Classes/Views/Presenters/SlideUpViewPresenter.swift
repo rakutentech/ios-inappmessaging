@@ -23,9 +23,9 @@ internal class SlideUpViewPresenter: BaseViewPresenter, SlideUpViewPresenterType
         }
 
         let viewModel = SlideUpViewModel(slideFromDirection: direction,
-                                         backgroundColor: UIColor(fromHexString: messagePayload.backgroundColor) ?? .white,
+                                         backgroundColor: UIColor(hexString: messagePayload.backgroundColor) ?? .white,
                                          messageBody: messageBody,
-                                         messageBodyColor: UIColor(fromHexString: messagePayload.messageBodyColor) ?? .black)
+                                         messageBodyColor: UIColor(hexString: messagePayload.messageBodyColor) ?? .black)
         view?.setup(viewModel: viewModel)
     }
 
