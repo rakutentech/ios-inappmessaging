@@ -93,8 +93,7 @@ class PublicAPISpec: QuickSpec {
 
                 RInAppMessaging.closeMessage(clearQueuedCampaigns: true) // 1st error sent
                 RInAppMessaging.logEvent(LoginSuccessfulEvent()) // 2nd error sent
-                RInAppMessaging.registerPreference(UserInfoProviderMock()) // 3rd error sent
-                expect(errorDelegate.totalErrorNumber).toEventually(equal(3))
+                expect(errorDelegate.totalErrorNumber).toEventually(equal(2))
             }
 
             it("won't reinitialize module if config was called more than once") {

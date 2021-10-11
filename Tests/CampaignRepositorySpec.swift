@@ -20,8 +20,12 @@ class CampaignRepositorySpec: QuickSpec {
                 userDataCache.cachedData[CampaignRepository.lastUser]
             }
             let userInfoProvider = UserInfoProviderMock()
-            let testCampaign = TestHelpers.generateCampaign(id: "testImpressions",
-                                                            test: false,
+            let campaign = TestHelpers.generateCampaign(id: "campaign-id",
+                                                        test: false,
+                                                        delay: 0,
+                                                        maxImpressions: 3)
+            let testCampaign = TestHelpers.generateCampaign(id: "test-campaign-id",
+                                                            test: true,
                                                             delay: 0,
                                                             maxImpressions: 3)
 
@@ -39,16 +43,16 @@ class CampaignRepositorySpec: QuickSpec {
             }
 
             it("will load last user cache data during initialization") {
-                userDataCache.lastUserDataMock = UserDataCacheContainer(campaignData: [testCampaign])
+                userDataCache.lastUserDataMock = UserDataCacheContainer(campaignData: [campaign])
                 let campaignRepository = CampaignRepository(userDataCache: userDataCache, accountRepository: accountRepository)
-                expect(campaignRepository.list).to(equal([testCampaign]))
+                expect(campaignRepository.list).to(equal([campaign]))
             }
 
             context("when syncing") {
 
                 it("will add new campaigns to the list") {
                     insertRandomCampaigns()
-                    let newCampaigns = TestHelpers.MockResponse.withGeneratedCampaigns(count: 2, test: false, delay: 1).data
+                    let newCampaigns = [campaign, testCampaign]
                     campaignRepository.syncWith(list: newCampaigns, timestampMilliseconds: 0)
                     expect(campaignRepository.list).to(contain(newCampaigns))
                 }
@@ -64,56 +68,72 @@ class CampaignRepositorySpec: QuickSpec {
                 }
 
                 it("will persist impressionsLeft value") {
+                    campaignRepository.syncWith(list: [campaign], timestampMilliseconds: 0)
+                    campaignRepository.decrementImpressionsLeftInCampaign(id: campaign.id)
+                    expect(firstPersistedCampaign?.impressionsLeft).to(equal(2))
+
+                    campaignRepository.syncWith(list: [campaign], timestampMilliseconds: 0)
+                    expect(firstPersistedCampaign?.impressionsLeft).to(equal(2))
+                }
+
+                it("will not persist impressionsLeft value for test campaigns") {
                     campaignRepository.syncWith(list: [testCampaign], timestampMilliseconds: 0)
                     campaignRepository.decrementImpressionsLeftInCampaign(id: testCampaign.id)
                     expect(firstPersistedCampaign?.impressionsLeft).to(equal(2))
 
                     campaignRepository.syncWith(list: [testCampaign], timestampMilliseconds: 0)
-                    expect(firstPersistedCampaign?.impressionsLeft).to(equal(2))
+                    expect(firstPersistedCampaign?.impressionsLeft).to(equal(3))
                 }
 
                 it("will persist isOptedOut value") {
-                    campaignRepository.syncWith(list: [testCampaign], timestampMilliseconds: 0)
+                    campaignRepository.syncWith(list: [campaign], timestampMilliseconds: 0)
                     expect(firstPersistedCampaign?.isOptedOut).to(beFalse())
 
-                    campaignRepository.optOutCampaign(testCampaign)
-                    campaignRepository.syncWith(list: [testCampaign], timestampMilliseconds: 0)
+                    campaignRepository.optOutCampaign(campaign)
+                    campaignRepository.syncWith(list: [campaign], timestampMilliseconds: 0)
                     expect(firstPersistedCampaign?.isOptedOut).to(beTrue())
                 }
 
                 it("will not override impressionsLeft value even if maxImpressions number is smaller") {
-                    campaignRepository.syncWith(list: [testCampaign], timestampMilliseconds: 0)
-                    campaignRepository.incrementImpressionsLeftInCampaign(id: testCampaign.id)
+                    campaignRepository.syncWith(list: [campaign], timestampMilliseconds: 0)
+                    campaignRepository.incrementImpressionsLeftInCampaign(id: campaign.id)
                     expect(firstPersistedCampaign?.impressionsLeft).to(equal(4))
 
-                    campaignRepository.syncWith(list: [testCampaign], timestampMilliseconds: 0)
+                    campaignRepository.syncWith(list: [campaign], timestampMilliseconds: 0)
                     expect(firstPersistedCampaign?.impressionsLeft).to(equal(4))
                 }
 
                 it("will modify impressionsLeft if maxImpressions value is different (campaign modification)") {
-                    campaignRepository.syncWith(list: [testCampaign], timestampMilliseconds: 0)
-                    campaignRepository.decrementImpressionsLeftInCampaign(id: testCampaign.id)
-                    campaignRepository.decrementImpressionsLeftInCampaign(id: testCampaign.id)
+                    campaignRepository.syncWith(list: [campaign], timestampMilliseconds: 0)
+                    campaignRepository.decrementImpressionsLeftInCampaign(id: campaign.id)
+                    campaignRepository.decrementImpressionsLeftInCampaign(id: campaign.id)
                     expect(firstPersistedCampaign?.impressionsLeft).to(equal(1))
 
-                    let updatedCampaign = TestHelpers.generateCampaign(id: "testImpressions",
-                                                                    test: false,
-                                                                    delay: 0,
-                                                                    maxImpressions: 6)
+                    let updatedCampaign = TestHelpers.generateCampaign(id: campaign.id,
+                                                                       test: false,
+                                                                       delay: 0,
+                                                                       maxImpressions: 6)
                     campaignRepository.syncWith(list: [updatedCampaign], timestampMilliseconds: 0)
                     expect(firstPersistedCampaign?.impressionsLeft).to(equal(4))
                 }
 
                 it("will save updated list to the cache (anonymous user)") {
-                    campaignRepository.syncWith(list: [testCampaign], timestampMilliseconds: 0)
-                    expect(userDataCache.cachedCampaignData).to(equal([testCampaign]))
+                    campaignRepository.syncWith(list: [campaign], timestampMilliseconds: 0)
+                    expect(userDataCache.cachedCampaignData).to(equal([campaign]))
                     expect(lastUserCache?.campaignData).to(equal(userCache?.campaignData))
                 }
 
                 it("will save updated list to the cache (logged-in user)") {
                     userInfoProvider.userID = "user"
+                    campaignRepository.syncWith(list: [campaign], timestampMilliseconds: 0)
+                    expect(userCache?.campaignData).to(equal([campaign]))
+                    expect(lastUserCache?.campaignData).to(equal(userCache?.campaignData))
+                }
+
+                it("will not save test campaigns to the cache") {
+                    userInfoProvider.userID = "user"
                     campaignRepository.syncWith(list: [testCampaign], timestampMilliseconds: 0)
-                    expect(userCache?.campaignData).to(equal([testCampaign]))
+                    expect(userCache?.campaignData).toNot(equal([testCampaign]))
                     expect(lastUserCache?.campaignData).to(equal(userCache?.campaignData))
                 }
             }
@@ -121,36 +141,64 @@ class CampaignRepositorySpec: QuickSpec {
             context("when optOutCampaign is called") {
 
                 it("will mark campaign as opted out") {
+                    campaignRepository.syncWith(list: [campaign], timestampMilliseconds: 0)
+                    expect(firstPersistedCampaign?.isOptedOut).to(beFalse())
+
+                    let updatedCampaign = campaignRepository.optOutCampaign(campaign)
+                    expect(updatedCampaign?.isOptedOut).to(beTrue())
+                    expect(firstPersistedCampaign?.isOptedOut).to(beTrue())
+                }
+
+                it("will mark test campaign as opted out") {
                     campaignRepository.syncWith(list: [testCampaign], timestampMilliseconds: 0)
                     expect(firstPersistedCampaign?.isOptedOut).to(beFalse())
 
-                    campaignRepository.optOutCampaign(testCampaign)
+                    let updatedCampaign = campaignRepository.optOutCampaign(testCampaign)
+                    expect(updatedCampaign?.isOptedOut).to(beTrue())
                     expect(firstPersistedCampaign?.isOptedOut).to(beTrue())
                 }
 
                 it("will save updated list to the cache (anonymous user)") {
-                    campaignRepository.syncWith(list: [testCampaign], timestampMilliseconds: 0)
-                    campaignRepository.optOutCampaign(testCampaign)
+                    campaignRepository.syncWith(list: [campaign], timestampMilliseconds: 0)
+                    campaignRepository.optOutCampaign(campaign)
                     expect(userDataCache.cachedCampaignData?.first?.isOptedOut).to(beTrue())
                     expect(lastUserCache?.campaignData).to(equal(userCache?.campaignData))
                 }
 
                 it("will save updated list to the cache (logged-in user)") {
                     userInfoProvider.userID = "user"
-                    campaignRepository.syncWith(list: [testCampaign], timestampMilliseconds: 0)
-                    campaignRepository.optOutCampaign(testCampaign)
+                    campaignRepository.syncWith(list: [campaign], timestampMilliseconds: 0)
+                    campaignRepository.optOutCampaign(campaign)
                     expect(userCache?.campaignData?.first?.isOptedOut).to(beTrue())
                     expect(lastUserCache?.campaignData).to(equal(userCache?.campaignData))
+                }
+
+                it("will NOT save updated list to the cache if campaign is marked as `isTest`") {
+                    userInfoProvider.userID = "user"
+                    campaignRepository.syncWith(list: [testCampaign], timestampMilliseconds: 0)
+                    campaignRepository.optOutCampaign(testCampaign)
+                    expect(userCache?.campaignData).to(beEmpty())
+                    expect(lastUserCache?.campaignData).to(beEmpty())
                 }
             }
 
             context("when decrementImpressionsLeftInCampaign is called") {
 
                 it("will decrement campaign's impressionsLeft value") {
+                    campaignRepository.syncWith(list: [campaign], timestampMilliseconds: 0)
+                    let impressionsLeft = firstPersistedCampaign?.impressionsLeft ?? 0
+
+                    let updatedCampaign = campaignRepository.decrementImpressionsLeftInCampaign(id: campaign.id)
+                    expect(updatedCampaign?.impressionsLeft).to(equal(impressionsLeft - 1))
+                    expect(firstPersistedCampaign?.impressionsLeft).to(equal(impressionsLeft - 1))
+                }
+
+                it("will decrement test campaign's impressionsLeft value") {
                     campaignRepository.syncWith(list: [testCampaign], timestampMilliseconds: 0)
                     let impressionsLeft = firstPersistedCampaign?.impressionsLeft ?? 0
 
-                    campaignRepository.decrementImpressionsLeftInCampaign(id: testCampaign.id)
+                    let updatedCampaign = campaignRepository.decrementImpressionsLeftInCampaign(id: testCampaign.id)
+                    expect(updatedCampaign?.impressionsLeft).to(equal(impressionsLeft - 1))
                     expect(firstPersistedCampaign?.impressionsLeft).to(equal(impressionsLeft - 1))
                 }
 
@@ -166,62 +214,88 @@ class CampaignRepositorySpec: QuickSpec {
                 }
 
                 it("will save updated list to the cache (anonymous user)") {
-                    campaignRepository.syncWith(list: [testCampaign], timestampMilliseconds: 0)
-                    campaignRepository.decrementImpressionsLeftInCampaign(id: testCampaign.id)
-                    expect(userDataCache.cachedCampaignData?.first?.impressionsLeft).to(equal(testCampaign.impressionsLeft - 1))
+                    campaignRepository.syncWith(list: [campaign], timestampMilliseconds: 0)
+                    campaignRepository.decrementImpressionsLeftInCampaign(id: campaign.id)
+                    expect(userDataCache.cachedCampaignData?.first?.impressionsLeft).to(equal(campaign.impressionsLeft - 1))
                     expect(lastUserCache?.campaignData).to(equal(userCache?.campaignData))
                 }
 
                 it("will save updated list to the cache (logged-in user)") {
                     userInfoProvider.userID = "user"
+                    campaignRepository.syncWith(list: [campaign], timestampMilliseconds: 0)
+                    campaignRepository.decrementImpressionsLeftInCampaign(id: campaign.id)
+                    expect(userCache?.campaignData?.first?.impressionsLeft).to(equal(campaign.impressionsLeft - 1))
+                    expect(lastUserCache?.campaignData).to(equal(userCache?.campaignData))
+                }
+
+                it("will NOT save updated list to the cache if campaign is marked as `isTest`") {
+                    userInfoProvider.userID = "user"
                     campaignRepository.syncWith(list: [testCampaign], timestampMilliseconds: 0)
                     campaignRepository.decrementImpressionsLeftInCampaign(id: testCampaign.id)
-                    expect(userCache?.campaignData?.first?.impressionsLeft).to(equal(testCampaign.impressionsLeft - 1))
-                    expect(lastUserCache?.campaignData).to(equal(userCache?.campaignData))
+                    expect(userCache?.campaignData).to(beEmpty())
+                    expect(lastUserCache?.campaignData).to(beEmpty())
                 }
             }
 
             context("when incrementImpressionsLeftInCampaign is called") {
 
                 it("will increment campaign's impressionsLeft value") {
+                    campaignRepository.syncWith(list: [campaign], timestampMilliseconds: 0)
+                    expect(firstPersistedCampaign?.impressionsLeft).to(equal(3))
+
+                    let updatedCampaign = campaignRepository.incrementImpressionsLeftInCampaign(id: campaign.id)
+                    expect(updatedCampaign?.impressionsLeft).to(equal(4))
+                    expect(firstPersistedCampaign?.impressionsLeft).to(equal(4))
+                }
+
+                it("will increment test campaign's impressionsLeft value") {
                     campaignRepository.syncWith(list: [testCampaign], timestampMilliseconds: 0)
                     expect(firstPersistedCampaign?.impressionsLeft).to(equal(3))
 
-                    campaignRepository.incrementImpressionsLeftInCampaign(id: testCampaign.id)
+                    let updatedCampaign = campaignRepository.incrementImpressionsLeftInCampaign(id: testCampaign.id)
+                    expect(updatedCampaign?.impressionsLeft).to(equal(4))
                     expect(firstPersistedCampaign?.impressionsLeft).to(equal(4))
                 }
 
                 it("will save updated list to the cache (anonymous user)") {
-                    campaignRepository.syncWith(list: [testCampaign], timestampMilliseconds: 0)
-                    campaignRepository.incrementImpressionsLeftInCampaign(id: testCampaign.id)
-                    expect(userDataCache.cachedCampaignData?.first?.impressionsLeft).to(equal(testCampaign.impressionsLeft + 1))
+                    campaignRepository.syncWith(list: [campaign], timestampMilliseconds: 0)
+                    campaignRepository.incrementImpressionsLeftInCampaign(id: campaign.id)
+                    expect(userDataCache.cachedCampaignData?.first?.impressionsLeft).to(equal(campaign.impressionsLeft + 1))
                     expect(lastUserCache?.campaignData).to(equal(userCache?.campaignData))
                 }
 
                 it("will save updated list to the cache (logged-in user)") {
                     userInfoProvider.userID = "user"
+                    campaignRepository.syncWith(list: [campaign], timestampMilliseconds: 0)
+                    campaignRepository.incrementImpressionsLeftInCampaign(id: campaign.id)
+                    expect(userCache?.campaignData?.first?.impressionsLeft).to(equal(campaign.impressionsLeft + 1))
+                    expect(lastUserCache?.campaignData).to(equal(userCache?.campaignData))
+                }
+
+                it("will NOT save updated list to the cache if campaign is marked as `isTest`") {
+                    userInfoProvider.userID = "user"
                     campaignRepository.syncWith(list: [testCampaign], timestampMilliseconds: 0)
                     campaignRepository.incrementImpressionsLeftInCampaign(id: testCampaign.id)
-                    expect(userCache?.campaignData?.first?.impressionsLeft).to(equal(testCampaign.impressionsLeft + 1))
-                    expect(lastUserCache?.campaignData).to(equal(userCache?.campaignData))
+                    expect(userCache?.campaignData).to(beEmpty())
+                    expect(lastUserCache?.campaignData).to(beEmpty())
                 }
             }
 
             context("when loadCache is called") {
 
-                let modifiedTestCampaign = TestHelpers.generateCampaign(id: "testImpressions",
-                                                                        test: false,
-                                                                        delay: 0,
-                                                                        maxImpressions: 0)
-                let otherTestCampaign = TestHelpers.generateCampaign(id: "test2",
-                                                                     test: false,
-                                                                     delay: 0,
-                                                                     maxImpressions: 3)
+                let modifiedCampaign = TestHelpers.generateCampaign(id: campaign.id,
+                                                                    test: false,
+                                                                    delay: 0,
+                                                                    maxImpressions: 0)
+                let otherCampaign = TestHelpers.generateCampaign(id: "test2",
+                                                                 test: false,
+                                                                 delay: 0,
+                                                                 maxImpressions: 3)
 
                 context("and lastUserDataMock is not empty") {
 
                     beforeEach {
-                        userDataCache.lastUserDataMock = UserDataCacheContainer(campaignData: [testCampaign])
+                        userDataCache.lastUserDataMock = UserDataCacheContainer(campaignData: [campaign])
                         userDataCache.userDataMock = nil
                     }
 
@@ -237,24 +311,24 @@ class CampaignRepositorySpec: QuickSpec {
                     context("and syncWithDefaultUserData set to true") {
 
                         it("will populate campaign list from last user cache data") {
-                            userDataCache.userDataMock = UserDataCacheContainer(campaignData: [testCampaign])
+                            userDataCache.userDataMock = UserDataCacheContainer(campaignData: [campaign])
                             expect(campaignRepository.list).to(beEmpty())
                             campaignRepository.loadCachedData(syncWithLastUserData: true)
                             expect(campaignRepository.list).to(haveCount(1))
                         }
 
                         it("will populate campaign list from cache data and add new campaings from last user cache") {
-                            userDataCache.lastUserDataMock = UserDataCacheContainer(campaignData: [otherTestCampaign])
-                            userDataCache.userDataMock = UserDataCacheContainer(campaignData: [testCampaign])
+                            userDataCache.lastUserDataMock = UserDataCacheContainer(campaignData: [otherCampaign])
+                            userDataCache.userDataMock = UserDataCacheContainer(campaignData: [campaign])
                             campaignRepository.loadCachedData(syncWithLastUserData: true)
-                            expect(campaignRepository.list).to(equal([testCampaign, otherTestCampaign]))
+                            expect(campaignRepository.list).to(equal([campaign, otherCampaign]))
                         }
 
                         it("will populate campaign list from cache data and update campaings from last user cache") {
-                            userDataCache.lastUserDataMock = UserDataCacheContainer(campaignData: [modifiedTestCampaign])
-                            userDataCache.userDataMock = UserDataCacheContainer(campaignData: [testCampaign])
+                            userDataCache.lastUserDataMock = UserDataCacheContainer(campaignData: [modifiedCampaign])
+                            userDataCache.userDataMock = UserDataCacheContainer(campaignData: [campaign])
                             campaignRepository.loadCachedData(syncWithLastUserData: true)
-                            expect(campaignRepository.list).to(elementsEqual([modifiedTestCampaign]))
+                            expect(campaignRepository.list).to(elementsEqual([modifiedCampaign]))
                         }
                     }
                 }
@@ -263,7 +337,7 @@ class CampaignRepositorySpec: QuickSpec {
 
                     beforeEach {
                         userDataCache.lastUserDataMock = nil
-                        userDataCache.userDataMock = UserDataCacheContainer(campaignData: [testCampaign])
+                        userDataCache.userDataMock = UserDataCacheContainer(campaignData: [campaign])
                     }
 
                     context("and syncWithLastUserData set to false") {
