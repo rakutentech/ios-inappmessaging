@@ -40,9 +40,9 @@ DEPENDENCIES:
   - Nimble
   - Quick
   - RInAppMessaging (from `.`)
-  - RSDKUtils (~> 2.0)
-  - RSDKUtils/Nimble (~> 2.0)
-  - RSDKUtils/TestHelpers (~> 2.0)
+  - RSDKUtils (from `https://github.com/imaginaris/ios-sdkutils.git`, branch `master`)
+  - RSDKUtils/Nimble (from `https://github.com/imaginaris/ios-sdkutils.git`, branch `master`)
+  - RSDKUtils/TestHelpers (from `https://github.com/imaginaris/ios-sdkutils.git`, branch `master`)
   - Shock (~> 6.0)
   - SwiftLint (~> 0.42)
 
@@ -56,7 +56,6 @@ SPEC REPOS:
     - GRMustache.swift
     - Nimble
     - Quick
-    - RSDKUtils
     - Shock
     - SwiftLint
     - SwiftNIO
@@ -66,6 +65,14 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   RInAppMessaging:
     :path: "."
+  RSDKUtils:
+    :branch: master
+    :git: https://github.com/imaginaris/ios-sdkutils.git
+
+CHECKOUT OPTIONS:
+  RSDKUtils:
+    :commit: 7645cdb87760f5d19dfc2ca872495cb253d6304d
+    :git: https://github.com/imaginaris/ios-sdkutils.git
 
 SPEC CHECKSUMS:
   CNIOAtomics: 55026298b0bd7524bb8ca85bd9d00983ef2b6ab5
@@ -84,6 +91,6 @@ SPEC CHECKSUMS:
   SwiftNIOConcurrencyHelpers: 34d2e9d4d2b7886fa765086e845e6b19417be927
   SwiftNIOHTTP1: c0a9ce48ba256f349af4f09648a0e0939b11a65c
 
-PODFILE CHECKSUM: 7445a4ab3efa72f17cee1f689c1a2403dbc8e444
+PODFILE CHECKSUM: dd3e75545c8a59bdead5649466e1eaba64fe97bc
 
 COCOAPODS: 1.11.2
