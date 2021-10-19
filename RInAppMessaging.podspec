@@ -11,4 +11,5 @@ Pod::Spec.new do |s|
 
   s.source_files = 'RInAppMessaging/Classes/**/*.{swift,h,m}'
   s.resource_bundles = { 'RInAppMessagingAssets' => ['RInAppMessaging/Assets/*'] }
+  s.dependency 'RSDKUtils', '~> 2.0'
 end

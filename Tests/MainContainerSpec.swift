@@ -1,5 +1,6 @@
 import Quick
 import Nimble
+import RSDKUtils
 @testable import RInAppMessaging
 
 class MainContainerSpec: QuickSpec {
@@ -7,10 +8,10 @@ class MainContainerSpec: QuickSpec {
     override func spec() {
         context("Main Container") {
 
-            var dependencyManager: DependencyManager!
+            var dependencyManager: TypedDependencyManager!
 
             beforeEach {
-                dependencyManager = DependencyManager()
+                dependencyManager = TypedDependencyManager()
                 dependencyManager.appendContainer(MainContainerFactory.create(dependencyManager: dependencyManager))
             }
 

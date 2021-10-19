@@ -1,3 +1,5 @@
+import RSDKUtils
+
 internal class BundleInfo {
 
     class var applicationId: String? {
@@ -24,9 +26,7 @@ internal class BundleInfo {
 internal extension Bundle {
 
     static var sdk: Bundle? {
-        let defaultBundle = self.init(identifier: "org.cocoapods.RInAppMessaging") ?? .bundle(bundleIdSubstring: "RInAppMessaging")
-        assert(defaultBundle != nil, "In-App Messaging SDK is not integrated properly - framework bundle not found")
-        return defaultBundle
+        sdkBundle(name: "RInAppMessaging")
     }
     static var sdkAssets: Bundle? {
         guard let sdkBundlePath = sdk?.resourcePath else {
@@ -36,9 +36,5 @@ internal extension Bundle {
     }
     static var tests: Bundle? {
         return self.init(identifier: "jp.co.rakuten.inappmessaging.Tests")
-    }
-
-    static func bundle(bundleIdSubstring: String) -> Bundle? {
-        return (allBundles + allFrameworks).first(where: { $0.bundleIdentifier?.contains(bundleIdSubstring) == true })
     }
 }

@@ -1,4 +1,5 @@
 import Foundation
+import RSDKUtils
 
 internal protocol EventMatcherType: AnyObject, Lockable {
 

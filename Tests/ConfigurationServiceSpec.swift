@@ -1,5 +1,6 @@
 import Quick
 import Nimble
+import class RSDKUtils.URLSessionMock
 @testable import RInAppMessaging
 
 private let configURL = URL(string: "http://config.url")!

@@ -1,3 +1,5 @@
+import class RSDKUtils.AtomicGetSet
+
 internal protocol UserDataCacheable: AnyObject {
     func getUserData(identifiers: [UserIdentifier]) -> UserDataCacheContainer?
     func cacheCampaignData(_ data: [Campaign], userIdentifiers: [UserIdentifier])

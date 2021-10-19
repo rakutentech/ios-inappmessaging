@@ -1,4 +1,5 @@
 import Foundation
+import RSDKUtils
 
 /// Protocol for optional delagate
 @objc public protocol RInAppMessagingDelegate: AnyObject {
@@ -20,7 +21,7 @@ import Foundation
 @objc public class RInAppMessaging: NSObject {
 
     internal private(set) static var initializedModule: InAppMessagingModule?
-    private(set) static var dependencyManager: DependencyManager?
+    private(set) static var dependencyManager: TypedDependencyManager?
     internal static let inAppQueue = DispatchQueue(label: "IAM.Main", qos: .utility, attributes: [])
 
     private override init() { super.init() }
@@ -55,13 +56,13 @@ import Foundation
             return
         }
 
-        let dependencyManager = DependencyManager()
+        let dependencyManager = TypedDependencyManager()
         let mainContainer = MainContainerFactory.create(dependencyManager: dependencyManager)
         dependencyManager.appendContainer(mainContainer)
         configure(dependencyManager: dependencyManager)
     }
 
-    static func configure(dependencyManager: DependencyManager) {
+    static func configure(dependencyManager: TypedDependencyManager) {
         self.dependencyManager = dependencyManager
 
         inAppQueue.async {

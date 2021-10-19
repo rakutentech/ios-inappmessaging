@@ -1,4 +1,5 @@
 import XCTest
+import class RSDKUtils.TypedDependencyManager
 
 @testable import RInAppMessaging
 
@@ -9,18 +10,18 @@ class IntegrationTests: XCTestCase {
     }
 
     static var testQueue: DispatchQueue!
-    static var dependencyManager: DependencyManager!
+    static var dependencyManager: TypedDependencyManager!
 
     var testQueue: DispatchQueue {
         return IntegrationTests.testQueue
     }
-    var dependencyManager: DependencyManager {
+    var dependencyManager: TypedDependencyManager {
         return IntegrationTests.dependencyManager
     }
 
     override class func setUp() {
         testQueue = DispatchQueue(label: "IAM.IntegrationTests", qos: .utility)
-        dependencyManager = DependencyManager()
+        dependencyManager = TypedDependencyManager()
         dependencyManager.appendContainer(MainContainerFactory.create(dependencyManager: dependencyManager))
     }
 

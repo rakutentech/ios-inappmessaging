@@ -1,5 +1,6 @@
 import Quick
 import Nimble
+import RSDKUtils
 import class Shock.MockServer
 
 class FullScreenViewSpec: QuickSpec {

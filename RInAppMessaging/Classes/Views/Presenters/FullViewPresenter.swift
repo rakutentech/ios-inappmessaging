@@ -12,14 +12,14 @@ internal class FullViewPresenter: BaseViewPresenter, FullViewPresenterType {
     override func viewDidInitialize() {
         let messagePayload = campaign.data.messagePayload
         let viewModel = FullViewModel(image: associatedImage,
-                                      backgroundColor: UIColor(fromHexString: messagePayload.backgroundColor) ?? .white,
+                                      backgroundColor: UIColor(hexString: messagePayload.backgroundColor) ?? .white,
                                       title: messagePayload.title,
                                       messageBody: messagePayload.messageBody,
                                       messageLowerBody: messagePayload.messageLowerBody,
                                       header: messagePayload.header,
-                                      titleColor: UIColor(fromHexString: messagePayload.titleColor) ?? .black,
-                                      headerColor: UIColor(fromHexString: messagePayload.headerColor) ?? .black,
-                                      messageBodyColor: UIColor(fromHexString: messagePayload.messageBodyColor) ?? .black,
+                                      titleColor: UIColor(hexString: messagePayload.titleColor) ?? .black,
+                                      headerColor: UIColor(hexString: messagePayload.headerColor) ?? .black,
+                                      messageBodyColor: UIColor(hexString: messagePayload.messageBodyColor) ?? .black,
                                       isHTML: messagePayload.messageSettings.displaySettings.html == true,
                                       showOptOut: messagePayload.messageSettings.displaySettings.optOut,
                                       showButtons: messagePayload.messageSettings.controlSettings?.buttons?.isEmpty == false)
@@ -43,8 +43,8 @@ internal class FullViewPresenter: BaseViewPresenter, FullViewPresenterType {
                              uri: button.buttonBehavior.uri,
                              trigger: button.campaignTrigger),
                 ActionButtonViewModel(text: button.buttonText,
-                                      textColor: UIColor(fromHexString: button.buttonTextColor) ?? .black,
-                                      backgroundColor: UIColor(fromHexString: button.buttonBackgroundColor) ?? .white)))
+                                      textColor: UIColor(hexString: button.buttonTextColor) ?? .black,
+                                      backgroundColor: UIColor(hexString: button.buttonBackgroundColor) ?? .white)))
 
         }
 

@@ -110,15 +110,15 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         exitButtonYPositionConstraint.constant = uiConstants.exitButtonVerticalOffset
         bodyViewOffsetYConstraint.constant = hasImage ? 0 : uiConstants.bodyViewSafeAreaOffsetY
 
-        DispatchQueue.main.async { [self] in
+        DispatchQueue.main.async {
             // Fixes a problem with content size width being set 0.5pt too much
             // (landscape iPad), resulting in horizontal scroll bouncing.
-            contentScrollView.contentSize.width = contentScrollView.bounds.width
+            self.contentScrollView.contentSize.width = self.contentScrollView.bounds.width
         }
     }
 
     override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-        if isTouchInside(touchPoint: point, from: self, targetView: exitButton, touchAreaSize: uiConstants.exitButtonTouchAreaSize) {
+        if exitButton?.isTouchInside(touchPoint: point, from: self, touchAreaSize: uiConstants.exitButtonTouchAreaSize) == true {
             return exitButton
         }
         return super.hitTest(point, with: event)

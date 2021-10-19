@@ -1,5 +1,6 @@
 import Quick
 import Nimble
+import class RSDKUtils.TypedDependencyManager
 @testable import RInAppMessaging
 
 class RouterSpec: QuickSpec {
@@ -10,19 +11,19 @@ class RouterSpec: QuickSpec {
 
             var router: Router!
 
-            func mockContainer() -> DependencyManager.Container {
-                return DependencyManager.Container([
-                    DependencyManager.ContainerElement(type: ConfigurationManagerType.self, factory: {
+            func mockContainer() -> TypedDependencyManager.Container {
+                return TypedDependencyManager.Container([
+                    TypedDependencyManager.ContainerElement(type: ConfigurationManagerType.self, factory: {
                         return ConfigurationManagerMock()
                     }),
-                    DependencyManager.ContainerElement(type: CampaignsListManagerType.self, factory: {
+                    TypedDependencyManager.ContainerElement(type: CampaignsListManagerType.self, factory: {
                         return CampaignsListManagerMock()
                     })
                 ])
             }
 
             beforeEach {
-                let dependencyManager = DependencyManager()
+                let dependencyManager = TypedDependencyManager()
                 dependencyManager.appendContainer(MainContainerFactory.create(dependencyManager: dependencyManager))
                 dependencyManager.appendContainer(mockContainer())
                 router = Router(dependencyManager: dependencyManager)
