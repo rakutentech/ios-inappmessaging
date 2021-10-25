@@ -1,5 +1,6 @@
 ![Build Status](https://app.bitrise.io/app/ffc79d919e1efa04/status.svg?token=xJsKB2zDU77urYIJlqlKZg&branch=master)
 [![codecov](https://codecov.io/gh/rakutentech/ios-inappmessaging/branch/master/graph/badge.svg)](https://codecov.io/gh/rakutentech/ios-inappmessaging)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=rakutentech_ios-inappmessaging&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=rakutentech_ios-inappmessaging)
 
 
 # RInAppMessaging
