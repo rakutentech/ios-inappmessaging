@@ -49,7 +49,6 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
     @IBOutlet private weak var dialogView: UIStackView!
     @IBOutlet private weak var headerLabel: UILabel!
     @IBOutlet private weak var bodyLabel: UILabel!
-    @IBOutlet private weak var lowerBodyLabel: UILabel!
     @IBOutlet private weak var bodyView: UIStackView!
     @IBOutlet private weak var bodyContainerView: UIView!
     // WKWebView cannot be used as a @IBOutlet for targets that support versions older than iOS 11
@@ -184,7 +183,6 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         dialogView.accessibilityIdentifier = "dialogView-" + displayMode
         bodyView.accessibilityIdentifier = "textView"
         bodyLabel.accessibilityIdentifier = "bodyMessage"
-        lowerBodyLabel.accessibilityIdentifier = "lowerBodyMessage"
         headerLabel.accessibilityIdentifier = "headerMessage"
         imageView.accessibilityIdentifier = "imageView"
         imageView.isAccessibilityElement = true
@@ -290,31 +288,19 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
     }
 
     private func setupBodyMessage(viewModel: FullViewModel) {
-        if let bodyMessage = viewModel.messageBody {
-            bodyLabel.isHidden = false
-            bodyLabel.text = bodyMessage
-            bodyLabel.textColor = viewModel.messageBodyColor
-            bodyLabel.setLineSpacing(lineSpacing: 3.0)
-            bodyLabel.font = .systemFont(ofSize: uiConstants.bodyMessageFontSize)
-            bodyLabel.textAlignment = .left
-            bodyLabel.lineBreakMode = .byWordWrapping
-            bodyLabel.numberOfLines = 0
-        } else {
+        guard let bodyMessage = viewModel.messageBody else {
             bodyLabel.isHidden = true
+            return
         }
 
-        if let lowerBodyMessage = viewModel.messageLowerBody {
-            lowerBodyLabel.isHidden = false
-            lowerBodyLabel.text = lowerBodyMessage
-            lowerBodyLabel.textColor = viewModel.messageBodyColor
-            lowerBodyLabel.setLineSpacing(lineSpacing: 3.0)
-            lowerBodyLabel.font = .systemFont(ofSize: uiConstants.bodyMessageFontSize)
-            lowerBodyLabel.textAlignment = .left
-            lowerBodyLabel.lineBreakMode = .byWordWrapping
-            lowerBodyLabel.numberOfLines = 0
-        } else {
-            lowerBodyLabel.isHidden = true
-        }
+        bodyLabel.isHidden = false
+        bodyLabel.text = bodyMessage
+        bodyLabel.textColor = viewModel.messageBodyColor
+        bodyLabel.setLineSpacing(lineSpacing: 3.0)
+        bodyLabel.font = .systemFont(ofSize: uiConstants.bodyMessageFontSize)
+        bodyLabel.textAlignment = .left
+        bodyLabel.lineBreakMode = .byWordWrapping
+        bodyLabel.numberOfLines = 0
     }
 
     private func setupHeaderMessage(_ headerMessage: String, color: UIColor) {

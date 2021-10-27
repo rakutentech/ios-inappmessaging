@@ -26,8 +26,7 @@
                     "backgroundColor": "#ffffff",
                     "frameColor": "#ffffff",
                     "resource": {
-                        "assetsUrl": null,
-                        "imageUrl": null,
+                        "imageUrl": "",
                         "cropType": 2
                     },
                     "messageSettings": {

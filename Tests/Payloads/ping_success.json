@@ -26,6 +26,7 @@
                     "backgroundColor": "#ffffff",
                     "frameColor": "#ffffff",
                     "resource": {
+                        "imageUrl": "",
                         "cropType": 2
                     },
                     "messageSettings": {
@@ -69,6 +70,7 @@
                     "backgroundColor": "#ffffff",
                     "frameColor": "#ffffff",
                     "resource": {
+                        "imageUrl": "",
                         "cropType": 2
                     },
                     "messageSettings": {

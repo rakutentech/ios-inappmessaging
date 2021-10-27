@@ -15,22 +15,19 @@ internal class FullViewPresenter: BaseViewPresenter, FullViewPresenterType {
                                       backgroundColor: UIColor(hexString: messagePayload.backgroundColor) ?? .white,
                                       title: messagePayload.title,
                                       messageBody: messagePayload.messageBody,
-                                      messageLowerBody: messagePayload.messageLowerBody,
                                       header: messagePayload.header,
                                       titleColor: UIColor(hexString: messagePayload.titleColor) ?? .black,
                                       headerColor: UIColor(hexString: messagePayload.headerColor) ?? .black,
                                       messageBodyColor: UIColor(hexString: messagePayload.messageBodyColor) ?? .black,
-                                      isHTML: messagePayload.messageSettings.displaySettings.html == true,
+                                      isHTML: messagePayload.messageSettings.displaySettings.html,
                                       showOptOut: messagePayload.messageSettings.displaySettings.optOut,
-                                      showButtons: messagePayload.messageSettings.controlSettings?.buttons?.isEmpty == false)
+                                      showButtons: !messagePayload.messageSettings.controlSettings.buttons.isEmpty)
 
         view?.setup(viewModel: viewModel)
     }
 
     func loadButtons() {
-        guard let buttonList = campaign.data.messagePayload.messageSettings.controlSettings?.buttons else {
-            return
-        }
+        let buttonList = campaign.data.messagePayload.messageSettings.controlSettings.buttons
 
         let supportedButtons = buttonList.prefix(2).filter {
             [.redirect, .deeplink, .close].contains($0.buttonBehavior.action)

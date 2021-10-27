@@ -180,7 +180,7 @@ class ViewPresenterSpec: QuickSpec {
 
                 it("will log new event based on the content's trigger") {
                     presenter.didClickContent()
-                    let trigger = campaign.data.messagePayload.messageSettings.controlSettings?.content?.campaignTrigger
+                    let trigger = campaign.data.messagePayload.messageSettings.controlSettings.content?.campaignTrigger
                     let expectedEvent = CommonUtility.convertTriggerObjectToCustomEvent(trigger!)
                     expect(eventMatcher.loggedEvents).to(contain(expectedEvent))
                 }

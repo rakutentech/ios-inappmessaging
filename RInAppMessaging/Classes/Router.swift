@@ -50,8 +50,9 @@ internal class Router: RouterType {
                          confirmation: @escaping @autoclosure () -> Bool,
                          completion: @escaping (_ cancelled: Bool) -> Void) {
 
-        guard let campaignViewType = campaign.data.type, campaignViewType != .invalid else {
-            Logger.debug("Error: Campaign view type not supported")
+        let campaignViewType = campaign.data.type
+        guard campaignViewType != .invalid else {
+            Logger.debug("Error: Campaign view type is invalid")
             completion(true)
             return
         }

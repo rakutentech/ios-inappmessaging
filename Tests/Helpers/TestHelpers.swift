@@ -29,7 +29,7 @@ struct TestHelpers {
                                  delay: Int,
                                  maxImpressions: Int,
                                  title: String = "testTitle",
-                                 triggers: [Trigger]? = nil) -> Campaign {
+                                 triggers: [Trigger] = []) -> Campaign {
         return Campaign(
             data: CampaignData(
                 campaignId: id,
@@ -40,7 +40,6 @@ struct TestHelpers {
                 messagePayload: MessagePayload(
                     title: title,
                     messageBody: "testBody",
-                    messageLowerBody: "testLowerBody",
                     header: "testHeader",
                     titleColor: "color",
                     headerColor: "color2",
@@ -48,8 +47,7 @@ struct TestHelpers {
                     backgroundColor: "color4",
                     frameColor: "color5",
                     resource: Resource(
-                        assetsUrl: nil,
-                        imageUrl: nil,
+                        imageUrl: "",
                         cropType: .fill),
                     messageSettings: MessageSettings(
                         displaySettings: DisplaySettings(
@@ -60,7 +58,7 @@ struct TestHelpers {
                             optOut: false,
                             html: false,
                             delay: delay),
-                        controlSettings: nil)
+                        controlSettings: ControlSettings(buttons: [], content: nil))
                 )
             )
         )
@@ -72,18 +70,17 @@ struct TestHelpers {
                                  isTest: Bool = false,
                                  hasImage: Bool = false,
                                  content: Content? = nil,
-                                 buttons: [Button]? = nil) -> Campaign {
+                                 buttons: [Button] = []) -> Campaign {
         return Campaign(
             data: CampaignData(
                 campaignId: id,
                 maxImpressions: 1,
                 type: type,
-                triggers: nil,
+                triggers: [],
                 isTest: isTest,
                 messagePayload: MessagePayload(
                     title: title,
                     messageBody: "testBody",
-                    messageLowerBody: "testLowerBody",
                     header: "testHeader",
                     titleColor: "color",
                     headerColor: "color2",
@@ -91,8 +88,7 @@ struct TestHelpers {
                     backgroundColor: "color4",
                     frameColor: "color5",
                     resource: Resource(
-                        assetsUrl: nil,
-                        imageUrl: hasImage ? "https://www.example.com/cat.jpg" : nil,
+                        imageUrl: hasImage ? "https://www.example.com/cat.jpg" : "",
                         cropType: .fill),
                     messageSettings: MessageSettings(
                         displaySettings: DisplaySettings(
@@ -117,7 +113,7 @@ struct TestHelpers {
                                            delay: Int,
                                            maxImpressions: Int = 2,
                                            addContexts: Bool = false,
-                                           triggers: [Trigger]? = nil) -> PingResponse {
+                                           triggers: [Trigger] = []) -> PingResponse {
             var campaigns = [Campaign]()
             // swiftlint:disable:next empty_count
             if count > 0 {
