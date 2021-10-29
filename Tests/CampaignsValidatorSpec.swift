@@ -156,7 +156,6 @@ private enum MockedCampaigns {
                 messagePayload: MessagePayload(
                     title: "testTitle",
                     messageBody: "testBody",
-                    messageLowerBody: "testLowerBody",
                     header: "testHeader",
                     titleColor: "color",
                     headerColor: "color2",
@@ -164,7 +163,6 @@ private enum MockedCampaigns {
                     backgroundColor: "color4",
                     frameColor: "color5",
                     resource: Resource(
-                        assetsUrl: nil,
                         imageUrl: nil,
                         cropType: .fill),
                     messageSettings: MessageSettings(
@@ -176,7 +174,7 @@ private enum MockedCampaigns {
                             optOut: false,
                             html: false,
                             delay: 0),
-                        controlSettings: nil)
+                        controlSettings: ControlSettings(buttons: [], content: nil))
                 )
         ))
     }()
@@ -199,7 +197,6 @@ private enum MockedCampaigns {
                 messagePayload: MessagePayload(
                     title: "testTitle",
                     messageBody: "testBody",
-                    messageLowerBody: "testLowerBody",
                     header: "testHeader",
                     titleColor: "color",
                     headerColor: "color2",
@@ -207,7 +204,6 @@ private enum MockedCampaigns {
                     backgroundColor: "color4",
                     frameColor: "color5",
                     resource: Resource(
-                        assetsUrl: nil,
                         imageUrl: nil,
                         cropType: .fill),
                     messageSettings: MessageSettings(
@@ -219,7 +215,7 @@ private enum MockedCampaigns {
                             optOut: false,
                             html: false,
                             delay: 0),
-                        controlSettings: nil)
+                        controlSettings: ControlSettings(buttons: [], content: nil))
                 )
         ))
     }()

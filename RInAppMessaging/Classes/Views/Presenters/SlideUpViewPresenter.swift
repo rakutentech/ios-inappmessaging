@@ -30,7 +30,7 @@ internal class SlideUpViewPresenter: BaseViewPresenter, SlideUpViewPresenterType
     }
 
     func didClickContent() {
-        let campaignContent = campaign.data.messagePayload.messageSettings.controlSettings?.content
+        let campaignContent = campaign.data.messagePayload.messageSettings.controlSettings.content
 
         if [.redirect, .deeplink].contains(campaignContent?.onClickBehavior.action) {
             guard let uri = campaignContent?.onClickBehavior.uri,

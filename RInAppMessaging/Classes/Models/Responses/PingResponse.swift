@@ -75,8 +75,8 @@ internal struct Campaign: Codable, Hashable {
 internal struct CampaignData: Codable, Hashable {
     let campaignId: String
     let maxImpressions: Int
-    let type: CampaignDisplayType?
-    let triggers: [Trigger]?
+    let type: CampaignDisplayType
+    let triggers: [Trigger]
     let isTest: Bool
     let messagePayload: MessagePayload
 
@@ -103,7 +103,6 @@ internal struct Trigger: Codable, Equatable {
 internal struct MessagePayload: Codable {
     let title: String
     let messageBody: String?
-    let messageLowerBody: String?
     let header: String?
     let titleColor: String
     let headerColor: String
@@ -115,14 +114,13 @@ internal struct MessagePayload: Codable {
 }
 
 internal struct Resource: Codable {
-    let assetsUrl: String?
     let imageUrl: String?
     let cropType: CampaignCropType
 }
 
 internal struct MessageSettings: Codable {
     let displaySettings: DisplaySettings
-    let controlSettings: ControlSettings?
+    let controlSettings: ControlSettings
 }
 
 internal struct DisplaySettings: Codable {
@@ -141,15 +139,16 @@ internal struct DisplaySettings: Codable {
     let endTimeMilliseconds: Int64
     let textAlign: CampaignTextAlignType
     let optOut: Bool
-    let html: Bool?
-    let delay: Int?
+    let html: Bool
+    let delay: Int
 }
 
 internal struct ControlSettings: Codable {
-    let buttons: [Button]?
+    let buttons: [Button]
     let content: Content?
 }
 
+/// For slide-up campaigns
 internal struct Content: Codable {
     let onClickBehavior: OnClickBehavior
     let campaignTrigger: Trigger?

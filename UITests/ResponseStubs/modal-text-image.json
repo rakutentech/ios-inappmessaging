@@ -26,7 +26,6 @@
                     "backgroundColor": "#ffffff",
                     "frameColor": "#ffffff",
                     "resource": {
-                        "assetsUrl": "",
                         "imageUrl": "http://localhost:6789/image.jpg",
                         "cropType": 2
                     },

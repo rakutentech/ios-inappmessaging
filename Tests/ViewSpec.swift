@@ -278,7 +278,6 @@ extension FullViewModel {
                      backgroundColor: .black,
                      title: "",
                      messageBody: "",
-                     messageLowerBody: "",
                      header: "",
                      titleColor: .black,
                      headerColor: .black,

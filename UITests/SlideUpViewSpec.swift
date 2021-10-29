@@ -42,7 +42,7 @@ class SlideUpViewSpec: QuickSpec {
                     launchAppIfNecessary(context: "slide-up-close")
                     if !iamView.exists {
                         app.buttons["login_successful"].tap()
-                        expect(iamView.exists).toEventually(beTrue())
+                        expect(iamView.exists).toEventually(beTrue(), timeout: .seconds(2))
                     }
                 }
 
@@ -58,7 +58,7 @@ class SlideUpViewSpec: QuickSpec {
                     expect(iamView.exists).to(beFalse())
 
                     app.buttons["login_successful"].tap() // show the message again
-                    expect(iamView.exists).toEventually(beTrue())
+                    expect(iamView.exists).toEventually(beTrue(), timeout: .seconds(2))
                     let bottomRightCorner = exitButtonCenter.withOffset(CGVector(dx: 21, dy: 21)) // points on max edges are not counted
                     bottomRightCorner.tap()
                     expect(iamView.exists).to(beFalse())
@@ -71,7 +71,7 @@ class SlideUpViewSpec: QuickSpec {
                     launchAppIfNecessary(context: "slide-up-close")
                     if !iamView.exists {
                         app.buttons["login_successful"].tap()
-                        expect(iamView.exists).toEventually(beTrue())
+                        expect(iamView.exists).toEventually(beTrue(), timeout: .seconds(2))
                     }
                 }
 
@@ -87,7 +87,7 @@ class SlideUpViewSpec: QuickSpec {
                     launchAppIfNecessary(context: "slide-up-trigger")
                     if !iamView.exists {
                         app.buttons["custom_test"].tap()
-                        expect(iamView.exists).toEventually(beTrue())
+                        expect(iamView.exists).toEventually(beTrue(), timeout: .seconds(2))
                     }
                 }
 
@@ -99,7 +99,7 @@ class SlideUpViewSpec: QuickSpec {
                 it("should trigger another campaign after tapping the content") {
                     iamView.tap()
                     expect(iamView.exists).to(beFalse())
-                    expect(iamView.exists).toEventually(beTrue())
+                    expect(iamView.exists).toEventually(beTrue(), timeout: .seconds(2))
                 }
             }
         }

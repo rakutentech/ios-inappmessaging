@@ -40,9 +40,9 @@ DEPENDENCIES:
   - Nimble
   - Quick
   - RInAppMessaging (from `.`)
-  - RSDKUtils (from `https://github.com/imaginaris/ios-sdkutils.git`, branch `master`)
-  - RSDKUtils/Nimble (from `https://github.com/imaginaris/ios-sdkutils.git`, branch `master`)
-  - RSDKUtils/TestHelpers (from `https://github.com/imaginaris/ios-sdkutils.git`, branch `master`)
+  - RSDKUtils (from `https://github.com/rakutentech/ios-sdkutils.git`, branch `master`)
+  - RSDKUtils/Nimble (from `https://github.com/rakutentech/ios-sdkutils.git`, branch `master`)
+  - RSDKUtils/TestHelpers (from `https://github.com/rakutentech/ios-sdkutils.git`, branch `master`)
   - Shock (~> 6.0)
   - SwiftLint (~> 0.42)
 
@@ -67,12 +67,12 @@ EXTERNAL SOURCES:
     :path: "."
   RSDKUtils:
     :branch: master
-    :git: https://github.com/imaginaris/ios-sdkutils.git
+    :git: https://github.com/rakutentech/ios-sdkutils.git
 
 CHECKOUT OPTIONS:
   RSDKUtils:
-    :commit: 7645cdb87760f5d19dfc2ca872495cb253d6304d
-    :git: https://github.com/imaginaris/ios-sdkutils.git
+    :commit: 3509465c6d1d52c17be8d20026c2354890f081a6
+    :git: https://github.com/rakutentech/ios-sdkutils.git
 
 SPEC CHECKSUMS:
   CNIOAtomics: 55026298b0bd7524bb8ca85bd9d00983ef2b6ab5
@@ -83,14 +83,14 @@ SPEC CHECKSUMS:
   GRMustache.swift: a6436504284b22b4b05daf5f46f77bd3fe00a9a2
   Nimble: e7e615c0335ee4bf5b0d786685451e62746117d5
   Quick: 6473349e43b9271a8d43839d9ba1c442ed1b7ac4
-  RInAppMessaging: 676d4262be6b3750f8494467e200b8203b7f6694
-  RSDKUtils: 0b3f04097bffc8c95912e62aa5e009f26b03a4fb
+  RInAppMessaging: b6487b3d1442fd9f550d6e660ab4deeeec8e05c9
+  RSDKUtils: e0cfed076d764b24d003bd793483a5b70d3135cd
   Shock: 94c2d3f5f781fe63317c4ee1621dfb2d4cc271d3
   SwiftLint: e96c0a8c770c7ebbc4d36c55baf9096bb65c4584
   SwiftNIO: 763188229de166e046cc8975383cca388832e992
   SwiftNIOConcurrencyHelpers: 34d2e9d4d2b7886fa765086e845e6b19417be927
   SwiftNIOHTTP1: c0a9ce48ba256f349af4f09648a0e0939b11a65c
 
-PODFILE CHECKSUM: dd3e75545c8a59bdead5649466e1eaba64fe97bc
+PODFILE CHECKSUM: 89dd078544f9478f4779e7f51df83ccb0a83b393
 
 COCOAPODS: 1.11.2
