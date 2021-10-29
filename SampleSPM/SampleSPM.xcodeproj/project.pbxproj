@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -67,6 +67,24 @@
 		45DA01AD23D5831900A27CC6 /* ConfigurationManagerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA01AC23D5831900A27CC6 /* ConfigurationManagerSpec.swift */; };
 		45EA720525B71FA2001B2049 /* UIApplicationExtensionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45EA720425B71FA2001B2049 /* UIApplicationExtensionSpec.swift */; };
 		45EA720D25B72002001B2049 /* UIViewExtensionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45EA720C25B72002001B2049 /* UIViewExtensionSpec.swift */; };
+		45FA8FDE272C26C8005166FD /* RInAppMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 45FA8FDD272C26C8005166FD /* RInAppMessaging */; };
+		45FA8FE0272C2835005166FD /* RInAppMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 45FA8FDF272C2835005166FD /* RInAppMessaging */; };
+		45FA8FE2272C283B005166FD /* RInAppMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 45FA8FE1272C283B005166FD /* RInAppMessaging */; };
+		45FA8FE4272C283F005166FD /* RInAppMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 45FA8FE3272C283F005166FD /* RInAppMessaging */; };
+		45FA8FE7272C2B9A005166FD /* Quick in Frameworks */ = {isa = PBXBuildFile; productRef = 45FA8FE6272C2B9A005166FD /* Quick */; };
+		45FA8FEA272C2BA8005166FD /* Nimble in Frameworks */ = {isa = PBXBuildFile; productRef = 45FA8FE9272C2BA8005166FD /* Nimble */; };
+		45FA8FEC272C2BC0005166FD /* Quick in Frameworks */ = {isa = PBXBuildFile; productRef = 45FA8FEB272C2BC0005166FD /* Quick */; };
+		45FA8FEE272C2BC3005166FD /* Nimble in Frameworks */ = {isa = PBXBuildFile; productRef = 45FA8FED272C2BC3005166FD /* Nimble */; };
+		45FA8FF0272C2BC7005166FD /* Quick in Frameworks */ = {isa = PBXBuildFile; productRef = 45FA8FEF272C2BC7005166FD /* Quick */; };
+		45FA8FF2272C2BCD005166FD /* Nimble in Frameworks */ = {isa = PBXBuildFile; productRef = 45FA8FF1272C2BCD005166FD /* Nimble */; };
+		45FA8FF5272C2C09005166FD /* RSDKUtilsMain in Frameworks */ = {isa = PBXBuildFile; productRef = 45FA8FF4272C2C09005166FD /* RSDKUtilsMain */; };
+		45FA8FF7272C2C09005166FD /* RSDKUtilsNimble in Frameworks */ = {isa = PBXBuildFile; productRef = 45FA8FF6272C2C09005166FD /* RSDKUtilsNimble */; };
+		45FA8FF9272C2C09005166FD /* RSDKUtilsTestHelpers in Frameworks */ = {isa = PBXBuildFile; productRef = 45FA8FF8272C2C09005166FD /* RSDKUtilsTestHelpers */; };
+		45FA8FFB272C2C17005166FD /* RSDKUtilsNimble in Frameworks */ = {isa = PBXBuildFile; productRef = 45FA8FFA272C2C17005166FD /* RSDKUtilsNimble */; };
+		45FA8FFD272C2C1A005166FD /* RSDKUtilsTestHelpers in Frameworks */ = {isa = PBXBuildFile; productRef = 45FA8FFC272C2C1A005166FD /* RSDKUtilsTestHelpers */; };
+		45FA8FFF272C2C1E005166FD /* RSDKUtilsNimble in Frameworks */ = {isa = PBXBuildFile; productRef = 45FA8FFE272C2C1E005166FD /* RSDKUtilsNimble */; };
+		45FA9001272C2C21005166FD /* RSDKUtilsTestHelpers in Frameworks */ = {isa = PBXBuildFile; productRef = 45FA9000272C2C21005166FD /* RSDKUtilsTestHelpers */; };
+		45FA9004272C2C5C005166FD /* Shock in Frameworks */ = {isa = PBXBuildFile; productRef = 45FA9003272C2C5C005166FD /* Shock */; };
 		607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD51AFB9204008FA782 /* AppDelegate.swift */; };
 		607FACD81AFB9204008FA782 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD71AFB9204008FA782 /* ViewController.swift */; };
 		607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 607FACD91AFB9204008FA782 /* Main.storyboard */; };
@@ -147,7 +165,7 @@
 		4592B4B2270229D1004FF27B /* config.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = config.json; sourceTree = "<group>"; };
 		4592B4B527024925004FF27B /* MockServerHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockServerHelper.swift; sourceTree = "<group>"; };
 		4592B4B927024D0C004FF27B /* display-permission.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "display-permission.json"; sourceTree = "<group>"; };
-		4592B4C42702642F004FF27B /* Example-UITests.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Example-UITests.xcconfig"; sourceTree = "<group>"; };
+		4592B4C42702642F004FF27B /* Example-UITests.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Example-UITests.xcconfig"; path = "../SampleSPM/Example-UITests.xcconfig"; sourceTree = "<group>"; };
 		4592B4C627026AE8004FF27B /* istockphoto-1047234038.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "istockphoto-1047234038.jpg"; sourceTree = "<group>"; };
 		4595F4F3262DE12C0001F30B /* KeyHasherSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyHasherSpec.swift; sourceTree = "<group>"; };
 		459B227B245289F300D218CE /* ConfigurationServiceSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationServiceSpec.swift; sourceTree = "<group>"; };
@@ -172,8 +190,9 @@
 		45DA01AC23D5831900A27CC6 /* ConfigurationManagerSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationManagerSpec.swift; sourceTree = "<group>"; };
 		45EA720425B71FA2001B2049 /* UIApplicationExtensionSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIApplicationExtensionSpec.swift; sourceTree = "<group>"; };
 		45EA720C25B72002001B2049 /* UIViewExtensionSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewExtensionSpec.swift; sourceTree = "<group>"; };
+		45FA8FDA272C2698005166FD /* ios-inappmessaging */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "ios-inappmessaging"; path = ..; sourceTree = "<group>"; };
 		607FACD01AFB9204008FA782 /* RInAppMessaging_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RInAppMessaging_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		607FACD41AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		607FACD41AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = ../SampleSPM/Info.plist; sourceTree = "<group>"; };
 		607FACD51AFB9204008FA782 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		607FACD71AFB9204008FA782 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		607FACDA1AFB9204008FA782 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -181,8 +200,8 @@
 		607FACDF1AFB9204008FA782 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		607FACE51AFB9204008FA782 /* Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACEA1AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		6DA608F3248603BA00A8260D /* Example-Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Example-Debug.xcconfig"; sourceTree = "<group>"; };
-		6DA608F424860B7F00A8260D /* Example-Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Example-Release.xcconfig"; sourceTree = "<group>"; };
+		6DA608F3248603BA00A8260D /* Example-Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Example-Debug.xcconfig"; path = "../SampleSPM/Example-Debug.xcconfig"; sourceTree = "<group>"; };
+		6DA608F424860B7F00A8260D /* Example-Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Example-Release.xcconfig"; path = "../SampleSPM/Example-Release.xcconfig"; sourceTree = "<group>"; };
 		C9827557262C423C00476505 /* BackoffSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackoffSpec.swift; sourceTree = "<group>"; };
 		D920D8C82277B80F008FB38D /* SecondPageViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SecondPageViewController.xib; sourceTree = "<group>"; };
 		D920D8CA2277B965008FB38D /* SecondPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondPageViewController.swift; sourceTree = "<group>"; };
@@ -200,6 +219,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				45FA8FF2272C2BCD005166FD /* Nimble in Frameworks */,
+				45FA8FF0272C2BC7005166FD /* Quick in Frameworks */,
+				45FA8FE4272C283F005166FD /* RInAppMessaging in Frameworks */,
+				45FA9004272C2C5C005166FD /* Shock in Frameworks */,
+				45FA8FFF272C2C1E005166FD /* RSDKUtilsNimble in Frameworks */,
+				45FA9001272C2C21005166FD /* RSDKUtilsTestHelpers in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -207,6 +232,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				45FA8FEE272C2BC3005166FD /* Nimble in Frameworks */,
+				45FA8FEC272C2BC0005166FD /* Quick in Frameworks */,
+				45FA8FE2272C283B005166FD /* RInAppMessaging in Frameworks */,
+				45FA8FFB272C2C17005166FD /* RSDKUtilsNimble in Frameworks */,
+				45FA8FFD272C2C1A005166FD /* RSDKUtilsTestHelpers in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -214,6 +244,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				45FA8FDE272C26C8005166FD /* RInAppMessaging in Frameworks */,
+				45FA8FF5272C2C09005166FD /* RSDKUtilsMain in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -221,6 +253,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				45FA8FEA272C2BA8005166FD /* Nimble in Frameworks */,
+				45FA8FE7272C2B9A005166FD /* Quick in Frameworks */,
+				45FA8FE0272C2835005166FD /* RInAppMessaging in Frameworks */,
+				45FA8FF7272C2C09005166FD /* RSDKUtilsNimble in Frameworks */,
+				45FA8FF9272C2C09005166FD /* RSDKUtilsTestHelpers in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -254,7 +291,7 @@
 				453D242A26A0DE5100FB9E6A /* Info.plist */,
 			);
 			name = UITests;
-			path = Tests/UITests;
+			path = ../Tests/UITests;
 			sourceTree = "<group>";
 		};
 		453D243026A1724700FB9E6A /* ResponseStubs */ = {
@@ -299,7 +336,7 @@
 				45B5724025ACE90F005A80F7 /* Info.plist */,
 			);
 			name = IntegrationTests;
-			path = Tests/IntegrationTests;
+			path = ../Tests/IntegrationTests;
 			sourceTree = "<group>";
 		};
 		45B572F625AE2163005A80F7 /* Helpers */ = {
@@ -311,15 +348,23 @@
 			path = Helpers;
 			sourceTree = "<group>";
 		};
+		45FA8FD9272C2698005166FD /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				45FA8FDA272C2698005166FD /* ios-inappmessaging */,
+			);
+			name = Packages;
+			sourceTree = "<group>";
+		};
 		607FACC71AFB9204008FA782 = {
 			isa = PBXGroup;
 			children = (
+				45FA8FD9272C2698005166FD /* Packages */,
 				607FACD21AFB9204008FA782 /* Sample */,
 				607FACE81AFB9204008FA782 /* Tests */,
 				45B5723D25ACE90F005A80F7 /* IntegrationTests */,
 				453D242726A0DE5100FB9E6A /* UITests */,
 				607FACD11AFB9204008FA782 /* Products */,
-				B04D923357C1CC9CB229B066 /* Pods */,
 				9F2EBD0D1344BB8875C0D465 /* Frameworks */,
 			);
 			sourceTree = "<group>";
@@ -348,7 +393,8 @@
 				607FACD31AFB9204008FA782 /* Supporting Files */,
 				D924268522D91C15002F50D3 /* Localizable.strings */,
 			);
-			path = Sample;
+			name = Sample;
+			path = ../Sample;
 			sourceTree = "<group>";
 		};
 		607FACD31AFB9204008FA782 /* Supporting Files */ = {
@@ -406,7 +452,7 @@
 				607FACE91AFB9204008FA782 /* Supporting Files */,
 			);
 			name = Tests;
-			path = Tests/Tests;
+			path = ../Tests/Tests;
 			sourceTree = "<group>";
 		};
 		607FACE91AFB9204008FA782 /* Supporting Files */ = {
@@ -423,13 +469,6 @@
 				4518EEDD270F73BB00E8CBBC /* Foundation.framework */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		B04D923357C1CC9CB229B066 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -449,6 +488,14 @@
 				453D242C26A0DE5100FB9E6A /* PBXTargetDependency */,
 			);
 			name = UITests;
+			packageProductDependencies = (
+				45FA8FE3272C283F005166FD /* RInAppMessaging */,
+				45FA8FEF272C2BC7005166FD /* Quick */,
+				45FA8FF1272C2BCD005166FD /* Nimble */,
+				45FA8FFE272C2C1E005166FD /* RSDKUtilsNimble */,
+				45FA9000272C2C21005166FD /* RSDKUtilsTestHelpers */,
+				45FA9003272C2C5C005166FD /* Shock */,
+			);
 			productName = UITests;
 			productReference = 453D242626A0DE5100FB9E6A /* UITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
@@ -467,6 +514,13 @@
 				45B5724225ACE90F005A80F7 /* PBXTargetDependency */,
 			);
 			name = IntegrationTests;
+			packageProductDependencies = (
+				45FA8FE1272C283B005166FD /* RInAppMessaging */,
+				45FA8FEB272C2BC0005166FD /* Quick */,
+				45FA8FED272C2BC3005166FD /* Nimble */,
+				45FA8FFA272C2C17005166FD /* RSDKUtilsNimble */,
+				45FA8FFC272C2C1A005166FD /* RSDKUtilsTestHelpers */,
+			);
 			productName = IntegrationTests;
 			productReference = 45B5723C25ACE90F005A80F7 /* IntegrationTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -478,13 +532,16 @@
 				607FACCC1AFB9204008FA782 /* Sources */,
 				607FACCD1AFB9204008FA782 /* Frameworks */,
 				607FACCE1AFB9204008FA782 /* Resources */,
-				450857B623B5FD9300FBCFBF /* SwiftLint */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = RInAppMessaging_Example;
+			packageProductDependencies = (
+				45FA8FDD272C26C8005166FD /* RInAppMessaging */,
+				45FA8FF4272C2C09005166FD /* RSDKUtilsMain */,
+			);
 			productName = InAppMessaging;
 			productReference = 607FACD01AFB9204008FA782 /* RInAppMessaging_Example.app */;
 			productType = "com.apple.product-type.application";
@@ -503,6 +560,13 @@
 				607FACE71AFB9204008FA782 /* PBXTargetDependency */,
 			);
 			name = Tests;
+			packageProductDependencies = (
+				45FA8FDF272C2835005166FD /* RInAppMessaging */,
+				45FA8FE6272C2B9A005166FD /* Quick */,
+				45FA8FE9272C2BA8005166FD /* Nimble */,
+				45FA8FF6272C2C09005166FD /* RSDKUtilsNimble */,
+				45FA8FF8272C2C09005166FD /* RSDKUtilsTestHelpers */,
+			);
 			productName = Tests;
 			productReference = 607FACE51AFB9204008FA782 /* Tests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -542,7 +606,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 607FACCB1AFB9204008FA782 /* Build configuration list for PBXProject "RInAppMessaging" */;
+			buildConfigurationList = 607FACCB1AFB9204008FA782 /* Build configuration list for PBXProject "SampleSPM" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -552,6 +616,12 @@
 				en,
 			);
 			mainGroup = 607FACC71AFB9204008FA782;
+			packageReferences = (
+				45FA8FE5272C2B9A005166FD /* XCRemoteSwiftPackageReference "Quick" */,
+				45FA8FE8272C2BA8005166FD /* XCRemoteSwiftPackageReference "Nimble" */,
+				45FA8FF3272C2C09005166FD /* XCRemoteSwiftPackageReference "ios-sdkutils" */,
+				45FA9002272C2C5C005166FD /* XCRemoteSwiftPackageReference "Shock" */,
+			);
 			productRefGroup = 607FACD11AFB9204008FA782 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -620,27 +690,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		450857B623B5FD9300FBCFBF /* SwiftLint */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = SwiftLint;
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" lint --config \"${SRCROOT}/.swiftlint.yml\"\n";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		453D242226A0DE5100FB9E6A /* Sources */ = {
@@ -781,8 +830,12 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = Tests/UITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				INFOPLIST_FILE = ../Tests/UITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = jp.co.rakuten.inappmessaging.UITests;
@@ -805,8 +858,12 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = Tests/UITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				INFOPLIST_FILE = ../Tests/UITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = jp.co.rakuten.inappmessaging.UITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -880,10 +937,13 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 575EYS6ZJA;
-				INFOPLIST_FILE = "$(SRCROOT)/Sample/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				INFOPLIST_FILE = "$(SRCROOT)/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				MODULE_NAME = ExampleApp;
-				PRODUCT_BUNDLE_IDENTIFIER = jp.co.rakuten.inappmessaging.demo;
+				PRODUCT_BUNDLE_IDENTIFIER = jp.co.rakuten.inappmessaging.demo.spm;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -900,7 +960,7 @@
 					"DEBUG=1",
 					"$(inherited)",
 				);
-				INFOPLIST_FILE = Tests/Tests/Info.plist;
+				INFOPLIST_FILE = ../Tests/Tests/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.co.rakuten.inappmessaging.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
@@ -924,8 +984,12 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 38KUE5XET9;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = Tests/IntegrationTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				INFOPLIST_FILE = ../Tests/IntegrationTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.co.rakuten.inappmessaging.$(PRODUCT_NAME:rfc1034identifier)";
@@ -949,8 +1013,12 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = Tests/UITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				INFOPLIST_FILE = ../Tests/UITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = jp.co.rakuten.inappmessaging.UITests;
@@ -976,8 +1044,12 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 38KUE5XET9;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = Tests/IntegrationTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				INFOPLIST_FILE = ../Tests/IntegrationTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.co.rakuten.inappmessaging.$(PRODUCT_NAME:rfc1034identifier)";
@@ -1002,8 +1074,12 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 38KUE5XET9;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = Tests/IntegrationTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				INFOPLIST_FILE = ../Tests/IntegrationTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.co.rakuten.inappmessaging.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1113,7 +1189,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -1127,10 +1204,13 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 575EYS6ZJA;
-				INFOPLIST_FILE = "$(SRCROOT)/Sample/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				INFOPLIST_FILE = "$(SRCROOT)/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				MODULE_NAME = ExampleApp;
-				PRODUCT_BUNDLE_IDENTIFIER = jp.co.rakuten.inappmessaging.demo;
+				PRODUCT_BUNDLE_IDENTIFIER = jp.co.rakuten.inappmessaging.demo.spm;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -1147,10 +1227,13 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 575EYS6ZJA;
-				INFOPLIST_FILE = "$(SRCROOT)/Sample/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				INFOPLIST_FILE = "$(SRCROOT)/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				MODULE_NAME = ExampleApp;
-				PRODUCT_BUNDLE_IDENTIFIER = jp.co.rakuten.inappmessaging.demo;
+				PRODUCT_BUNDLE_IDENTIFIER = jp.co.rakuten.inappmessaging.demo.spm;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -1167,7 +1250,7 @@
 					"DEBUG=1",
 					"$(inherited)",
 				);
-				INFOPLIST_FILE = Tests/Tests/Info.plist;
+				INFOPLIST_FILE = ../Tests/Tests/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.co.rakuten.inappmessaging.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
@@ -1180,7 +1263,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				DEVELOPMENT_TEAM = 87CT3T3CK2;
-				INFOPLIST_FILE = Tests/Tests/Info.plist;
+				INFOPLIST_FILE = ../Tests/Tests/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.co.rakuten.inappmessaging.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
@@ -1212,7 +1295,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		607FACCB1AFB9204008FA782 /* Build configuration list for PBXProject "RInAppMessaging" */ = {
+		607FACCB1AFB9204008FA782 /* Build configuration list for PBXProject "SampleSPM" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				607FACED1AFB9204008FA782 /* Debug */,
@@ -1243,6 +1326,130 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		45FA8FE5272C2B9A005166FD /* XCRemoteSwiftPackageReference "Quick" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Quick/Quick.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.0.0;
+			};
+		};
+		45FA8FE8272C2BA8005166FD /* XCRemoteSwiftPackageReference "Nimble" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Quick/Nimble.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 9.0.0;
+			};
+		};
+		45FA8FF3272C2C09005166FD /* XCRemoteSwiftPackageReference "ios-sdkutils" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/rakutentech/ios-sdkutils.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.1.0;
+			};
+		};
+		45FA9002272C2C5C005166FD /* XCRemoteSwiftPackageReference "Shock" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/justeat/Shock.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		45FA8FDD272C26C8005166FD /* RInAppMessaging */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = RInAppMessaging;
+		};
+		45FA8FDF272C2835005166FD /* RInAppMessaging */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = RInAppMessaging;
+		};
+		45FA8FE1272C283B005166FD /* RInAppMessaging */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = RInAppMessaging;
+		};
+		45FA8FE3272C283F005166FD /* RInAppMessaging */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = RInAppMessaging;
+		};
+		45FA8FE6272C2B9A005166FD /* Quick */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 45FA8FE5272C2B9A005166FD /* XCRemoteSwiftPackageReference "Quick" */;
+			productName = Quick;
+		};
+		45FA8FE9272C2BA8005166FD /* Nimble */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 45FA8FE8272C2BA8005166FD /* XCRemoteSwiftPackageReference "Nimble" */;
+			productName = Nimble;
+		};
+		45FA8FEB272C2BC0005166FD /* Quick */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 45FA8FE5272C2B9A005166FD /* XCRemoteSwiftPackageReference "Quick" */;
+			productName = Quick;
+		};
+		45FA8FED272C2BC3005166FD /* Nimble */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 45FA8FE8272C2BA8005166FD /* XCRemoteSwiftPackageReference "Nimble" */;
+			productName = Nimble;
+		};
+		45FA8FEF272C2BC7005166FD /* Quick */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 45FA8FE5272C2B9A005166FD /* XCRemoteSwiftPackageReference "Quick" */;
+			productName = Quick;
+		};
+		45FA8FF1272C2BCD005166FD /* Nimble */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 45FA8FE8272C2BA8005166FD /* XCRemoteSwiftPackageReference "Nimble" */;
+			productName = Nimble;
+		};
+		45FA8FF4272C2C09005166FD /* RSDKUtilsMain */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 45FA8FF3272C2C09005166FD /* XCRemoteSwiftPackageReference "ios-sdkutils" */;
+			productName = RSDKUtilsMain;
+		};
+		45FA8FF6272C2C09005166FD /* RSDKUtilsNimble */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 45FA8FF3272C2C09005166FD /* XCRemoteSwiftPackageReference "ios-sdkutils" */;
+			productName = RSDKUtilsNimble;
+		};
+		45FA8FF8272C2C09005166FD /* RSDKUtilsTestHelpers */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 45FA8FF3272C2C09005166FD /* XCRemoteSwiftPackageReference "ios-sdkutils" */;
+			productName = RSDKUtilsTestHelpers;
+		};
+		45FA8FFA272C2C17005166FD /* RSDKUtilsNimble */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 45FA8FF3272C2C09005166FD /* XCRemoteSwiftPackageReference "ios-sdkutils" */;
+			productName = RSDKUtilsNimble;
+		};
+		45FA8FFC272C2C1A005166FD /* RSDKUtilsTestHelpers */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 45FA8FF3272C2C09005166FD /* XCRemoteSwiftPackageReference "ios-sdkutils" */;
+			productName = RSDKUtilsTestHelpers;
+		};
+		45FA8FFE272C2C1E005166FD /* RSDKUtilsNimble */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 45FA8FF3272C2C09005166FD /* XCRemoteSwiftPackageReference "ios-sdkutils" */;
+			productName = RSDKUtilsNimble;
+		};
+		45FA9000272C2C21005166FD /* RSDKUtilsTestHelpers */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 45FA8FF3272C2C09005166FD /* XCRemoteSwiftPackageReference "ios-sdkutils" */;
+			productName = RSDKUtilsTestHelpers;
+		};
+		45FA9003272C2C5C005166FD /* Shock */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 45FA9002272C2C5C005166FD /* XCRemoteSwiftPackageReference "Shock" */;
+			productName = Shock;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 607FACC81AFB9204008FA782 /* Project object */;
 }

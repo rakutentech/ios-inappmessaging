@@ -83,7 +83,7 @@ SPEC CHECKSUMS:
   GRMustache.swift: a6436504284b22b4b05daf5f46f77bd3fe00a9a2
   Nimble: e7e615c0335ee4bf5b0d786685451e62746117d5
   Quick: 6473349e43b9271a8d43839d9ba1c442ed1b7ac4
-  RInAppMessaging: b6487b3d1442fd9f550d6e660ab4deeeec8e05c9
+  RInAppMessaging: 33635e2bb30697a39b1617757ebeed6b66a0e7d9
   RSDKUtils: e0cfed076d764b24d003bd793483a5b70d3135cd
   Shock: 94c2d3f5f781fe63317c4ee1621dfb2d4cc271d3
   SwiftLint: e96c0a8c770c7ebbc4d36c55baf9096bb65c4584

@@ -1,0 +1,2 @@
+// IMPORTANT: Secrets MUST be added to Example-Secrets.xcconfig and that file MUST NOT be added to git.
+#include "../../InAppMessaging-Secrets.xcconfig"

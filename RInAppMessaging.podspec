@@ -9,7 +9,7 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = '12.0'
   s.swift_versions = ['5.1', '5.2', '5.3', '5.4', '5.5']
 
-  s.source_files = 'RInAppMessaging/Classes/**/*.{swift,h,m}'
-  s.resource_bundles = { 'RInAppMessagingAssets' => ['RInAppMessaging/Assets/*'] }
   s.dependency 'RSDKUtils', '~> 2.0'
+  s.source_files = 'Sources/RInAppMessaging/**/*.swift'
+  s.resource_bundles = { 'RInAppMessagingResources' => ['Sources/RInAppMessaging/Resources/*'] }
 end
