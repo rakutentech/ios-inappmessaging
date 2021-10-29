@@ -253,7 +253,8 @@
 				453D243026A1724700FB9E6A /* ResponseStubs */,
 				453D242A26A0DE5100FB9E6A /* Info.plist */,
 			);
-			path = UITests;
+			name = UITests;
+			path = Tests/UITests;
 			sourceTree = "<group>";
 		};
 		453D243026A1724700FB9E6A /* ResponseStubs */ = {
@@ -297,7 +298,8 @@
 				45B5723E25ACE90F005A80F7 /* IntegrationTests.swift */,
 				45B5724025ACE90F005A80F7 /* Info.plist */,
 			);
-			path = IntegrationTests;
+			name = IntegrationTests;
+			path = Tests/IntegrationTests;
 			sourceTree = "<group>";
 		};
 		45B572F625AE2163005A80F7 /* Helpers */ = {
@@ -403,7 +405,8 @@
 				456FE1EC2429C4D200304872 /* ViewSpec.swift */,
 				607FACE91AFB9204008FA782 /* Supporting Files */,
 			);
-			path = Tests;
+			name = Tests;
+			path = Tests/Tests;
 			sourceTree = "<group>";
 		};
 		607FACE91AFB9204008FA782 /* Supporting Files */ = {
@@ -778,7 +781,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = UITests/Info.plist;
+				INFOPLIST_FILE = Tests/UITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -802,7 +805,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = UITests/Info.plist;
+				INFOPLIST_FILE = Tests/UITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = jp.co.rakuten.inappmessaging.UITests;
@@ -897,7 +900,7 @@
 					"DEBUG=1",
 					"$(inherited)",
 				);
-				INFOPLIST_FILE = Tests/Info.plist;
+				INFOPLIST_FILE = Tests/Tests/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.co.rakuten.inappmessaging.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
@@ -921,7 +924,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 38KUE5XET9;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = IntegrationTests/Info.plist;
+				INFOPLIST_FILE = Tests/IntegrationTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -946,7 +949,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = UITests/Info.plist;
+				INFOPLIST_FILE = Tests/UITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -973,7 +976,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 38KUE5XET9;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = IntegrationTests/Info.plist;
+				INFOPLIST_FILE = Tests/IntegrationTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -999,7 +1002,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 38KUE5XET9;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = IntegrationTests/Info.plist;
+				INFOPLIST_FILE = Tests/IntegrationTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.co.rakuten.inappmessaging.$(PRODUCT_NAME:rfc1034identifier)";
@@ -1164,7 +1167,7 @@
 					"DEBUG=1",
 					"$(inherited)",
 				);
-				INFOPLIST_FILE = Tests/Info.plist;
+				INFOPLIST_FILE = Tests/Tests/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.co.rakuten.inappmessaging.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
@@ -1177,7 +1180,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				DEVELOPMENT_TEAM = 87CT3T3CK2;
-				INFOPLIST_FILE = Tests/Info.plist;
+				INFOPLIST_FILE = Tests/Tests/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.co.rakuten.inappmessaging.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
