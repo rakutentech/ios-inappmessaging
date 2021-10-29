@@ -114,7 +114,7 @@ internal struct MessagePayload: Codable {
 }
 
 internal struct Resource: Codable {
-    let imageUrl: String
+    let imageUrl: String?
     let cropType: CampaignCropType
 }
 

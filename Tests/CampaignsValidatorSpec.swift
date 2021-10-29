@@ -163,7 +163,7 @@ private enum MockedCampaigns {
                     backgroundColor: "color4",
                     frameColor: "color5",
                     resource: Resource(
-                        imageUrl: "",
+                        imageUrl: nil,
                         cropType: .fill),
                     messageSettings: MessageSettings(
                         displaySettings: DisplaySettings(
@@ -204,7 +204,7 @@ private enum MockedCampaigns {
                     backgroundColor: "color4",
                     frameColor: "color5",
                     resource: Resource(
-                        imageUrl: "",
+                        imageUrl: nil,
                         cropType: .fill),
                     messageSettings: MessageSettings(
                         displaySettings: DisplaySettings(
