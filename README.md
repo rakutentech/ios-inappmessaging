@@ -220,7 +220,7 @@ func application(_ application: UIApplication, didFinishLaunchingWithOptions lau
 * Clone or fork the repo
 * `cd` to the repo folder
 * Set env vars `RIAM_CONFIG_URL` and `RIAM_APP_SUBSCRIPTION_KEY` according to the internal integration guide
-* _Important Note_: `Example-Secrets.xcconfig` **MUST NOT** be committed to git - it is ignored by git in the repo's `.gitignore` file
+* _Important Note_: `InAppMessaging-Secrets.xcconfig` **MUST NOT** be committed to git - it is ignored by git in the repo's `.gitignore` file
 * Run `bundle install` then run `bundle exec pod install`
 * Open `RInAppMessaging.xcworkspace` in Xcode then build/run
 * To run the tests press key shortcut command-U

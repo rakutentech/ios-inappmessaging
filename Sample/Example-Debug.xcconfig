@@ -1,4 +1,4 @@
 #include "Pods/Target Support Files/Pods-RInAppMessaging_Example/Pods-RInAppMessaging_Example.debug.xcconfig"
 
-// IMPORTANT: Secrets MUST be added to Example-Secrets.xcconfig and that file MUST NOT be added to git.
+// IMPORTANT: Secrets MUST be added to below xcconfig file and that file MUST NOT be added to git.
 #include "../../InAppMessaging-Secrets.xcconfig"
