@@ -1,10 +1,15 @@
 import Foundation
+#if canImport(RSDKUtils)
+import class RSDKUtils.AnalyticsBroadcaster
+#else // SPM Version
+import class RSDKUtilsMain.AnalyticsBroadcaster
+#endif
 
 internal protocol ImpressionServiceType: ErrorReportable {
     func pingImpression(impressions: [Impression], campaignData: CampaignData)
 }
 
-internal class ImpressionService: ImpressionServiceType, HttpRequestable, AnalyticsBroadcaster {
+internal class ImpressionService: ImpressionServiceType, HttpRequestable {
 
     private enum Keys {
         enum Params {
@@ -46,10 +51,8 @@ internal class ImpressionService: ImpressionServiceType, HttpRequestable, Analyt
         ]
 
         // Broadcast impression data to RAnalytics.
-        sendEventName(
-            Constants.RAnalytics.impressions,
-            [Keys.Analytics.impressions: encodeForAnalytics(impressionList: impressions)]
-        )
+        AnalyticsBroadcaster.sendEventName(Constants.RAnalytics.impressions,
+                                           dataObject: [Keys.Analytics.impressions: encodeForAnalytics(impressionList: impressions)])
 
         requestFromServer(
             url: impressionEndpoint,
