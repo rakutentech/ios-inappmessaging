@@ -44,8 +44,7 @@ internal struct CampaignsValidator: CampaignsValidatorType {
                     continue
             }
 
-            let campaignTriggers = campaign.data.triggers
-            guard !campaignTriggers.isEmpty else {
+            guard let campaignTriggers = campaign.data.triggers else {
                 Logger.debug("campaign (\(campaign.id)) has no triggers.")
                 continue
             }

@@ -76,7 +76,7 @@ internal struct CampaignData: Codable, Hashable {
     let campaignId: String
     let maxImpressions: Int
     let type: CampaignDisplayType
-    let triggers: [Trigger]
+    let triggers: [Trigger]?
     let isTest: Bool
     let messagePayload: MessagePayload
 

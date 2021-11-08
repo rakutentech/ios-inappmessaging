@@ -48,8 +48,7 @@ internal class EventMatcher: EventMatcherType {
         }
 
         campaignRepository.list.forEach { campaign in
-            let campaignTriggers = campaign.data.triggers
-            guard !campaignTriggers.isEmpty else {
+            guard let campaignTriggers = campaign.data.triggers else {
                 Logger.debug("campaign (\(campaign.id)) has no triggers.")
                 return
             }
@@ -70,8 +69,7 @@ internal class EventMatcher: EventMatcherType {
     }
 
     func containsAllMatchedEvents(for campaign: Campaign) -> Bool {
-        let triggers = campaign.data.triggers
-        guard !triggers.isEmpty else {
+        guard let triggers = campaign.data.triggers, !triggers.isEmpty else {
             return false
         }
         let events = matchedEvents.get()[campaign.id, default: []] + persistentEvents
