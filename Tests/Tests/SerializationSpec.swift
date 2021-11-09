@@ -1,6 +1,6 @@
+import Foundation
 import Quick
 import Nimble
-import class Foundation.JSONEncoder
 @testable import RInAppMessaging
 
 class SerializationSpec: QuickSpec {
@@ -55,6 +55,41 @@ class SerializationSpec: QuickSpec {
                 it("will properly read context even if there are invalid ones") {
                     let campaign = TestHelpers.generateCampaign(id: "id", title: "ctxbad] title [ctx]")
                     expect(campaign.contexts).to(elementsEqual(["ctx"]))
+                }
+            }
+        }
+
+        describe("Triggers") {
+
+            context("when parsing custom triggers with attributes") {
+
+                let json = #"""
+                {
+                    "type": 1,
+                    "eventType": 4,
+                    "eventName": "Custom EVENT",
+                    "attributes": [
+                        {
+                            "name": "aName1",
+                            "value": "VaLUe4",
+                            "type": 1,
+                            "operator": 1
+                        }
+                    ]
+                }
+                """#
+                let trigger: Trigger! = try? JSONDecoder().decode(Trigger.self, from: json.data(using: .utf8)!)
+
+                it("should have lowercased trigger name") {
+                    expect(trigger.eventName) == "custom event"
+                }
+
+                it("should have lowercased attribute name") {
+                    expect(trigger.attributes[0].name) == "aname1"
+                }
+
+                it("shouldn't have lowercased trigger value") {
+                    expect(trigger.attributes[0].value) == "VaLUe4"
                 }
             }
         }
