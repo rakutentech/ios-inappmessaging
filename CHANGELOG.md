@@ -1,5 +1,20 @@
 ## Changelog
 
+### 6.0.0 (2021-11-12)
+- **Breaking changes:**
+	- The minimum supported OS version is now iOS 12.0 [SDKCF-4361]
+	- The `registerPreference()` API method now requires a `UserInfoProvider` object [SDKCF-3970]
+	- Removed all Rakuten ID references. The value used as Rakuten ID should be used as the User ID instead. User ID should be treated as any unique member identifier.
+- Improvements:
+	- Updated user handling to align with the Android IAM SDK. The `registerPreference()` API method now requires a `UserInfoProvider` object, which must be kept up-to-date in your app code. See the README's registerPreference() description. [SDKCF-3970]
+	- Added UI tests [SDKCF-2246]
+	- Integrated [RSDKUtils](https://github.com/rakutentech/ios-sdkutils) library to replace common code [SDKCF-4351]
+	- Updated response models to use non-optionals [SDKCF-4017]
+	- Test campaigns are no longer cached.
+- Bug fixes:
+	- Fixed possible race condition crash in LockableObject [SDKCF-3987]
+	- Fixed issue with opt-out logic that occurred on user change [SDKCF-3720]
+
 ### 5.0.0 (2021-09-15)
 **Breaking change:** Changed public `Identification` enum member `easyId` to `idTrackingIdentifier`.
 - Features:
