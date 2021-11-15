@@ -2,7 +2,6 @@
 [![codecov](https://codecov.io/gh/rakutentech/ios-inappmessaging/branch/master/graph/badge.svg)](https://codecov.io/gh/rakutentech/ios-inappmessaging)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=rakutentech_ios-inappmessaging&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=rakutentech_ios-inappmessaging)
 
-
 # RInAppMessaging
 
 In-App Messaging (IAM) module allows app developers to easily configure and display notifications within their app.
@@ -11,7 +10,9 @@ This module supports iOS 12.0 and above. It has been tested with iOS 12.5 and ab
 
 # **How to install**
 
-RInAppMessaging SDK is distributed as a Cocoapod.  
+RInAppMessaging SDK is distributed as a Cocoapod and as a Swift Package.
+
+## CocoaPods
 More information on installing pods: [https://guides.cocoapods.org/using/getting-started.html](https://guides.cocoapods.org/using/getting-started.html)
 
 1. Include the following in your application's Podfile
@@ -26,6 +27,13 @@ pod 'RInAppMessaging'
 ```
 pod install
 ```
+
+## Swift Package Manager
+Open your project settings in Xcode and add a new package in 'Swift Packages' tab:
+* Repository URL: `https://github.com/rakutentech/ios-inappmessaging.git`
+* Version settings: 6.1.0 "Up to Next Major" (6.1.0 is the first version to support SPM)
+
+Choose `RInAppMessaging` product for your target. If you want to link other targets, go to Build Phases of that target, then in Link Binary With Libraries click + button and add `RInAppMessaging`.
 
 # **Configuring**
 
@@ -220,7 +228,7 @@ func application(_ application: UIApplication, didFinishLaunchingWithOptions lau
 * Clone or fork the repo
 * `cd` to the repo folder
 * Set env vars `RIAM_CONFIG_URL` and `RIAM_APP_SUBSCRIPTION_KEY` according to the internal integration guide
-* _Important Note_: `Example-Secrets.xcconfig` **MUST NOT** be committed to git - it is ignored by git in the repo's `.gitignore` file
+* _Important Note_: `InAppMessaging-Secrets.xcconfig` **MUST NOT** be committed to git - it is ignored by git in the repo's `.gitignore` file
 * Run `bundle install` then run `bundle exec pod install`
 * Open `RInAppMessaging.xcworkspace` in Xcode then build/run
 * To run the tests press key shortcut command-U

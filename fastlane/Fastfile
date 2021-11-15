@@ -37,6 +37,11 @@ platform :ios do
       output_files: 'compile_commands.json,report.html,report.junit')
 
     lint_module
+    build_swift_package
+  end
+
+  lane :build_swift_package do
+    sh 'swift build -Xswiftc "-sdk" -Xswiftc `xcrun --sdk iphonesimulator --show-sdk-path` -Xswiftc "-target" -Xswiftc "x86_64-apple-ios15.0-simulator"'
   end
 
   lane :coverage do

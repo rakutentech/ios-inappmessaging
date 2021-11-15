@@ -8,21 +8,21 @@ PODS:
   - Nimble (9.2.1)
   - Quick (4.0.0)
   - RInAppMessaging (5.0.0):
-    - RSDKUtils (~> 2.0)
-  - RSDKUtils (2.0.0):
-    - RSDKUtils/Main (= 2.0.0)
-  - RSDKUtils/Main (2.0.0):
+    - RSDKUtils (~> 2.1)
+  - RSDKUtils (2.1.0):
+    - RSDKUtils/Main (= 2.1.0)
+  - RSDKUtils/Main (2.1.0):
     - RSDKUtils/RLogger
-  - RSDKUtils/Nimble (2.0.0):
+  - RSDKUtils/Nimble (2.1.0):
     - Nimble
     - RSDKUtils/Main
-  - RSDKUtils/RLogger (2.0.0)
-  - RSDKUtils/TestHelpers (2.0.0):
+  - RSDKUtils/RLogger (2.1.0)
+  - RSDKUtils/TestHelpers (2.1.0):
     - RSDKUtils/Main
   - Shock (6.0.3):
     - GRMustache.swift (~> 4.0.1)
     - SwiftNIOHTTP1 (~> 2.22.1)
-  - SwiftLint (0.44.0)
+  - SwiftLint (0.45.0)
   - SwiftNIO (2.22.1):
     - CNIOAtomics (= 2.22.1)
     - CNIODarwin (= 2.22.1)
@@ -40,9 +40,9 @@ DEPENDENCIES:
   - Nimble
   - Quick
   - RInAppMessaging (from `.`)
-  - RSDKUtils (from `https://github.com/rakutentech/ios-sdkutils.git`, branch `master`)
-  - RSDKUtils/Nimble (from `https://github.com/rakutentech/ios-sdkutils.git`, branch `master`)
-  - RSDKUtils/TestHelpers (from `https://github.com/rakutentech/ios-sdkutils.git`, branch `master`)
+  - RSDKUtils (~> 2.1)
+  - RSDKUtils/Nimble (~> 2.1)
+  - RSDKUtils/TestHelpers (~> 2.1)
   - Shock (~> 6.0)
   - SwiftLint (~> 0.42)
 
@@ -56,6 +56,7 @@ SPEC REPOS:
     - GRMustache.swift
     - Nimble
     - Quick
+    - RSDKUtils
     - Shock
     - SwiftLint
     - SwiftNIO
@@ -65,14 +66,6 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   RInAppMessaging:
     :path: "."
-  RSDKUtils:
-    :branch: master
-    :git: https://github.com/rakutentech/ios-sdkutils.git
-
-CHECKOUT OPTIONS:
-  RSDKUtils:
-    :commit: 3509465c6d1d52c17be8d20026c2354890f081a6
-    :git: https://github.com/rakutentech/ios-sdkutils.git
 
 SPEC CHECKSUMS:
   CNIOAtomics: 55026298b0bd7524bb8ca85bd9d00983ef2b6ab5
@@ -83,14 +76,14 @@ SPEC CHECKSUMS:
   GRMustache.swift: a6436504284b22b4b05daf5f46f77bd3fe00a9a2
   Nimble: e7e615c0335ee4bf5b0d786685451e62746117d5
   Quick: 6473349e43b9271a8d43839d9ba1c442ed1b7ac4
-  RInAppMessaging: b6487b3d1442fd9f550d6e660ab4deeeec8e05c9
-  RSDKUtils: e0cfed076d764b24d003bd793483a5b70d3135cd
+  RInAppMessaging: 2a83698ad3c388e9029a1bb9078e6ce9d0cbf336
+  RSDKUtils: 47d28aac1347d712e6d4db9a1332cae41b17738f
   Shock: 94c2d3f5f781fe63317c4ee1621dfb2d4cc271d3
-  SwiftLint: e96c0a8c770c7ebbc4d36c55baf9096bb65c4584
+  SwiftLint: e5c7f1fba68eccfc51509d5b2ce1699f5502e0c7
   SwiftNIO: 763188229de166e046cc8975383cca388832e992
   SwiftNIOConcurrencyHelpers: 34d2e9d4d2b7886fa765086e845e6b19417be927
   SwiftNIOHTTP1: c0a9ce48ba256f349af4f09648a0e0939b11a65c
 
-PODFILE CHECKSUM: 89dd078544f9478f4779e7f51df83ccb0a83b393
+PODFILE CHECKSUM: 2fed098bab616d1b22c6d7df52c1f022f9a008f7
 
 COCOAPODS: 1.11.2

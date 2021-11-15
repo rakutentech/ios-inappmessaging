@@ -1,0 +1,5 @@
+// IMPORTANT: Secrets MUST be added to below xcconfig file and that file MUST NOT be added to git.
+#include "../../InAppMessaging-Secrets.xcconfig"
+
+// override secrets
+RIAM_CONFIG_URL=http:/$()/localhost:6789/config
