@@ -62,7 +62,7 @@ internal class SlideUpView: UIView, SlideUpViewType {
 
         setupDialogView()
         setupMessageBody(viewModel.messageBody, color: viewModel.messageBodyColor)
-        setupExitButton()
+        setupExitButton(viewModel.messageBodyColor)
 
         presenter.logImpression(type: .impression)
     }
@@ -147,11 +147,11 @@ internal class SlideUpView: UIView, SlideUpViewType {
         ])
     }
 
-    private func setupExitButton() {
+    private func setupExitButton(_ contextualColour: UIColor) {
         let exitButton = ExitButton()
 
 //        exitButton.fontSize = 14.0
-        exitButton.invertedColors = false
+        exitButton.invertedColors = contextualColour.isBright
         exitButton.addTarget(self, action: #selector(onExitButtonClick), for: .touchUpInside)
 
         exitButton.translatesAutoresizingMaskIntoConstraints = false
