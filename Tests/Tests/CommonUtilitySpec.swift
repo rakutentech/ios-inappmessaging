@@ -147,7 +147,7 @@ class CommonUtilitySpec: QuickSpec {
                         expect(result?.value as? String).to(equal(""))
                     }
 
-                    it("will return lowercaed name") {
+                    it("will return lowercased name") {
                         let attribute = TriggerAttribute(name: "ATT", value: "5",
                                                          type: .string, operator: .invalid)
                         let result = CommonUtility.convertAttributeObjectToCustomAttribute(attribute)
@@ -186,7 +186,7 @@ class CommonUtilitySpec: QuickSpec {
                         expect(result).to(beNil())
                     }
 
-                    it("will return lowercaed name") {
+                    it("will return lowercased name") {
                         let attribute = TriggerAttribute(name: "ATT", value: "1",
                                                          type: .integer, operator: .invalid)
                         let result = CommonUtility.convertAttributeObjectToCustomAttribute(attribute)
@@ -230,7 +230,7 @@ class CommonUtilitySpec: QuickSpec {
                             expect(result?.value as? Bool).to(equal(false))
                         }
 
-                        it("will return lowercaed name") {
+                        it("will return lowercased name") {
                             let attribute = TriggerAttribute(name: "ATT", value: "0",
                                                              type: .boolean, operator: .invalid)
                             let result = CommonUtility.convertAttributeObjectToCustomAttribute(attribute)
@@ -280,7 +280,7 @@ class CommonUtilitySpec: QuickSpec {
                             expect(result?.value as? Double).to(equal(-5.0))
                         }
 
-                        it("will return lowercaed name") {
+                        it("will return lowercased name") {
                             let attribute = TriggerAttribute(name: "ATT", value: "1.2",
                                                              type: .double, operator: .invalid)
                             let result = CommonUtility.convertAttributeObjectToCustomAttribute(attribute)
@@ -334,7 +334,7 @@ class CommonUtilitySpec: QuickSpec {
                         expect(result).to(beNil())
                     }
 
-                    it("will return lowercaed name") {
+                    it("will return lowercased name") {
                         let attribute = TriggerAttribute(name: "ATT", value: "12",
                                                          type: .timeInMilliseconds, operator: .invalid)
                         let result = CommonUtility.convertAttributeObjectToCustomAttribute(attribute)
