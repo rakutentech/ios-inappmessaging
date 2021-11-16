@@ -18,10 +18,10 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         var bodyMarginTop: CGFloat = 18 // Distance from header (body) to top edge or image
         var buttonHeight: CGFloat = 40 // Define the height to use for the button.
         var buttonsSpacing: CGFloat = 8 // Size of the gap between the buttons when there are two buttons.
-        var singleButtonWidthMargin: CGFloat = 24 // Width offset when only one button is given.
+        var singleButtonWidthMargin: CGFloat = 0 // Width offset when only one button is given.
         var exitButtonFontSize: CGFloat = 13 // Size of the exit button.
-        var exitButtonSize: CGFloat = 15 // Size of the exit button.
-        var exitButtonVerticalOffset: CGFloat = 16 // Position of where the button should be relative to the safe area frame.
+        var exitButtonSize: CGFloat = 44 // Size of the exit button.
+        var exitButtonVerticalOffset: CGFloat = 0 // Position of where the button should be relative to the safe area frame.
         var exitButtonTouchAreaSize: CGFloat = 44 // Clickable area of exit button used in hitTest
         var dialogViewHorizontalMargin: CGFloat = 20 // The spacing between dialog view and the children elements.
         var dialogViewWidthOffset: CGFloat = 0 // Spacing on the left and right side of subviews.
@@ -86,7 +86,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
     private var layout: Layout?
     private(set) var hasImage = false {
         didSet {
-            exitButton.invertedColors = hasImage
+//            exitButton.invertedColors = hasImage
             imageView.isHidden = !hasImage
         }
     }
@@ -106,7 +106,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         super.layoutSubviews()
 
         updateUIConstants()
-        exitButtonYPositionConstraint.constant = uiConstants.exitButtonVerticalOffset
+//        exitButtonYPositionConstraint.constant = uiConstants.exitButtonVerticalOffset
         bodyViewOffsetYConstraint.constant = hasImage ? 0 : uiConstants.bodyViewSafeAreaOffsetY
 
         DispatchQueue.main.async {
@@ -210,7 +210,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
 
         switch mode {
         case .fullScreen:
-            contentView.topAnchor.constraint(equalTo: topAnchor).isActive = true
+            contentView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor).isActive = true
             contentView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor).isActive = true
         case .modal(let maxWindowHeightPercentage):
             contentView.heightAnchor.constraint(lessThanOrEqualTo: backgroundView.heightAnchor,
@@ -240,8 +240,8 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
 
         exitButton.widthAnchor.constraint(equalToConstant: uiConstants.exitButtonSize).isActive = true
         exitButton.heightAnchor.constraint(equalToConstant: uiConstants.exitButtonSize).isActive = true
-        exitButtonYPositionConstraint.constant = uiConstants.exitButtonVerticalOffset
-        exitButton.fontSize = uiConstants.exitButtonFontSize
+//        exitButtonYPositionConstraint.constant = uiConstants.exitButtonVerticalOffset
+//        exitButton.fontSize = uiConstants.exitButtonFontSize
     }
 
     private func createMessageBody(viewModel: FullViewModel) {
@@ -250,7 +250,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
 
         if viewModel.isHTML, let htmlBody = viewModel.messageBody {
             hasImage = false
-            exitButton.invertedColors = true
+            exitButton.invertedColors = viewModel.backgroundColor.isBright // true
             bodyContainerView.isHidden = true
             setupWebView(withHtmlString: htmlBody)
         } else {
@@ -297,7 +297,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         bodyLabel.text = bodyMessage
         bodyLabel.textColor = viewModel.messageBodyColor
         bodyLabel.setLineSpacing(lineSpacing: 3.0)
-        bodyLabel.font = .systemFont(ofSize: uiConstants.bodyMessageFontSize)
+        bodyLabel.font = .mPlus1RRegular(ofSize: uiConstants.bodyMessageFontSize) ?? .systemFont(ofSize: uiConstants.bodyMessageFontSize)
         bodyLabel.textAlignment = .left
         bodyLabel.lineBreakMode = .byWordWrapping
         bodyLabel.numberOfLines = 0
@@ -310,7 +310,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         headerLabel.textAlignment = .center
         headerLabel.lineBreakMode = .byWordWrapping
         headerLabel.numberOfLines = 0
-        headerLabel.font = .boldSystemFont(ofSize: uiConstants.headerMessageFontSize)
+        headerLabel.font = .mPlus1RRegular(ofSize: uiConstants.headerMessageFontSize) ?? .boldSystemFont(ofSize: uiConstants.headerMessageFontSize)
     }
 
     func addButtons(_ buttons: [(ActionButton, viewModel: ActionButtonViewModel)]) {

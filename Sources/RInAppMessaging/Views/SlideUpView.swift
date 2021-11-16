@@ -124,7 +124,7 @@ internal class SlideUpView: UIView, SlideUpViewType {
 
         bodyMessageLabel.text = message
         bodyMessageLabel.textColor = color
-        bodyMessageLabel.font = .systemFont(ofSize: UIConstants.bodyMessageLabelFontSize)
+        bodyMessageLabel.font = .mPlus1RRegular(ofSize: UIConstants.bodyMessageLabelFontSize) ?? .systemFont(ofSize: UIConstants.bodyMessageLabelFontSize)
         bodyMessageLabel.setLineSpacing(lineSpacing: 3.0)
         bodyMessageLabel.numberOfLines = 0
         bodyMessageLabel.lineBreakMode = .byWordWrapping
@@ -150,7 +150,7 @@ internal class SlideUpView: UIView, SlideUpViewType {
     private func setupExitButton() {
         let exitButton = ExitButton()
 
-        exitButton.fontSize = 14.0
+//        exitButton.fontSize = 14.0
         exitButton.invertedColors = false
         exitButton.addTarget(self, action: #selector(onExitButtonClick), for: .touchUpInside)
 

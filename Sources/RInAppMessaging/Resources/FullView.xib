@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19162" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19455" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19144"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19454"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -23,7 +23,6 @@
                 <outlet property="controlsView" destination="IpI-Mq-vby" id="8Cg-db-Bxz"/>
                 <outlet property="dialogView" destination="sQ8-dx-V3p" id="nQl-qg-fX5"/>
                 <outlet property="exitButton" destination="ZII-OX-pA4" id="AA2-Rt-r98"/>
-                <outlet property="exitButtonYPositionConstraint" destination="4gf-Oe-7t9" id="0Di-eI-mTA"/>
                 <outlet property="headerLabel" destination="T7s-2B-xbs" id="z3s-fm-1Ez"/>
                 <outlet property="imageView" destination="87e-5v-58Z" id="gZQ-P8-aXx"/>
                 <outlet property="optOutAndButtonsSpacer" destination="cX9-6w-OUz" id="nq1-Dm-L26"/>
@@ -37,20 +36,35 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9fo-EW-lL9">
-                    <rect key="frame" x="0.0" y="45.5" width="414" height="540"/>
+                    <rect key="frame" x="0.0" y="23.5" width="414" height="584"/>
                     <subviews>
                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="sQ8-dx-V3p">
-                            <rect key="frame" x="0.0" y="0.0" width="414" height="540"/>
+                            <rect key="frame" x="0.0" y="0.0" width="414" height="584"/>
                             <subviews>
+                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="LBu-gO-Kcj">
+                                    <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
+                                    <subviews>
+                                        <view contentMode="scaleToFill" placeholderIntrinsicWidth="25" placeholderIntrinsicHeight="25" translatesAutoresizingMaskIntoConstraints="NO" id="ZII-OX-pA4" customClass="ExitButton" customModule="RInAppMessaging">
+                                            <rect key="frame" x="389" y="0.0" width="25" height="25"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </view>
+                                    </subviews>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <constraints>
+                                        <constraint firstItem="ZII-OX-pA4" firstAttribute="top" secondItem="LBu-gO-Kcj" secondAttribute="top" id="39c-xm-st0"/>
+                                        <constraint firstAttribute="height" constant="44" id="asb-ck-C1h"/>
+                                        <constraint firstAttribute="trailing" secondItem="ZII-OX-pA4" secondAttribute="trailing" id="m2u-Xf-tSy"/>
+                                    </constraints>
+                                </view>
                                 <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="d8e-45-aEu">
-                                    <rect key="frame" x="0.0" y="-200" width="414" height="200"/>
+                                    <rect key="frame" x="0.0" y="44" width="414" height="200"/>
                                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                     <constraints>
                                         <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="200" id="pkt-zd-Nz9"/>
                                     </constraints>
                                 </view>
                                 <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" contentInsetAdjustmentBehavior="never" translatesAutoresizingMaskIntoConstraints="NO" id="R2i-po-Za0">
-                                    <rect key="frame" x="0.0" y="0.0" width="414" height="426"/>
+                                    <rect key="frame" x="0.0" y="44" width="414" height="426"/>
                                     <subviews>
                                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="kFe-rN-o5K">
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="146"/>
@@ -95,7 +109,7 @@
                                     </constraints>
                                 </scrollView>
                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="IpI-Mq-vby">
-                                    <rect key="frame" x="0.0" y="426" width="414" height="96"/>
+                                    <rect key="frame" x="0.0" y="470" width="414" height="96"/>
                                     <subviews>
                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wrt-M2-rbv" userLabel="Spacer">
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="16"/>
@@ -124,7 +138,7 @@
                                     </subviews>
                                 </stackView>
                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QTR-Lw-dcX" userLabel="Spacer">
-                                    <rect key="frame" x="0.0" y="522" width="414" height="18"/>
+                                    <rect key="frame" x="0.0" y="566" width="414" height="18"/>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="18" id="ITU-je-EpF"/>
@@ -140,17 +154,10 @@
                         <constraint firstItem="sQ8-dx-V3p" firstAttribute="leading" secondItem="9fo-EW-lL9" secondAttribute="leading" id="SQD-vw-pRR"/>
                     </constraints>
                 </view>
-                <view contentMode="scaleToFill" placeholderIntrinsicWidth="25" placeholderIntrinsicHeight="25" translatesAutoresizingMaskIntoConstraints="NO" id="ZII-OX-pA4" customClass="ExitButton" customModule="RInAppMessaging">
-                    <rect key="frame" x="357" y="4.5" width="25" height="25"/>
-                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                </view>
             </subviews>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstItem="9fo-EW-lL9" firstAttribute="trailing" secondItem="ZII-OX-pA4" secondAttribute="trailing" priority="750" constant="4" id="0cZ-qW-gWv"/>
-                <constraint firstItem="9fo-EW-lL9" firstAttribute="top" secondItem="ZII-OX-pA4" secondAttribute="bottom" constant="16" id="4gf-Oe-7t9"/>
-                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="ZII-OX-pA4" secondAttribute="trailing" constant="32" id="86x-3q-ZLt"/>
                 <constraint firstItem="9fo-EW-lL9" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="Fp8-kU-AgK"/>
                 <constraint firstItem="9fo-EW-lL9" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" priority="750" id="OW4-nQ-nj2"/>
                 <constraint firstItem="9fo-EW-lL9" firstAttribute="width" secondItem="vUN-kp-3ea" secondAttribute="width" id="rmG-89-pbI"/>

@@ -7,7 +7,7 @@ internal class ActionButton: UIButton {
         static let fontSize: CGFloat = 14
         static let minFontSize: CGFloat = 10
         static let labelMargin = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
-        static let cornerRadius: CGFloat = 4
+        static let cornerRadius: CGFloat = 8
         static let borderWidth: CGFloat = 1
     }
 
@@ -32,7 +32,7 @@ internal class ActionButton: UIButton {
 
     func setup(viewModel: ActionButtonViewModel) {
         textLabel.text = viewModel.text
-        textLabel.font = .boldSystemFont(ofSize: Constants.fontSize)
+        textLabel.font = .mPlus1RMedium(ofSize: Constants.fontSize) ?? .boldSystemFont(ofSize: Constants.fontSize)
         textLabel.textColor = viewModel.textColor
         textLabel.numberOfLines = 2
         textLabel.lineBreakMode = .byTruncatingTail
