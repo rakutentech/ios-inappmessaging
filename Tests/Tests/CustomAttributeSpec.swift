@@ -7,6 +7,41 @@ class CustomAttributeSpec: QuickSpec {
     override func spec() {
 
         describe("CustomAttribute") {
+            context("when accessing name") {
+
+                it("should return lowercased string for bool type") {
+                    let att = CustomAttribute(withKeyName: "TeSt4", withBoolValue: false)
+                    expect(att.name) == "test4"
+                }
+
+                it("should return lowercased string for int type") {
+                    let att = CustomAttribute(withKeyName: "TeSt4", withIntValue: 5)
+                    expect(att.name) == "test4"
+                }
+
+                it("should return lowercased string for double type") {
+                    let att = CustomAttribute(withKeyName: "TeSt4", withDoubleValue: 2.1)
+                    expect(att.name) == "test4"
+                }
+
+                it("should return lowercased string for time type") {
+                    let att = CustomAttribute(withKeyName: "TeSt4", withTimeInMilliValue: 100)
+                    expect(att.name) == "test4"
+                }
+
+                it("should return lowercased string for string type") {
+                    let att = CustomAttribute(withKeyName: "TeSt4", withStringValue: "AAA")
+                    expect(att.name) == "test4"
+                }
+            }
+
+            context("when accessing value") {
+
+                it("shouldn't modify string value (not lowercased)") {
+                    let att = CustomAttribute(withKeyName: "test", withStringValue: "TeSt4")
+                    expect(att.value as? String) == "TeSt4"
+                }
+            }
 
             context("when comparing objects") {
 

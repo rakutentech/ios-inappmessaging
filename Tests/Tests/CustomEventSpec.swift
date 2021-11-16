@@ -24,6 +24,16 @@ class CustomEventsSpec: QuickSpec {
             validatorHandler = ValidatorHandler()
         }
 
+        describe("CustomEvent") {
+            context("when accessing name") {
+
+                it("should return lowercased string") {
+                    let event = CustomEvent(withName: "TeSt4", withCustomAttributes: nil)
+                    expect(event.name) == "test4"
+                }
+            }
+        }
+
         describe("CampaignsValidator") {
             it("should accept a campaign that is matched using an custom event with a STRING type and equals operator") {
                 let mockResponse = TestHelpers.MockResponse.stringTypeWithEqualsOperator

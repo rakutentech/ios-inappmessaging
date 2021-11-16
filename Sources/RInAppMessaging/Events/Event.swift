@@ -9,9 +9,9 @@ import Foundation
         case type, timestamp, name
     }
 
-    var type: EventType
-    var timestamp: Int64
-    var name: String
+    let type: EventType
+    let timestamp: Int64
+    let name: String
 
     var analyticsParameters: [String: Any] {
         return [:]

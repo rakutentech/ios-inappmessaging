@@ -95,13 +95,6 @@ internal struct CampaignData: Codable, Hashable {
     }
 }
 
-internal struct Trigger: Codable, Equatable {
-    let type: CampaignTriggerType
-    let eventType: EventType
-    let eventName: String
-    let attributes: [TriggerAttribute]
-}
-
 internal struct MessagePayload: Codable {
     let title: String
     let messageBody: String?
