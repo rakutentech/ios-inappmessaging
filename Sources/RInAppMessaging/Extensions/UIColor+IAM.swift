@@ -22,7 +22,7 @@ internal extension UIColor {
     var isBright: Bool {
         // https://www.nbdtech.com/Blog/archive/2008/04/27/Calculating-the-Perceived-Brightness-of-a-Color.aspx
         let threshold: CGFloat = 130/255
-        return brightness <= threshold ? false : true
+        return brightness > threshold
     }
 
 }
