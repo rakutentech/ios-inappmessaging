@@ -8,7 +8,6 @@ internal class SlideUpView: UIView, SlideUpViewType {
         static let exitButtonSize: CGFloat = 44
         static let exitButtonTopMargin: CGFloat = 4
         static let exitButtonRightMargin: CGFloat = 4
-        static let exitButtonTouchAreaSize: CGFloat = 44
         static let slideAnimationDuration: TimeInterval = 0.4
         static var messageBodyPadding: UIEdgeInsets {
             let bottomSafeArea = UIApplication.shared.getKeyWindow()?.safeAreaInsets.bottom ?? CGFloat(0)
@@ -46,13 +45,6 @@ internal class SlideUpView: UIView, SlideUpViewType {
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-
-    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-        if exitButton?.isTouchInside(touchPoint: point, from: self, touchAreaSize: UIConstants.exitButtonTouchAreaSize) == true {
-            return exitButton
-        }
-        return super.hitTest(point, with: event)
     }
 
     func setup(viewModel: SlideUpViewModel) {

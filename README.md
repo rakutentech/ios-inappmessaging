@@ -249,6 +249,21 @@ If user (with registered identifier using `registerPerference()`) opts out from 
 
 Campaign impressions (displays) are counted locally for each user. Meaning that a campaign with maxImpression value of 3 will be displayed to each user (registered with `registerPerference()`) max 3 times. Campaign's max impression number can be modified in the dashboard/backend. Then the SDK, after next ping call, will compare new value with old max impression number and add the difference to the current impression counter. The max impression data is not shared between devices. The same applies for anonymous user.
 
+## (Optional) How enable custom fonts in your Campaigns
+
+The SDK will automatically use the "M+ 1R" fonts if the host app has them pre-registered. Add the ttf/otf fonts to your app target. The expected font names (as detected by Core Text) are "M+1r-medium", "M+1r-regular".
+
+Include this in your `Info.plist` settings:
+```xml
+<key>UIAppFonts</key>
+<array>
+    <string>M+1r-regular.otf</string>
+    <string>M+1r-medium.otf</string>
+</array>
+```
+
+Fallsback to system fonts if unavailable or unset.
+
 # **Troubleshooting & F.A.Q.**
 
 * Configuration service returns `RequestError.missingMetadata` error

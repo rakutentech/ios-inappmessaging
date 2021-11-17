@@ -21,7 +21,6 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         var singleButtonWidthMargin: CGFloat = 0 // Width offset when only one button is given.
         var exitButtonFontSize: CGFloat = 13 // Size of the exit button.
         var exitButtonSize: CGFloat = 44 // Size of the exit button.
-        var exitButtonTouchAreaSize: CGFloat = 44 // Clickable area of exit button used in hitTest
         var dialogViewHorizontalMargin: CGFloat = 20 // The spacing between dialog view and the children elements.
         var dialogViewWidthOffset: CGFloat = 0 // Spacing on the left and right side of subviews.
         var dialogViewWidthMultiplier: CGFloat = 1 // Spacing on the left and right side of subviews.
@@ -111,13 +110,6 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
             // (landscape iPad), resulting in horizontal scroll bouncing.
             self.contentScrollView.contentSize.width = self.contentScrollView.bounds.width
         }
-    }
-
-    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-        if exitButton?.isTouchInside(touchPoint: point, from: self, touchAreaSize: uiConstants.exitButtonTouchAreaSize) == true {
-            return exitButton
-        }
-        return super.hitTest(point, with: event)
     }
 
     func setup(viewModel: FullViewModel) {
