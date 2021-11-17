@@ -21,7 +21,6 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         var singleButtonWidthMargin: CGFloat = 0 // Width offset when only one button is given.
         var exitButtonFontSize: CGFloat = 13 // Size of the exit button.
         var exitButtonSize: CGFloat = 44 // Size of the exit button.
-        var exitButtonVerticalOffset: CGFloat = 0 // Position of where the button should be relative to the safe area frame.
         var exitButtonTouchAreaSize: CGFloat = 44 // Clickable area of exit button used in hitTest
         var dialogViewHorizontalMargin: CGFloat = 20 // The spacing between dialog view and the children elements.
         var dialogViewWidthOffset: CGFloat = 0 // Spacing on the left and right side of subviews.
@@ -86,7 +85,6 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
     private var layout: Layout?
     private(set) var hasImage = false {
         didSet {
-//            exitButton.invertedColors = hasImage
             imageView.isHidden = !hasImage
         }
     }
@@ -106,7 +104,6 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         super.layoutSubviews()
 
         updateUIConstants()
-//        exitButtonYPositionConstraint.constant = uiConstants.exitButtonVerticalOffset
         bodyViewOffsetYConstraint.constant = hasImage ? 0 : uiConstants.bodyViewSafeAreaOffsetY
 
         DispatchQueue.main.async {
@@ -224,6 +221,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
 
         bodyViewOffsetYConstraint.constant = hasImage ? 0 : uiConstants.bodyViewSafeAreaOffsetY
 
+        exitButton.invertedColors = viewModel.backgroundColor.isBright
         contentView.backgroundColor = viewModel.backgroundColor
         contentView.clipsToBounds = true
         contentView.layer.cornerRadius = uiConstants.cornerRadiusForDialogView
@@ -240,8 +238,6 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
 
         exitButton.widthAnchor.constraint(equalToConstant: uiConstants.exitButtonSize).isActive = true
         exitButton.heightAnchor.constraint(equalToConstant: uiConstants.exitButtonSize).isActive = true
-//        exitButtonYPositionConstraint.constant = uiConstants.exitButtonVerticalOffset
-//        exitButton.fontSize = uiConstants.exitButtonFontSize
     }
 
     private func createMessageBody(viewModel: FullViewModel) {
@@ -250,7 +246,6 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
 
         if viewModel.isHTML, let htmlBody = viewModel.messageBody {
             hasImage = false
-            exitButton.invertedColors = viewModel.backgroundColor.isBright // true
             bodyContainerView.isHidden = true
             setupWebView(withHtmlString: htmlBody)
         } else {

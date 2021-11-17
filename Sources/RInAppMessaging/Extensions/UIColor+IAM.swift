@@ -11,7 +11,7 @@ internal extension UIColor {
         }
     }
 
-    /// Returns perceived brightness value based on [Darel Rex Finley's HSP Colour Model](http://alienryderflex.com/hsp.html)
+    /// Returns perceived brightness value based on [Darel Rex Finley's HSP Colour Model](http://alienryderflex.com/hsp.html) from 0 to 1.0 (brightess)
     var brightness: CGFloat {
         var (r,g,b) = (CGFloat(0), CGFloat(0), CGFloat(0))
         getRed(&r, green: &g, blue: &b, alpha: nil)
@@ -21,8 +21,8 @@ internal extension UIColor {
     /// Returns true if colour is perceived to be bright
     var isBright: Bool {
         // https://www.nbdtech.com/Blog/archive/2008/04/27/Calculating-the-Perceived-Brightness-of-a-Color.aspx
-        let threshold: CGFloat = 130
-        return brightness < threshold ? true : false
+        let threshold: CGFloat = 130/255
+        return brightness <= threshold ? false : true
     }
 
 }
