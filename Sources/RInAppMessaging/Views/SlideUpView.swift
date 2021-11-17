@@ -5,9 +5,9 @@ internal class SlideUpView: UIView, SlideUpViewType {
 
     enum UIConstants {
         static let bodyMessageLabelFontSize: CGFloat = 14
-        static let exitButtonSize: CGFloat = 20
-        static let exitButtonTopMargin: CGFloat = 12
-        static let exitButtonRightMargin: CGFloat = 16
+        static let exitButtonSize: CGFloat = 44
+        static let exitButtonTopMargin: CGFloat = 4
+        static let exitButtonRightMargin: CGFloat = 4
         static let exitButtonTouchAreaSize: CGFloat = 44
         static let slideAnimationDuration: TimeInterval = 0.4
         static var messageBodyPadding: UIEdgeInsets {
