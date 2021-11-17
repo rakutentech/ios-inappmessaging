@@ -14,7 +14,7 @@ internal extension UIColor {
     /// Returns perceived brightness value based on [Darel Rex Finley's HSP Colour Model](http://alienryderflex.com/hsp.html) from 0 to 1.0 (max brightness)
     var brightness: CGFloat {
         var (r,g,b) = (CGFloat(0), CGFloat(0), CGFloat(0))
-        getRed(&r, green: &g, blue: &b, alpha: nil)
+        getRed(&r, green: &g, blue: &b, alpha: nil) // works with RGB, HSB, extendedGray
         return sqrt(r*r*0.241 + g*g*0.691 + b*b*0.068)
     }
 
