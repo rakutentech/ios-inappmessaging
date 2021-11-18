@@ -261,6 +261,8 @@ $ fc-scan customfont-medium.otf --format "%{postscriptname}\n"
 AdventPro-Medium
 ```
 
+Add the two fonts to your Xcode target.
+
 In your `Info.plist` configuration, set the PostScript names under `InAppMessagingCustomFontNameRegularWeight` and `InAppMessagingCustomFontNameMediumWeight` along with the file names of both fonts under `UIAppFonts`.
 
 ```xml
