@@ -116,7 +116,7 @@ internal class SlideUpView: UIView, SlideUpViewType {
 
         bodyMessageLabel.text = message
         bodyMessageLabel.textColor = color
-        bodyMessageLabel.font = .mPlus1RRegular(ofSize: UIConstants.bodyMessageLabelFontSize) ?? .systemFont(ofSize: UIConstants.bodyMessageLabelFontSize)
+        bodyMessageLabel.font = .iamRegular(ofSize: UIConstants.bodyMessageLabelFontSize)
         bodyMessageLabel.setLineSpacing(lineSpacing: 3.0)
         bodyMessageLabel.numberOfLines = 0
         bodyMessageLabel.lineBreakMode = .byWordWrapping
