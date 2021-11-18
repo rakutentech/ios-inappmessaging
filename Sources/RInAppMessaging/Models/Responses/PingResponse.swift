@@ -1,4 +1,4 @@
-import struct Foundation.Date
+import Foundation
 
 internal struct PingResponse: Decodable {
     private enum CodingKeys: String, CodingKey {
@@ -12,6 +12,34 @@ internal struct PingResponse: Decodable {
     let data: [Campaign]
 }
 
+internal struct TooltipData: Decodable, Hashable {
+
+    enum Position: String, Decodable {
+        case topLeft = "top-left"
+        case topRight = "top-right"
+        case topCentre = "top-centre"
+        case bottomLeft = "bottom-left"
+        case bottomRight = "bottom-right"
+        case bottomCentre = "bottom-centre"
+        case left
+        case right
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case uiElementIdentifier = "UIElement"
+        case position
+        case backgroundColor = "color"
+        case redirectURL
+        case autoFadeSeconds = "auto-fade"
+    }
+
+    let uiElementIdentifier: String
+    let position: Position
+    let backgroundColor: String
+    let redirectURL: String?
+    let autoFadeSeconds: UInt?
+}
+
 internal struct Campaign: Codable, Hashable {
 
     private enum CodingKeys: String, CodingKey {
@@ -21,11 +49,15 @@ internal struct Campaign: Codable, Hashable {
     }
 
     let data: CampaignData
+    let tooltipData: TooltipData?
     private(set) var impressionsLeft: Int
     private(set) var isOptedOut = false
 
     var id: String {
-        return data.campaignId
+        data.campaignId
+    }
+    var isTooltip: Bool {
+        data.messagePayload.title.hasPrefix("[ToolTip]") && tooltipData != nil
     }
     var isOutdated: Bool {
         let endTimeMilliseconds = data.messagePayload.messageSettings.displaySettings.endTimeMilliseconds
@@ -43,6 +75,12 @@ internal struct Campaign: Codable, Hashable {
         impressionsLeft = (try? container.decode(Int.self, forKey: .impressionsLeft)) ?? decodedData.maxImpressions
         isOptedOut = (try? container.decode(Bool.self, forKey: .isOptedOut)) ?? false
         self.data = decodedData
+
+        if let jsonData = decodedData.messagePayload.messageBody?.data(using: .utf8) {
+            tooltipData = try? JSONDecoder().decode(TooltipData.self, from: jsonData)
+        } else {
+            tooltipData = nil
+        }
     }
 
     func encode(to encoder: Encoder) throws {
@@ -55,6 +93,7 @@ internal struct Campaign: Codable, Hashable {
     init(data: CampaignData) {
         self.data = data
         impressionsLeft = data.maxImpressions
+        tooltipData = nil
     }
 
     static func == (lhs: Campaign, rhs: Campaign) -> Bool {

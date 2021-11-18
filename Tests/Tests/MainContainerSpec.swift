@@ -39,7 +39,8 @@ class MainContainerSpec: QuickSpec {
                     dependencyManager.resolve(type: SlideUpViewPresenterType.self),
                     dependencyManager.resolve(type: CampaignsListManagerType.self),
                     dependencyManager.resolve(type: CampaignTriggerAgentType.self),
-                    dependencyManager.resolve(type: UserDataCacheable.self)
+                    dependencyManager.resolve(type: UserDataCacheable.self),
+                    dependencyManager.resolve(type: ViewListenerType.self)
                 ]
                 expect(instances).to(allPass({ $0 != nil }))
                 // this test will fail if there are any cycle references

@@ -45,7 +45,8 @@ internal enum MainContainerFactory {
             }),
             ContainerElement(type: CampaignRepositoryType.self, factory: {
                 CampaignRepository(userDataCache: manager.resolve(type: UserDataCacheable.self)!,
-                                   accountRepository: manager.resolve(type: AccountRepositoryType.self)!)
+                                   accountRepository: manager.resolve(type: AccountRepositoryType.self)!,
+                                   viewListener: manager.resolve(type: ViewListenerType.self)!)
             }),
             ContainerElement(type: EventMatcherType.self, factory: {
                 EventMatcher(campaignRepository: manager.resolve(type: CampaignRepositoryType.self)!)
@@ -69,7 +70,7 @@ internal enum MainContainerFactory {
                     configurationRepository: manager.resolve(type: ConfigurationRepositoryType.self)!)
             }),
             ContainerElement(type: RouterType.self, factory: {
-                Router(dependencyManager: manager)
+                Router(dependencyManager: manager, viewListener: manager.resolve(type: ViewListenerType.self)!)
             }),
             ContainerElement(type: Randomizer.self, factory: {
                 Randomizer()
@@ -91,6 +92,14 @@ internal enum MainContainerFactory {
                 CampaignsListManager(campaignRepository: manager.resolve(type: CampaignRepositoryType.self)!,
                                      campaignTriggerAgent: manager.resolve(type: CampaignTriggerAgentType.self)!,
                                      messageMixerService: manager.resolve(type: MessageMixerServiceType.self)!)
+            }),
+            ContainerElement(type: TooltipDispatcherType.self, factory: {
+                TooltipDispatcher(router: manager.resolve(type: RouterType.self)!,
+                                  campaignRepository: manager.resolve(type: CampaignRepositoryType.self)!,
+                                  viewListener: manager.resolve(type: ViewListenerType.self)!)
+            }),
+            ContainerElement(type: ViewListenerType.self, factory: {
+                ViewListener.instance
             })]
 
         // transient containers
