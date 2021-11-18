@@ -37,9 +37,9 @@ class CustomAttributeSpec: QuickSpec {
 
             context("when accessing value") {
 
-                it("shouldn't modify string value (not lowercased)") {
+                it("should return lowercased string value") {
                     let att = CustomAttribute(withKeyName: "test", withStringValue: "TeSt4")
-                    expect(att.value as? String) == "TeSt4"
+                    expect(att.value as? String) == "test4"
                 }
             }
 
