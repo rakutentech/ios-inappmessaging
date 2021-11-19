@@ -251,9 +251,9 @@ Campaign impressions (displays) are counted locally for each user. Meaning that 
 
 ## (Optional) How enable custom fonts in your Campaigns
 
-The SDK will optionally use custom fonts in your Campaigns if your app has them pre-registered. Specify 2 fonts in either `ttf` or `otf` format: one medium-weight for the text body and one regular-weight for the buttons. Both fonts are recommended to be of the same font family for a more consistent user experience.
+The SDK will optionally use custom fonts in your Campaigns if your app has them pre-registered. Specify one for the text body/headers and one for the buttons in either `ttf` or `otf` format. Fallsback to the system font if unset.
 
-Add the two font files to your Xcode target.
+First add the two font files to your Xcode target.
 
 Get the "PostScript name" of your fonts by:
 
@@ -263,12 +263,12 @@ $ fc-scan customfont-medium.otf --format "%{postscriptname}\n"
 AdventPro-Medium
 ```
 
-In your `Info.plist` configuration, set the PostScript names under `InAppMessagingCustomFontNameRegularWeight` and `InAppMessagingCustomFontNameMediumWeight` along with the file names of both fonts under `UIAppFonts`.
+In your `Info.plist` configuration, set the PostScript names under `InAppMessagingCustomFontNameText` and `InAppMessagingCustomFontNameButton` along with the file names of both fonts under `UIAppFonts`.
 
 ```xml
-<key>InAppMessagingCustomFontNameRegularWeight</key>
+<key>InAppMessagingCustomFontNameText</key>
 <string>AdventPro-Regular</string>
-<key>InAppMessagingCustomFontNameMediumWeight</key>
+<key>InAppMessagingCustomFontNameButton</key>
 <string>AdventPro-Medium</string>
 
 <key>UIAppFonts</key>

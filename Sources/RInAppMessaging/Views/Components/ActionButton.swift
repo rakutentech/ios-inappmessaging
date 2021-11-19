@@ -32,7 +32,7 @@ internal class ActionButton: UIButton {
 
     func setup(viewModel: ActionButtonViewModel) {
         textLabel.text = viewModel.text
-        textLabel.font = .iamMedium(ofSize: Constants.fontSize)
+        textLabel.font = .iamButton(ofSize: Constants.fontSize)
         textLabel.textColor = viewModel.textColor
         textLabel.numberOfLines = 2
         textLabel.lineBreakMode = .byTruncatingTail

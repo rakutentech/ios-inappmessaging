@@ -283,7 +283,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         bodyLabel.text = bodyMessage
         bodyLabel.textColor = viewModel.messageBodyColor
         bodyLabel.setLineSpacing(lineSpacing: 3.0)
-        bodyLabel.font = .iamRegular(ofSize: uiConstants.bodyMessageFontSize)
+        bodyLabel.font = .iamText(ofSize: uiConstants.bodyMessageFontSize)
         bodyLabel.textAlignment = .left
         bodyLabel.lineBreakMode = .byWordWrapping
         bodyLabel.numberOfLines = 0
@@ -296,7 +296,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         headerLabel.textAlignment = .center
         headerLabel.lineBreakMode = .byWordWrapping
         headerLabel.numberOfLines = 0
-        headerLabel.font = .iamRegular(ofSize: uiConstants.headerMessageFontSize)
+        headerLabel.font = .iamText(ofSize: uiConstants.headerMessageFontSize)
     }
 
     func addButtons(_ buttons: [(ActionButton, viewModel: ActionButtonViewModel)]) {
