@@ -88,8 +88,8 @@ class SerializationSpec: QuickSpec {
                     expect(trigger.attributes[0].name) == "aname1"
                 }
 
-                it("shouldn't have lowercased trigger value") {
-                    expect(trigger.attributes[0].value) == "VaLUe4"
+                it("should have lowercased trigger value") {
+                    expect(trigger.attributes[0].value) == "value4"
                 }
             }
         }

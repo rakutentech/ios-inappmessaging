@@ -17,7 +17,7 @@ public class CustomAttribute: NSObject {
     @objc
     public init(withKeyName name: String, withStringValue value: String) {
         self.name = name.lowercased()
-        self.value = value
+        self.value = value.lowercased()
         self.type = .string
     }
 
