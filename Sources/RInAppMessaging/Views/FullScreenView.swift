@@ -29,22 +29,22 @@ internal class FullScreenView: FullView {
     }
 
     override func setup(viewModel: FullViewModel) {
-         super.setup(viewModel: viewModel)
+        super.setup(viewModel: viewModel)
 
-         addSubview(statusBarBackgroundView)
-         NSLayoutConstraint.activate([
-             statusBarBackgroundView.topAnchor.constraint(equalTo: topAnchor),
-             statusBarBackgroundView.leftAnchor.constraint(equalTo: contentView.leftAnchor),
-             statusBarBackgroundView.rightAnchor.constraint(equalTo: contentView.rightAnchor),
-             statusBarBackgroundViewHeightConstraint
-         ])
-     }
+        addSubview(statusBarBackgroundView)
+        NSLayoutConstraint.activate([
+            statusBarBackgroundView.topAnchor.constraint(equalTo: topAnchor),
+            statusBarBackgroundView.leftAnchor.constraint(equalTo: contentView.leftAnchor),
+            statusBarBackgroundView.rightAnchor.constraint(equalTo: contentView.rightAnchor),
+            statusBarBackgroundViewHeightConstraint
+        ])
+    }
 
-     override func layoutSubviews() {
-         super.layoutSubviews()
+    override func layoutSubviews() {
+        super.layoutSubviews()
 
-         statusBarBackgroundView.backgroundColor = .statusBarOverlayColor
-         // statusBarFrame.height is 0 when status bar is hidden
-         statusBarBackgroundViewHeightConstraint.constant = UIApplication.shared.statusBarFrame.height
-     }
+        statusBarBackgroundView.backgroundColor = .statusBarOverlayColor
+        // statusBarFrame.height is 0 when status bar is hidden
+        statusBarBackgroundViewHeightConstraint.constant = UIApplication.shared.statusBarFrame.height
+    }
 }
