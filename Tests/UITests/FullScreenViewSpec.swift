@@ -162,7 +162,7 @@ class FullScreenViewSpec: QuickSpec {
                 }
 
                 it("should not contain image") {
-                    expect(iamView.images.count).to(equal(0))
+                    expect(iamView.images["imageView"].exists).to(beFalse())
                 }
 
                 it("should contain text elements") {

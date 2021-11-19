@@ -26,6 +26,8 @@ internal class ExitButton: UIControl {
     }
 
     private func commonInit() {
+        accessibilityIdentifier = "exitButton"
+        accessibilityTraits = .button
         exitImageView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(exitImageView)
         exitImageView.constraintsFilling(parent: self, activate: true)
