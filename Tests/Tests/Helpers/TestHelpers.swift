@@ -422,7 +422,7 @@ struct TestHelpers {
                                             )])
         }()
 
-        static let caseSensitiveAttributeValue: PingResponse = {
+        static let caseInsensitiveAttributeValue: PingResponse = {
             return withGeneratedCampaigns(count: 1,
                                           test: false,
                                           delay: 0,

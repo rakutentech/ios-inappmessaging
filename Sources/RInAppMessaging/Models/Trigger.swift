@@ -29,14 +29,14 @@ internal struct TriggerAttribute: Codable, Equatable {
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         name = try container.decode(String.self, forKey: CodingKeys.name).lowercased()
-        value = try container.decode(String.self, forKey: CodingKeys.value)
+        value = try container.decode(String.self, forKey: CodingKeys.value).lowercased()
         type = try container.decode(AttributeType.self, forKey: CodingKeys.type)
         `operator` = try container.decode(AttributeOperator.self, forKey: CodingKeys.operator)
     }
 
     init(name: String, value: String, type: AttributeType, `operator`: AttributeOperator) {
         self.name = name.lowercased()
-        self.value = value
+        self.value = value.lowercased()
         self.type = type
         self.operator = `operator`
     }
