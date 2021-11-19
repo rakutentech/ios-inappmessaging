@@ -8,13 +8,13 @@ internal class FullScreenView: FullView {
     }
 
     private lazy var statusBarBackgroundView: UIView = {
-         let backgroundView = UIView()
-         backgroundView.translatesAutoresizingMaskIntoConstraints = false
-         backgroundView.backgroundColor = .statusBarOverlayColor
-         return backgroundView
-     }()
-     private lazy var statusBarBackgroundViewHeightConstraint = statusBarBackgroundView.heightAnchor
-         .constraint(equalToConstant: UIApplication.shared.statusBarFrame.height)
+        let backgroundView = UIView()
+        backgroundView.translatesAutoresizingMaskIntoConstraints = false
+        backgroundView.backgroundColor = .statusBarOverlayColor
+        return backgroundView
+    }()
+    private lazy var statusBarBackgroundViewHeightConstraint = statusBarBackgroundView.heightAnchor
+        .constraint(equalToConstant: UIApplication.shared.statusBarFrame.height)
 
     override var mode: Mode {
         return .fullScreen
