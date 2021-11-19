@@ -57,7 +57,6 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
     @IBOutlet private weak var contentScrollView: UIScrollView!
     @IBOutlet private(set) weak var exitButton: ExitButton! {
         didSet {
-            exitButton.invertedColors = hasImage
             exitButton.addTarget(self, action: #selector(onExitButtonClick), for: .touchUpInside)
         }
     }

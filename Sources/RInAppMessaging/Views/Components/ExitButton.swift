@@ -3,11 +3,17 @@ import UIKit
 /// The 'X' button used to close campaign's message.
 internal class ExitButton: UIControl {
 
-    private var exitImageView = UIImageView()
+    private lazy var exitImageView: UIImageView = {
+        let exitImageView = UIImageView(image: coordinatedExitIcon)
+        exitImageView.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(exitImageView)
+        exitImageView.constraintsFilling(parent: self, activate: true)
+        return exitImageView
+    }()
 
     var invertedColors = false {
         didSet {
-            updateColors()
+            _ = exitImageView
         }
     }
 
@@ -28,16 +34,13 @@ internal class ExitButton: UIControl {
     private func commonInit() {
         accessibilityIdentifier = "exitButton"
         accessibilityTraits = .button
-        exitImageView.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(exitImageView)
-        exitImageView.constraintsFilling(parent: self, activate: true)
     }
 
     /// If invertedColors, show dark icon
-    private func updateColors() {
+    private var coordinatedExitIcon: UIImage {
         let insetValue: CGFloat = -14
         let insets = UIEdgeInsets(top: insetValue, left: insetValue, bottom: insetValue, right: insetValue)
         let imageName = invertedColors ? "Exit-Dark" : "Exit-Light"
-        exitImageView.image = UIImage(named: imageName, in: .sdkAssets, compatibleWith: nil)!.withAlignmentRectInsets(insets)
+        return UIImage(named: imageName, in: .sdkAssets, compatibleWith: nil)!.withAlignmentRectInsets(insets)
     }
 }
