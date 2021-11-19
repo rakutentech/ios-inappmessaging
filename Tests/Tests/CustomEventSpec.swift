@@ -482,8 +482,8 @@ class CustomEventsSpec: QuickSpec {
                 expect(validatorHandler.validatedElements).to(haveCount(1))
             }
 
-            it("should not have a campaign because of case-sensitive attribute value mismatch") {
-                let mockResponse = TestHelpers.MockResponse.caseSensitiveAttributeValue
+            it("should accept a campaign that is matched even with a case-insensitive attribute value") {
+                let mockResponse = TestHelpers.MockResponse.caseInsensitiveAttributeValue
                 campaignRepository.syncWith(list: mockResponse.data, timestampMilliseconds: 0)
 
                 let customEvent = CustomEvent(
@@ -495,7 +495,7 @@ class CustomEventsSpec: QuickSpec {
 
                 eventMatcher.matchAndStore(event: customEvent)
                 campaignsValidator.validate(validatedCampaignHandler: validatorHandler.closure)
-                expect(validatorHandler.validatedElements).to(beEmpty())
+                expect(validatorHandler.validatedElements).to(haveCount(1))
             }
         }
     }

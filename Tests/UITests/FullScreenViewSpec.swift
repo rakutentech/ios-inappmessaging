@@ -53,13 +53,15 @@ class FullScreenViewSpec: QuickSpec {
                 }
 
                 it("should close the campaign") {
+                    expect(iamView.buttons["exitButton"].exists).to(beTrue())
                     iamView.buttons["exitButton"].tap()
                     expect(iamView.exists).to(beFalse())
                 }
 
                 it("should have 44pt touch area") {
                     let exitButtonCenter = iamView.buttons["exitButton"].coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
-                    let upperLeftCorner = exitButtonCenter.withOffset(CGVector(dx: -22, dy: -22))
+                    let upperLeftCorner = exitButtonCenter.withOffset(
+                        CGVector(dx: -21.5, dy: -21.5)) // reduced by .5 for cases when exit button has x.5 x/y position
                     upperLeftCorner.tap()
                     expect(iamView.exists).to(beFalse())
 
