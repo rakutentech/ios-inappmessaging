@@ -18,9 +18,9 @@ internal extension UIColor {
         return sqrt(r*r*0.241 + g*g*0.691 + b*b*0.068)
     }
 
-    /// Returns true if colour is perceived to be bright for contasting colours over
+    /// Returns true if colour is perceived to be bright
+    /// Can be used for determining contrasting text colour on backgrounds for high visibility
     var isBright: Bool {
-        // https://www.nbdtech.com/Blog/archive/2008/04/27/Calculating-the-Perceived-Brightness-of-a-Color.aspx
         let threshold: CGFloat = 130/255
         return brightness > threshold
     }
