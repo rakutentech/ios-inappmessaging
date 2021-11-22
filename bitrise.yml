@@ -162,15 +162,14 @@ workflows:
             #!/usr/bin/env bash
             set -ex
             xcrun xcresulttool merge artifacts/unit-tests/RInAppMessaging-Example.xcresult artifacts/ui-tests/UITests.xcresult --output-path $BITRISE_DEPLOY_DIR/merged.xcresult
-    - deploy-to-bitrise-io:
-        inputs:
-        - is_enable_public_page: 'false'
     - custom-test-results-export:
         inputs:
         - base_path: "$BITRISE_DEPLOY_DIR/merged.xcresult"
         - search_pattern: "*"
         - test_name: Tests
-
+    - deploy-to-bitrise-io:
+        inputs:
+        - is_enable_public_page: 'false'
 app:
   envs:
   - opts:
