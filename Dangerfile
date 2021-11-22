@@ -4,6 +4,7 @@ warn("Big PR") if git.lines_of_code > 1000
 xcov.report(
   workspace: 'RInAppMessaging.xcworkspace',
   scheme: 'RInAppMessaging-Example',
+  xccov_file_direct_path: 'artifacts/unit-tests/RInAppMessaging-Example.xcresult',
   output_directory: 'artifacts/unit-tests/coverage',
   json_report: true,
   include_targets: 'RInAppMessaging.framework',
