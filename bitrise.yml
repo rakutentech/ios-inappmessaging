@@ -156,17 +156,21 @@ workflows:
 
             bash codecov -J '^RInAppMessaging$' -X gcov
     - script@1:
-        title: Merge/zip xcresults for Bitrise Test Reports
+        title: Merge xcresults for Bitrise Test Reports
         inputs:
         - content: |-
             #!/usr/bin/env bash
             set -ex
-            xcrun xcresulttool merge artifacts/unit-tests/RInAppMessaging-Example.xcresult artifacts/ui-tests/UITests.xcresult --output-path artifacts/merged.xcresult
-            cd artifacts
-            zip -r $BITRISE_DEPLOY_DIR/test_report.zip merged.xcresult
+            xcrun xcresulttool merge artifacts/unit-tests/RInAppMessaging-Example.xcresult artifacts/ui-tests/UITests.xcresult --output-path $BITRISE_DEPLOY_DIR/merged.xcresult
     - deploy-to-bitrise-io:
         inputs:
         - is_enable_public_page: 'false'
+    - custom-test-results-export:
+        inputs:
+        - base_path: "$BITRISE_DEPLOY_DIR/merged.xcresult"
+        - search_pattern: "*"
+        - test_name: Tests
+
 app:
   envs:
   - opts:
