@@ -155,6 +155,17 @@ workflows:
             done
 
             bash codecov -J '^RInAppMessaging$' -X gcov
+    - script@1:
+        title: Zip xcresults for Bitrise deploy
+        inputs:
+        - content: |-
+            #!/usr/bin/env bash
+            set -ex
+
+            zip -r $BITRISE_DEPLOY_DIR/test_report.zip artifacts/unit-tests/RInAppMessaging-Example.xcresult artifacts/ui-tests/UITests.xcresult
+    - deploy-to-bitrise-io:
+        inputs:
+        - is_enable_public_page: 'false'
 app:
   envs:
   - opts:
