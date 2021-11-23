@@ -12,14 +12,14 @@ on:
 
 jobs:
   unit-test:
-    runs-on: macOS-latest
+    runs-on: macos-11
     steps:
     - uses: actions/checkout@v2
     - name: Test
       run: |
         bundle install
         bundle exec fastlane ios ci
-    - uses: kishikawakatsumi/xcresulttool
+    - uses: kishikawakatsumi/xcresulttool@v1
       with:
         path: |
           artifacts/unit-tests/RInAppMessaging-Example.xcresult
