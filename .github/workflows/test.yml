@@ -2,12 +2,6 @@ name: Build and Test
 
 on:
   push:
-    paths:
-      - 'RInAppMessaging.xcodeproj/**'
-      - 'RInAppMessaging/**'
-      - 'IntegrationTests/**'
-      - 'Tests/**'
-      - 'UITests/**'
   pull_request:
 
 jobs:
