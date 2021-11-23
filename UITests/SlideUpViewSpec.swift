@@ -93,7 +93,7 @@ class SlideUpViewSpec: QuickSpec {
 
                 it("should close campaign after tapping the content") {
                     iamView.tap()
-                    expect(iamView.exists).to(beFalse())
+                    expect(iamView.exists).to(beTrue())
                 }
 
                 it("should trigger another campaign after tapping the content") {
