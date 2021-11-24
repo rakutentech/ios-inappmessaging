@@ -15,7 +15,8 @@ internal extension UIColor {
     var brightness: CGFloat {
         var (r,g,b) = (CGFloat(0), CGFloat(0), CGFloat(0))
         getRed(&r, green: &g, blue: &b, alpha: nil) // works with RGB, HSB, extendedGray
-        return sqrt(r*r*0.241 + g*g*0.691 + b*b*0.068)
+        let (rHSPFactor, gHSPFactor, bHSPFactor) = (0.241, 0.691, 0.068)
+        return sqrt(r*r*rHSPFactor + g*g*gHSPFactor + b*b*bHSPFactor)
     }
 
     /// Returns true if colour is perceived to be bright
