@@ -67,6 +67,8 @@
 		45DA01AD23D5831900A27CC6 /* ConfigurationManagerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA01AC23D5831900A27CC6 /* ConfigurationManagerSpec.swift */; };
 		45EA720525B71FA2001B2049 /* UIApplicationExtensionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45EA720425B71FA2001B2049 /* UIApplicationExtensionSpec.swift */; };
 		45EA720D25B72002001B2049 /* UIViewExtensionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45EA720C25B72002001B2049 /* UIViewExtensionSpec.swift */; };
+		4B1A88A7274F3CFB002724B6 /* blank-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 4B1A88A6274F3CFB002724B6 /* blank-Bold.otf */; };
+		4BBE7EAF274F1A6A0039D2BF /* UIFontExtensionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BBE7EAE274F1A6A0039D2BF /* UIFontExtensionSpec.swift */; };
 		607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD51AFB9204008FA782 /* AppDelegate.swift */; };
 		607FACD81AFB9204008FA782 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD71AFB9204008FA782 /* ViewController.swift */; };
 		607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 607FACD91AFB9204008FA782 /* Main.storyboard */; };
@@ -172,6 +174,8 @@
 		45DA01AC23D5831900A27CC6 /* ConfigurationManagerSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationManagerSpec.swift; sourceTree = "<group>"; };
 		45EA720425B71FA2001B2049 /* UIApplicationExtensionSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIApplicationExtensionSpec.swift; sourceTree = "<group>"; };
 		45EA720C25B72002001B2049 /* UIViewExtensionSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewExtensionSpec.swift; sourceTree = "<group>"; };
+		4B1A88A6274F3CFB002724B6 /* blank-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "blank-Bold.otf"; sourceTree = "<group>"; };
+		4BBE7EAE274F1A6A0039D2BF /* UIFontExtensionSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIFontExtensionSpec.swift; sourceTree = "<group>"; };
 		607FACD01AFB9204008FA782 /* RInAppMessaging_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RInAppMessaging_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACD41AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		607FACD51AFB9204008FA782 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -354,6 +358,7 @@
 		607FACD31AFB9204008FA782 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				4B1A88A6274F3CFB002724B6 /* blank-Bold.otf */,
 				6DA608F3248603BA00A8260D /* Example-Debug.xcconfig */,
 				6DA608F424860B7F00A8260D /* Example-Release.xcconfig */,
 				4592B4C42702642F004FF27B /* Example-UITests.xcconfig */,
@@ -399,6 +404,7 @@
 				45ADA541247D206B00A9E2A3 /* RouterSpec.swift */,
 				4534947123C6ABF700189A81 /* SerializationSpec.swift */,
 				45EA720425B71FA2001B2049 /* UIApplicationExtensionSpec.swift */,
+				4BBE7EAE274F1A6A0039D2BF /* UIFontExtensionSpec.swift */,
 				45EA720C25B72002001B2049 /* UIViewExtensionSpec.swift */,
 				4538BCF5262AE8FA009952BE /* UserDataCacheSpec.swift */,
 				45D4DA4E240F5597009B9B37 /* ViewPresenterSpec.swift */,
@@ -601,6 +607,7 @@
 				607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */,
 				607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */,
 				607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */,
+				4B1A88A7274F3CFB002724B6 /* blank-Bold.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -695,6 +702,7 @@
 				45357AF7245AD49E007D8FDC /* HttpRequestableSpec.swift in Sources */,
 				459B227C245289F300D218CE /* ConfigurationServiceSpec.swift in Sources */,
 				45DA01AD23D5831900A27CC6 /* ConfigurationManagerSpec.swift in Sources */,
+				4BBE7EAF274F1A6A0039D2BF /* UIFontExtensionSpec.swift in Sources */,
 				456FE1ED2429C4D200304872 /* ViewSpec.swift in Sources */,
 				4595F4F4262DE12C0001F30B /* KeyHasherSpec.swift in Sources */,
 				4534947223C6ABF700189A81 /* SerializationSpec.swift in Sources */,
