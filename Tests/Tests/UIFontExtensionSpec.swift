@@ -18,7 +18,7 @@ class UIFontExtensionsSpec: QuickSpec {
                 /// - Precondition: `blank-Bold.otf` must be added to test app target
                 /// - Precondition: `blank-Bold.otf` must have a PS name of "blank-Bold"
                 func registerFont() {
-                    guard let path = Bundle.main.url(forResource: "blank-Bold", withExtension: "otf") else {
+                    guard let path = Bundle.main.url(forResource: "dummy-font", withExtension: "otf") else {
                         fatalError("font not in test app bundle")
                     }
                     if !CTFontManagerRegisterFontsForURL(path as CFURL, .none, nil) {
