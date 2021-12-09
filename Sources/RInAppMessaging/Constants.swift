@@ -1,7 +1,8 @@
-import typealias Foundation.TimeInterval
+//import typealias Foundation.TimeInterval
+import Foundation
 
 public enum Tama {
-    public static let v = Bundle(for: FullView.self).shortVersion
+    public static let v = Bundle(for: Self.self).shortVersion
 }
 
 internal enum Constants {
