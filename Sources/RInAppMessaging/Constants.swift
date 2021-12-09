@@ -4,12 +4,12 @@ import UIKit
 public class Tama2 {
     public enum Tama {
         public static var v = {
-//            #if SWIFT_PACKAGE
-//            Bundle(for: Self.self).shortVersion
-//            #else
+            #if SWIFT_PACKAGE
+            Bundle.module.object(forInfoDictionaryKey: "CFBundleVersion")
+            #else
 //            Bundle(for: Self.self).value(for: <#T##String#>)
             Bundle(for: Self.self).object(forInfoDictionaryKey: "CFBundleVersion")
-//            #endif
+            #endif
         }()
         
     }
