@@ -5,7 +5,7 @@ public class Tama2 {
     public enum Tama {
         public static var v = {
             #if SWIFT_PACKAGE
-            module.shortVersion
+            Bundle.module.shortVersion
             #else
             Bundle(for: Self.self).shortVersion
             #endif
