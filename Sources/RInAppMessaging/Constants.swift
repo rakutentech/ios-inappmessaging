@@ -1,7 +1,7 @@
 import typealias Foundation.TimeInterval
 
-public struct Tama {
-    public let v = Bundle(for: Self.self).shortVersion
+public enum Tama {
+    public static let v = Bundle(for: Self.self).shortVersion
 }
 
 internal enum Constants {
