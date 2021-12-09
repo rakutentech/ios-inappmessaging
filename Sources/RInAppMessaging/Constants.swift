@@ -1,9 +1,14 @@
 //import typealias Foundation.TimeInterval
-import Foundation
+import UIKit
 
-public enum Tama {
-    public static let v = Bundle(for: Self.self).shortVersion
+public class Tama2 {
+    public enum Tama {
+        public static var v = {
+            Bundle(for: Self.self).shortVersion
+        }()
+    }
 }
+
 
 internal enum Constants {
 
