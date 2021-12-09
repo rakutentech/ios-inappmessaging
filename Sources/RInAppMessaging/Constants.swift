@@ -1,5 +1,9 @@
 import typealias Foundation.TimeInterval
 
+public struct Tama {
+    public let v = Bundle(for: Self.self).shortVersion
+}
+
 internal enum Constants {
 
     enum CampaignMessage {
