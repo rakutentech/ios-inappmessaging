@@ -5,9 +5,10 @@ public class Tama2 {
     public enum Tama {
         public static var v = {
             #if SWIFT_PACKAGE
-            Bundle.module.bundleURL
-            #else
             Bundle(for: Self.self).shortVersion
+            #else
+//            Bundle(for: Self.self).value(for: <#T##String#>)
+            Bundle(for: Self.self).object(forInfoDictionaryKey: "CFBundleVersion")
             #endif
         }()
         
