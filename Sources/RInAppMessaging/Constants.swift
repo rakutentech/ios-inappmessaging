@@ -3,7 +3,7 @@ import UIKit
 
 public class Tama2 {
     public enum Tama {
-        public static bundle: Bundle {
+        public static var bundle: Bundle {
             #if SWIFT_PACKAGE
             Bundle.module
             #else
