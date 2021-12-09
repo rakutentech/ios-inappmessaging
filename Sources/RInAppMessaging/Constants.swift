@@ -3,6 +3,13 @@ import UIKit
 
 public class Tama2 {
     public enum Tama {
+        public static bundle: Bundle {
+            #if SWIFT_PACKAGE
+            Bundle.module
+            #else
+            Bundle(for: Self.self)
+            #endif
+        }
         public static var v = {
             #if SWIFT_PACKAGE
             Bundle.module.object(forInfoDictionaryKey: "CFBundleVersion")
