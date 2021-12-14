@@ -12,15 +12,18 @@ class ConfigurationManagerSpec: QuickSpec {
             var configurationService: ConfigurationServiceMock!
             var configurationRepository: ConfigurationRepository!
             var configurationManager: ConfigurationManager!
+            var errorDelegate: ErrorDelegateMock!
 
             beforeEach {
                 reachability = ReachabilityMock()
                 configurationService = ConfigurationServiceMock()
                 configurationRepository = ConfigurationRepository()
+                errorDelegate = ErrorDelegateMock()
                 configurationManager = ConfigurationManager(reachability: reachability,
                                                             configurationService: configurationService,
                                                             configurationRepository: configurationRepository,
                                                             resumeQueue: DispatchQueue(label: "iam.test.request"))
+                configurationManager.errorDelegate = errorDelegate
             }
 
             context("fetchAndSaveConfigData") {
@@ -102,6 +105,12 @@ class ConfigurationManagerSpec: QuickSpec {
                         expect(configurationManager.scheduledTask).toEventuallyNot(beNil())
                     }
 
+                    it("should not report .tooManyRequestsError error") {
+                        configurationService.mockedError = .tooManyRequestsError
+                        configurationManager.fetchAndSaveConfigData(completion: { _ in })
+                        expect(errorDelegate.wasErrorReceived).to(beFalse())
+                    }
+
                     it("should not retry for .missingOrInvalidSubscriptionId error") {
                         configurationService.mockedError = .missingOrInvalidSubscriptionId
                         configurationManager.fetchAndSaveConfigData(completion: { _ in })
@@ -118,6 +127,12 @@ class ConfigurationManagerSpec: QuickSpec {
                         }
                     }
 
+                    it("should report .missingOrInvalidSubscriptionId error") {
+                        configurationService.mockedError = .missingOrInvalidSubscriptionId
+                        configurationManager.fetchAndSaveConfigData(completion: { _ in })
+                        expect(errorDelegate.wasErrorReceived).to(beTrue())
+                    }
+
                     it("should not retry for .unknownSubscriptionId error") {
                         configurationService.mockedError = .unknownSubscriptionId
                         configurationManager.fetchAndSaveConfigData(completion: { _ in })
@@ -132,6 +147,80 @@ class ConfigurationManagerSpec: QuickSpec {
                                 done()
                             })
                         }
+                    }
+
+                    it("should report .unknownSubscriptionId error") {
+                        configurationService.mockedError = .unknownSubscriptionId
+                        configurationManager.fetchAndSaveConfigData(completion: { _ in })
+                        expect(errorDelegate.wasErrorReceived).to(beTrue())
+                    }
+
+                    it("should not retry for .invalidRequestError error") {
+                        configurationService.mockedError = .invalidRequestError(422)
+                        configurationManager.fetchAndSaveConfigData(completion: { _ in })
+                        expect(configurationManager.scheduledTask).toAfterTimeout(beNil())
+                    }
+
+                    it("should return disable response for .invalidRequestError error") {
+                        configurationService.mockedError = .invalidRequestError(422)
+                        waitUntil { done in
+                            configurationManager.fetchAndSaveConfigData(completion: { config in
+                                expect(config.rolloutPercentage).to(equal(0))
+                                done()
+                            })
+                        }
+                    }
+
+                    it("should report .invalidRequestError error") {
+                        configurationService.mockedError = .invalidRequestError(422)
+                        configurationManager.fetchAndSaveConfigData(completion: { _ in })
+                        expect(errorDelegate.wasErrorReceived).to(beTrue())
+                    }
+
+                    it("should retry for .internalServerError error") {
+                        configurationService.mockedError = .internalServerError(500)
+                        configurationManager.fetchAndSaveConfigData(completion: { _ in })
+                        expect(configurationManager.scheduledTask).toEventuallyNot(beNil())
+                    }
+
+                    it("should report .invalidRequestError error") {
+                        configurationService.mockedError = .internalServerError(500)
+                        configurationManager.fetchAndSaveConfigData(completion: { _ in })
+                        expect(errorDelegate.wasErrorReceived).to(beTrue())
+                    }
+
+                    it("should report .jsonDecodingError error") {
+                        configurationService.mockedError = .jsonDecodingError(NSError.emptyError)
+                        configurationManager.fetchAndSaveConfigData(completion: { _ in })
+                        expect(errorDelegate.wasErrorReceived).to(beTrue())
+                    }
+
+                    it("should not retry for .jsonDecodingError error") {
+                        configurationService.mockedError = .jsonDecodingError(NSError.emptyError)
+                        configurationManager.fetchAndSaveConfigData(completion: { _ in })
+                        expect(configurationManager.scheduledTask).toAfterTimeout(beNil())
+                    }
+
+                    it("should return disable response for .jsonDecodingError error") {
+                        configurationService.mockedError = .jsonDecodingError(NSError.emptyError)
+                        waitUntil { done in
+                            configurationManager.fetchAndSaveConfigData(completion: { config in
+                                expect(config.rolloutPercentage).to(equal(0))
+                                done()
+                            })
+                        }
+                    }
+
+                    it("should retry for .requestError error") {
+                        configurationService.mockedError = .requestError(.unknown)
+                        configurationManager.fetchAndSaveConfigData(completion: { _ in })
+                        expect(configurationManager.scheduledTask).toEventuallyNot(beNil())
+                    }
+
+                    it("should report .requestError error") {
+                        configurationService.mockedError = .requestError(.unknown)
+                        configurationManager.fetchAndSaveConfigData(completion: { _ in })
+                        expect(errorDelegate.wasErrorReceived).to(beTrue())
                     }
                 }
             }

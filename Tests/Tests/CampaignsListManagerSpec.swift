@@ -64,16 +64,46 @@ class CampaignsListManagerSpec: QuickSpec {
                         expect(manager.scheduledTask).toEventuallyNot(beNil())
                     }
 
-                    it("will not report .requestError error") {
+                    it("will report .requestError error") {
                         messageMixerService.mockedError = .requestError(.unknown)
                         manager.refreshList()
-                        expect(errorDelegate.wasErrorReceived).to(beFalse())
+                        expect(errorDelegate.wasErrorReceived).to(beTrue())
                     }
 
                     it("will retry for .tooManyRequestsError error") {
                         messageMixerService.mockedError = .tooManyRequestsError
                         manager.refreshList()
                         expect(manager.scheduledTask).toEventuallyNot(beNil())
+                    }
+
+                    it("will not report .tooManyRequestsError error") {
+                        messageMixerService.mockedError = .tooManyRequestsError
+                        manager.refreshList()
+                        expect(errorDelegate.wasErrorReceived).to(beFalse())
+                    }
+
+                    it("will not retry for .invalidRequestError error") {
+                        messageMixerService.mockedError = .invalidRequestError(404)
+                        manager.refreshList()
+                        expect(manager.scheduledTask).toAfterTimeout(beNil())
+                    }
+
+                    it("will report .invalidRequestError error") {
+                        messageMixerService.mockedError = .invalidRequestError(404)
+                        manager.refreshList()
+                        expect(errorDelegate.wasErrorReceived).to(beTrue())
+                    }
+
+                    it("will retry for .internalServerError error") {
+                        messageMixerService.mockedError = .internalServerError(500)
+                        manager.refreshList()
+                        expect(manager.scheduledTask).toEventuallyNot(beNil())
+                    }
+
+                    it("will report .internalServerError error") {
+                        messageMixerService.mockedError = .internalServerError(500)
+                        manager.refreshList()
+                        expect(errorDelegate.wasErrorReceived).to(beTrue())
                     }
                 }
 
@@ -107,13 +137,5 @@ class CampaignsListManagerSpec: QuickSpec {
                 }
             }
         }
-    }
-}
-
-private class ErrorDelegateMock: ErrorDelegate {
-    private(set) var wasErrorReceived = false
-
-    func didReceiveError(sender: ErrorReportable, error: NSError) {
-        wasErrorReceived = true
     }
 }

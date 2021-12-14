@@ -184,6 +184,52 @@ class ConfigurationServiceSpec: QuickSpec {
                             }
                         }
                     }
+
+                    for code in [401, 403, 422] {
+                        it("will return ConfigurationServiceError containig .invalidRequestError with \(code) value") {
+                            httpSession.httpResponse = ConfigURLResponse(statusCode: code)
+
+                            waitUntil { done in
+                                requestQueue.async {
+                                    let result = service.getConfigData()
+                                    let error = result.getError()
+                                    expect(error).toNot(beNil())
+
+                                    guard case .invalidRequestError(let code) = error else {
+                                        fail("Unexpected error type \(String(describing: error)). Expected .invalidRequestError")
+                                        done()
+                                        return
+                                    }
+                                    expect(code).to(equal(code))
+                                    done()
+                                }
+                            }
+                        }
+                    }
+                }
+
+                context("and the status code equals to 5xx") {
+                    for code in [500, 501, 520] {
+                        it("will return ConfigurationServiceError containig .internalServerError with \(code) value") {
+                            httpSession.httpResponse = ConfigURLResponse(statusCode: code)
+
+                            waitUntil { done in
+                                requestQueue.async {
+                                    let result = service.getConfigData()
+                                    let error = result.getError()
+                                    expect(error).toNot(beNil())
+
+                                    guard case .internalServerError(let code) = error else {
+                                        fail("Unexpected error type \(String(describing: error)). Expected .internalServerError")
+                                        done()
+                                        return
+                                    }
+                                    expect(code).to(equal(code))
+                                    done()
+                                }
+                            }
+                        }
+                    }
                 }
             }
 

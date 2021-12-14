@@ -10,6 +10,8 @@ internal enum ConfigurationServiceError: Error {
     case tooManyRequestsError
     case missingOrInvalidSubscriptionId
     case unknownSubscriptionId
+    case invalidRequestError(Int)
+    case internalServerError(Int)
 }
 
 internal struct ConfigurationService: ConfigurationServiceType, HttpRequestable {
@@ -43,6 +45,10 @@ internal struct ConfigurationService: ConfigurationServiceType, HttpRequestable 
                 return .failure(.missingOrInvalidSubscriptionId)
             case .httpError(let statusCode, _, _) where statusCode == 404:
                 return .failure(.unknownSubscriptionId)
+            case .httpError(let statusCode, _, _) where 300..<500 ~= statusCode:
+                return .failure(.invalidRequestError(statusCode))
+            case .httpError(let statusCode, _, _) where statusCode >= 500:
+                return .failure(.internalServerError(statusCode))
             default:
                 return .failure(.requestError(requestError))
             }

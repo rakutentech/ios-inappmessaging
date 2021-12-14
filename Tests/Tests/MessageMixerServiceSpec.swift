@@ -124,11 +124,10 @@ class MessageMixerServiceSpec: QuickSpec {
             }
 
             context("when request fails") {
-                beforeEach {
-                    httpSession.responseError = NSError(domain: "config.error.test", code: 1, userInfo: nil)
-                }
 
-                it("will return ConfigurationServiceError containing .requestError") {
+                it("will return MessageMixerServiceError containing .requestError") {
+                    httpSession.responseError = NSError(domain: "config.error.test", code: 1, userInfo: nil)
+
                     waitUntil { done in
                         requestQueue.async {
                             let result = service.ping()
@@ -144,35 +143,83 @@ class MessageMixerServiceSpec: QuickSpec {
                         }
                     }
                 }
-            }
 
-            context("when request fails with a status code equals to 429") {
-                let originalHttpResponse: HTTPURLResponse? = httpSession?.httpResponse
+                context("and the status code equals to 429") {
+                    it("will return MessageMixerServiceError containig .tooManyRequestsError") {
+                        httpSession.httpResponse = HTTPURLResponse(url: URL(string: "https://ping.url")!,
+                                                                   statusCode: 429,
+                                                                   httpVersion: nil,
+                                                                   headerFields: nil)
 
-                it("will return ConfigurationServiceError containig .tooManyRequestsError") {
-                    httpSession.httpResponse = HTTPURLResponse(url: URL(string: "https://ping.url")!,
-                                                               statusCode: 429,
-                                                               httpVersion: nil,
-                                                               headerFields: nil)
+                        waitUntil { done in
+                            requestQueue.async {
+                                let result = service.ping()
+                                let error = result.getError()
+                                expect(error).toNot(beNil())
 
-                    waitUntil { done in
-                        requestQueue.async {
-                            let result = service.ping()
-                            let error = result.getError()
-                            expect(error).toNot(beNil())
-
-                            guard case .tooManyRequestsError = error else {
-                                fail("Unexpected error type \(String(describing: error)). Expected .tooManyRequestsError")
+                                guard case .tooManyRequestsError = error else {
+                                    fail("Unexpected error type \(String(describing: error)). Expected .tooManyRequestsError")
+                                    done()
+                                    return
+                                }
                                 done()
-                                return
                             }
-                            done()
                         }
                     }
                 }
 
-                afterEach {
-                    httpSession.httpResponse = originalHttpResponse
+                context("and the status code equals to 4xx") {
+                    for code in [400, 401, 422] {
+                        it("will return MessageMixerServiceError containig .invalidRequestError with \(code) value") {
+                            httpSession.httpResponse = HTTPURLResponse(url: URL(string: "https://ping.url")!,
+                                                                       statusCode: code,
+                                                                       httpVersion: nil,
+                                                                       headerFields: nil)
+
+                            waitUntil { done in
+                                requestQueue.async {
+                                    let result = service.ping()
+                                    let error = result.getError()
+                                    expect(error).toNot(beNil())
+
+                                    guard case .invalidRequestError(let code) = error else {
+                                        fail("Unexpected error type \(String(describing: error)). Expected .invalidRequestError")
+                                        done()
+                                        return
+                                    }
+                                    expect(code).to(equal(code))
+                                    done()
+                                }
+                            }
+                        }
+                    }
+                }
+
+                context("and the status code equals to 5xx") {
+                    for code in [500, 501, 520] {
+                        it("will return MessageMixerServiceError containig .internalServerError with \(code) value") {
+                            httpSession.httpResponse = HTTPURLResponse(url: URL(string: "https://ping.url")!,
+                                                                       statusCode: code,
+                                                                       httpVersion: nil,
+                                                                       headerFields: nil)
+
+                            waitUntil { done in
+                                requestQueue.async {
+                                    let result = service.ping()
+                                    let error = result.getError()
+                                    expect(error).toNot(beNil())
+
+                                    guard case .internalServerError(let code) = error else {
+                                        fail("Unexpected error type \(String(describing: error)). Expected .internalServerError")
+                                        done()
+                                        return
+                                    }
+                                    expect(code).to(equal(code))
+                                    done()
+                                }
+                            }
+                        }
+                    }
                 }
             }
 
