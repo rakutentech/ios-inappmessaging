@@ -23,7 +23,7 @@ Please include unit tests where necessary to cover any functionality that is int
 
 ## Commit messages
 
-Each commit message consists of a header, and an optional body and footer. The header has a special format that includes a type, a subject and a optional ticket number:
+Each commit message consists of a header, and an optional body and footer. The header has a special format that includes a type, a subject and an optional ticket number:
 
 ```
 <type>: <subject> (<ticket-no>)
@@ -102,7 +102,6 @@ The footer should reference GitHub issues that this commit **Closes**.
 * revert: improve: refine URL session configuration, add timeouts (SDKCF-0000)
 <br>This reverts commit 6608beb114610ec0a5e96b77e62a5590753e247e.
 * feat: add support for id tracking (SDKCF-4072)
-* feat: [iOS][Analytics] add "Delete user data" button (SDKCF-4072)
 * ci: add mobsfscan config (SDKCF-0000)
 * tests: add UI tests (SDKCF-2246)
 * tests: fix and refactor integration tests (SDKCF-0000)
