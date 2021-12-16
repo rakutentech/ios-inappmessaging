@@ -10,8 +10,8 @@ internal enum ConfigurationServiceError: Error {
     case tooManyRequestsError
     case missingOrInvalidSubscriptionId
     case unknownSubscriptionId
-    case invalidRequestError(Int)
-    case internalServerError(Int)
+    case invalidRequestError(UInt)
+    case internalServerError(UInt)
 }
 
 internal struct ConfigurationService: ConfigurationServiceType, HttpRequestable {

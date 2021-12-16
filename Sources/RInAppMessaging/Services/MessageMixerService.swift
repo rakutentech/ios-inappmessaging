@@ -9,8 +9,8 @@ internal enum MessageMixerServiceError: Error {
     case jsonDecodingError(Error)
     case invalidConfiguration
     case tooManyRequestsError
-    case internalServerError(Int)
-    case invalidRequestError(Int)
+    case internalServerError(UInt)
+    case invalidRequestError(UInt)
 }
 
 internal class MessageMixerService: MessageMixerServiceType, HttpRequestable {
