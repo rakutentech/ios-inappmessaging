@@ -146,7 +146,8 @@ workflows:
         inputs:
         - scanner_properties: |-
             sonar.sources=Sources
-            sonar.projectKey=$BITRISE_APP_TITLE
+            sonar.projectKey=ios-inappmessaging
+            sonar.projectName=iOS In-App Messaging SDK
             sonar.host.url=$SONAR_HOST_URL
             sonar.login=$SONAR_API_TOKEN
             sonar.c.file.suffixes=-
