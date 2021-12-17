@@ -14,6 +14,7 @@ workflows:
   primary:
     before_run:
     - _setup
+    - _sonarqube
     after_run:
     - _report
     steps:
@@ -126,6 +127,32 @@ workflows:
     - cocoapods-install@1:
         inputs:
         - verbose: 'false'
+
+  _sonarqube:
+    steps:
+    - script@1:
+        title: Setup env vars
+        inputs:
+        - content: |
+            #!/usr/bin/env bash
+
+            if [[ $BITRISE_GIT_BRANCH == release* ]]; then
+                envman add --key IS_RELEASE_BRANCH --value "true"
+            else
+                envman add --key IS_RELEASE_BRANCH --value "false"
+            fi
+    - sonarqube-scanner@1:
+        run_if: '{{getenv "SONAR_API_TOKEN" | ne "" | and (enveq "BITRISE_GIT_BRANCH" "master" | or (enveq "IS_RELEASE_BRANCH" "true") )}}'
+        inputs:
+        - scanner_properties: |-
+            sonar.sources=Sources
+            sonar.projectKey=ios-inappmessaging
+            sonar.projectName=iOS In-App Messaging SDK
+            sonar.host.url=$SONAR_HOST_URL
+            sonar.login=$SONAR_API_TOKEN
+            sonar.c.file.suffixes=-
+            sonar.cpp.file.suffixes=-
+            sonar.objc.file.suffixes=-
 
   _report:
     steps:
