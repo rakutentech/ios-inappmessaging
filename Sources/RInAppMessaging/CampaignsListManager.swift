@@ -59,7 +59,7 @@ internal class CampaignsListManager: CampaignsListManagerType, TaskSchedulable {
     }
 
     private func handleError(_ error: Error) {
-        responseStateMachine.push(state: .error(error))
+        responseStateMachine.push(state: .error)
 
         switch error {
         case MessageMixerServiceError.invalidConfiguration:

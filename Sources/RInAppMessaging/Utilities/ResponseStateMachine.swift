@@ -3,7 +3,7 @@ import Foundation
 internal struct ResponseStateMachine {
     internal enum State {
         case success
-        case error(Error)
+        case error
     }
     private(set) var previousState = State.success
     private(set) var state = State.success
@@ -16,7 +16,7 @@ internal struct ResponseStateMachine {
         switch state {
         case .success:
             consecutiveErrorCount = 0
-        case .error(_):
+        case .error:
             consecutiveErrorCount += 1
         }
     }

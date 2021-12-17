@@ -84,7 +84,7 @@ internal class ImpressionService: ImpressionServiceType, HttpRequestable, TaskSc
                     self.retryDelayMS = Constants.Retry.Default.initialRetryDelayMS
 
                 case .failure(let error):
-                    self.responseStateMachine.push(state: .error(error))
+                    self.responseStateMachine.push(state: .error)
 
                     switch error {
                     case .httpError(let statusCode, _, _) where statusCode >= 500:

@@ -59,7 +59,7 @@ internal class ConfigurationManager: ConfigurationManagerType, TaskSchedulable {
             completion(configData)
 
         case .failure(let error):
-            responseStateMachine.push(state: .error(error))
+            responseStateMachine.push(state: .error)
 
             switch error {
             case .tooManyRequestsError:
