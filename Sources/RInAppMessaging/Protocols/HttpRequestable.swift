@@ -13,7 +13,7 @@ internal enum RequestError: Error {
     case missingMetadata
     case missingParameters
     case taskFailed(Error)
-    case httpError(Int, URLResponse?, Data?)
+    case httpError(UInt, URLResponse?, Data?)
     case bodyEncodingError(Error?)
     case urlBuildingError(Error)
     case urlIsNil
@@ -147,11 +147,10 @@ extension HttpRequestable {
 
             let statusCode = (response as? HTTPURLResponse)?.statusCode ?? 0
 
-            guard 100..<400 ~= statusCode,
-                  let dataToReturn = data,
+            guard let dataToReturn = data,
                   let serverResponse = response as? HTTPURLResponse else {
 
-                completion(.failure(.httpError(statusCode, response, data)))
+                completion(.failure(.httpError(UInt(statusCode), response, data)))
                 let errorMessage = data != nil ? String(data: data!, encoding: .utf8) : ""
                 Logger.debug("HTTP call failed (\(statusCode))\n\(errorMessage ?? "")")
                 return

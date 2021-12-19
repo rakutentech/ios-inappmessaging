@@ -414,3 +414,11 @@ final class LockableTestObject: Lockable {
         resourcesToLock.forEach { $0.unlock() }
     }
 }
+
+final class ErrorDelegateMock: ErrorDelegate {
+    private(set) var wasErrorReceived = false
+
+    func didReceiveError(sender: ErrorReportable, error: NSError) {
+        wasErrorReceived = true
+    }
+}

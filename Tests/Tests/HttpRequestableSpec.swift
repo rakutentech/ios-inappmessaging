@@ -173,41 +173,6 @@ class HttpRequestableSpec: QuickSpec {
                     }
                 }
 
-                it("will return an error for code indicating an error <100, 400)") {
-                    for code in [400, 404, 422, 500, 501, 666] {
-
-                        httpRequestable.httpSessionMock.responseData = "data".data(using: .ascii)!
-                        httpRequestable.httpSessionMock.httpResponse = HTTPURLResponse(
-                            url: URL(string: "https://test.url")!,
-                            statusCode: code,
-                            httpVersion: nil,
-                            headerFields: nil)
-
-                        waitUntil { done in
-                            requestQueue.async {
-                                let result = httpRequestable.requestFromServerSync(
-                                    url: URL(string: "https://test.url")!,
-                                    httpMethod: .put,
-                                    parameters: nil,
-                                    addtionalHeaders: nil)
-
-                                let error = result.getError()
-                                expect(error).to(matchError(RequestError.self))
-
-                                guard case .httpError(let statusCode, _, _) = error else {
-
-                                    fail("Unexpected error type \(String(describing: error)). Expected .httpError")
-                                    done()
-                                    return
-                                }
-
-                                expect(statusCode).to(equal(code))
-                                done()
-                            }
-                        }
-                    }
-                }
-
                 it("will return an error if no response was returned") {
                     httpRequestable.httpSessionMock.responseData = "data".data(using: .ascii)!
                     httpRequestable.httpSessionMock.httpResponse = nil
@@ -265,7 +230,7 @@ class HttpRequestableSpec: QuickSpec {
                 }
 
                 it("will return success if data is present and response contains valid code") {
-                    for code in [200, 201, 301] {
+                    for code in [100, 200, 201] {
 
                         httpRequestable.httpSessionMock.responseData = "data".data(using: .ascii)!
                         httpRequestable.httpSessionMock.httpResponse = HTTPURLResponse(
@@ -458,42 +423,6 @@ class HttpRequestableSpec: QuickSpec {
                     }
                 }
 
-                it("will return an error for code indicating an error <100, 400)") {
-                    for code in [400, 404, 422, 500, 501, 666] {
-
-                        httpRequestable.httpSessionMock.responseData = "data".data(using: .ascii)!
-                        httpRequestable.httpSessionMock.httpResponse = HTTPURLResponse(
-                            url: URL(string: "https://test.url")!,
-                            statusCode: code,
-                            httpVersion: nil,
-                            headerFields: nil)
-
-                        var result: HttpRequestable.RequestResult?
-                        waitUntil { done in
-                            httpRequestable.requestFromServer(
-                                url: URL(string: "https://test.url")!,
-                                httpMethod: .put,
-                                parameters: nil,
-                                addtionalHeaders: nil,
-                                completion: { requestResult in
-                                    result = requestResult
-                                    done()
-                            })
-                        }
-
-                        expect(result).toNot(beNil())
-                        let error = result?.getError()
-                        expect(error).to(matchError(RequestError.self))
-
-                        guard case .httpError(let statusCode, _, _) = error else {
-                            fail("Unexpected error type \(String(describing: error)). Expected .httpError")
-                            return
-                        }
-
-                        expect(statusCode).to(equal(code))
-                    }
-                }
-
                 it("will return an error if no response was returned") {
                     httpRequestable.httpSessionMock.responseData = "data".data(using: .ascii)!
                     httpRequestable.httpSessionMock.httpResponse = nil
@@ -553,7 +482,7 @@ class HttpRequestableSpec: QuickSpec {
                 }
 
                 it("will return success if data is present and response contains valid code") {
-                    for code in [200, 201, 301] {
+                    for code in [100, 200, 201] {
 
                         httpRequestable.httpSessionMock.responseData = "data".data(using: .ascii)!
                         httpRequestable.httpSessionMock.httpResponse = HTTPURLResponse(
