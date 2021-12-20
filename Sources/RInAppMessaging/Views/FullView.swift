@@ -13,9 +13,9 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
     struct UIConstants {
         var backgroundColor: UIColor?
         var cornerRadiusForDialogView: CGFloat = 0 // Adjust how round the edge the dialog view will be.
-        var headerMessageFontSize: CGFloat = 16 // Font size for the header message.
         var bodyMessageFontSize: CGFloat = 14 // Font size for the body message.
-        var bodyMarginTop: CGFloat = 18 // Distance from header (body) to top edge or image
+        var headerMessageFontSize: CGFloat = 22 // Font size for the header message.
+        var bodyMarginBottom: CGFloat = 18 // Distance from header (body) to top edge or image
         var buttonHeight: CGFloat = 40 // Define the height to use for the button.
         var buttonsSpacing: CGFloat = 8 // Size of the gap between the buttons when there are two buttons.
         var singleButtonWidthMargin: CGFloat = 0 // Width offset when only one button is given.
@@ -233,7 +233,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
 
     private func createMessageBody(viewModel: FullViewModel) {
         bodyView.isLayoutMarginsRelativeArrangement = true
-        bodyView.layoutMargins.top = uiConstants.bodyMarginTop
+        bodyView.layoutMargins.bottom = uiConstants.bodyMarginBottom
 
         if viewModel.isHTML, let htmlBody = viewModel.messageBody {
             hasImage = false
@@ -284,7 +284,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         bodyLabel.textColor = viewModel.messageBodyColor
         bodyLabel.setLineSpacing(lineSpacing: 3.0)
         bodyLabel.font = .iamText(ofSize: uiConstants.bodyMessageFontSize)
-        bodyLabel.textAlignment = .left
+        bodyLabel.textAlignment = .center
         bodyLabel.lineBreakMode = .byWordWrapping
         bodyLabel.numberOfLines = 0
     }

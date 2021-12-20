@@ -18,7 +18,7 @@ internal class ModalView: FullView {
     override func updateUIConstants() {
         super.updateUIConstants()
 
-        uiConstants.backgroundColor = UIColor.black.withAlphaComponent(0.66)
+        uiConstants.backgroundColor = UIColor.black.withAlphaComponent(0.37)
         uiConstants.cornerRadiusForDialogView = 10
         uiConstants.dialogViewWidthMultiplier = 1
         uiConstants.dialogViewWidthOffset = 100
