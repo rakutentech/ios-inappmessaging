@@ -196,17 +196,6 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         layoutMargins = .zero
         backgroundColor = .clear
 
-        switch mode {
-        case .fullScreen:
-            contentView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor).isActive = true
-            contentView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor).isActive = true
-        case .modal(let maxWindowHeightPercentage):
-            contentView.heightAnchor.constraint(lessThanOrEqualTo: backgroundView.heightAnchor,
-                                                multiplier: maxWindowHeightPercentage).isActive = true
-        default:
-            assertionFailure("Unsupported mode")
-        }
-
         contentWidthOffsetConstraint.constant = -uiConstants.dialogViewWidthOffset
         contentWidthOffsetConstraint.setMultiplier(uiConstants.dialogViewWidthMultiplier)
 
@@ -216,6 +205,23 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         contentView.backgroundColor = viewModel.backgroundColor
         contentView.clipsToBounds = true
         contentView.layer.cornerRadius = uiConstants.cornerRadiusForDialogView
+        
+        switch mode {
+        case .fullScreen:
+            contentView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor).isActive = true
+            contentView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor).isActive = true
+        case .modal(let maxWindowHeightPercentage):
+            contentView.heightAnchor.constraint(lessThanOrEqualTo: backgroundView.heightAnchor,
+                                                multiplier: maxWindowHeightPercentage).isActive = true
+            // add drop shadow
+            contentView.layer.masksToBounds = false
+            contentView.layer.shadowColor = UIColor.black.cgColor
+            contentView.layer.shadowOpacity = 0.2
+            contentView.layer.shadowOffset = .zero
+            contentView.layer.shadowRadius = 10
+        default:
+            assertionFailure("Unsupported mode")
+        }
     }
 
     private func layoutUIComponents() {
