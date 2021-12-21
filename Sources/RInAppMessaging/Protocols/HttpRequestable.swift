@@ -147,7 +147,8 @@ extension HttpRequestable {
 
             let statusCode = (response as? HTTPURLResponse)?.statusCode ?? 0
 
-            guard let dataToReturn = data,
+            guard 100..<300 ~= statusCode,
+                  let dataToReturn = data,
                   let serverResponse = response as? HTTPURLResponse else {
 
                 completion(.failure(.httpError(UInt(statusCode), response, data)))
