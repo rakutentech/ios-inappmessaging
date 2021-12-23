@@ -14,8 +14,8 @@ internal class ConfigurationManager: ConfigurationManagerType, TaskSchedulable {
     private let configurationRepository: ConfigurationRepositoryType
     private let reachability: ReachabilityType?
     private let resumeQueue: DispatchQueue
-
-    private var retryDelayMS = Constants.Retry.Default.initialRetryDelayMS
+    // lazy allows mocking in unit tests
+    private lazy var retryDelayMS = Constants.Retry.Default.initialRetryDelayMS
     private var lastRequestTime: TimeInterval = 0
     private var onConnectionResumed: (() -> Void)?
     private var responseStateMachine = ResponseStateMachine()
@@ -74,7 +74,7 @@ internal class ConfigurationManager: ConfigurationManagerType, TaskSchedulable {
                 completion(ConfigData(rolloutPercentage: 0, endpoints: nil))
 
             case .internalServerError(let code):
-                guard responseStateMachine.consecutiveErrorCount < 3 else {
+                guard responseStateMachine.consecutiveErrorCount <= Constants.Retry.retryCount else {
                     reportError(description: "Config request error: Response Code \(code): Internal server error", data: nil)
                     completion(ConfigData(rolloutPercentage: 0, endpoints: nil))
                     return
@@ -101,7 +101,7 @@ internal class ConfigurationManager: ConfigurationManagerType, TaskSchedulable {
 
     private func scheduleRetryWithRandomizedBackoff(retryHandler: @escaping () -> Void) {
         if case .success = responseStateMachine.previousState {
-            retryDelayMS = Constants.Retry.TooManyRequestsError.initialRetryDelayMS
+            retryDelayMS = Constants.Retry.Randomized.initialRetryDelayMS
         }
         scheduleTask(milliseconds: Int(retryDelayMS), wallDeadline: true, retryHandler)
         // Randomized backoff for Configuration server.

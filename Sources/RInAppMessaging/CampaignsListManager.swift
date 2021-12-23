@@ -12,7 +12,8 @@ internal class CampaignsListManager: CampaignsListManagerType, TaskSchedulable {
 
     weak var errorDelegate: ErrorDelegate?
     var scheduledTask: DispatchWorkItem?
-    private var retryDelayMS = Constants.Retry.Default.initialRetryDelayMS
+    // lazy allows mocking in unit tests
+    private lazy var retryDelayMS = Constants.Retry.Default.initialRetryDelayMS
     private var responseStateMachine = ResponseStateMachine()
 
     init(campaignRepository: CampaignRepositoryType,
@@ -72,7 +73,7 @@ internal class CampaignsListManager: CampaignsListManagerType, TaskSchedulable {
             scheduleNextPingCallWithRandomizedBackoff()
 
         case MessageMixerServiceError.internalServerError(let code):
-            guard responseStateMachine.consecutiveErrorCount < 3 else {
+            guard responseStateMachine.consecutiveErrorCount <= Constants.Retry.retryCount else {
                 reportError(description: "Ping request error: Response Code \(code): Internal server error", data: nil)
                 return
             }
@@ -92,7 +93,7 @@ internal class CampaignsListManager: CampaignsListManagerType, TaskSchedulable {
 
     private func scheduleNextPingCallWithRandomizedBackoff() {
         if case .success = responseStateMachine.previousState {
-            retryDelayMS = Constants.Retry.TooManyRequestsError.initialRetryDelayMS
+            retryDelayMS = Constants.Retry.Randomized.initialRetryDelayMS
         }
         scheduleNextPingCall(in: Int(retryDelayMS))
         // Randomized backoff for pinging Message Mixer server.

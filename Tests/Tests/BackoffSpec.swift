@@ -20,8 +20,8 @@ class BackoffSpec: QuickSpec {
                 retryMS.increaseRandomizedBackoff()
 
                 let expectedResult = initialValue.multipliedReportingOverflow(by: 2).partialValue
-                expect(retryMS >= expectedResult + (Constants.Retry.TooManyRequestsError.backOffLowerBoundInSecond * 1000)).to(beTrue())
-                expect(retryMS <= expectedResult + (Constants.Retry.TooManyRequestsError.backOffUpperBoundInSecond * 1000)).to(beTrue())
+                expect(retryMS >= expectedResult + (Constants.Retry.Randomized.backOffLowerBoundSeconds * 1000)).to(beTrue())
+                expect(retryMS <= expectedResult + (Constants.Retry.Randomized.backOffUpperBoundSeconds * 1000)).to(beTrue())
             }
         }
     }

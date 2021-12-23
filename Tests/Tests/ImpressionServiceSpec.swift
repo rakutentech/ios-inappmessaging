@@ -94,6 +94,16 @@ class ImpressionServiceSpec: QuickSpec {
             }
 
             context("when request fails") {
+                beforeEach {
+                    Constants.Retry.Tests.setInitialDelayMS(1000)
+                    Constants.Retry.Tests.setBackOffUpperBoundSeconds(1)
+                }
+
+                afterEach {
+                    Constants.Retry.Tests.setInitialDelayMS(10000)
+                    Constants.Retry.Tests.setBackOffUpperBoundSeconds(60)
+                }
+
                 it("will not report task failed error") {
                     httpSession.responseError = NSError(domain: "impression.error.test", code: 1, userInfo: nil)
                     sendRequestAndWaitForResponse()
@@ -120,6 +130,18 @@ class ImpressionServiceSpec: QuickSpec {
                             sendRequestAndWaitForResponse()
                             expect(service.scheduledTask).toEventuallyNot(beNil())
                         }
+                    }
+
+                    it("will retry 3 times") {
+                        var httpCalls = 0
+                        httpSession.httpResponse = ImpressionURLResponse(statusCode: 500)
+                        httpSession.onCompletedTask = {
+                            httpCalls += 1
+                        }
+                        sendRequestAndWaitForResponse()
+                        expect(service.scheduledTask).toEventuallyNot(beNil())
+                        expect(httpCalls).toEventually(equal(4), timeout: .seconds(8))
+                        expect(service.scheduledTask).toEventually(beNil())
                     }
                 }
 
