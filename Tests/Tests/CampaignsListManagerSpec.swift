@@ -34,6 +34,16 @@ class CampaignsListManagerSpec: QuickSpec {
 
                 context("and service error has occured") {
 
+                    beforeEach {
+                        Constants.Retry.Tests.setInitialDelayMS(1000)
+                        Constants.Retry.Tests.setBackOffUpperBoundSeconds(1)
+                    }
+
+                    afterEach {
+                        Constants.Retry.Tests.setInitialDelayMS(10000)
+                        Constants.Retry.Tests.setBackOffUpperBoundSeconds(60)
+                    }
+
                     it("will not retry for .invalidConfiguration error") {
                         messageMixerService.mockedError = .invalidConfiguration
                         manager.refreshList()
@@ -98,6 +108,14 @@ class CampaignsListManagerSpec: QuickSpec {
                         messageMixerService.mockedError = .internalServerError(500)
                         manager.refreshList()
                         expect(manager.scheduledTask).toEventuallyNot(beNil())
+                    }
+
+                    it("should retry 3 times for .internalServerError error") {
+                        messageMixerService.mockedError = .internalServerError(500)
+                        manager.refreshList()
+                        expect(manager.scheduledTask).toEventuallyNot(beNil())
+                        expect(messageMixerService.pingCallCount).toEventually(equal(4), timeout: .seconds(12))
+                        expect(manager.scheduledTask).toEventually(beNil())
                     }
 
                     it("will report .internalServerError error") {

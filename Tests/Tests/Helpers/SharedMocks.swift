@@ -138,9 +138,12 @@ class MessageMixerServiceMock: MessageMixerServiceType {
     var mockedResponse: PingResponse?
     var mockedError = MessageMixerServiceError.invalidConfiguration
     var delay: TimeInterval = 0
+    var pingCallCount = 0
 
     func ping() -> Result<PingResponse, MessageMixerServiceError> {
-        self.wasPingCalled = true
+        wasPingCalled = true
+        pingCallCount += 1
+
         if delay > 0 {
             guard Thread.current != .main else {
                 fatalError("Delay function shoudn't be used on the main thread")

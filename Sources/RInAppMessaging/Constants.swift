@@ -50,14 +50,27 @@ internal enum Constants {
     }
 
     enum Retry {
+        static let retryCount = 3
+
         enum Default {
-            static let initialRetryDelayMS = Int32(10000)
+            static fileprivate(set) var initialRetryDelayMS = Int32(10000)
         }
 
-        enum TooManyRequestsError {
-            static let initialRetryDelayMS = Int32(60000)
-            static let backOffLowerBoundInSecond = Int32(1) // second
-            static let backOffUpperBoundInSecond = Int32(60) // second
+        enum Randomized {
+            static fileprivate(set) var initialRetryDelayMS = Int32(60000)
+            static fileprivate(set) var backOffLowerBoundSeconds = Int32(1)
+            static fileprivate(set) var backOffUpperBoundSeconds = Int32(60)
+        }
+
+        enum Tests {
+            static func setInitialDelayMS(_ delay: Int32) {
+                Default.initialRetryDelayMS = delay
+                Randomized.initialRetryDelayMS = delay
+            }
+
+            static func setBackOffUpperBoundSeconds(_ bound: Int32) {
+                Randomized.backOffUpperBoundSeconds = bound
+            }
         }
     }
 }

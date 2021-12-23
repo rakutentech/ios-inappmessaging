@@ -26,7 +26,8 @@ internal class ImpressionService: ImpressionServiceType, HttpRequestable, TaskSc
     private let accountRepository: AccountRepositoryType
     private let configurationRepository: ConfigurationRepositoryType
     private var responseStateMachine = ResponseStateMachine()
-    private var retryDelayMS = Constants.Retry.Default.initialRetryDelayMS
+    // lazy allows mocking in unit tests
+    private lazy var retryDelayMS = Constants.Retry.Default.initialRetryDelayMS
 
     weak var errorDelegate: ErrorDelegate?
     private(set) var httpSession: URLSession
@@ -88,7 +89,7 @@ internal class ImpressionService: ImpressionServiceType, HttpRequestable, TaskSc
 
                     switch error {
                     case .httpError(let statusCode, _, _) where statusCode >= 500:
-                        guard self.responseStateMachine.consecutiveErrorCount < 3 else {
+                        guard self.responseStateMachine.consecutiveErrorCount <= Constants.Retry.retryCount else {
                             return
                         }
                         self.retryImpressionRequest(endpoint: endpoint, parameters: parameters)

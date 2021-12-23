@@ -82,16 +82,23 @@ class ConfigurationManagerSpec: QuickSpec {
 
                     beforeEach {
                         configurationService.simulateRequestFailure = true
+                        Constants.Retry.Tests.setInitialDelayMS(1000)
+                        Constants.Retry.Tests.setBackOffUpperBoundSeconds(1)
+                    }
+
+                    afterEach {
+                        Constants.Retry.Tests.setInitialDelayMS(10000)
+                        Constants.Retry.Tests.setBackOffUpperBoundSeconds(60)
                     }
 
                     it("should retry") {
                         configurationManager.fetchAndSaveConfigData(completion: { _ in })
                         expect(configurationService.getConfigDataCallCount).to(equal(1))
-                        expect(configurationService.getConfigDataCallCount).toEventually(equal(2), timeout: .seconds(11))
+                        expect(configurationService.getConfigDataCallCount).toEventually(equal(2), timeout: .seconds(2))
                     }
 
                     it("should call completion after retry attempt was successful") {
-                        waitUntil(timeout: .seconds(11)) { done in
+                        waitUntil(timeout: .seconds(2)) { done in
                             configurationManager.fetchAndSaveConfigData(completion: { _ in
                                 done()
                             })
@@ -181,6 +188,18 @@ class ConfigurationManagerSpec: QuickSpec {
                         configurationService.mockedError = .internalServerError(500)
                         configurationManager.fetchAndSaveConfigData(completion: { _ in })
                         expect(configurationManager.scheduledTask).toEventuallyNot(beNil())
+                    }
+
+                    it("should retry 3 times for .internalServerError error") {
+                        configurationService.mockedError = .internalServerError(500)
+                        var returnedConfig: ConfigData?
+                        configurationManager.fetchAndSaveConfigData(completion: { config in
+                            returnedConfig = config
+                        })
+                        expect(configurationManager.scheduledTask).toEventuallyNot(beNil())
+                        expect(configurationService.getConfigDataCallCount).toEventually(equal(4), timeout: .seconds(12))
+                        expect(returnedConfig).toEventuallyNot(beNil())
+                        expect(configurationManager.scheduledTask).to(beNil())
                     }
 
                     it("should report .invalidRequestError error") {
