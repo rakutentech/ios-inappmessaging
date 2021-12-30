@@ -169,8 +169,8 @@ internal class Router: RouterType, ViewListenerObserver {
             tooltipView.onImageTap = {
                 if let uriToOpen = URL(string: tooltipData.redirectURL ?? "") {
                     UIApplication.shared.open(uriToOpen)
+                    onClose()
                 }
-                onClose()
             }
             tooltipView.onExitButtonTap = onClose
 

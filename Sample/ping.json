@@ -1,0 +1,670 @@
+{
+    "currentPingMillis": 0,
+    "nextPingMillis": 3600000,
+    "data": [
+        {
+            "campaignData": {
+                "campaignId": "t1",
+                "maxImpressions": 999,
+                "type": 2,
+                "isTest": false,
+                "triggers": [
+                    {
+                        "type": 1,
+                        "eventType": 4,
+                        "eventName": "second activity",
+                        "attributes": [
+                            {
+                                "name": "click",
+                                "value": "true",
+                                "type": 4,
+                                "operator": 1
+                            }
+                        ]
+                    }
+                ],
+                "messagePayload": {
+                    "title": "[ToolTip] tooltip 1",
+                    "messageBody": "{\"UIElement\" : \"tooltip.test.1\", \"position\": \"bottom-right\", \"color\": \"#FFD9D9\"}",
+                    "header": "Test Campaign",
+                    "titleColor": "#000000",
+                    "headerColor": "#000000",
+                    "messageBodyColor": "#000000",
+                    "backgroundColor": "#ffffff",
+                    "frameColor": "#ffffff",
+                    "resource": {
+                        "imageUrl": "https://static.id.rakuten.co.jp/static/com/img/id/Rakuten_pc_20px@2x.png",
+                        "cropType": 2
+                    },
+                    "messageSettings": {
+                        "displaySettings": {
+                            "slideFrom": 1,
+                            "endTimeMillis": 9999999999999,
+                            "orientation": 1,
+                            "textAlign": 2,
+                            "optOut": true,
+                            "delay": 100,
+                            "html": false
+                        },
+                        "controlSettings": {
+                            "buttons": [
+                                {
+                                    "buttonText": "btn1",
+                                    "buttonTextColor": "#000000",
+                                    "buttonBackgroundColor": "#ffffff",
+                                    "buttonBehavior": {
+                                        "action": 3,
+                                        "uri": null
+                                    }
+                                },
+                                {
+                                    "buttonText": "btn2",
+                                    "buttonTextColor": "#000000",
+                                    "buttonBackgroundColor": "#ffffff",
+                                    "buttonBehavior": {
+                                        "action": 3,
+                                        "uri": null
+                                    },
+                                    "campaignTrigger": {
+                                        "type": 1,
+                                        "eventType": 4,
+                                        "eventName": "second activity",
+                                        "attributes": [
+                                            {
+                                                "name": "click",
+                                                "value": "true",
+                                                "type": 4,
+                                                "operator": 1
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "campaignData": {
+                "campaignId": "t2",
+                "maxImpressions": 999,
+                "type": 2,
+                "isTest": false,
+                "triggers": [
+                    {
+                        "type": 1,
+                        "eventType": 4,
+                        "eventName": "second activity",
+                        "attributes": [
+                            {
+                                "name": "click",
+                                "value": "true",
+                                "type": 4,
+                                "operator": 1
+                            }
+                        ]
+                    }
+                ],
+                "messagePayload": {
+                    "title": "[ToolTip] tooltip 2",
+                    "messageBody": "{\"UIElement\" : \"tooltip.test.2\", \"position\": \"bottom-centre\", \"color\": \"#FFD9D9\"}",
+                    "header": "Test Campaign",
+                    "titleColor": "#000000",
+                    "headerColor": "#000000",
+                    "messageBodyColor": "#000000",
+                    "backgroundColor": "#ffffff",
+                    "frameColor": "#ffffff",
+                    "resource": {
+                        "imageUrl": "https://static.id.rakuten.co.jp/static/com/img/id/Rakuten_pc_20px@2x.png",
+                        "cropType": 2
+                    },
+                    "messageSettings": {
+                        "displaySettings": {
+                            "slideFrom": 1,
+                            "endTimeMillis": 9999999999999,
+                            "orientation": 1,
+                            "textAlign": 2,
+                            "optOut": true,
+                            "delay": 100,
+                            "html": false
+                        },
+                        "controlSettings": {
+                            "buttons": [
+                                {
+                                    "buttonText": "btn1",
+                                    "buttonTextColor": "#000000",
+                                    "buttonBackgroundColor": "#ffffff",
+                                    "buttonBehavior": {
+                                        "action": 3,
+                                        "uri": null
+                                    }
+                                },
+                                {
+                                    "buttonText": "btn2",
+                                    "buttonTextColor": "#000000",
+                                    "buttonBackgroundColor": "#ffffff",
+                                    "buttonBehavior": {
+                                        "action": 3,
+                                        "uri": null
+                                    },
+                                    "campaignTrigger": {
+                                        "type": 1,
+                                        "eventType": 4,
+                                        "eventName": "second activity",
+                                        "attributes": [
+                                            {
+                                                "name": "click",
+                                                "value": "true",
+                                                "type": 4,
+                                                "operator": 1
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "campaignData": {
+                "campaignId": "t3",
+                "maxImpressions": 999,
+                "type": 2,
+                "isTest": false,
+                "triggers": [
+                    {
+                        "type": 1,
+                        "eventType": 4,
+                        "eventName": "second activity",
+                        "attributes": [
+                            {
+                                "name": "click",
+                                "value": "true",
+                                "type": 4,
+                                "operator": 1
+                            }
+                        ]
+                    }
+                ],
+                "messagePayload": {
+                    "title": "[ToolTip] tooltip 3",
+                    "messageBody": "{\"UIElement\" : \"tooltip.test.3\", \"position\": \"bottom-left\", \"color\": \"#FFD9D9\"}",
+                    "header": "Test Campaign",
+                    "titleColor": "#000000",
+                    "headerColor": "#000000",
+                    "messageBodyColor": "#000000",
+                    "backgroundColor": "#ffffff",
+                    "frameColor": "#ffffff",
+                    "resource": {
+                        "imageUrl": "https://static.id.rakuten.co.jp/static/com/img/id/Rakuten_pc_20px@2x.png",
+                        "cropType": 2
+                    },
+                    "messageSettings": {
+                        "displaySettings": {
+                            "slideFrom": 1,
+                            "endTimeMillis": 9999999999999,
+                            "orientation": 1,
+                            "textAlign": 2,
+                            "optOut": true,
+                            "delay": 100,
+                            "html": false
+                        },
+                        "controlSettings": {
+                            "buttons": [
+                                {
+                                    "buttonText": "btn1",
+                                    "buttonTextColor": "#000000",
+                                    "buttonBackgroundColor": "#ffffff",
+                                    "buttonBehavior": {
+                                        "action": 3,
+                                        "uri": null
+                                    }
+                                },
+                                {
+                                    "buttonText": "btn2",
+                                    "buttonTextColor": "#000000",
+                                    "buttonBackgroundColor": "#ffffff",
+                                    "buttonBehavior": {
+                                        "action": 3,
+                                        "uri": null
+                                    },
+                                    "campaignTrigger": {
+                                        "type": 1,
+                                        "eventType": 4,
+                                        "eventName": "second activity",
+                                        "attributes": [
+                                            {
+                                                "name": "click",
+                                                "value": "true",
+                                                "type": 4,
+                                                "operator": 1
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "campaignData": {
+                "campaignId": "t4",
+                "maxImpressions": 999,
+                "type": 2,
+                "isTest": false,
+                "triggers": [
+                    {
+                        "type": 1,
+                        "eventType": 4,
+                        "eventName": "second activity",
+                        "attributes": [
+                            {
+                                "name": "click",
+                                "value": "true",
+                                "type": 4,
+                                "operator": 1
+                            }
+                        ]
+                    }
+                ],
+                "messagePayload": {
+                    "title": "[ToolTip] tooltip 4",
+                    "messageBody": "{\"UIElement\" : \"tooltip.test.4\", \"position\": \"left\", \"color\": \"#FFD9D9\"}",
+                    "header": "Test Campaign",
+                    "titleColor": "#000000",
+                    "headerColor": "#000000",
+                    "messageBodyColor": "#000000",
+                    "backgroundColor": "#ffffff",
+                    "frameColor": "#ffffff",
+                    "resource": {
+                        "imageUrl": "https://static.id.rakuten.co.jp/static/com/img/id/Rakuten_pc_20px@2x.png",
+                        "cropType": 2
+                    },
+                    "messageSettings": {
+                        "displaySettings": {
+                            "slideFrom": 1,
+                            "endTimeMillis": 9999999999999,
+                            "orientation": 1,
+                            "textAlign": 2,
+                            "optOut": true,
+                            "delay": 100,
+                            "html": false
+                        },
+                        "controlSettings": {
+                            "buttons": [
+                                {
+                                    "buttonText": "btn1",
+                                    "buttonTextColor": "#000000",
+                                    "buttonBackgroundColor": "#ffffff",
+                                    "buttonBehavior": {
+                                        "action": 3,
+                                        "uri": null
+                                    }
+                                },
+                                {
+                                    "buttonText": "btn2",
+                                    "buttonTextColor": "#000000",
+                                    "buttonBackgroundColor": "#ffffff",
+                                    "buttonBehavior": {
+                                        "action": 3,
+                                        "uri": null
+                                    },
+                                    "campaignTrigger": {
+                                        "type": 1,
+                                        "eventType": 4,
+                                        "eventName": "second activity",
+                                        "attributes": [
+                                            {
+                                                "name": "click",
+                                                "value": "true",
+                                                "type": 4,
+                                                "operator": 1
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "campaignData": {
+                "campaignId": "t5",
+                "maxImpressions": 999,
+                "type": 2,
+                "isTest": false,
+                "triggers": [
+                    {
+                        "type": 1,
+                        "eventType": 4,
+                        "eventName": "second activity",
+                        "attributes": [
+                            {
+                                "name": "click",
+                                "value": "true",
+                                "type": 4,
+                                "operator": 1
+                            }
+                        ]
+                    }
+                ],
+                "messagePayload": {
+                    "title": "[ToolTip] tooltip 5",
+                    "messageBody": "{\"UIElement\" : \"tooltip.test.5\", \"position\": \"top-left\", \"color\": \"#FFD9D9\"}",
+                    "header": "Test Campaign",
+                    "titleColor": "#000000",
+                    "headerColor": "#000000",
+                    "messageBodyColor": "#000000",
+                    "backgroundColor": "#ffffff",
+                    "frameColor": "#ffffff",
+                    "resource": {
+                        "imageUrl": "https://static.id.rakuten.co.jp/static/com/img/id/Rakuten_pc_20px@2x.png",
+                        "cropType": 2
+                    },
+                    "messageSettings": {
+                        "displaySettings": {
+                            "slideFrom": 1,
+                            "endTimeMillis": 9999999999999,
+                            "orientation": 1,
+                            "textAlign": 2,
+                            "optOut": true,
+                            "delay": 100,
+                            "html": false
+                        },
+                        "controlSettings": {
+                            "buttons": [
+                                {
+                                    "buttonText": "btn1",
+                                    "buttonTextColor": "#000000",
+                                    "buttonBackgroundColor": "#ffffff",
+                                    "buttonBehavior": {
+                                        "action": 3,
+                                        "uri": null
+                                    }
+                                },
+                                {
+                                    "buttonText": "btn2",
+                                    "buttonTextColor": "#000000",
+                                    "buttonBackgroundColor": "#ffffff",
+                                    "buttonBehavior": {
+                                        "action": 3,
+                                        "uri": null
+                                    },
+                                    "campaignTrigger": {
+                                        "type": 1,
+                                        "eventType": 4,
+                                        "eventName": "second activity",
+                                        "attributes": [
+                                            {
+                                                "name": "click",
+                                                "value": "true",
+                                                "type": 4,
+                                                "operator": 1
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "campaignData": {
+                "campaignId": "t6",
+                "maxImpressions": 999,
+                "type": 2,
+                "isTest": false,
+                "triggers": [
+                    {
+                        "type": 1,
+                        "eventType": 4,
+                        "eventName": "second activity",
+                        "attributes": [
+                            {
+                                "name": "click",
+                                "value": "true",
+                                "type": 4,
+                                "operator": 1
+                            }
+                        ]
+                    }
+                ],
+                "messagePayload": {
+                    "title": "[ToolTip] tooltip 6",
+                    "messageBody": "{\"UIElement\" : \"tooltip.test.6\", \"position\": \"top-centre\", \"color\": \"#FFD9D9\"}",
+                    "header": "Test Campaign",
+                    "titleColor": "#000000",
+                    "headerColor": "#000000",
+                    "messageBodyColor": "#000000",
+                    "backgroundColor": "#ffffff",
+                    "frameColor": "#ffffff",
+                    "resource": {
+                        "imageUrl": "https://static.id.rakuten.co.jp/static/com/img/id/Rakuten_pc_20px@2x.png",
+                        "cropType": 2
+                    },
+                    "messageSettings": {
+                        "displaySettings": {
+                            "slideFrom": 1,
+                            "endTimeMillis": 9999999999999,
+                            "orientation": 1,
+                            "textAlign": 2,
+                            "optOut": true,
+                            "delay": 100,
+                            "html": false
+                        },
+                        "controlSettings": {
+                            "buttons": [
+                                {
+                                    "buttonText": "btn1",
+                                    "buttonTextColor": "#000000",
+                                    "buttonBackgroundColor": "#ffffff",
+                                    "buttonBehavior": {
+                                        "action": 3,
+                                        "uri": null
+                                    }
+                                },
+                                {
+                                    "buttonText": "btn2",
+                                    "buttonTextColor": "#000000",
+                                    "buttonBackgroundColor": "#ffffff",
+                                    "buttonBehavior": {
+                                        "action": 3,
+                                        "uri": null
+                                    },
+                                    "campaignTrigger": {
+                                        "type": 1,
+                                        "eventType": 4,
+                                        "eventName": "second activity",
+                                        "attributes": [
+                                            {
+                                                "name": "click",
+                                                "value": "true",
+                                                "type": 4,
+                                                "operator": 1
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "campaignData": {
+                "campaignId": "t7",
+                "maxImpressions": 999,
+                "type": 2,
+                "isTest": false,
+                "triggers": [
+                    {
+                        "type": 1,
+                        "eventType": 4,
+                        "eventName": "second activity",
+                        "attributes": [
+                            {
+                                "name": "click",
+                                "value": "true",
+                                "type": 4,
+                                "operator": 1
+                            }
+                        ]
+                    }
+                ],
+                "messagePayload": {
+                    "title": "[ToolTip] tooltip 7",
+                    "messageBody": "{\"UIElement\" : \"tooltip.test.7\", \"position\": \"top-right\", \"color\": \"#FFD9D9\"}",
+                    "header": "Test Campaign",
+                    "titleColor": "#000000",
+                    "headerColor": "#000000",
+                    "messageBodyColor": "#000000",
+                    "backgroundColor": "#ffffff",
+                    "frameColor": "#ffffff",
+                    "resource": {
+                        "imageUrl": "https://static.id.rakuten.co.jp/static/com/img/id/Rakuten_pc_20px@2x.png",
+                        "cropType": 2
+                    },
+                    "messageSettings": {
+                        "displaySettings": {
+                            "slideFrom": 1,
+                            "endTimeMillis": 9999999999999,
+                            "orientation": 1,
+                            "textAlign": 2,
+                            "optOut": true,
+                            "delay": 100,
+                            "html": false
+                        },
+                        "controlSettings": {
+                            "buttons": [
+                                {
+                                    "buttonText": "btn1",
+                                    "buttonTextColor": "#000000",
+                                    "buttonBackgroundColor": "#ffffff",
+                                    "buttonBehavior": {
+                                        "action": 3,
+                                        "uri": null
+                                    }
+                                },
+                                {
+                                    "buttonText": "btn2",
+                                    "buttonTextColor": "#000000",
+                                    "buttonBackgroundColor": "#ffffff",
+                                    "buttonBehavior": {
+                                        "action": 3,
+                                        "uri": null
+                                    },
+                                    "campaignTrigger": {
+                                        "type": 1,
+                                        "eventType": 4,
+                                        "eventName": "second activity",
+                                        "attributes": [
+                                            {
+                                                "name": "click",
+                                                "value": "true",
+                                                "type": 4,
+                                                "operator": 1
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "campaignData": {
+                "campaignId": "t8",
+                "maxImpressions": 999,
+                "type": 2,
+                "isTest": false,
+                "triggers": [
+                    {
+                        "type": 1,
+                        "eventType": 4,
+                        "eventName": "second activity",
+                        "attributes": [
+                            {
+                                "name": "click",
+                                "value": "true",
+                                "type": 4,
+                                "operator": 1
+                            }
+                        ]
+                    }
+                ],
+                "messagePayload": {
+                    "title": "[ToolTip] tooltip 8",
+                    "messageBody": "{\"UIElement\" : \"tooltip.test.8\", \"position\": \"right\", \"color\": \"#FFD9D9\"}",
+                    "header": "Test Campaign",
+                    "titleColor": "#000000",
+                    "headerColor": "#000000",
+                    "messageBodyColor": "#000000",
+                    "backgroundColor": "#ffffff",
+                    "frameColor": "#ffffff",
+                    "resource": {
+                        "imageUrl": "https://static.id.rakuten.co.jp/static/com/img/id/Rakuten_pc_20px@2x.png",
+                        "cropType": 2
+                    },
+                    "messageSettings": {
+                        "displaySettings": {
+                            "slideFrom": 1,
+                            "endTimeMillis": 9999999999999,
+                            "orientation": 1,
+                            "textAlign": 2,
+                            "optOut": true,
+                            "delay": 100,
+                            "html": false
+                        },
+                        "controlSettings": {
+                            "buttons": [
+                                {
+                                    "buttonText": "btn1",
+                                    "buttonTextColor": "#000000",
+                                    "buttonBackgroundColor": "#ffffff",
+                                    "buttonBehavior": {
+                                        "action": 3,
+                                        "uri": null
+                                    }
+                                },
+                                {
+                                    "buttonText": "btn2",
+                                    "buttonTextColor": "#000000",
+                                    "buttonBackgroundColor": "#ffffff",
+                                    "buttonBehavior": {
+                                        "action": 3,
+                                        "uri": null
+                                    },
+                                    "campaignTrigger": {
+                                        "type": 1,
+                                        "eventType": 4,
+                                        "eventName": "second activity",
+                                        "attributes": [
+                                            {
+                                                "name": "click",
+                                                "value": "true",
+                                                "type": 4,
+                                                "operator": 1
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}
