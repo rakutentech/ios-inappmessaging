@@ -5,7 +5,7 @@ internal protocol CampaignDispatcherDelegate: AnyObject {
     func shouldShowCampaignMessage(title: String, contexts: [String]) -> Bool
 }
 
-internal protocol CampaignDispatcherType {
+internal protocol CampaignDispatcherType: AnyObject {
     var delegate: CampaignDispatcherDelegate? { get set }
 
     func addToQueue(campaignID: String)

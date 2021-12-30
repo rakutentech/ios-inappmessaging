@@ -4,7 +4,7 @@ internal protocol ErrorDelegate: AnyObject {
     func didReceiveError(sender: ErrorReportable, error: NSError)
 }
 
-internal protocol ErrorReportable {
+internal protocol ErrorReportable: AnyObject {
     var errorDelegate: ErrorDelegate? { get set }
     func reportError(description: String, data: Any?)
 }

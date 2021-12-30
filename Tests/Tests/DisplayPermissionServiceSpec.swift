@@ -124,18 +124,89 @@ class DisplayPermissionServiceSpec: QuickSpec {
             }
 
             context("when request fails") {
-                beforeEach {
-                    httpSession.responseError = NSError(domain: "config.error.test", code: 1, userInfo: nil)
+
+                context("with non-http error") {
+                    beforeEach {
+                        httpSession.responseError = NSError(domain: "config.error.test", code: 1, userInfo: nil)
+                    }
+
+                    it("will retry once without a delay") {
+                        var requestCount = 0
+                        var response: DisplayPermissionResponse?
+                        httpSession.onCompletedTask = {
+                            requestCount += 1
+                        }
+                        requestQueue.async {
+                            response = service.checkPermission(forCampaign: campaign.data)
+                        }
+                        expect(requestCount).toEventually(equal(2))
+                        expect(response).toNot(beNil()) // response is returned when all calls are finished
+                    }
+
+                    it("will eventually return a default data model") {
+                        waitUntil { done in
+                            requestQueue.async {
+                                let response = service.checkPermission(forCampaign: campaign.data)
+                                expect(response.display).to(beFalse())
+                                expect(response.performPing).to(beFalse())
+                                done()
+                            }
+                        }
+                    }
                 }
 
-                it("will return a default data model") {
-                    waitUntil { done in
-                        requestQueue.async {
-                            let response = service.checkPermission(forCampaign: campaign.data)
-                            expect(response.display).to(beFalse())
-                            expect(response.performPing).to(beFalse())
-                            done()
+                context("with http error") {
+
+                    it("will retry once without a delay for status codes 5xx") {
+                        httpSession.httpResponse = HTTPURLResponse(url: configData.endpoints!.displayPermission!,
+                                                                   statusCode: 500,
+                                                                   httpVersion: nil,
+                                                                   headerFields: nil)
+                        var requestCount = 0
+                        var response: DisplayPermissionResponse?
+                        httpSession.onCompletedTask = {
+                            requestCount += 1
                         }
+                        requestQueue.async {
+                            response = service.checkPermission(forCampaign: campaign.data)
+                        }
+                        expect(requestCount).toEventually(equal(2))
+                        expect(response).toNot(beNil()) // response is returned when all calls are finished
+                    }
+
+                    it("will eventually return a default data model for status codes 5xx") {
+                        httpSession.httpResponse = HTTPURLResponse(url: configData.endpoints!.displayPermission!,
+                                                                   statusCode: 500,
+                                                                   httpVersion: nil,
+                                                                   headerFields: nil)
+                        waitUntil { done in
+                            requestQueue.async {
+                                let response = service.checkPermission(forCampaign: campaign.data)
+                                expect(response.display).to(beFalse())
+                                expect(response.performPing).to(beFalse())
+                                done()
+                            }
+                        }
+                    }
+
+                    it("will return a default data model without reties for status codes 4xx") {
+                        httpSession.httpResponse = HTTPURLResponse(url: configData.endpoints!.displayPermission!,
+                                                                   statusCode: 404,
+                                                                   httpVersion: nil,
+                                                                   headerFields: nil)
+                        var requestCount = 0
+                        httpSession.onCompletedTask = {
+                            requestCount += 1
+                        }
+                        waitUntil { done in
+                            requestQueue.async {
+                                let response = service.checkPermission(forCampaign: campaign.data)
+                                expect(response.display).to(beFalse())
+                                expect(response.performPing).to(beFalse())
+                                done()
+                            }
+                        }
+                        expect(requestCount).to(equal(1))
                     }
                 }
             }

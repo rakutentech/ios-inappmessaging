@@ -5,7 +5,7 @@ import RSDKUtilsMain // SPM version
 import RSDKUtils
 #endif
 
-internal protocol ConfigurationManagerType: AnyObject, ErrorReportable {
+internal protocol ConfigurationManagerType: ErrorReportable {
     func fetchAndSaveConfigData(completion: @escaping (ConfigData) -> Void)
 }
 

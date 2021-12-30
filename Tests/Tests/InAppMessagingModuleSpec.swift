@@ -54,7 +54,8 @@ class InAppMessagingModuleSpec: QuickSpec {
                                                  campaignTriggerAgent: campaignTriggerAgent,
                                                  campaignRepository: campaignRepository,
                                                  router: router,
-                                                 randomizer: randomizer)
+                                                 randomizer: randomizer,
+                                                 displayPermissionService: DisplayPermissionServiceMock())
                 iamModule.delegate = delegate
             }
 

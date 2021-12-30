@@ -13,14 +13,14 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
     override func spec() {
         describe("CampaignDispatcher") {
             var dispatcher: CampaignDispatcher!
-            var permissionService: PermissionServiceMock!
+            var permissionService: DisplayPermissionServiceMock!
             var campaignRepository: CampaignRepositoryMock!
             var delegate: Delegate!
             var router: RouterMock!
             var httpSession: URLSessionMock!
 
             beforeEach {
-                permissionService = PermissionServiceMock()
+                permissionService = DisplayPermissionServiceMock()
                 campaignRepository = CampaignRepositoryMock()
                 router = RouterMock()
                 delegate = Delegate()
@@ -394,16 +394,6 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
                 }
             }
         }
-    }
-}
-
-private class PermissionServiceMock: DisplayPermissionServiceType {
-    var shouldGrantPermission = false
-    var shouldPerformPing = false
-
-    func checkPermission(forCampaign campaign: CampaignData) -> DisplayPermissionResponse {
-        return DisplayPermissionResponse(display: shouldGrantPermission,
-                                         performPing: shouldPerformPing)
     }
 }
 
