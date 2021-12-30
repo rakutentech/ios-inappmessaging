@@ -8,12 +8,12 @@ import class RSDKUtilsMain.AnalyticsBroadcaster
 /// Class represents bootstrap behaviour and main functionality of InAppMessaging.
 internal class InAppMessagingModule: ErrorDelegate, CampaignDispatcherDelegate, UserChangeObserver {
 
-    private var configurationManager: ConfigurationManagerType
-    private var campaignsListManager: CampaignsListManagerType
+    private let configurationManager: ConfigurationManagerType
+    private let campaignsListManager: CampaignsListManagerType
     private let accountRepository: AccountRepositoryType
     private let eventMatcher: EventMatcherType
-    private var readyCampaignDispatcher: CampaignDispatcherType
-    private var impressionService: ImpressionServiceType
+    private let readyCampaignDispatcher: CampaignDispatcherType
+    private let impressionService: ImpressionServiceType
     private let campaignTriggerAgent: CampaignTriggerAgentType
     private let campaignRepository: CampaignRepositoryType
     private let router: RouterType
@@ -35,7 +35,8 @@ internal class InAppMessagingModule: ErrorDelegate, CampaignDispatcherDelegate, 
          campaignTriggerAgent: CampaignTriggerAgentType,
          campaignRepository: CampaignRepositoryType,
          router: RouterType,
-         randomizer: RandomizerType) {
+         randomizer: RandomizerType,
+         displayPermissionService: DisplayPermissionServiceType) {
 
         self.configurationManager = configurationManager
         self.campaignsListManager = campaignsListManager
@@ -51,6 +52,7 @@ internal class InAppMessagingModule: ErrorDelegate, CampaignDispatcherDelegate, 
         self.configurationManager.errorDelegate = self
         self.campaignsListManager.errorDelegate = self
         self.impressionService.errorDelegate = self
+        displayPermissionService.errorDelegate = self
         self.readyCampaignDispatcher.delegate = self
         self.accountRepository.registerAccountUpdateObserver(self)
     }

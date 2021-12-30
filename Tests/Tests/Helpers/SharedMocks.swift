@@ -159,8 +159,13 @@ class MessageMixerServiceMock: MessageMixerServiceType {
 }
 
 class DisplayPermissionServiceMock: DisplayPermissionServiceType {
+    var shouldGrantPermission = true
+    var shouldPerformPing = false
+    weak var errorDelegate: ErrorDelegate?
+
     func checkPermission(forCampaign campaign: CampaignData) -> DisplayPermissionResponse {
-        DisplayPermissionResponse(display: true, performPing: false)
+        DisplayPermissionResponse(display: shouldGrantPermission,
+                                  performPing: shouldPerformPing)
     }
 }
 

@@ -83,7 +83,8 @@ import RSDKUtils
                 let campaignTriggerAgent = dependencyManager.resolve(type: CampaignTriggerAgentType.self),
                 let campaignRepository = dependencyManager.resolve(type: CampaignRepositoryType.self),
                 let router = dependencyManager.resolve(type: RouterType.self),
-                let randomizer = dependencyManager.resolve(type: Randomizer.self) else {
+                let randomizer = dependencyManager.resolve(type: Randomizer.self),
+                let displayPermissionService = dependencyManager.resolve(type: DisplayPermissionServiceType.self) else {
 
                     assertionFailure("In-App Messaging SDK module initialization failure: Dependencies could not be resolved")
                     return
@@ -99,7 +100,8 @@ import RSDKUtils
                                                      campaignTriggerAgent: campaignTriggerAgent,
                                                      campaignRepository: campaignRepository,
                                                      router: router,
-                                                     randomizer: randomizer)
+                                                     randomizer: randomizer,
+                                                     displayPermissionService: displayPermissionService)
             initializedModule?.aggregatedErrorHandler = { error in
                 errorDelegate?.inAppMessagingDidReturnError(error)
             }
