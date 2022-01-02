@@ -63,7 +63,7 @@ private class ErrorReportableTestObject: ErrorReportable {
 private class ErrorReportableDelegate: ErrorDelegate {
     private(set) var receivedError: NSError?
 
-    func didReceiveError(sender: ErrorReportable, error: NSError) {
+    func didReceive(error: NSError) {
         receivedError = error
     }
 }

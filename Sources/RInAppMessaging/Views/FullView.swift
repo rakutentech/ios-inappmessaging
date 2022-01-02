@@ -105,7 +105,6 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
     override func layoutSubviews() {
         super.layoutSubviews()
 
-        updateUIConstants()
         exitButtonYPositionConstraint.constant = uiConstants.exitButtonVerticalOffset
         bodyViewOffsetYConstraint.constant = hasImage ? 0 : uiConstants.bodyViewSafeAreaOffsetY
 
@@ -149,7 +148,6 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         }
 
         setupAccessibility()
-        updateUIConstants()
 
         backgroundView.backgroundColor = uiConstants.backgroundColor ?? viewModel.backgroundColor
 
@@ -160,8 +158,6 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
 
         presenter.logImpression(type: .impression)
     }
-
-    func updateUIConstants() { }
 
     func animateOnShow(completion: @escaping () -> Void) { completion() }
 

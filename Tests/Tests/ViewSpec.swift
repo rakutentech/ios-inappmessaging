@@ -26,19 +26,19 @@ class ViewSpec: QuickSpec {
                 it("will save onDismiss action") {
                     waitUntil { done in
                         let onDismiss: (Bool) -> Void = { _ in done() }
-                        view.show(accessibilityCompatible: false, parentView: parentView, onDismiss: onDismiss)
+                        view.show(parentView: parentView, onDismiss: onDismiss)
                         expect(view.onDismiss).toNot(beNil())
                         view.onDismiss?(true)
                     }
                 }
 
                 it("will call animateOnShow") {
-                    view.show(accessibilityCompatible: false, parentView: parentView, onDismiss: { _ in })
+                    view.show(parentView: parentView, onDismiss: { _ in })
                     expect(view.wasAnimateOnShowCalled).to(beTrue())
                 }
 
                 it("will disable user interaction in parent view for the time of animation") {
-                    view.show(accessibilityCompatible: false, parentView: parentView, onDismiss: { _ in })
+                    view.show(parentView: parentView, onDismiss: { _ in })
                     expect(view.superview?.isUserInteractionEnabled).to(beFalse())
                     expect(view.wasAnimationCompletionCalled).toEventually(beTrue())
                     expect(view.superview?.isUserInteractionEnabled).to(beTrue())
@@ -49,7 +49,7 @@ class ViewSpec: QuickSpec {
 
                 it("will call onDismiss closure with `false` parameter") {
                     waitUntil { done in
-                        view.show(accessibilityCompatible: false, parentView: parentView, onDismiss: { cancelled in
+                        view.show(parentView: parentView, onDismiss: { cancelled in
                             expect(cancelled).to(beFalse())
                             done()
                         })
@@ -58,7 +58,7 @@ class ViewSpec: QuickSpec {
                 }
 
                 it("will remove itself from superview") {
-                    view.show(accessibilityCompatible: false, parentView: parentView, onDismiss: { _ in })
+                    view.show(parentView: parentView, onDismiss: { _ in })
                     expect(view.superview).toNot(beNil())
                     view.dismiss()
                     expect(view.superview).to(beNil())

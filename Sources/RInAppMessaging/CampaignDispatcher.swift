@@ -133,22 +133,26 @@ internal class CampaignDispatcher: CampaignDispatcherType, TaskSchedulable {
 
         }(), completion: { cancelled in
             self.dispatchQueue.async {
-                if cancelled {
-                    self.campaignRepository.incrementImpressionsLeftInCampaign(id: campaign.id)
-                }
-                guard !self.queuedCampaignIDs.isEmpty else {
-                    self.isDispatching = false
-                    return
-                }
-                if cancelled {
-                    self.dispatchNext()
-                } else {
-                    self.scheduleTask(milliseconds: self.delayBeforeNextMessage(for: campaign.data)) {
-                        self.dispatchQueue.async { self.dispatchNext() }
-                    }
-                }
+                self.commitCampaignDisplay(campaign, cancelled: cancelled)
             }
         })
+    }
+
+    private func commitCampaignDisplay(_ campaign: Campaign, cancelled: Bool) {
+        if cancelled {
+            campaignRepository.incrementImpressionsLeftInCampaign(id: campaign.id)
+        }
+        guard !queuedCampaignIDs.isEmpty else {
+            isDispatching = false
+            return
+        }
+        if cancelled {
+            dispatchNext()
+        } else {
+            scheduleTask(milliseconds: delayBeforeNextMessage(for: campaign.data)) {
+                self.dispatchQueue.async { self.dispatchNext() }
+            }
+        }
     }
 
     private func delayBeforeNextMessage(for campaignData: CampaignData) -> Int {

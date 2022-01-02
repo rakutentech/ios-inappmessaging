@@ -31,7 +31,7 @@ internal struct TriggerAttribute: Codable, Equatable {
         name = try container.decode(String.self, forKey: CodingKeys.name).lowercased()
         value = try container.decode(String.self, forKey: CodingKeys.value).lowercased()
         type = try container.decode(AttributeType.self, forKey: CodingKeys.type)
-        `operator` = try container.decode(AttributeOperator.self, forKey: CodingKeys.operator)
+        self.operator = try container.decode(AttributeOperator.self, forKey: CodingKeys.operator)
     }
 
     init(name: String, value: String, type: AttributeType, `operator`: AttributeOperator) {

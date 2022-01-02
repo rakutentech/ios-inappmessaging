@@ -6,8 +6,8 @@ extension UIView {
         for subview in subviews {
             if let iamView = subview as? BaseView {
                 return iamView
-            } else if let iamView = subview.findIAMViewSubview() {
-                return iamView
+            } else if let nestedIAMView = subview.findIAMViewSubview() {
+                return nestedIAMView
             }
         }
 

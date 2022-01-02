@@ -160,7 +160,7 @@ extension InAppMessagingModule {
 
 // MARK: - ErrorDelegate methods
 extension InAppMessagingModule {
-    func didReceiveError(sender: ErrorReportable, error: NSError) {
+    func didReceive(error: NSError) {
         aggregatedErrorHandler?(error)
     }
 }

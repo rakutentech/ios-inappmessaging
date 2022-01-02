@@ -1,7 +1,7 @@
 import class UIKit.UIDevice
 
 struct HeaderAttributesBuilder {
-    private let Keys = Constants.Request.Header.self
+    private typealias Keys = Constants.Request.Header
     private var addedHeaders: [HeaderAttribute] = []
 
     @discardableResult
