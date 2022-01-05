@@ -145,7 +145,7 @@ workflows:
         run_if: '{{getenv "SONAR_API_TOKEN" | ne "" | and (enveq "BITRISE_GIT_BRANCH" "master" | or (enveq "IS_RELEASE_BRANCH" "true") )}}'
         inputs:
         - scanner_properties: |-
-            sonar.sources=Sources
+            sonar.sources=./Sources
             sonar.projectKey=ios-inappmessaging
             sonar.projectName=iOS In-App Messaging SDK
             sonar.host.url=$SONAR_HOST_URL
@@ -153,6 +153,8 @@ workflows:
             sonar.c.file.suffixes=-
             sonar.cpp.file.suffixes=-
             sonar.objc.file.suffixes=-
+            sonar.exclusions=./Tests
+            sonar.coverageReportPaths=./artifacts/coverage/sonarqube-generic-coverage.xml
 
   _report:
     steps:
