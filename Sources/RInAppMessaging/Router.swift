@@ -62,7 +62,7 @@ internal class Router: RouterType {
         }
 
         displayQueue.async {
-            guard let viewConstructor = self.viewConstructor(for: campaign, associatedImageData: associatedImageData) else {
+            guard let viewConstructor = self.createViewConstructor(for: campaign, associatedImageData: associatedImageData) else {
                 completion(true)
                 return
             }
@@ -86,7 +86,7 @@ internal class Router: RouterType {
         }
     }
 
-    private func viewConstructor(for campaign: Campaign, associatedImageData: Data?) -> (() -> BaseView)? {
+    private func createViewConstructor(for campaign: Campaign, associatedImageData: Data?) -> (() -> BaseView)? {
         func getPresenter<T>(type: T.Type) -> T? {
             guard let presenter = self.dependencyManager.resolve(type: type) else {
                 Logger.debug("Error: \(type) couldn't be resolved")
