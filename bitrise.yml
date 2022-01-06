@@ -14,8 +14,8 @@ workflows:
   primary:
     before_run:
     - _setup
-    - _sonarqube
     after_run:
+    - _sonarqube
     - _report
     steps:
     - fastlane@3:
