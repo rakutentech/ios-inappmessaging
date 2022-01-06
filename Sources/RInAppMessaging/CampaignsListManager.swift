@@ -34,6 +34,10 @@ internal class CampaignsListManager: CampaignsListManagerType, TaskSchedulable {
     }
 
     private func pingMixerServer() {
+        guard scheduledTask == nil else {
+            // ping request is already queued
+            return
+        }
 
         let pingResult = messageMixerService.ping()
         let decodedResponse: PingResponse

@@ -123,6 +123,22 @@ class CampaignsListManagerSpec: QuickSpec {
                         manager.refreshList()
                         expect(errorDelegate.wasErrorReceived).to(beTrue())
                     }
+
+                    context("and refreshList was called again") {
+
+                        it("shouldn't call ping if the call is already scheduled (should call only once)") {
+                            messageMixerService.mockedError = .requestError(.unknown)
+                            manager.refreshList()
+                            expect(manager.scheduledTask).toEventuallyNot(beNil())
+
+                            messageMixerService.mockedResponse = PingResponse(nextPingMilliseconds: .max, currentPingMilliseconds: 0, data: [])
+                            messageMixerService.wasPingCalled = false
+                            manager.refreshList()
+                            expect(messageMixerService.wasPingCalled).to(beFalse()) // the above call ignored
+                            expect(messageMixerService.wasPingCalled).toEventually(beTrue()) // scheduled call
+                            expect(manager.scheduledTask).to(beNil())
+                        }
+                    }
                 }
 
                 context("and ping call succeeded") {
