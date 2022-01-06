@@ -8,8 +8,7 @@ internal protocol BaseView: UIView, AlertPresentable {
     var onDismiss: ((_ cancelled: Bool) -> Void)? { get set }
     var basePresenter: BaseViewPresenterType { get }
 
-    func show(accessibilityCompatible: Bool,
-              parentView: UIView,
+    func show(parentView: UIView,
               onDismiss: @escaping (_ cancelled: Bool) -> Void)
     func animateOnShow(completion: @escaping () -> Void)
     func dismiss()
@@ -18,20 +17,10 @@ internal protocol BaseView: UIView, AlertPresentable {
 
 internal extension BaseView {
 
-    func show(accessibilityCompatible: Bool,
-              parentView: UIView,
+    func show(parentView: UIView,
               onDismiss: @escaping ((_ cancelled: Bool) -> Void)) {
 
         self.onDismiss = onDismiss
-        displayView(accessibilityCompatible: accessibilityCompatible, parentView: parentView)
-    }
-
-    func dismiss() {
-        removeFromSuperview()
-        onDismiss?(false)
-    }
-
-    private func displayView(accessibilityCompatible: Bool, parentView: UIView) {
         accessibilityIdentifier = accessibilityIdentifier ?? Self.viewIdentifier
 
         translatesAutoresizingMaskIntoConstraints = false
@@ -43,5 +32,10 @@ internal extension BaseView {
         animateOnShow(completion: {
             parentView.isUserInteractionEnabled = true
         })
+    }
+
+    func dismiss() {
+        removeFromSuperview()
+        onDismiss?(false)
     }
 }

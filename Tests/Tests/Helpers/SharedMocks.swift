@@ -426,7 +426,7 @@ final class LockableTestObject: Lockable {
 final class ErrorDelegateMock: ErrorDelegate {
     private(set) var wasErrorReceived = false
 
-    func didReceiveError(sender: ErrorReportable, error: NSError) {
+    func didReceive(error: NSError) {
         wasErrorReceived = true
     }
 }

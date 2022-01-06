@@ -39,10 +39,10 @@ internal struct Campaign: Codable, Hashable {
 
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        let data = try container.decode(CampaignData.self, forKey: .data)
-        impressionsLeft = (try? container.decode(Int.self, forKey: .impressionsLeft)) ?? data.maxImpressions
+        let decodedData = try container.decode(CampaignData.self, forKey: .data)
+        impressionsLeft = (try? container.decode(Int.self, forKey: .impressionsLeft)) ?? decodedData.maxImpressions
         isOptedOut = (try? container.decode(Bool.self, forKey: .isOptedOut)) ?? false
-        self.data = data
+        self.data = decodedData
     }
 
     func encode(to encoder: Encoder) throws {

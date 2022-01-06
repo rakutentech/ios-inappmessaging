@@ -32,8 +32,9 @@ internal class BaseViewPresenter: BaseViewPresenterType {
         self.campaignTriggerAgent = campaignTriggerAgent
     }
 
-    /// To be called by associated view after init
-    func viewDidInitialize() {}
+    func viewDidInitialize() {
+        // To be called by associated view after init
+    }
 
     func sendImpressions() {
         sendImpressions(for: campaign)

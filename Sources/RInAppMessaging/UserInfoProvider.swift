@@ -33,21 +33,21 @@ internal extension UserInfoProvider {
     /// an array that can be sent to the backend.
     /// - Returns: A list of IDs to send in request bodies.
     var userIdentifiers: [UserIdentifier] {
-        var userIdentifiers = [UserIdentifier]()
+        var identifiers = [UserIdentifier]()
 
         if let idTrackingIdentifier = getIDTrackingIdentifier(), !idTrackingIdentifier.isEmpty {
-            userIdentifiers.append(
+            identifiers.append(
                 UserIdentifier(type: .idTrackingIdentifier, identifier: idTrackingIdentifier)
             )
         }
 
         if let userID = getUserID(), !userID.isEmpty {
-            userIdentifiers.append(
+            identifiers.append(
                 UserIdentifier(type: .userId, identifier: userID)
             )
         }
 
-        return userIdentifiers
+        return identifiers
     }
 }
 
@@ -66,7 +66,8 @@ func == (lhs: UserInfoProvider?, rhs: UserInfoProvider?) -> Bool {
 
 @inlinable
 func != (lhs: UserInfoProvider?, rhs: UserInfoProvider?) -> Bool {
-    !(lhs == rhs)
+    let equalsResult = lhs == rhs
+    return !equalsResult
 }
 
 @inlinable
@@ -79,5 +80,6 @@ func == (lhs: UserInfoProvider, rhs: UserInfoProvider) -> Bool {
 
 @inlinable
 func != (lhs: UserInfoProvider, rhs: UserInfoProvider) -> Bool {
-    !(lhs == rhs)
+    let equalsResult = lhs == rhs
+    return !equalsResult
 }
