@@ -41,15 +41,14 @@ internal extension Bundle {
         module
         #else
 
+        if let resourceBundle = bundle(bundleIdSubstring: "RInAppMessagingResources") {
+            return resourceBundle
+        }
+
         guard let sdkBundleURL = sdk?.resourceURL else {
             return nil
         }
-        // in some cases `resourceURL` returns a path to .framework file and sometimes to the .bundle file inside
-        if sdkBundleURL.pathExtension == "bundle" {
-            return .init(url: sdkBundleURL)
-        } else {
-            return .init(url: sdkBundleURL.appendingPathComponent("RInAppMessagingResources.bundle"))
-        }
+        return .init(url: sdkBundleURL.appendingPathComponent("RInAppMessagingResources.bundle"))
         #endif
     }
 
