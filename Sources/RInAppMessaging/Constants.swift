@@ -71,6 +71,12 @@ internal enum Constants {
             static func setBackOffUpperBoundSeconds(_ bound: Int32) {
                 Randomized.backOffUpperBoundSeconds = bound
             }
+
+            static func setDefaults() {
+                Default.initialRetryDelayMS = Int32(10000)
+                Randomized.initialRetryDelayMS = Int32(60000)
+                Randomized.backOffUpperBoundSeconds = Int32(60)
+            }
         }
     }
 }

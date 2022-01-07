@@ -40,8 +40,7 @@ class CampaignsListManagerSpec: QuickSpec {
                     }
 
                     afterEach {
-                        Constants.Retry.Tests.setInitialDelayMS(10000)
-                        Constants.Retry.Tests.setBackOffUpperBoundSeconds(60)
+                        Constants.Retry.Tests.setDefaults()
                     }
 
                     it("will not retry for .invalidConfiguration error") {
@@ -127,6 +126,7 @@ class CampaignsListManagerSpec: QuickSpec {
                     context("and refreshList was called again") {
 
                         it("shouldn't call ping if the call is already scheduled (should call only once)") {
+                            Constants.Retry.Tests.setInitialDelayMS(2000)
                             messageMixerService.mockedError = .requestError(.unknown)
                             manager.refreshList()
                             expect(manager.scheduledTask).toEventuallyNot(beNil())
@@ -134,9 +134,8 @@ class CampaignsListManagerSpec: QuickSpec {
                             messageMixerService.mockedResponse = PingResponse(nextPingMilliseconds: .max, currentPingMilliseconds: 0, data: [])
                             messageMixerService.wasPingCalled = false
                             manager.refreshList()
-                            expect(messageMixerService.wasPingCalled).to(beFalse()) // the above call ignored
-                            expect(messageMixerService.wasPingCalled).toEventually(beTrue()) // scheduled call
-                            expect(manager.scheduledTask).to(beNil())
+                            expect(messageMixerService.wasPingCalled).toAfterTimeout(beFalse()) // checks if the call above was ignored
+                            expect(messageMixerService.wasPingCalled).toEventually(beTrue(), timeout: .seconds(2)) // scheduled retry call (after 2s)
                         }
                     }
                 }

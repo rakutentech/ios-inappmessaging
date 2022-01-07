@@ -87,8 +87,7 @@ class ConfigurationManagerSpec: QuickSpec {
                     }
 
                     afterEach {
-                        Constants.Retry.Tests.setInitialDelayMS(10000)
-                        Constants.Retry.Tests.setBackOffUpperBoundSeconds(60)
+                        Constants.Retry.Tests.setDefaults()
                     }
 
                     it("should retry") {
