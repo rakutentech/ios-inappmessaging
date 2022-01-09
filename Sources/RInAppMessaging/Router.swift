@@ -78,10 +78,7 @@ internal class Router: RouterType {
 
                 let view = viewConstructor()
                 let parentView = self.findParentView(rootView: rootView)
-                view.show(parentView: parentView,
-                          onDismiss: { cancelled in
-                    completion(cancelled)
-                })
+                view.show(parentView: parentView, onDismiss: completion)
             }
         }
     }

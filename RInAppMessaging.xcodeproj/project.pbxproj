@@ -59,6 +59,7 @@
 		45ADA542247D206B00A9E2A3 /* RouterSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45ADA541247D206B00A9E2A3 /* RouterSpec.swift */; };
 		45AFB2F6245C18660080D21B /* MatchingUtilitySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AFB2F5245C18660080D21B /* MatchingUtilitySpec.swift */; };
 		45AFB308246CFB640080D21B /* LocaleSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AFB307246CFB640080D21B /* LocaleSpec.swift */; };
+		45B3CC8427871C01005BA3F7 /* BundleSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B3CC8327871C01005BA3F7 /* BundleSpec.swift */; };
 		45B5723F25ACE90F005A80F7 /* IntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B5723E25ACE90F005A80F7 /* IntegrationTests.swift */; };
 		45BDFD032421D311004DEA0C /* CampaignsListManagerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45BDFD022421D311004DEA0C /* CampaignsListManagerSpec.swift */; };
 		45BDFD052421EE7B004DEA0C /* SharedMocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45BDFD042421EE7B004DEA0C /* SharedMocks.swift */; };
@@ -162,6 +163,7 @@
 		45ADA541247D206B00A9E2A3 /* RouterSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouterSpec.swift; sourceTree = "<group>"; };
 		45AFB2F5245C18660080D21B /* MatchingUtilitySpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchingUtilitySpec.swift; sourceTree = "<group>"; };
 		45AFB307246CFB640080D21B /* LocaleSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocaleSpec.swift; sourceTree = "<group>"; };
+		45B3CC8327871C01005BA3F7 /* BundleSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BundleSpec.swift; sourceTree = "<group>"; };
 		45B5723C25ACE90F005A80F7 /* IntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		45B5723E25ACE90F005A80F7 /* IntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntegrationTests.swift; sourceTree = "<group>"; };
 		45B5724025ACE90F005A80F7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -368,6 +370,7 @@
 				45B572F625AE2163005A80F7 /* Helpers */,
 				45357AE32457EB49007D8FDC /* Payloads */,
 				C9827557262C423C00476505 /* BackoffSpec.swift */,
+				45B3CC8327871C01005BA3F7 /* BundleSpec.swift */,
 				45563B0624064D78004EAFD3 /* CampaignRepositorySpec.swift */,
 				45BDFD022421D311004DEA0C /* CampaignsListManagerSpec.swift */,
 				D92D1F2122249833008EA748 /* CampaignsValidatorSpec.swift */,
@@ -680,6 +683,7 @@
 				456FE1E72428513200304872 /* ErrorReportableSpec.swift in Sources */,
 				4538BCF6262AE8FA009952BE /* UserDataCacheSpec.swift in Sources */,
 				45BDFD052421EE7B004DEA0C /* SharedMocks.swift in Sources */,
+				45B3CC8427871C01005BA3F7 /* BundleSpec.swift in Sources */,
 				459B228024528A6900D218CE /* ImpressionServiceSpec.swift in Sources */,
 				4557A8B1257E544C00C9D241 /* AccountRepositorySpec.swift in Sources */,
 				D911DC4F211115730082B950 /* ConfigurationSpec.swift in Sources */,
