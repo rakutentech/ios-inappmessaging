@@ -1,4 +1,4 @@
-import class Foundation.DispatchWorkItem
+import Foundation
 
 internal protocol CampaignsListManagerType: ErrorReportable {
     func refreshList()
