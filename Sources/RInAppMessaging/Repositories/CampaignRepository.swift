@@ -118,11 +118,11 @@ internal class CampaignRepository: CampaignRepositoryType {
             }
         }
         campaigns.set(value: updatedCampaigns + testCampaigns)
-        tooltips.set(value: newTooltips)
+        tooltips.set(value: updatedCampaigns)
         saveDataToCache(updatedCampaigns)
         // TOOLTIP: cache tooltips in prod
 
-        // TOOLTIP: makes TooltipDispatcher validate all views against new tooltip list (to be refactored)
+        // TOOLTIP: make TooltipDispatcher validate all views against new tooltip list (to be refactored)
         viewListener.stopListening()
         viewListener.startListening()
     }

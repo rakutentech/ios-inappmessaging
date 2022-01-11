@@ -19,6 +19,7 @@ internal class ExitButton: UIControl {
     override func layoutSubviews() {
         super.layoutSubviews()
         layer.cornerRadius = frame.width / 2
+        xLabel.layer.cornerRadius = frame.width / 2
     }
 
     convenience init() {
@@ -41,9 +42,9 @@ internal class ExitButton: UIControl {
         xLabel.layer.masksToBounds = true
         xLabel.accessibilityIdentifier = "exitButton"
         xLabel.accessibilityTraits = .button
+        xLabel.layer.masksToBounds = true
 
         fontSize = UIFont.systemFontSize
-        layer.masksToBounds = true
         updateColors()
 
         xLabel.translatesAutoresizingMaskIntoConstraints = false

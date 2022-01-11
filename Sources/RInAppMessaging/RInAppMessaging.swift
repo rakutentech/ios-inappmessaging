@@ -84,7 +84,7 @@ import RSDKUtils
                 let campaignRepository = dependencyManager.resolve(type: CampaignRepositoryType.self),
                 let router = dependencyManager.resolve(type: RouterType.self),
                 let randomizer = dependencyManager.resolve(type: Randomizer.self),
-                let displayPermissionService = dependencyManager.resolve(type: DisplayPermissionServiceType.self) else {
+                let displayPermissionService = dependencyManager.resolve(type: DisplayPermissionServiceType.self),
                 let viewListener = dependencyManager.resolve(type: ViewListenerType.self),
                 let _ = dependencyManager.resolve(type: TooltipDispatcherType.self) else {
 

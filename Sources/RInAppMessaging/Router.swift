@@ -153,7 +153,7 @@ internal class Router: RouterType, ViewListenerObserver {
             self.displayedTooltips[identifier]?.removeFromSuperview()
             self.displayedTooltips[identifier] = nil
 
-            let position = tooltipData.position
+            let position = tooltipData.bodyData.position
             let tooltipView = TooltipView(
                 model: TooltipViewModel(
                 position: position,
@@ -167,7 +167,7 @@ internal class Router: RouterType, ViewListenerObserver {
             }
 
             tooltipView.onImageTap = {
-                if let uriToOpen = URL(string: tooltipData.redirectURL ?? "") {
+                if let uriToOpen = URL(string: tooltipData.bodyData.redirectURL ?? "") {
                     UIApplication.shared.open(uriToOpen)
                     onClose()
                 }
@@ -265,7 +265,7 @@ internal class Router: RouterType, ViewListenerObserver {
         return window.bounds.contains(frameInWindow)
     }
 
-    private func updateFrame(targetView: UIView, tooltipView: TooltipView, superview: UIView, position: TooltipData.Position) {
+    private func updateFrame(targetView: UIView, tooltipView: TooltipView, superview: UIView, position: TooltipBodyData.Position) {
         guard targetView.superview != nil else {
             return
         }

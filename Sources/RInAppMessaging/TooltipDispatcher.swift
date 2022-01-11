@@ -55,7 +55,7 @@ internal class TooltipDispatcher: TooltipDispatcherType, TaskSchedulable, ViewLi
             identifier: identifier,
             imageBlob: imageBlob,
             becameVisibleHandler: { tooltipView in
-                guard let autoFadeSeconds = tooltipData.autoFadeSeconds, autoFadeSeconds > 0 else {
+                guard let autoFadeSeconds = tooltipData.bodyData.autoFadeSeconds, autoFadeSeconds > 0 else {
                     return
                 }
                 tooltipView.startAutoFadingIfNeeded(seconds: autoFadeSeconds)
@@ -84,11 +84,11 @@ extension TooltipDispatcher {
                   guard let tooltipData = $0.tooltipData else {
                       return false
                   }
-                  return identifier.contains(tooltipData.uiElementIdentifier)
+                  return identifier.contains(tooltipData.bodyData.uiElementIdentifier)
               })
         else { return }
 
-        guard let resImgUrlString = tooltip.data.messagePayload.resource.imageUrl,
+        guard let resImgUrlString = tooltip.tooltipData?.imageUrl,
               let resImgUrl = URL(string: resImgUrlString) else {
             assertionFailure()
             return

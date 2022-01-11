@@ -12,7 +12,7 @@ internal struct PingResponse: Decodable {
     let data: [Campaign]
 }
 
-internal struct TooltipData: Decodable, Hashable {
+internal struct TooltipBodyData: Decodable, Hashable {
 
     enum Position: String, Decodable {
         case topLeft = "top-left"
@@ -28,16 +28,20 @@ internal struct TooltipData: Decodable, Hashable {
     private enum CodingKeys: String, CodingKey {
         case uiElementIdentifier = "UIElement"
         case position
-        case backgroundColor = "color"
         case redirectURL
-        case autoFadeSeconds = "auto-fade"
+        case autoFadeSeconds = "auto-disappear"
     }
 
     let uiElementIdentifier: String
     let position: Position
-    let backgroundColor: String
     let redirectURL: String?
     let autoFadeSeconds: UInt?
+}
+
+internal struct TooltipData: Hashable {
+    let bodyData: TooltipBodyData
+    let backgroundColor: String
+    let imageUrl: String
 }
 
 internal struct Campaign: Codable, Hashable {
@@ -76,8 +80,12 @@ internal struct Campaign: Codable, Hashable {
         isOptedOut = (try? container.decode(Bool.self, forKey: .isOptedOut)) ?? false
         self.data = decodedData
 
-        if let jsonData = decodedData.messagePayload.messageBody?.data(using: .utf8) {
-            tooltipData = try? JSONDecoder().decode(TooltipData.self, from: jsonData)
+        if let tooltipJsonData = decodedData.messagePayload.messageBody?.data(using: .utf8),
+            let tooltipBodyData = try? JSONDecoder().decode(TooltipBodyData.self, from: tooltipJsonData),
+            let imageUrl = data.messagePayload.resource.imageUrl {
+            tooltipData = TooltipData(bodyData: tooltipBodyData,
+                                      backgroundColor: data.messagePayload.backgroundColor,
+                                      imageUrl: imageUrl)
         } else {
             tooltipData = nil
         }

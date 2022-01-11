@@ -1,7 +1,7 @@
 import UIKit
 
 internal struct TooltipViewModel {
-    let position: TooltipData.Position
+    let position: TooltipBodyData.Position
     let image: UIImage
     let backgroundColor: UIColor
 }
@@ -16,6 +16,8 @@ internal class TooltipView: UIView {
         static let exitButtonTopMargin: CGFloat = -4.0
         static let exitButtonRightMargin: CGFloat = 4.0
         static let exitButtonTouchAreaSize: CGFloat = 44
+        static let shadowRadius: CGFloat = 5.0
+        static let shadowOpacity: Float = 0.75
 
         // The base of the tip (width) in top-left/right and bottom-left/right position
         // gets inside the rectangle that holds the image that way, the base's vertexes are on the rectangle's edges.
@@ -28,7 +30,7 @@ internal class TooltipView: UIView {
                                           height: ceil(tipSize.height / sqrt(2)))
     }
 
-    private let position: TooltipData.Position
+    private let position: TooltipBodyData.Position
     private let imageBgColor: UIColor
     private var autoFadeTimer: Timer?
     private let exitButton = ExitButton()
@@ -64,10 +66,10 @@ internal class TooltipView: UIView {
         clipsToBounds = false
         autoresizingMask = []
 
+        setupShadowOffset()
         layer.shadowColor = UIColor.black.cgColor
-        layer.shadowOffset = .zero
-        layer.shadowRadius = 5
-        layer.shadowOpacity = 0.75
+        layer.shadowRadius = UIConstants.shadowRadius
+        layer.shadowOpacity = UIConstants.shadowOpacity
     }
 
     required init?(coder: NSCoder) {
@@ -174,6 +176,40 @@ internal class TooltipView: UIView {
         layer.shadowPath = path.cgPath
     }
 
+    override func didMoveToSuperview() {
+        super.didMoveToSuperview()
+        guard let superview = superview else {
+            return
+        }
+
+        superview.addSubview(exitButton)
+        var constraints = [
+            exitButton.widthAnchor.constraint(equalToConstant: UIConstants.exitButtonSize),
+            exitButton.heightAnchor.constraint(equalToConstant: UIConstants.exitButtonSize)
+        ]
+
+        if [.left, .topLeft, .bottomLeft].contains(position) {
+            constraints.append(exitButton.rightAnchor.constraint(equalTo: self.leftAnchor,
+                                                                 constant: -UIConstants.exitButtonRightMargin))
+        } else {
+            constraints.append(exitButton.leftAnchor.constraint(equalTo: self.rightAnchor,
+                                                                constant: UIConstants.exitButtonRightMargin))
+        }
+        if [.bottomRight, .bottomLeft].contains(position) {
+            constraints.append(exitButton.bottomAnchor.constraint(equalTo: self.topAnchor,
+                                                                  constant: -UIConstants.exitButtonTopMargin + UIConstants.tipSize.height))
+        }
+        else if position == .bottomCentre {
+            constraints.append(exitButton.bottomAnchor.constraint(equalTo: self.bottomAnchor,
+                                                                  constant: -UIConstants.exitButtonTopMargin + UIConstants.tipSize.height))
+
+        } else {
+            constraints.append(exitButton.bottomAnchor.constraint(equalTo: self.topAnchor,
+                                                                  constant: -UIConstants.exitButtonTopMargin))
+        }
+        NSLayoutConstraint.activate(constraints)
+    }
+
     override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
         if exitButton.isTouchInside(touchPoint: point, from: self, touchAreaSize: UIConstants.exitButtonTouchAreaSize) == true {
             return exitButton
@@ -198,7 +234,7 @@ internal class TooltipView: UIView {
     // MARK: - Private methods
 
     private func setupImageView(image: UIImage,
-                                position: TooltipData.Position,
+                                position: TooltipBodyData.Position,
                                 size: CGSize) {
         let imageView = UIImageView()
         imageView.autoresizingMask = []
@@ -228,39 +264,38 @@ internal class TooltipView: UIView {
 
     private func setupExitButton() {
         exitButton.fontSize = 14.0
-        exitButton.invertedColors = false
+        exitButton.invertedColors = true
         exitButton.addTarget(self, action: #selector(didTapExitButton), for: .touchUpInside)
-
         exitButton.translatesAutoresizingMaskIntoConstraints = false
+
+        exitButton.layer.shadowColor = UIColor.black.cgColor
+        exitButton.layer.shadowRadius = UIConstants.shadowRadius
+        exitButton.layer.shadowOpacity = UIConstants.shadowOpacity
     }
 
-    override func didMoveToSuperview() {
-        super.didMoveToSuperview()
-        guard let superview = superview else {
-            return
+    private func setupShadowOffset() {
+        let shadowOffset: CGSize
+        switch position {
+        case .topRight:
+            shadowOffset = CGSize(width: -1, height: 2)
+        case .right:
+            shadowOffset = CGSize(width: -1, height: 2)
+        case .bottomLeft:
+            shadowOffset = CGSize(width: 1, height: -2)
+        case .bottomCentre:
+            shadowOffset = CGSize(width: 1, height: -2)
+        case .bottomRight:
+            shadowOffset = CGSize(width: -1, height: -2)
+        case .topLeft:
+            shadowOffset = CGSize(width: 1, height: 2)
+        case .topCentre:
+            shadowOffset = CGSize(width: 1, height: 2)
+        case .left:
+            shadowOffset = CGSize(width: 1, height: 2)
         }
 
-        superview.addSubview(exitButton)
-        var constraints = [
-            exitButton.widthAnchor.constraint(equalToConstant: UIConstants.exitButtonSize),
-            exitButton.heightAnchor.constraint(equalToConstant: UIConstants.exitButtonSize)
-        ]
-
-        if [.left, .topLeft, .bottomLeft].contains(position) {
-            constraints.append(exitButton.rightAnchor.constraint(equalTo: self.leftAnchor,
-                                                                 constant: -UIConstants.exitButtonRightMargin))
-        } else {
-            constraints.append(exitButton.leftAnchor.constraint(equalTo: self.rightAnchor,
-                                                                constant: UIConstants.exitButtonRightMargin))
-        }
-        if [.bottomCentre, .bottomRight, .bottomLeft].contains(position) {
-            constraints.append(exitButton.bottomAnchor.constraint(equalTo: self.topAnchor,
-                                                                  constant: -UIConstants.exitButtonTopMargin + UIConstants.tipSize.height))
-        } else {
-            constraints.append(exitButton.bottomAnchor.constraint(equalTo: self.topAnchor,
-                                                                  constant: -UIConstants.exitButtonTopMargin))
-        }
-        NSLayoutConstraint.activate(constraints)
+        exitButton.layer.shadowOffset = shadowOffset
+        layer.shadowOffset = shadowOffset
     }
 
     @objc private func didTapImage() {
