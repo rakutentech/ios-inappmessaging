@@ -6,6 +6,7 @@ internal protocol ViewListenerType: AnyObject {
     func startListening()
     func stopListening()
     func addObserver(_ observer: ViewListenerObserver)
+    func iterateOverDisplayedViews(_ handler: @escaping (_ view: UIView, _ identifier: String, _ stop: inout Bool) -> Void)
 }
 
 internal protocol ViewListenerObserver: AnyObject {
@@ -37,14 +38,9 @@ internal final class ViewListener: ViewListenerType {
             return
         }
 
-        DispatchQueue.main.async {
-            UIApplication.shared.getKeyWindow()?.getAllSubviews().forEach { existingView in
-                guard let identifier = existingView.accessibilityIdentifier, !identifier.isEmpty else {
-                    return
-                }
-                self.observers.forEach {
-                    $0.value?.viewDidMoveToWindow(existingView, identifier: identifier)
-                }
+        iterateOverDisplayedViews { existingView, identifier, _ in
+            self.observers.forEach {
+                $0.value?.viewDidMoveToWindow(existingView, identifier: identifier)
             }
         }
     }
@@ -64,6 +60,24 @@ internal final class ViewListener: ViewListenerType {
 
     func addObserver(_ observer: ViewListenerObserver) {
         observers.append(WeakWrapper(value: observer))
+    }
+
+    func iterateOverDisplayedViews(_ handler: @escaping (UIView, String, inout Bool) -> Void) {
+        DispatchQueue.main.async {
+            guard let allWindowSubviews = UIApplication.shared.getKeyWindow()?.getAllSubviews() else {
+                return
+            }
+            var stop = false
+            for existingView in allWindowSubviews {
+                guard !stop else {
+                    return
+                }
+                guard let identifier = existingView.accessibilityIdentifier, !identifier.isEmpty else {
+                    continue
+                }
+                handler(existingView, identifier, &stop)
+            }
+        }
     }
 
     private func performSwizzling() -> Bool {

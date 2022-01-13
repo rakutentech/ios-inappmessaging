@@ -98,6 +98,10 @@ internal enum MainContainerFactory {
                                   campaignRepository: manager.resolve(type: CampaignRepositoryType.self)!,
                                   viewListener: manager.resolve(type: ViewListenerType.self)!)
             }),
+            ContainerElement(type: TooltipManagerType.self, factory: {
+                TooltipManager(viewListener: manager.resolve(type: ViewListenerType.self)!,
+                               campaignRepository: manager.resolve(type: CampaignRepositoryType.self)!)
+            }),
             ContainerElement(type: ViewListenerType.self, factory: {
                 ViewListener.instance
             })]
@@ -123,6 +127,7 @@ internal enum MainContainerFactory {
             ContainerElement(type: CampaignTriggerAgentType.self, factory: {
                 CampaignTriggerAgent(eventMatcher: manager.resolve(type: EventMatcherType.self)!,
                                      readyCampaignDispatcher: manager.resolve(type: CampaignDispatcherType.self)!,
+                                     tooltipDispatcher: manager.resolve(type: TooltipDispatcherType.self)!,
                                      campaignsValidator: manager.resolve(type: CampaignsValidatorType.self)!)
             }, transient: true)
         ])

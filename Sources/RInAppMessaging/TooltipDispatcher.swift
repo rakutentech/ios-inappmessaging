@@ -2,20 +2,18 @@ import Foundation
 import UIKit
 
 internal protocol TooltipDispatcherType {
-
+    func setNeedsDisplay(tooltip: Campaign)
 }
 
-internal class TooltipDispatcher: TooltipDispatcherType, TaskSchedulable, ViewListenerObserver {
+internal class TooltipDispatcher: TooltipDispatcherType, ViewListenerObserver {
 
     private let router: RouterType
     private let campaignRepository: CampaignRepositoryType
-
-    private(set) var queuedCampaignIDs = [String]()
-    private(set) var isDispatching = false
-
-    weak var delegate: CampaignDispatcherDelegate?
-    var scheduledTask: DispatchWorkItem?
+    private let viewListener: ViewListenerType
+    private let dispatchQueue = DispatchQueue(label: "IAM.TooltipDisplay", qos: .userInteractive)
     private(set) var httpSession: URLSession
+    private(set) var queuedTooltips = Set<Campaign>()
+    private(set) var displayedViews = [UIView]()
 
     init(router: RouterType,
          campaignRepository: CampaignRepositoryType,
@@ -23,6 +21,7 @@ internal class TooltipDispatcher: TooltipDispatcherType, TaskSchedulable, ViewLi
 
         self.router = router
         self.campaignRepository = campaignRepository
+        self.viewListener = viewListener
 
         let sessionConfig = URLSessionConfiguration.default
         sessionConfig.timeoutIntervalForRequest = Constants.CampaignMessage.imageRequestTimeoutSeconds
@@ -38,30 +37,56 @@ internal class TooltipDispatcher: TooltipDispatcherType, TaskSchedulable, ViewLi
         viewListener.addObserver(self)
     }
 
+    func setNeedsDisplay(tooltip: Campaign) {
+        dispatchQueue.async {
+            self.queuedTooltips.insert(tooltip)
+            self.findViewAndDisplay(tooltip: tooltip)
+        }
+    }
+
+    private func findViewAndDisplay(tooltip: Campaign) {
+        guard let tooltipData = tooltip.tooltipData else {
+            return
+        }
+        viewListener.iterateOverDisplayedViews { view, identifier, stop in
+            if identifier.contains(tooltipData.bodyData.uiElementIdentifier) {
+                stop = true
+                self.displayTooltip(tooltip, targetView: view, identifier: identifier)
+            }
+        }
+    }
+
     private func displayTooltip(_ tooltip: Campaign,
                                 targetView: UIView,
-                                identifier: String,
-                                imageBlob: Data) {
-        guard tooltip.impressionsLeft > 0,
-              let tooltipData = tooltip.tooltipData
+                                identifier: String) {
+        guard let tooltipData = tooltip.tooltipData,
+              let resImgUrlString = tooltip.tooltipData?.imageUrl,
+              let resImgUrl = URL(string: resImgUrlString)
         else {
-            // TOOLTIP: dates? display premission?
+            // TOOLTIP: display premission?
             return
         }
 
-        router.displayTooltip(
-            tooltipData,
-            targetView: targetView,
-            identifier: identifier,
-            imageBlob: imageBlob,
-            becameVisibleHandler: { tooltipView in
-                guard let autoFadeSeconds = tooltipData.bodyData.autoFadeSeconds, autoFadeSeconds > 0 else {
-                    return
-                }
-                tooltipView.startAutoFadingIfNeeded(seconds: autoFadeSeconds)
-            }, completion: {
-                self.campaignRepository.decrementImpressionsLeftInCampaign(id: tooltip.id)
-            })
+        data(from: resImgUrl) { imageBlob in
+            guard let imageBlob = imageBlob else {
+                // TOOLTIP: add retry?
+                return
+            }
+            self.router.displayTooltip(
+                tooltipData,
+                targetView: targetView,
+                identifier: identifier,
+                imageBlob: imageBlob,
+                becameVisibleHandler: { tooltipView in
+                    guard let autoFadeSeconds = tooltipData.bodyData.autoFadeSeconds, autoFadeSeconds > 0 else {
+                        return
+                    }
+                    tooltipView.startAutoFadingIfNeeded(seconds: autoFadeSeconds)
+                }, completion: {
+                    self.campaignRepository.decrementImpressionsLeftInCampaign(id: tooltip.id)
+                    self.queuedTooltips.remove(tooltip)
+                })
+        }
     }
 
     private func data(from url: URL, completion: @escaping (Data?) -> Void) {
@@ -80,7 +105,7 @@ extension TooltipDispatcher {
 
     func viewDidChangeSubview(_ view: UIView, identifier: String) {
         guard view.superview != nil,
-              let tooltip = campaignRepository.tooltipsList.first(where: {
+              let tooltip = queuedTooltips.first(where: {
                   guard let tooltipData = $0.tooltipData else {
                       return false
                   }
@@ -88,18 +113,10 @@ extension TooltipDispatcher {
               })
         else { return }
 
-        guard let resImgUrlString = tooltip.tooltipData?.imageUrl,
-              let resImgUrl = URL(string: resImgUrlString) else {
-            assertionFailure()
-            return
-        }
-
-        data(from: resImgUrl) { imgBlob in
-            guard let imgBlob = imgBlob else {
-                // TOOLTIP: add retry?
-                return
-            }
-            self.displayTooltip(tooltip, targetView: view, identifier: identifier, imageBlob: imgBlob)
+        // refresh currently displayed tooltip or
+        // restore tooltip if view appeared again
+        dispatchQueue.async {
+            self.displayTooltip(tooltip, targetView: view, identifier: identifier)
         }
     }
 

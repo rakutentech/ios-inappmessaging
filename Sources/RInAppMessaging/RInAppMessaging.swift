@@ -86,7 +86,7 @@ import RSDKUtils
                 let randomizer = dependencyManager.resolve(type: Randomizer.self),
                 let displayPermissionService = dependencyManager.resolve(type: DisplayPermissionServiceType.self),
                 let viewListener = dependencyManager.resolve(type: ViewListenerType.self),
-                let _ = dependencyManager.resolve(type: TooltipDispatcherType.self) else {
+                let _ = dependencyManager.resolve(type: TooltipManagerType.self) else {
 
                     assertionFailure("In-App Messaging SDK module initialization failure: Dependencies could not be resolved")
                     return

@@ -50,19 +50,20 @@ internal class CampaignRepository: CampaignRepositoryType {
 
     private let userDataCache: UserDataCacheable
     private let accountRepository: AccountRepositoryType
-    private let campaigns = LockableObject([Campaign]())
+    private let campaignsAndTooltips = LockableObject([Campaign]())
     private let tooltips = LockableObject([Campaign]())
     private(set) var lastSyncInMilliseconds: Int64?
     private let viewListener: ViewListenerType
 
     var list: [Campaign] {
-        campaigns.get()
+        campaignsAndTooltips.get()
     }
+    /// A subset of `list`
     var tooltipsList: [Campaign] {
         tooltips.get()
     }
     var resourcesToLock: [LockableResource] {
-        [campaigns, tooltips]
+        [campaignsAndTooltips, tooltips]
     }
 
     init(userDataCache: UserDataCacheable, accountRepository: AccountRepositoryType, viewListener: ViewListenerType) {
@@ -75,17 +76,10 @@ internal class CampaignRepository: CampaignRepositoryType {
 
     func syncWith(list: [Campaign], timestampMilliseconds: Int64) {
         lastSyncInMilliseconds = timestampMilliseconds
-        let oldList = campaigns.get() + tooltips.get()
-        var updatedCampaigns = [Campaign]()
-        var updatedTooltips = [Campaign]()
+        let oldList = campaignsAndTooltips.get()
+        var updatedList = [Campaign]()
 
-        let (testCampaigns, newCampaigns, newTooltips) = list.reduce(into: ([Campaign](), [Campaign](), [Campaign]())) { partialResult, campaign in
-            guard !campaign.data.messagePayload.title.hasPrefix("[ToolTip]") else {
-                if campaign.tooltipData != nil {
-                    partialResult.2.append(campaign)
-                }
-                return
-            }
+        let (testCampaigns, newList) = list.reduce(into: ([Campaign](), [Campaign]())) { partialResult, campaign in
             guard !campaign.data.isTest else {
                 partialResult.0.append(campaign)
                 return
@@ -95,7 +89,7 @@ internal class CampaignRepository: CampaignRepositoryType {
         }
 
         let retainImpressionsLeftValue = false // Left for feature flag functionality
-        (newCampaigns + newTooltips).forEach { newCampaign in
+        newList.forEach { newCampaign in
             var updatedCampaign = newCampaign
             if let oldCampaign = oldList.first(where: { $0.id == newCampaign.id }) {
                 updatedCampaign = Campaign.updatedCampaign(updatedCampaign, asOptedOut: oldCampaign.isOptedOut)
@@ -111,16 +105,11 @@ internal class CampaignRepository: CampaignRepositoryType {
                     updatedCampaign = Campaign.updatedCampaign(updatedCampaign, withImpressionLeft: newImpressionsLeft)
                 }
             }
-            if updatedCampaign.isTooltip {
-                updatedTooltips.append(updatedCampaign)
-            } else {
-                updatedCampaigns.append(updatedCampaign)
-            }
+            updatedList.append(updatedCampaign)
         }
-        campaigns.set(value: updatedCampaigns + testCampaigns)
-        tooltips.set(value: updatedCampaigns)
-        saveDataToCache(updatedCampaigns)
-        // TOOLTIP: cache tooltips in prod
+        campaignsAndTooltips.set(value: updatedList + testCampaigns)
+        tooltips.set(value: (updatedList + testCampaigns).filter({ $0.isTooltip }))
+        saveDataToCache(updatedList)
 
         // TOOLTIP: make TooltipDispatcher validate all views against new tooltip list (to be refactored)
         viewListener.stopListening()
@@ -129,7 +118,7 @@ internal class CampaignRepository: CampaignRepositoryType {
 
     @discardableResult
     func optOutCampaign(_ campaign: Campaign) -> Campaign? {
-        var newList = campaigns.get()
+        var newList = campaignsAndTooltips.get()
         guard let index = newList.firstIndex(where: { $0.id == campaign.id }) else {
             Logger.debug("Campaign \(campaign.id) cannot be updated - not found in repository")
             return nil
@@ -137,7 +126,7 @@ internal class CampaignRepository: CampaignRepositoryType {
 
         let updatedCampaign = Campaign.updatedCampaign(campaign, asOptedOut: true)
         newList[index] = updatedCampaign
-        campaigns.set(value: newList)
+        campaignsAndTooltips.set(value: newList)
 
         if !campaign.data.isTest {
             saveDataToCache(newList)
@@ -151,11 +140,7 @@ internal class CampaignRepository: CampaignRepositoryType {
         guard let campaign = findCampaign(withID: id) else {
             return nil
         }
-        if campaign.isTooltip {
-            return updateImpressionsLeftInTooltip(campaign, newValue: max(0, campaign.impressionsLeft - 1))
-        } else {
-            return updateImpressionsLeftInCampaign(campaign, newValue: max(0, campaign.impressionsLeft - 1))
-        }
+        return updateImpressionsLeftInCampaign(campaign, newValue: max(0, campaign.impressionsLeft - 1))
     }
 
     @discardableResult
@@ -163,11 +148,7 @@ internal class CampaignRepository: CampaignRepositoryType {
         guard let campaign = findCampaign(withID: id) else {
             return nil
         }
-        if campaign.isTooltip {
-            return updateImpressionsLeftInTooltip(campaign, newValue: campaign.impressionsLeft + 1)
-        } else {
-            return updateImpressionsLeftInCampaign(campaign, newValue: campaign.impressionsLeft + 1)
-        }
+        return updateImpressionsLeftInCampaign(campaign, newValue: campaign.impressionsLeft + 1)
     }
 
     func loadCachedData(syncWithLastUserData: Bool) {
@@ -181,7 +162,7 @@ internal class CampaignRepository: CampaignRepositoryType {
                 }
             })
         }
-        campaigns.set(value: cachedData)
+        campaignsAndTooltips.set(value: cachedData)
     }
 
     func clearLastUserData() {
@@ -191,11 +172,11 @@ internal class CampaignRepository: CampaignRepositoryType {
     // MARK: - Helpers
 
     private func findCampaign(withID id: String) -> Campaign? {
-        (campaigns.get() + tooltips.get()).first(where: { $0.id == id })
+        (campaignsAndTooltips.get() + tooltips.get()).first(where: { $0.id == id })
     }
 
     private func updateImpressionsLeftInCampaign(_ campaign: Campaign, newValue: Int) -> Campaign? {
-        var newList = campaigns.get()
+        var newList = campaignsAndTooltips.get()
         guard let index = newList.firstIndex(where: { $0.id == campaign.id }) else {
             Logger.debug("Campaign \(campaign.id) could not be updated - not found in the repository")
             assertionFailure()
@@ -204,7 +185,7 @@ internal class CampaignRepository: CampaignRepositoryType {
 
         let updatedCampaign = Campaign.updatedCampaign(campaign, withImpressionLeft: newValue)
         newList[index] = updatedCampaign
-        campaigns.set(value: newList)
+        campaignsAndTooltips.set(value: newList)
 
         if !campaign.data.isTest {
             saveDataToCache(newList)
@@ -213,25 +194,7 @@ internal class CampaignRepository: CampaignRepositoryType {
         return updatedCampaign
     }
 
-    private func updateImpressionsLeftInTooltip(_ campaign: Campaign, newValue: Int) -> Campaign? {
-        var list = tooltips.get()
-        guard let index = list.firstIndex(where: { $0.id == campaign.id }) else {
-            Logger.debug("Tooltip \(campaign.id) could not be updated - not found in the repository")
-            assertionFailure()
-            return nil
-        }
-
-        let updatedCampaign = Campaign.updatedCampaign(campaign, withImpressionLeft: newValue)
-        list[index] = updatedCampaign
-        tooltips.set(value: list)
-
-        // TOOLTIP: save to cache in prod
-
-        return updatedCampaign
-    }
-
     private func saveDataToCache(_ list: [Campaign]) {
-        // TOOLTIP: include tooltips in prod
         let user = accountRepository.getUserIdentifiers()
         userDataCache.cacheCampaignData(list, userIdentifiers: user)
         userDataCache.cacheCampaignData(list, userIdentifiers: CampaignRepository.lastUser)

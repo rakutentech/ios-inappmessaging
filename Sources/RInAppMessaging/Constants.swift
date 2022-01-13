@@ -28,6 +28,7 @@ internal enum Constants {
         static let purchaseSuccessful = "purchase_successful"
         static let invalid = "invalid"
         static let custom = "custom"
+        static let viewAppeared = "view_appeared"
     }
 
     enum File {

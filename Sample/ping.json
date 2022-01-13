@@ -11,16 +11,9 @@
                 "triggers": [
                     {
                         "type": 1,
-                        "eventType": 4,
-                        "eventName": "second activity",
-                        "attributes": [
-                            {
-                                "name": "click",
-                                "value": "true",
-                                "type": 4,
-                                "operator": 1
-                            }
-                        ]
+                        "eventType": 1,
+                        "eventName": "app_start",
+                        "attributes": []
                     }
                 ],
                 "messagePayload": {
@@ -47,39 +40,7 @@
                             "html": false
                         },
                         "controlSettings": {
-                            "buttons": [
-                                {
-                                    "buttonText": "btn1",
-                                    "buttonTextColor": "#000000",
-                                    "buttonBackgroundColor": "#ffffff",
-                                    "buttonBehavior": {
-                                        "action": 3,
-                                        "uri": null
-                                    }
-                                },
-                                {
-                                    "buttonText": "btn2",
-                                    "buttonTextColor": "#000000",
-                                    "buttonBackgroundColor": "#ffffff",
-                                    "buttonBehavior": {
-                                        "action": 3,
-                                        "uri": null
-                                    },
-                                    "campaignTrigger": {
-                                        "type": 1,
-                                        "eventType": 4,
-                                        "eventName": "second activity",
-                                        "attributes": [
-                                            {
-                                                "name": "click",
-                                                "value": "true",
-                                                "type": 4,
-                                                "operator": 1
-                                            }
-                                        ]
-                                    }
-                                }
-                            ]
+                            "buttons": []
                         }
                     }
                 }
@@ -94,16 +55,9 @@
                 "triggers": [
                     {
                         "type": 1,
-                        "eventType": 4,
-                        "eventName": "second activity",
-                        "attributes": [
-                            {
-                                "name": "click",
-                                "value": "true",
-                                "type": 4,
-                                "operator": 1
-                            }
-                        ]
+                        "eventType": 1,
+                        "eventName": "app_start",
+                        "attributes": []
                     }
                 ],
                 "messagePayload": {
@@ -130,39 +84,7 @@
                             "html": false
                         },
                         "controlSettings": {
-                            "buttons": [
-                                {
-                                    "buttonText": "btn1",
-                                    "buttonTextColor": "#000000",
-                                    "buttonBackgroundColor": "#ffffff",
-                                    "buttonBehavior": {
-                                        "action": 3,
-                                        "uri": null
-                                    }
-                                },
-                                {
-                                    "buttonText": "btn2",
-                                    "buttonTextColor": "#000000",
-                                    "buttonBackgroundColor": "#ffffff",
-                                    "buttonBehavior": {
-                                        "action": 3,
-                                        "uri": null
-                                    },
-                                    "campaignTrigger": {
-                                        "type": 1,
-                                        "eventType": 4,
-                                        "eventName": "second activity",
-                                        "attributes": [
-                                            {
-                                                "name": "click",
-                                                "value": "true",
-                                                "type": 4,
-                                                "operator": 1
-                                            }
-                                        ]
-                                    }
-                                }
-                            ]
+                            "buttons": []
                         }
                     }
                 }
@@ -177,16 +99,9 @@
                 "triggers": [
                     {
                         "type": 1,
-                        "eventType": 4,
-                        "eventName": "second activity",
-                        "attributes": [
-                            {
-                                "name": "click",
-                                "value": "true",
-                                "type": 4,
-                                "operator": 1
-                            }
-                        ]
+                        "eventType": 1,
+                        "eventName": "app_start",
+                        "attributes": []
                     }
                 ],
                 "messagePayload": {
@@ -213,39 +128,7 @@
                             "html": false
                         },
                         "controlSettings": {
-                            "buttons": [
-                                {
-                                    "buttonText": "btn1",
-                                    "buttonTextColor": "#000000",
-                                    "buttonBackgroundColor": "#ffffff",
-                                    "buttonBehavior": {
-                                        "action": 3,
-                                        "uri": null
-                                    }
-                                },
-                                {
-                                    "buttonText": "btn2",
-                                    "buttonTextColor": "#000000",
-                                    "buttonBackgroundColor": "#ffffff",
-                                    "buttonBehavior": {
-                                        "action": 3,
-                                        "uri": null
-                                    },
-                                    "campaignTrigger": {
-                                        "type": 1,
-                                        "eventType": 4,
-                                        "eventName": "second activity",
-                                        "attributes": [
-                                            {
-                                                "name": "click",
-                                                "value": "true",
-                                                "type": 4,
-                                                "operator": 1
-                                            }
-                                        ]
-                                    }
-                                }
-                            ]
+                            "buttons": []
                         }
                     }
                 }
@@ -260,16 +143,9 @@
                 "triggers": [
                     {
                         "type": 1,
-                        "eventType": 4,
-                        "eventName": "second activity",
-                        "attributes": [
-                            {
-                                "name": "click",
-                                "value": "true",
-                                "type": 4,
-                                "operator": 1
-                            }
-                        ]
+                        "eventType": 1,
+                        "eventName": "app_start",
+                        "attributes": []
                     }
                 ],
                 "messagePayload": {
@@ -296,39 +172,7 @@
                             "html": false
                         },
                         "controlSettings": {
-                            "buttons": [
-                                {
-                                    "buttonText": "btn1",
-                                    "buttonTextColor": "#000000",
-                                    "buttonBackgroundColor": "#ffffff",
-                                    "buttonBehavior": {
-                                        "action": 3,
-                                        "uri": null
-                                    }
-                                },
-                                {
-                                    "buttonText": "btn2",
-                                    "buttonTextColor": "#000000",
-                                    "buttonBackgroundColor": "#ffffff",
-                                    "buttonBehavior": {
-                                        "action": 3,
-                                        "uri": null
-                                    },
-                                    "campaignTrigger": {
-                                        "type": 1,
-                                        "eventType": 4,
-                                        "eventName": "second activity",
-                                        "attributes": [
-                                            {
-                                                "name": "click",
-                                                "value": "true",
-                                                "type": 4,
-                                                "operator": 1
-                                            }
-                                        ]
-                                    }
-                                }
-                            ]
+                            "buttons": []
                         }
                     }
                 }
@@ -343,16 +187,9 @@
                 "triggers": [
                     {
                         "type": 1,
-                        "eventType": 4,
-                        "eventName": "second activity",
-                        "attributes": [
-                            {
-                                "name": "click",
-                                "value": "true",
-                                "type": 4,
-                                "operator": 1
-                            }
-                        ]
+                        "eventType": 1,
+                        "eventName": "app_start",
+                        "attributes": []
                     }
                 ],
                 "messagePayload": {
@@ -379,39 +216,7 @@
                             "html": false
                         },
                         "controlSettings": {
-                            "buttons": [
-                                {
-                                    "buttonText": "btn1",
-                                    "buttonTextColor": "#000000",
-                                    "buttonBackgroundColor": "#ffffff",
-                                    "buttonBehavior": {
-                                        "action": 3,
-                                        "uri": null
-                                    }
-                                },
-                                {
-                                    "buttonText": "btn2",
-                                    "buttonTextColor": "#000000",
-                                    "buttonBackgroundColor": "#ffffff",
-                                    "buttonBehavior": {
-                                        "action": 3,
-                                        "uri": null
-                                    },
-                                    "campaignTrigger": {
-                                        "type": 1,
-                                        "eventType": 4,
-                                        "eventName": "second activity",
-                                        "attributes": [
-                                            {
-                                                "name": "click",
-                                                "value": "true",
-                                                "type": 4,
-                                                "operator": 1
-                                            }
-                                        ]
-                                    }
-                                }
-                            ]
+                            "buttons": []
                         }
                     }
                 }
@@ -426,16 +231,9 @@
                 "triggers": [
                     {
                         "type": 1,
-                        "eventType": 4,
-                        "eventName": "second activity",
-                        "attributes": [
-                            {
-                                "name": "click",
-                                "value": "true",
-                                "type": 4,
-                                "operator": 1
-                            }
-                        ]
+                        "eventType": 1,
+                        "eventName": "app_start",
+                        "attributes": []
                     }
                 ],
                 "messagePayload": {
@@ -462,39 +260,7 @@
                             "html": false
                         },
                         "controlSettings": {
-                            "buttons": [
-                                {
-                                    "buttonText": "btn1",
-                                    "buttonTextColor": "#000000",
-                                    "buttonBackgroundColor": "#ffffff",
-                                    "buttonBehavior": {
-                                        "action": 3,
-                                        "uri": null
-                                    }
-                                },
-                                {
-                                    "buttonText": "btn2",
-                                    "buttonTextColor": "#000000",
-                                    "buttonBackgroundColor": "#ffffff",
-                                    "buttonBehavior": {
-                                        "action": 3,
-                                        "uri": null
-                                    },
-                                    "campaignTrigger": {
-                                        "type": 1,
-                                        "eventType": 4,
-                                        "eventName": "second activity",
-                                        "attributes": [
-                                            {
-                                                "name": "click",
-                                                "value": "true",
-                                                "type": 4,
-                                                "operator": 1
-                                            }
-                                        ]
-                                    }
-                                }
-                            ]
+                            "buttons": []
                         }
                     }
                 }
@@ -509,16 +275,9 @@
                 "triggers": [
                     {
                         "type": 1,
-                        "eventType": 4,
-                        "eventName": "second activity",
-                        "attributes": [
-                            {
-                                "name": "click",
-                                "value": "true",
-                                "type": 4,
-                                "operator": 1
-                            }
-                        ]
+                        "eventType": 1,
+                        "eventName": "app_start",
+                        "attributes": []
                     }
                 ],
                 "messagePayload": {
@@ -545,39 +304,7 @@
                             "html": false
                         },
                         "controlSettings": {
-                            "buttons": [
-                                {
-                                    "buttonText": "btn1",
-                                    "buttonTextColor": "#000000",
-                                    "buttonBackgroundColor": "#ffffff",
-                                    "buttonBehavior": {
-                                        "action": 3,
-                                        "uri": null
-                                    }
-                                },
-                                {
-                                    "buttonText": "btn2",
-                                    "buttonTextColor": "#000000",
-                                    "buttonBackgroundColor": "#ffffff",
-                                    "buttonBehavior": {
-                                        "action": 3,
-                                        "uri": null
-                                    },
-                                    "campaignTrigger": {
-                                        "type": 1,
-                                        "eventType": 4,
-                                        "eventName": "second activity",
-                                        "attributes": [
-                                            {
-                                                "name": "click",
-                                                "value": "true",
-                                                "type": 4,
-                                                "operator": 1
-                                            }
-                                        ]
-                                    }
-                                }
-                            ]
+                            "buttons": []
                         }
                     }
                 }
@@ -592,16 +319,9 @@
                 "triggers": [
                     {
                         "type": 1,
-                        "eventType": 4,
-                        "eventName": "second activity",
-                        "attributes": [
-                            {
-                                "name": "click",
-                                "value": "true",
-                                "type": 4,
-                                "operator": 1
-                            }
-                        ]
+                        "eventType": 1,
+                        "eventName": "app_start",
+                        "attributes": []
                     }
                 ],
                 "messagePayload": {
@@ -628,39 +348,7 @@
                             "html": false
                         },
                         "controlSettings": {
-                            "buttons": [
-                                {
-                                    "buttonText": "btn1",
-                                    "buttonTextColor": "#000000",
-                                    "buttonBackgroundColor": "#ffffff",
-                                    "buttonBehavior": {
-                                        "action": 3,
-                                        "uri": null
-                                    }
-                                },
-                                {
-                                    "buttonText": "btn2",
-                                    "buttonTextColor": "#000000",
-                                    "buttonBackgroundColor": "#ffffff",
-                                    "buttonBehavior": {
-                                        "action": 3,
-                                        "uri": null
-                                    },
-                                    "campaignTrigger": {
-                                        "type": 1,
-                                        "eventType": 4,
-                                        "eventName": "second activity",
-                                        "attributes": [
-                                            {
-                                                "name": "click",
-                                                "value": "true",
-                                                "type": 4,
-                                                "operator": 1
-                                            }
-                                        ]
-                                    }
-                                }
-                            ]
+                            "buttons": []
                         }
                     }
                 }

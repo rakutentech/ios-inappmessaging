@@ -76,6 +76,10 @@ internal class TooltipView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
+    deinit {
+        exitButton.removeFromSuperview()
+    }
+
     // MARK: - UIView overrides
 
     override func draw(_ rect: CGRect) {
@@ -182,6 +186,7 @@ internal class TooltipView: UIView {
             return
         }
 
+        exitButton.removeFromSuperview()
         superview.addSubview(exitButton)
         var constraints = [
             exitButton.widthAnchor.constraint(equalToConstant: UIConstants.exitButtonSize),
@@ -208,6 +213,11 @@ internal class TooltipView: UIView {
                                                                   constant: -UIConstants.exitButtonTopMargin))
         }
         NSLayoutConstraint.activate(constraints)
+    }
+
+    override func removeFromSuperview() {
+        super.removeFromSuperview()
+        exitButton.removeFromSuperview()
     }
 
     override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
