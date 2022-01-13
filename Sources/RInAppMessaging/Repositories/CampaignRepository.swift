@@ -112,6 +112,7 @@ internal class CampaignRepository: CampaignRepositoryType {
         saveDataToCache(updatedList)
 
         // TOOLTIP: make TooltipDispatcher validate all views against new tooltip list (to be refactored)
+        // EDIT: This is probably not needed anymore - to be tested
         viewListener.stopListening()
         viewListener.startListening()
     }

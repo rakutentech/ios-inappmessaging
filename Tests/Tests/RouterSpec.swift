@@ -32,7 +32,7 @@ class RouterSpec: QuickSpec {
                 let dependencyManager = TypedDependencyManager()
                 dependencyManager.appendContainer(MainContainerFactory.create(dependencyManager: dependencyManager))
                 dependencyManager.appendContainer(mockContainer())
-                router = Router(dependencyManager: dependencyManager)
+                router = Router(dependencyManager: dependencyManager, viewListener: ViewListenerMock())
             }
 
             afterEach {

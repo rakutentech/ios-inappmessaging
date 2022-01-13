@@ -13,7 +13,8 @@ class CampaignsValidatorSpec: QuickSpec {
 
         beforeEach {
             campaignRepository = CampaignRepository(userDataCache: UserDataCacheMock(),
-                                                    accountRepository: AccountRepository(userDataCache: UserDataCacheMock()))
+                                                    accountRepository: AccountRepository(userDataCache: UserDataCacheMock()),
+                                                    viewListener: ViewListenerMock())
             eventMatcher = EventMatcher(campaignRepository: campaignRepository)
             campaignsValidator = CampaignsValidator(
                 campaignRepository: campaignRepository,

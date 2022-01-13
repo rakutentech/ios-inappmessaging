@@ -39,12 +39,16 @@ class CampaignRepositorySpec: QuickSpec {
                 userDataCache = UserDataCacheMock()
                 accountRepository = AccountRepository(userDataCache: userDataCache)
                 accountRepository.setPreference(userInfoProvider)
-                campaignRepository = CampaignRepository(userDataCache: userDataCache, accountRepository: accountRepository)
+                campaignRepository = CampaignRepository(userDataCache: userDataCache,
+                                                        accountRepository: accountRepository,
+                                                        viewListener: ViewListenerMock())
             }
 
             it("will load last user cache data during initialization") {
                 userDataCache.lastUserDataMock = UserDataCacheContainer(campaignData: [campaign])
-                let campaignRepository = CampaignRepository(userDataCache: userDataCache, accountRepository: accountRepository)
+                let campaignRepository = CampaignRepository(userDataCache: userDataCache,
+                                                            accountRepository: accountRepository,
+                                                            viewListener: ViewListenerMock())
                 expect(campaignRepository.list).to(equal([campaign]))
             }
 

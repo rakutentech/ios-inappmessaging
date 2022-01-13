@@ -20,6 +20,7 @@ class CampaignsValidatorMock: CampaignsValidatorType {
 
 class CampaignRepositoryMock: CampaignRepositoryType {
     var list: [Campaign] = []
+    var tooltipsList: [Campaign] = []
     var lastSyncInMilliseconds: Int64?
     var resourcesToLock: [LockableResource] = []
 
@@ -308,6 +309,14 @@ class RouterMock: RouterType {
         }
     }
 
+    func displayTooltip(_ tooltipData: TooltipData,
+                        targetView: UIView,
+                        identifier: String,
+                        imageBlob: Data,
+                        becameVisibleHandler: @escaping (TooltipView) -> Void, completion: @escaping () -> Void) {
+
+    }
+
     func discardDisplayedCampaign() {
         wasDiscardCampaignCalled = true
     }
@@ -386,15 +395,6 @@ class AccountRepositorySpy: AccountRepositoryType {
     }
 }
 
-extension EndpointURL {
-    static var empty: Self {
-        let emptyURL = URL(string: "about:blank")!
-        return EndpointURL(ping: emptyURL,
-                           displayPermission: emptyURL,
-                           impression: emptyURL)
-    }
-}
-
 final class RandomizerMock: RandomizerType {
     var returnedValue: UInt = 0
     var dice: UInt {
@@ -428,5 +428,38 @@ final class ErrorDelegateMock: ErrorDelegate {
 
     func didReceive(error: NSError) {
         wasErrorReceived = true
+    }
+}
+
+final class TooltipDispatcherMock: TooltipDispatcherType {
+    func setNeedsDisplay(tooltip: Campaign) {
+
+    }
+}
+
+final class ViewListenerMock: ViewListenerType {
+    func startListening() {
+
+    }
+
+    func stopListening() {
+
+    }
+
+    func addObserver(_ observer: ViewListenerObserver) {
+
+    }
+
+    func iterateOverDisplayedViews(_ handler: @escaping (UIView, String, inout Bool) -> Void) {
+
+    }
+}
+
+extension EndpointURL {
+    static var empty: Self {
+        let emptyURL = URL(string: "about:blank")!
+        return EndpointURL(ping: emptyURL,
+                           displayPermission: emptyURL,
+                           impression: emptyURL)
     }
 }

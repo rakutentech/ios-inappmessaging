@@ -40,6 +40,7 @@ class InAppMessagingModuleSpec: QuickSpec {
                 readyCampaignDispatcher = CampaignDispatcherMock()
                 campaignTriggerAgent = CampaignTriggerAgent(eventMatcher: eventMatcher,
                                                             readyCampaignDispatcher: readyCampaignDispatcher,
+                                                            tooltipDispatcher: TooltipDispatcherMock(),
                                                             campaignsValidator: campaignsValidator)
                 campaignRepository = CampaignRepositoryMock()
                 router = RouterMock()

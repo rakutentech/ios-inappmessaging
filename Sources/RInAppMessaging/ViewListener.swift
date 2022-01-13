@@ -1,6 +1,10 @@
 import Foundation
 import UIKit
+#if canImport(RSDKUtilsMain)
+import RSDKUtilsMain // SPM version
+#else
 import RSDKUtils
+#endif
 
 internal protocol ViewListenerType: AnyObject {
     func startListening()

@@ -21,6 +21,7 @@ class CampaignTriggerAgentSpec: QuickSpec {
                 campaignsValidator = CampaignsValidatorMock()
                 campaignTriggerAgent = CampaignTriggerAgent(eventMatcher: eventMatcher,
                                                             readyCampaignDispatcher: campaignDispatcher,
+                                                            tooltipDispatcher: TooltipDispatcherMock(),
                                                             campaignsValidator: campaignsValidator)
             }
 
