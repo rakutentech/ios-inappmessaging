@@ -53,13 +53,17 @@ internal enum Constants {
         static let retryCount = 3
 
         enum Default {
-            static fileprivate(set) var initialRetryDelayMS = Int32(10000)
+            fileprivate static let defaultInitialRetryDelayMS = Int32(10000)
+            fileprivate(set) static var initialRetryDelayMS = defaultInitialRetryDelayMS
         }
 
         enum Randomized {
-            static fileprivate(set) var initialRetryDelayMS = Int32(60000)
-            static fileprivate(set) var backOffLowerBoundSeconds = Int32(1)
-            static fileprivate(set) var backOffUpperBoundSeconds = Int32(60)
+            fileprivate static let defaultInitialRetryDelayMS = Int32(60000)
+            fileprivate static let defaultBackOffLowerBoundSeconds = Int32(1)
+            fileprivate static let defaultBackOffUpperBoundSeconds = Int32(60)
+            fileprivate(set) static var initialRetryDelayMS = defaultInitialRetryDelayMS
+            fileprivate(set) static var backOffLowerBoundSeconds = defaultBackOffLowerBoundSeconds
+            fileprivate(set) static var backOffUpperBoundSeconds = defaultBackOffUpperBoundSeconds
         }
 
         enum Tests {
@@ -73,9 +77,9 @@ internal enum Constants {
             }
 
             static func setDefaults() {
-                Default.initialRetryDelayMS = Int32(10000)
-                Randomized.initialRetryDelayMS = Int32(60000)
-                Randomized.backOffUpperBoundSeconds = Int32(60)
+                Default.initialRetryDelayMS = Default.defaultInitialRetryDelayMS
+                Randomized.initialRetryDelayMS = Randomized.defaultInitialRetryDelayMS
+                Randomized.backOffUpperBoundSeconds = Randomized.defaultBackOffUpperBoundSeconds
             }
         }
     }
