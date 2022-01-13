@@ -100,8 +100,7 @@ class ImpressionServiceSpec: QuickSpec {
                 }
 
                 afterEach {
-                    Constants.Retry.Tests.setInitialDelayMS(10000)
-                    Constants.Retry.Tests.setBackOffUpperBoundSeconds(60)
+                    Constants.Retry.Tests.setDefaults()
                 }
 
                 it("will not report task failed error") {

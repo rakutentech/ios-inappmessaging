@@ -30,8 +30,8 @@ extension TaskSchedulable {
             self.scheduledTask = WorkScheduler.scheduleTask(
                 milliseconds: milliseconds,
                 closure: { [weak self] in
-                    task()
                     self?.scheduledTask = nil
+                    task()
                 },
                 wallDeadline: wallDeadline)
         }

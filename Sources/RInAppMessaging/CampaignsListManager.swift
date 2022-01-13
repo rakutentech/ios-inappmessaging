@@ -1,4 +1,4 @@
-import class Foundation.DispatchWorkItem
+import Foundation
 
 internal protocol CampaignsListManagerType: ErrorReportable {
     func refreshList()
@@ -15,6 +15,7 @@ internal class CampaignsListManager: CampaignsListManagerType, TaskSchedulable {
     // lazy allows mocking in unit tests
     private lazy var retryDelayMS = Constants.Retry.Default.initialRetryDelayMS
     private var responseStateMachine = ResponseStateMachine()
+    private let pingQueue = DispatchQueue(label: "IAM.Ping", qos: .utility)
 
     init(campaignRepository: CampaignRepositoryType,
          campaignTriggerAgent: CampaignTriggerAgentType,
@@ -30,10 +31,16 @@ internal class CampaignsListManager: CampaignsListManagerType, TaskSchedulable {
     }
 
     func refreshList() {
-        pingMixerServer()
+        pingQueue.sync {
+            pingMixerServer()
+        }
     }
 
     private func pingMixerServer() {
+        guard scheduledTask == nil || responseStateMachine.previousState == .success else {
+            // ping request is already queued (errors only)
+            return
+        }
 
         let pingResult = messageMixerService.ping()
         let decodedResponse: PingResponse
@@ -102,7 +109,9 @@ internal class CampaignsListManager: CampaignsListManagerType, TaskSchedulable {
 
     private func scheduleNextPingCall(in milliseconds: Int) {
         scheduleTask(milliseconds: milliseconds, wallDeadline: true) { [weak self] in
-            self?.pingMixerServer()
+            self?.pingQueue.sync {
+                self?.pingMixerServer()
+            }
         }
     }
 }
