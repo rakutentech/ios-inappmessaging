@@ -32,7 +32,11 @@ internal class BundleInfo {
     class var inAppConfigurationURL: String? {
         return Bundle.main.infoDictionary?[Constants.Info.configurationURLKey] as? String
     }
-    
+
+    static var customFontNameTitle: String? {
+        Bundle.main.infoDictionary?[Constants.Info.customFontNameTitleKey] as? String
+    }
+
     static var customFontNameText: String? {
         Bundle.main.infoDictionary?[Constants.Info.customFontNameTextKey] as? String
     }

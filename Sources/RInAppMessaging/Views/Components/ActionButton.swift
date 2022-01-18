@@ -8,7 +8,7 @@ internal class ActionButton: UIButton {
         static let minFontSize: CGFloat = 10
         static let labelMargin = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
         static let cornerRadius: CGFloat = 8
-        static let borderWidth: CGFloat = 1
+        static let borderWidth: CGFloat = 0
     }
 
     let impression: ImpressionType

@@ -34,10 +34,13 @@ class UIFontExtensionsSpec: QuickSpec {
                     expect(btnFont).to(equal(sysFont))
                     let textFont = UIFont.iamText(ofSize: 16)
                     expect(textFont).to(equal(sysFont))
+                    let titleFont = UIFont.iamText(ofSize: 16)
+                    expect(titleFont).to(equal(sysFont))
                 }
 
                 it("will use custom fonts when setup") {
                     registerFont()
+                    expect(BundleInfo.customFontNameTitle).to(equal(expectedFontName))
                     expect(BundleInfo.customFontNameText).to(equal(expectedFontName))
                     expect(BundleInfo.customFontNameButton).to(equal(expectedFontName))
                     let btnFont = UIFont.iamButton(ofSize: 16)

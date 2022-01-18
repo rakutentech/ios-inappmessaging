@@ -263,9 +263,11 @@ $ fc-scan customfont-medium.otf --format "%{postscriptname}\n"
 AdventPro-Medium
 ```
 
-In your `Info.plist` configuration, set the PostScript names under `InAppMessagingCustomFontNameText` and `InAppMessagingCustomFontNameButton` along with the file names of both fonts under `UIAppFonts`.
+In your `Info.plist` configuration, set the PostScript names under `InAppMessagingCustomFontNameTitle`, `InAppMessagingCustomFontNameText` and `InAppMessagingCustomFontNameButton` along with the file names of the fonts under `UIAppFonts`.
 
 ```xml
+<key>InAppMessagingCustomFontNameTitle</key>
+<string>AdventPro-Bold</string>
 <key>InAppMessagingCustomFontNameText</key>
 <string>AdventPro-Regular</string>
 <key>InAppMessagingCustomFontNameButton</key>
@@ -273,6 +275,7 @@ In your `Info.plist` configuration, set the PostScript names under `InAppMessagi
 
 <key>UIAppFonts</key>
 <array>
+    <string>customfont-bold.otf</string>
     <string>customfont-regular.otf</string>
     <string>customfont-medium.otf</string>
 </array>

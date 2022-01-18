@@ -38,6 +38,7 @@ internal enum Constants {
     enum Info {
         static let subscriptionIDKey = "InAppMessagingAppSubscriptionID"
         static let configurationURLKey = "InAppMessagingConfigurationURL"
+        static let customFontNameTitleKey = "InAppMessagingCustomFontNameTitle"
         static let customFontNameTextKey = "InAppMessagingCustomFontNameText"
         static let customFontNameButtonKey = "InAppMessagingCustomFontNameButton"
     }

@@ -79,6 +79,8 @@
 		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 	</array>
+	<key>InAppMessagingCustomFontNameTitle</key>
+	<string>blank-Bold</string>
 	<key>InAppMessagingCustomFontNameText</key>
 	<string>blank-Bold</string>
 	<key>InAppMessagingCustomFontNameButton</key>
