@@ -100,7 +100,7 @@ internal class ConfigurationManager: ConfigurationManagerType, TaskSchedulable {
     }
 
     private func scheduleRetryWithRandomizedBackoff(retryHandler: @escaping () -> Void) {
-        if case .success = responseStateMachine.previousState {
+        if responseStateMachine.consecutiveErrorCount <= 1 {
             retryDelayMS = Constants.Retry.Randomized.initialRetryDelayMS
         }
         scheduleTask(milliseconds: Int(retryDelayMS), wallDeadline: true, retryHandler)

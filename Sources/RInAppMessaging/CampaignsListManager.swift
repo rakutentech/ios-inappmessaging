@@ -99,7 +99,7 @@ internal class CampaignsListManager: CampaignsListManagerType, TaskSchedulable {
     }
 
     private func scheduleNextPingCallWithRandomizedBackoff() {
-        if case .success = responseStateMachine.previousState {
+        if responseStateMachine.consecutiveErrorCount <= 1 {
             retryDelayMS = Constants.Retry.Randomized.initialRetryDelayMS
         }
         scheduleNextPingCall(in: Int(retryDelayMS))
