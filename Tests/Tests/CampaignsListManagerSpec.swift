@@ -34,6 +34,15 @@ class CampaignsListManagerSpec: QuickSpec {
 
                 context("and service error has occured") {
 
+                    beforeEach {
+                        Constants.Retry.Tests.setInitialDelayMS(1000)
+                        Constants.Retry.Tests.setBackOffUpperBoundSeconds(1)
+                    }
+
+                    afterEach {
+                        Constants.Retry.Tests.setDefaults()
+                    }
+
                     it("will not retry for .invalidConfiguration error") {
                         messageMixerService.mockedError = .invalidConfiguration
                         manager.refreshList()
@@ -64,16 +73,70 @@ class CampaignsListManagerSpec: QuickSpec {
                         expect(manager.scheduledTask).toEventuallyNot(beNil())
                     }
 
-                    it("will not report .requestError error") {
+                    it("will report .requestError error") {
                         messageMixerService.mockedError = .requestError(.unknown)
                         manager.refreshList()
-                        expect(errorDelegate.wasErrorReceived).to(beFalse())
+                        expect(errorDelegate.wasErrorReceived).to(beTrue())
                     }
 
                     it("will retry for .tooManyRequestsError error") {
                         messageMixerService.mockedError = .tooManyRequestsError
                         manager.refreshList()
                         expect(manager.scheduledTask).toEventuallyNot(beNil())
+                    }
+
+                    it("will not report .tooManyRequestsError error") {
+                        messageMixerService.mockedError = .tooManyRequestsError
+                        manager.refreshList()
+                        expect(errorDelegate.wasErrorReceived).to(beFalse())
+                    }
+
+                    it("will not retry for .invalidRequestError error") {
+                        messageMixerService.mockedError = .invalidRequestError(404)
+                        manager.refreshList()
+                        expect(manager.scheduledTask).toAfterTimeout(beNil())
+                    }
+
+                    it("will report .invalidRequestError error") {
+                        messageMixerService.mockedError = .invalidRequestError(404)
+                        manager.refreshList()
+                        expect(errorDelegate.wasErrorReceived).to(beTrue())
+                    }
+
+                    it("will retry for .internalServerError error") {
+                        messageMixerService.mockedError = .internalServerError(500)
+                        manager.refreshList()
+                        expect(manager.scheduledTask).toEventuallyNot(beNil())
+                    }
+
+                    it("should retry 3 times for .internalServerError error") {
+                        messageMixerService.mockedError = .internalServerError(500)
+                        manager.refreshList()
+                        expect(manager.scheduledTask).toEventuallyNot(beNil())
+                        expect(messageMixerService.pingCallCount).toEventually(equal(4), timeout: .seconds(12))
+                        expect(manager.scheduledTask).toEventually(beNil())
+                    }
+
+                    it("will report .internalServerError error") {
+                        messageMixerService.mockedError = .internalServerError(500)
+                        manager.refreshList()
+                        expect(errorDelegate.wasErrorReceived).to(beTrue())
+                    }
+
+                    context("and refreshList was called again") {
+
+                        it("shouldn't call ping if the call is already scheduled (should call only once)") {
+                            Constants.Retry.Tests.setInitialDelayMS(2000)
+                            messageMixerService.mockedError = .requestError(.unknown)
+                            manager.refreshList()
+                            expect(manager.scheduledTask).toEventuallyNot(beNil())
+
+                            messageMixerService.mockedResponse = PingResponse(nextPingMilliseconds: .max, currentPingMilliseconds: 0, data: [])
+                            messageMixerService.wasPingCalled = false
+                            manager.refreshList()
+                            expect(messageMixerService.wasPingCalled).toAfterTimeout(beFalse()) // checks if the call above was ignored
+                            expect(messageMixerService.wasPingCalled).toEventually(beTrue(), timeout: .seconds(2)) // scheduled retry call (after 2s)
+                        }
                     }
                 }
 
@@ -107,13 +170,5 @@ class CampaignsListManagerSpec: QuickSpec {
                 }
             }
         }
-    }
-}
-
-private class ErrorDelegateMock: ErrorDelegate {
-    private(set) var wasErrorReceived = false
-
-    func didReceiveError(sender: ErrorReportable, error: NSError) {
-        wasErrorReceived = true
     }
 }

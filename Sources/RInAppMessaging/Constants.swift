@@ -53,14 +53,37 @@ internal enum Constants {
     }
 
     enum Retry {
+        static let retryCount = 3
+
         enum Default {
-            static let initialRetryDelayMS = Int32(10000)
+            fileprivate static let defaultInitialRetryDelayMS = Int32(10000)
+            fileprivate(set) static var initialRetryDelayMS = defaultInitialRetryDelayMS
         }
 
-        enum TooManyRequestsError {
-            static let initialRetryDelayMS = Int32(60000)
-            static let backOffLowerBoundInSecond = Int32(1) // second
-            static let backOffUpperBoundInSecond = Int32(60) // second
+        enum Randomized {
+            fileprivate static let defaultInitialRetryDelayMS = Int32(60000)
+            fileprivate static let defaultBackOffLowerBoundSeconds = Int32(1)
+            fileprivate static let defaultBackOffUpperBoundSeconds = Int32(60)
+            fileprivate(set) static var initialRetryDelayMS = defaultInitialRetryDelayMS
+            fileprivate(set) static var backOffLowerBoundSeconds = defaultBackOffLowerBoundSeconds
+            fileprivate(set) static var backOffUpperBoundSeconds = defaultBackOffUpperBoundSeconds
+        }
+
+        enum Tests {
+            static func setInitialDelayMS(_ delay: Int32) {
+                Default.initialRetryDelayMS = delay
+                Randomized.initialRetryDelayMS = delay
+            }
+
+            static func setBackOffUpperBoundSeconds(_ bound: Int32) {
+                Randomized.backOffUpperBoundSeconds = bound
+            }
+
+            static func setDefaults() {
+                Default.initialRetryDelayMS = Default.defaultInitialRetryDelayMS
+                Randomized.initialRetryDelayMS = Randomized.defaultInitialRetryDelayMS
+                Randomized.backOffUpperBoundSeconds = Randomized.defaultBackOffUpperBoundSeconds
+            }
         }
     }
 }

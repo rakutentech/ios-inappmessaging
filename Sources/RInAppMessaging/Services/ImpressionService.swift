@@ -9,7 +9,7 @@ internal protocol ImpressionServiceType: ErrorReportable {
     func pingImpression(impressions: [Impression], campaignData: CampaignData)
 }
 
-internal class ImpressionService: ImpressionServiceType, HttpRequestable {
+internal class ImpressionService: ImpressionServiceType, HttpRequestable, TaskSchedulable {
 
     private enum Keys {
         enum Params {
@@ -25,10 +25,14 @@ internal class ImpressionService: ImpressionServiceType, HttpRequestable {
 
     private let accountRepository: AccountRepositoryType
     private let configurationRepository: ConfigurationRepositoryType
+    private var responseStateMachine = ResponseStateMachine()
+    // lazy allows mocking in unit tests
+    private lazy var retryDelayMS = Constants.Retry.Default.initialRetryDelayMS
 
     weak var errorDelegate: ErrorDelegate?
     private(set) var httpSession: URLSession
     var bundleInfo = BundleInfo.self
+    var scheduledTask: DispatchWorkItem?
 
     init(accountRepository: AccountRepositoryType,
          configurationRepository: ConfigurationRepositoryType) {
@@ -53,19 +57,8 @@ internal class ImpressionService: ImpressionServiceType, HttpRequestable {
         // Broadcast impression data to RAnalytics.
         AnalyticsBroadcaster.sendEventName(Constants.RAnalytics.impressions,
                                            dataObject: [Keys.Analytics.impressions: encodeForAnalytics(impressionList: impressions)])
-
-        requestFromServer(
-            url: impressionEndpoint,
-            httpMethod: .post,
-            parameters: parameters,
-            addtionalHeaders: buildRequestHeader(),
-            completion: { [weak self] result in
-
-                if case .failure(let error) = result {
-                    self?.reportError(description: "Error sending impressions",
-                                      data: error)
-                }
-        })
+        
+        sendImpressionRequest(endpoint: impressionEndpoint, parameters: parameters)
     }
 
     private func encodeForAnalytics(impressionList: [Impression]) -> [Any] {
@@ -74,6 +67,47 @@ internal class ImpressionService: ImpressionServiceType, HttpRequestable {
             return [Keys.Analytics.action: impression.type.rawValue,
                     Keys.Analytics.timestamp: impression.timestamp]
         }
+    }
+
+    private func sendImpressionRequest(endpoint: URL, parameters: [String : Any]) {
+        requestFromServer(
+            url: endpoint,
+            httpMethod: .post,
+            parameters: parameters,
+            addtionalHeaders: buildRequestHeader(),
+            completion: { [weak self] result in
+                guard let self = self else {
+                    return
+                }
+                switch result {
+                case .success:
+                    self.responseStateMachine.push(state: .success)
+                    self.retryDelayMS = Constants.Retry.Default.initialRetryDelayMS
+
+                case .failure(let error):
+                    self.responseStateMachine.push(state: .error)
+
+                    switch error {
+                    case .httpError(let statusCode, _, _) where statusCode >= 500:
+                        guard self.responseStateMachine.consecutiveErrorCount <= Constants.Retry.retryCount else {
+                            return
+                        }
+                        self.retryImpressionRequest(endpoint: endpoint, parameters: parameters)
+
+                    case .taskFailed:
+                        self.retryImpressionRequest(endpoint: endpoint, parameters: parameters)
+
+                    default: ()
+                    }
+                }
+        })
+    }
+
+    private func retryImpressionRequest(endpoint: URL, parameters: [String : Any]) {
+        scheduleTask(milliseconds: Int(retryDelayMS), wallDeadline: true) { [weak self] in
+            self?.sendImpressionRequest(endpoint: endpoint, parameters: parameters)
+        }
+        retryDelayMS.increaseBackOff()
     }
 }
 

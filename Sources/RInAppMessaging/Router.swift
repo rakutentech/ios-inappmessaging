@@ -62,63 +62,66 @@ internal class Router: RouterType {
         }
 
         displayQueue.async {
-
-            func getPresenter<T>(type: T.Type) -> T? {
-                guard let presenter = self.dependencyManager.resolve(type: type) else {
-                    Logger.debug("Error: \(type) couldn't be resolved")
-                    return nil
-                }
-                return presenter
-            }
-
-            var viewConstructor: (() -> BaseView)?
-            switch campaignViewType {
-            case .modal:
-                guard let presenter = getPresenter(type: FullViewPresenterType.self) else {
-                    break
-                }
-                presenter.campaign = campaign
-                if let associatedImageData = associatedImageData {
-                    presenter.associatedImage = UIImage(data: associatedImageData)
-                }
-                viewConstructor = { ModalView(presenter: presenter) }
-            case .full:
-                guard let presenter = getPresenter(type: FullViewPresenterType.self) else {
-                    break
-                }
-                presenter.campaign = campaign
-                if let associatedImageData = associatedImageData {
-                    presenter.associatedImage = UIImage(data: associatedImageData)
-                }
-                viewConstructor = { FullScreenView(presenter: presenter) }
-            case .slide:
-                guard let presenter = getPresenter(type: SlideUpViewPresenterType.self) else {
-                    break
-                }
-                presenter.campaign = campaign
-                viewConstructor = { SlideUpView(presenter: presenter) }
-            case .invalid, .html:
-                Logger.debug("Error: Campaign view type not supported")
+            guard let viewConstructor = self.createViewConstructor(for: campaign, associatedImageData: associatedImageData) else {
+                completion(true)
+                return
             }
 
             DispatchQueue.main.async {
-                guard let view = viewConstructor?(),
-                      let rootView = UIApplication.shared.getKeyWindow(),
+                guard let rootView = UIApplication.shared.getKeyWindow(),
                       rootView.findIAMViewSubview() == nil,
-                      confirmation() == true else {
+                      confirmation() else {
 
                     completion(true)
                     return
                 }
 
+                let view = viewConstructor()
                 let parentView = self.findParentView(rootView: rootView)
-                view.show(accessibilityCompatible: self.accessibilityCompatibleDisplay,
-                          parentView: parentView,
-                          onDismiss: { cancelled in
-                    completion(cancelled)
-                })
+                view.show(parentView: parentView, onDismiss: completion)
             }
         }
+    }
+
+    private func createViewConstructor(for campaign: Campaign, associatedImageData: Data?) -> (() -> BaseView)? {
+        func getPresenter<T>(type: T.Type) -> T? {
+            guard let presenter = self.dependencyManager.resolve(type: type) else {
+                Logger.debug("Error: \(type) couldn't be resolved")
+                return nil
+            }
+            return presenter
+        }
+
+        switch campaign.data.type {
+        case .modal:
+            guard let presenter = getPresenter(type: FullViewPresenterType.self) else {
+                break
+            }
+            presenter.campaign = campaign
+            if let associatedImageData = associatedImageData {
+                presenter.associatedImage = UIImage(data: associatedImageData)
+            }
+            return { ModalView(presenter: presenter) }
+        case .full:
+            guard let presenter = getPresenter(type: FullViewPresenterType.self) else {
+                break
+            }
+            presenter.campaign = campaign
+            if let associatedImageData = associatedImageData {
+                presenter.associatedImage = UIImage(data: associatedImageData)
+            }
+            return { FullScreenView(presenter: presenter) }
+        case .slide:
+            guard let presenter = getPresenter(type: SlideUpViewPresenterType.self) else {
+                break
+            }
+            presenter.campaign = campaign
+            return { SlideUpView(presenter: presenter) }
+        case .invalid, .html:
+            Logger.debug("Error: Campaign view type not supported")
+        }
+
+        return nil
     }
 
     private func findParentView(rootView: UIView) -> UIView {

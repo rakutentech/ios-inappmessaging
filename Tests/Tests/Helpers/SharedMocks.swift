@@ -138,9 +138,12 @@ class MessageMixerServiceMock: MessageMixerServiceType {
     var mockedResponse: PingResponse?
     var mockedError = MessageMixerServiceError.invalidConfiguration
     var delay: TimeInterval = 0
+    var pingCallCount = 0
 
     func ping() -> Result<PingResponse, MessageMixerServiceError> {
-        self.wasPingCalled = true
+        wasPingCalled = true
+        pingCallCount += 1
+
         if delay > 0 {
             guard Thread.current != .main else {
                 fatalError("Delay function shoudn't be used on the main thread")
@@ -156,8 +159,13 @@ class MessageMixerServiceMock: MessageMixerServiceType {
 }
 
 class DisplayPermissionServiceMock: DisplayPermissionServiceType {
+    var shouldGrantPermission = true
+    var shouldPerformPing = false
+    weak var errorDelegate: ErrorDelegate?
+
     func checkPermission(forCampaign campaign: CampaignData) -> DisplayPermissionResponse {
-        DisplayPermissionResponse(display: true, performPing: false)
+        DisplayPermissionResponse(display: shouldGrantPermission,
+                                  performPing: shouldPerformPing)
     }
 }
 
@@ -412,5 +420,13 @@ final class LockableTestObject: Lockable {
 
     func unlockResources() {
         resourcesToLock.forEach { $0.unlock() }
+    }
+}
+
+final class ErrorDelegateMock: ErrorDelegate {
+    private(set) var wasErrorReceived = false
+
+    func didReceive(error: NSError) {
+        wasErrorReceived = true
     }
 }

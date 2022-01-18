@@ -56,15 +56,15 @@ internal class EventMatcher: EventMatcherType {
                 Logger.debug("campaign (\(campaign.id)) has no triggers.")
                 return
             }
-
-            if isEventMatchingOneOfTriggers(event: event, triggers: campaignTriggers) {
-                var events = matchedEvents.get()
-                var campaignLoggedEvents = events[campaign.id, default: []]
-                campaignLoggedEvents.append(event)
-                events[campaign.id] = campaignLoggedEvents
-                matchedEvents.set(value: events)
+            guard isEventMatchingOneOfTriggers(event: event, triggers: campaignTriggers) else {
                 return
             }
+
+            var events = matchedEvents.get()
+            var campaignLoggedEvents = events[campaign.id, default: []]
+            campaignLoggedEvents.append(event)
+            events[campaign.id] = campaignLoggedEvents
+            matchedEvents.set(value: events)
         }
     }
 

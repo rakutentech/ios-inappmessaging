@@ -1,10 +1,10 @@
 import Foundation
 
 internal protocol ErrorDelegate: AnyObject {
-    func didReceiveError(sender: ErrorReportable, error: NSError)
+    func didReceive(error: NSError)
 }
 
-internal protocol ErrorReportable {
+internal protocol ErrorReportable: AnyObject {
     var errorDelegate: ErrorDelegate? { get set }
     func reportError(description: String, data: Any?)
 }
@@ -22,7 +22,7 @@ extension ErrorReportable {
                             code: 0,
                             userInfo: userInfo)
 
-        errorDelegate?.didReceiveError(sender: self, error: error)
+        errorDelegate?.didReceive(error: error)
 
         if let unwrappedData = data {
             Logger.debug(description + " (\(String(describing: unwrappedData))")

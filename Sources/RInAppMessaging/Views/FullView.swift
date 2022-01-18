@@ -149,7 +149,9 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         presenter.logImpression(type: .impression)
     }
 
-    func updateUIConstants() { }
+    func updateUIConstants() {
+        // to be optionally implemented by subclasses
+    }
 
     func animateOnShow(completion: @escaping () -> Void) { completion() }
 

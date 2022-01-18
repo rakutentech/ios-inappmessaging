@@ -30,7 +30,7 @@ internal class SlideUpView: UIView, SlideUpViewType {
 
     private let presenter: SlideUpViewPresenterType
     private let dialogView = UIView()
-    private var exitButton: ExitButton?
+    private let exitButton = ExitButton()
     private var slideFromDirection = SlideDirection.bottom
     private var bottomConstraint: NSLayoutConstraint!
     private var leftConstraint: NSLayoutConstraint!
@@ -67,8 +67,6 @@ internal class SlideUpView: UIView, SlideUpViewType {
             return
         }
 
-        // swiftlint:disable:next todo
-        // TODO: (Daniel Tam) - Support TOP direction for slide-up
         switch self.slideFromDirection {
         case .bottom:
             bottomConstraint.constant = -frame.height
@@ -79,7 +77,7 @@ internal class SlideUpView: UIView, SlideUpViewType {
             leftConstraint.constant = frame.width
             rightConstraint.constant = -frame.width
         case .top:
-            break
+            Logger.debug("Error: Unsupported slide direction (top)")
         }
 
         self.superview?.layoutIfNeeded()
@@ -141,12 +139,10 @@ internal class SlideUpView: UIView, SlideUpViewType {
 
     private func setupExitButton(_ contextualColour: UIColor) {
         let exitButton = ExitButton()
-
         exitButton.invertedColors = contextualColour.isBright
         exitButton.addTarget(self, action: #selector(onExitButtonClick), for: .touchUpInside)
-
         exitButton.translatesAutoresizingMaskIntoConstraints = false
-        self.exitButton = exitButton
+
         dialogView.addSubview(exitButton)
         NSLayoutConstraint.activate([
             exitButton.trailingAnchor.constraint(equalTo: dialogView.trailingAnchor,

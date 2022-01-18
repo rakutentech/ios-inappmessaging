@@ -1,6 +1,6 @@
 import Foundation
 
-internal protocol DisplayPermissionServiceType {
+internal protocol DisplayPermissionServiceType: ErrorReportable {
     func checkPermission(forCampaign campaign: CampaignData) -> DisplayPermissionResponse
 }
 
@@ -13,6 +13,7 @@ internal class DisplayPermissionService: DisplayPermissionServiceType, HttpReque
     private(set) var httpSession: URLSession
     private(set) var lastResponse: RequestResult?
     var bundleInfo = BundleInfo.self
+    weak var errorDelegate: ErrorDelegate?
 
     init(campaignRepository: CampaignRepositoryType,
          accountRepository: AccountRepositoryType,
@@ -25,6 +26,10 @@ internal class DisplayPermissionService: DisplayPermissionServiceType, HttpReque
     }
 
     func checkPermission(forCampaign campaign: CampaignData) -> DisplayPermissionResponse {
+        checkPermission(forCampaign: campaign, retry: true)
+    }
+
+    private func checkPermission(forCampaign campaign: CampaignData, retry: Bool) -> DisplayPermissionResponse {
         // In case of error, disallow campaign display
         let fallbackResponse = DisplayPermissionResponse(display: false, performPing: false)
         let requestParams = [
@@ -36,25 +41,38 @@ internal class DisplayPermissionService: DisplayPermissionServiceType, HttpReque
             return fallbackResponse
         }
 
-        let responseData = requestFromServerSync(url: displayPermissionUrl,
-                                                 httpMethod: .post,
-                                                 parameters: requestParams,
-                                                 addtionalHeaders: buildRequestHeader())
-        lastResponse = responseData
+        let responseResult = requestFromServerSync(url: displayPermissionUrl,
+                                                   httpMethod: .post,
+                                                   parameters: requestParams,
+                                                   addtionalHeaders: buildRequestHeader())
+        lastResponse = responseResult
 
-        guard let responseFromDisplayPermission = try? responseData.get() else {
-            Logger.debug("error getting a response from display permission.")
-            return fallbackResponse
+        switch responseResult {
+        case .success(let displayPermission):
+            do {
+                let decodedResponse = try JSONDecoder().decode(DisplayPermissionResponse.self,
+                                                               from: displayPermission.data)
+                return decodedResponse
+            } catch {
+                break
+            }
+
+        case .failure(let error):
+            guard retry else {
+                break
+            }
+            switch error {
+            case .httpError(let statusCode, _, _) where statusCode >= 500:
+                return checkPermission(forCampaign: campaign, retry: false)
+
+            case .taskFailed:
+                return checkPermission(forCampaign: campaign, retry: false)
+
+            default: ()
+            }
         }
 
-        do {
-            let decodedResponse = try JSONDecoder().decode(DisplayPermissionResponse.self,
-                                                           from: responseFromDisplayPermission.data)
-            return decodedResponse
-        } catch {
-            Logger.debug("error getting a response from display permission.")
-        }
-
+        reportError(description: "couldn't get a valid response from display permission endpoint", data: nil)
         return fallbackResponse
     }
 }

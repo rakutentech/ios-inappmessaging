@@ -22,7 +22,7 @@ PODS:
   - Shock (6.0.3):
     - GRMustache.swift (~> 4.0.1)
     - SwiftNIOHTTP1 (~> 2.22.1)
-  - SwiftLint (0.45.0)
+  - SwiftLint (0.45.1)
   - SwiftNIO (2.22.1):
     - CNIOAtomics (= 2.22.1)
     - CNIODarwin (= 2.22.1)
@@ -79,7 +79,7 @@ SPEC CHECKSUMS:
   RInAppMessaging: 13e9faf1971a5b3b6435468e7c7c6199bf85320e
   RSDKUtils: 47d28aac1347d712e6d4db9a1332cae41b17738f
   Shock: 94c2d3f5f781fe63317c4ee1621dfb2d4cc271d3
-  SwiftLint: e5c7f1fba68eccfc51509d5b2ce1699f5502e0c7
+  SwiftLint: 06ac37e4d38c7068e0935bb30cda95f093bec761
   SwiftNIO: 763188229de166e046cc8975383cca388832e992
   SwiftNIOConcurrencyHelpers: 34d2e9d4d2b7886fa765086e845e6b19417be927
   SwiftNIOHTTP1: c0a9ce48ba256f349af4f09648a0e0939b11a65c

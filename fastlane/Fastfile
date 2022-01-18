@@ -5,6 +5,7 @@ platform :ios do
   desc "Build everything"
   lane :ci do |options|
     tests(options)
+    coverage
   end
 
   desc "Run tests"
@@ -45,6 +46,18 @@ platform :ios do
   end
 
   lane :coverage do
+    slather(
+      output_directory: './artifacts/coverage',
+      scheme: ENV['REM_FL_TESTS_SCHEME'] || 'Tests',
+      sonarqube_xml: true,
+      use_bundle_exec: true,
+      proj: ENV['REM_FL_TESTS_PROJECT'],
+      workspace: ENV['REM_FL_TESTS_WORKSPACE'],
+      binary_basename: ENV['REM_FL_TESTS_SLATHER_BASENAME'],
+      ignore: '*.{h,m}')
+  end
+
+  lane :run_xcov do
     xcov(
       workspace: "RInAppMessaging.xcworkspace",
       scheme: "RInAppMessaging-Example",

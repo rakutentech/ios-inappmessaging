@@ -1,4 +1,4 @@
-import class Foundation.DispatchWorkItem
+import Foundation
 
 internal protocol CampaignsListManagerType: ErrorReportable {
     func refreshList()
@@ -12,9 +12,10 @@ internal class CampaignsListManager: CampaignsListManagerType, TaskSchedulable {
 
     weak var errorDelegate: ErrorDelegate?
     var scheduledTask: DispatchWorkItem?
-    private var retryDelayMS = Constants.Retry.Default.initialRetryDelayMS
-    private var state = ResponseState.success
-    private var previousState = ResponseState.success
+    // lazy allows mocking in unit tests
+    private lazy var retryDelayMS = Constants.Retry.Default.initialRetryDelayMS
+    private var responseStateMachine = ResponseStateMachine()
+    private let pingQueue = DispatchQueue(label: "IAM.Ping", qos: .utility)
 
     init(campaignRepository: CampaignRepositoryType,
          campaignTriggerAgent: CampaignTriggerAgentType,
@@ -30,10 +31,16 @@ internal class CampaignsListManager: CampaignsListManagerType, TaskSchedulable {
     }
 
     func refreshList() {
-        pingMixerServer()
+        pingQueue.sync {
+            pingMixerServer()
+        }
     }
 
     private func pingMixerServer() {
+        guard scheduledTask == nil || responseStateMachine.previousState == .success else {
+            // ping request is already queued (errors only)
+            return
+        }
 
         let pingResult = messageMixerService.ping()
         let decodedResponse: PingResponse
@@ -47,8 +54,7 @@ internal class CampaignsListManager: CampaignsListManagerType, TaskSchedulable {
     }
 
     private func handleSuccess(_ decodedResponse: PingResponse) {
-        previousState = state
-        state = ResponseState.success
+        responseStateMachine.push(state: .success)
         retryDelayMS = Constants.Retry.Default.initialRetryDelayMS
 
         CommonUtility.lock(resourcesIn: [campaignRepository]) {
@@ -61,34 +67,51 @@ internal class CampaignsListManager: CampaignsListManagerType, TaskSchedulable {
     }
 
     private func handleError(_ error: Error) {
-        previousState = state
-        state = ResponseState.error(error)
+        responseStateMachine.push(state: .error)
 
         switch error {
         case MessageMixerServiceError.invalidConfiguration:
             reportError(description: "Error retrieving InAppMessaging Mixer Server URL", data: nil)
 
         case MessageMixerServiceError.jsonDecodingError(let decodingError):
-            reportError(description: "Failed to parse json", data: decodingError)
+            reportError(description: "Ping request error: Failed to parse json", data: decodingError)
 
         case MessageMixerServiceError.tooManyRequestsError:
-            if case ResponseState.success = previousState {
-                retryDelayMS = Constants.Retry.TooManyRequestsError.initialRetryDelayMS
+            scheduleNextPingCallWithRandomizedBackoff()
+
+        case MessageMixerServiceError.internalServerError(let code):
+            guard responseStateMachine.consecutiveErrorCount <= Constants.Retry.retryCount else {
+                reportError(description: "Ping request error: Response Code \(code): Internal server error", data: nil)
+                return
             }
-            scheduleNextPingCall(in: Int(retryDelayMS))
-            // Exponential backoff for pinging Message Mixer server.
-            retryDelayMS.increaseRandomizedBackoff()
+            scheduleNextPingCallWithRandomizedBackoff()
+            reportError(description: "Ping request error: Response Code \(code): Internal server error. Retry scheduled", data: nil)
+
+        case MessageMixerServiceError.invalidRequestError(let code):
+            reportError(description: "Ping request error: Response Code \(code): Invalid request error", data: nil)
 
         default:
+            reportError(description: error.localizedDescription + ", Retrying in \(Int(retryDelayMS))ms", data: nil)
             scheduleNextPingCall(in: Int(retryDelayMS))
             // Exponential backoff for pinging Message Mixer server.
             retryDelayMS.increaseBackOff()
         }
     }
 
+    private func scheduleNextPingCallWithRandomizedBackoff() {
+        if case .success = responseStateMachine.previousState {
+            retryDelayMS = Constants.Retry.Randomized.initialRetryDelayMS
+        }
+        scheduleNextPingCall(in: Int(retryDelayMS))
+        // Randomized backoff for pinging Message Mixer server.
+        retryDelayMS.increaseRandomizedBackoff()
+    }
+
     private func scheduleNextPingCall(in milliseconds: Int) {
         scheduleTask(milliseconds: milliseconds, wallDeadline: true) { [weak self] in
-            self?.pingMixerServer()
+            self?.pingQueue.sync {
+                self?.pingMixerServer()
+            }
         }
     }
 }

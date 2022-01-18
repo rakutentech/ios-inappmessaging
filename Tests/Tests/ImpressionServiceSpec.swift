@@ -9,6 +9,8 @@ import class RSDKUtilsTestHelpers.URLSessionMock
 #endif
 @testable import RInAppMessaging
 
+private let impressionURL = URL(string: "https://impression.url")!
+
 class ImpressionServiceSpec: QuickSpec {
 
     override func spec() {
@@ -18,7 +20,7 @@ class ImpressionServiceSpec: QuickSpec {
                                     endpoints: EndpointURL(
                                         ping: URL(string: "https://ping.url")!,
                                         displayPermission: nil,
-                                        impression: URL(string: "https://impression.url")!))
+                                        impression: impressionURL))
         let campaign = TestHelpers.generateCampaign(id: "test")
         let accountRepository = AccountRepository(userDataCache: UserDataCacheMock())
         let userInfoProvider = UserInfoProviderMock()
@@ -72,7 +74,7 @@ class ImpressionServiceSpec: QuickSpec {
                                 impression: nil)))
 
                 sendRequestAndWaitForResponse()
-                expect(errorDelegate.wasErrorReceived).toEventually(beTrue())
+                expect(errorDelegate.wasErrorReceived).to(beTrue())
             }
 
             context("when request succeeds") {
@@ -87,18 +89,76 @@ class ImpressionServiceSpec: QuickSpec {
 
                 it("will not report any error") {
                     sendRequestAndWaitForResponse()
-                    expect(errorDelegate.wasErrorReceived).toAfterTimeout(beFalse())
+                    expect(errorDelegate.wasErrorReceived).to(beFalse())
                 }
             }
 
             context("when request fails") {
                 beforeEach {
-                    httpSession.responseError = NSError(domain: "config.error.test", code: 1, userInfo: nil)
+                    Constants.Retry.Tests.setInitialDelayMS(1000)
+                    Constants.Retry.Tests.setBackOffUpperBoundSeconds(1)
                 }
 
-                it("will report an error") {
+                afterEach {
+                    Constants.Retry.Tests.setDefaults()
+                }
+
+                it("will not report task failed error") {
+                    httpSession.responseError = NSError(domain: "impression.error.test", code: 1, userInfo: nil)
                     sendRequestAndWaitForResponse()
-                    expect(errorDelegate.wasErrorReceived).toEventually(beTrue())
+                    expect(errorDelegate.wasErrorReceived).to(beFalse())
+                }
+
+                it("will retry for task failed error") {
+                    httpSession.responseError = NSError(domain: "impression.error.test", code: 1, userInfo: nil)
+                    sendRequestAndWaitForResponse()
+                    expect(service.scheduledTask).toEventuallyNot(beNil())
+                }
+
+                context("and the status code equals to 5xx") {
+                    for code in [500, 501, 520] {
+
+                        it("will not report \(code) status code") {
+                            httpSession.httpResponse = ImpressionURLResponse(statusCode: code)
+                            sendRequestAndWaitForResponse()
+                            expect(errorDelegate.wasErrorReceived).to(beFalse())
+                        }
+
+                        it("will retry for \(code) status code") {
+                            httpSession.httpResponse = ImpressionURLResponse(statusCode: code)
+                            sendRequestAndWaitForResponse()
+                            expect(service.scheduledTask).toEventuallyNot(beNil())
+                        }
+                    }
+
+                    it("will retry 3 times") {
+                        var httpCalls = 0
+                        httpSession.httpResponse = ImpressionURLResponse(statusCode: 500)
+                        httpSession.onCompletedTask = {
+                            httpCalls += 1
+                        }
+                        sendRequestAndWaitForResponse()
+                        expect(service.scheduledTask).toEventuallyNot(beNil())
+                        expect(httpCalls).toEventually(equal(4), timeout: .seconds(8))
+                        expect(service.scheduledTask).toEventually(beNil())
+                    }
+                }
+
+                context("and the status code equals to 4xx") {
+                    for code in [401, 403, 422] {
+
+                        it("will not report \(code) status code") {
+                            httpSession.httpResponse = ImpressionURLResponse(statusCode: code)
+                            sendRequestAndWaitForResponse()
+                            expect(errorDelegate.wasErrorReceived).to(beFalse())
+                        }
+
+                        it("will not retry for \(code) status code") {
+                            httpSession.httpResponse = ImpressionURLResponse(statusCode: code)
+                            sendRequestAndWaitForResponse()
+                            expect(service.scheduledTask).toAfterTimeout(beNil())
+                        }
+                    }
                 }
             }
 
@@ -234,10 +294,16 @@ class ImpressionServiceSpec: QuickSpec {
     }
 }
 
-private class ErrorDelegateMock: ErrorDelegate {
-    private(set) var wasErrorReceived = false
+private class ImpressionURLResponse: HTTPURLResponse {
+    init?(statusCode: Int) {
+        super.init(url: impressionURL,
+                   statusCode: statusCode,
+                   httpVersion: nil,
+                   headerFields: nil)
+    }
 
-    func didReceiveError(sender: ErrorReportable, error: NSError) {
-        wasErrorReceived = true
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }

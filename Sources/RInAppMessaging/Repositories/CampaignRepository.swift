@@ -68,7 +68,7 @@ internal class CampaignRepository: CampaignRepositoryType {
 
     func syncWith(list: [Campaign], timestampMilliseconds: Int64) {
         lastSyncInMilliseconds = timestampMilliseconds
-        let oldList = self.campaigns.get()
+        let oldList = campaigns.get()
         var updatedList = [Campaign]()
 
         let (testCampaigns, newCampaigns) = list.reduce(into: ([Campaign](), [Campaign]())) { partialResult, campaign in
@@ -96,24 +96,24 @@ internal class CampaignRepository: CampaignRepositoryType {
             }
             updatedList.append(updatedCampaign)
         }
-        self.campaigns.set(value: updatedList + testCampaigns)
+        campaigns.set(value: updatedList + testCampaigns)
         saveDataToCache(updatedList)
     }
 
     @discardableResult
     func optOutCampaign(_ campaign: Campaign) -> Campaign? {
-        var list = self.campaigns.get()
-        guard let index = list.firstIndex(where: { $0.id == campaign.id }) else {
+        var newList = campaigns.get()
+        guard let index = newList.firstIndex(where: { $0.id == campaign.id }) else {
             Logger.debug("Campaign \(campaign.id) cannot be updated - not found in repository")
             return nil
         }
 
         let updatedCampaign = Campaign.updatedCampaign(campaign, asOptedOut: true)
-        list[index] = updatedCampaign
-        self.campaigns.set(value: list)
+        newList[index] = updatedCampaign
+        campaigns.set(value: newList)
 
         if !campaign.data.isTest {
-            saveDataToCache(list)
+            saveDataToCache(newList)
         }
 
         return updatedCampaign
@@ -160,19 +160,19 @@ internal class CampaignRepository: CampaignRepositoryType {
     }
 
     private func updateImpressionsLeftInCampaign(_ campaign: Campaign, newValue: Int) -> Campaign? {
-        var list = campaigns.get()
-        guard let index = list.firstIndex(where: { $0.id == campaign.id }) else {
+        var newList = campaigns.get()
+        guard let index = newList.firstIndex(where: { $0.id == campaign.id }) else {
             Logger.debug("Campaign \(campaign.id) could not be updated - not found in the repository")
             assertionFailure()
             return nil
         }
 
         let updatedCampaign = Campaign.updatedCampaign(campaign, withImpressionLeft: newValue)
-        list[index] = updatedCampaign
-        campaigns.set(value: list)
+        newList[index] = updatedCampaign
+        campaigns.set(value: newList)
 
         if !campaign.data.isTest {
-            saveDataToCache(list)
+            saveDataToCache(newList)
         }
 
         return updatedCampaign

@@ -173,13 +173,13 @@ class HttpRequestableSpec: QuickSpec {
                     }
                 }
 
-                it("will return an error for code indicating an error <100, 400)") {
-                    for code in [400, 404, 422, 500, 501, 666] {
+                it("will return an error for code indicating an error <100, 300)") {
+                    for code: UInt in [300, 400, 404, 422, 500, 501, 666] {
 
                         httpRequestable.httpSessionMock.responseData = "data".data(using: .ascii)!
                         httpRequestable.httpSessionMock.httpResponse = HTTPURLResponse(
                             url: URL(string: "https://test.url")!,
-                            statusCode: code,
+                            statusCode: Int(code),
                             httpVersion: nil,
                             headerFields: nil)
 
@@ -265,7 +265,7 @@ class HttpRequestableSpec: QuickSpec {
                 }
 
                 it("will return success if data is present and response contains valid code") {
-                    for code in [200, 201, 301] {
+                    for code in [100, 200, 201] {
 
                         httpRequestable.httpSessionMock.responseData = "data".data(using: .ascii)!
                         httpRequestable.httpSessionMock.httpResponse = HTTPURLResponse(
@@ -458,13 +458,13 @@ class HttpRequestableSpec: QuickSpec {
                     }
                 }
 
-                it("will return an error for code indicating an error <100, 400)") {
-                    for code in [400, 404, 422, 500, 501, 666] {
+                it("will return an error for code indicating an error <100, 300)") {
+                    for code: UInt in [300, 400, 404, 422, 500, 501, 666] {
 
                         httpRequestable.httpSessionMock.responseData = "data".data(using: .ascii)!
                         httpRequestable.httpSessionMock.httpResponse = HTTPURLResponse(
                             url: URL(string: "https://test.url")!,
-                            statusCode: code,
+                            statusCode: Int(code),
                             httpVersion: nil,
                             headerFields: nil)
 
@@ -553,7 +553,7 @@ class HttpRequestableSpec: QuickSpec {
                 }
 
                 it("will return success if data is present and response contains valid code") {
-                    for code in [200, 201, 301] {
+                    for code in [100, 200, 201] {
 
                         httpRequestable.httpSessionMock.responseData = "data".data(using: .ascii)!
                         httpRequestable.httpSessionMock.httpResponse = HTTPURLResponse(

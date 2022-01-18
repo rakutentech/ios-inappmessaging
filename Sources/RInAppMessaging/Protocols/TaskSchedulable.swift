@@ -27,9 +27,13 @@ extension TaskSchedulable {
     func scheduleTask(milliseconds: Int, wallDeadline: Bool, _ task: @escaping () -> Void) {
         DispatchQueue.main.async {
             self.scheduledTask?.cancel()
-            self.scheduledTask = WorkScheduler.scheduleTask(milliseconds: milliseconds,
-                                                            closure: task,
-                                                            wallDeadline: wallDeadline)
+            self.scheduledTask = WorkScheduler.scheduleTask(
+                milliseconds: milliseconds,
+                closure: { [weak self] in
+                    self?.scheduledTask = nil
+                    task()
+                },
+                wallDeadline: wallDeadline)
         }
     }
 }
