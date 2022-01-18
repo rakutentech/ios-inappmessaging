@@ -302,7 +302,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         headerLabel.textAlignment = .center
         headerLabel.lineBreakMode = .byWordWrapping
         headerLabel.numberOfLines = 0
-        headerLabel.font = .iamText(ofSize: uiConstants.headerMessageFontSize)
+        headerLabel.font = .iamTitle(ofSize: uiConstants.headerMessageFontSize)
     }
 
     func addButtons(_ buttons: [(ActionButton, viewModel: ActionButtonViewModel)]) {
