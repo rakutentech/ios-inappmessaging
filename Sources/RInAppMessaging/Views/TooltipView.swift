@@ -221,7 +221,7 @@ internal class TooltipView: UIView {
     }
 
     override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-        if exitButton.isTouchInside(touchPoint: point, from: self, touchAreaSize: UIConstants.exitButtonTouchAreaSize) == true {
+        if exitButton.isTouchInside(touchPoint: point, from: self, touchAreaSize: UIConstants.exitButtonTouchAreaSize) {
             return exitButton
         }
         return super.hitTest(point, with: event)
@@ -234,11 +234,12 @@ internal class TooltipView: UIView {
             return
         }
 
-        autoFadeTimer = Timer(fire: Date().addingTimeInterval(TimeInterval(seconds)), interval: 0, repeats: false, block: { [weak self] _ in
+        let timer = Timer(fire: Date().addingTimeInterval(TimeInterval(seconds)), interval: 0, repeats: false, block: { [weak self] _ in
             self?.onExitButtonTap()
         })
 
-        RunLoop.current.add(autoFadeTimer!, forMode: .common)
+        autoFadeTimer = timer
+        RunLoop.current.add(timer, forMode: .common)
     }
 
     // MARK: - Private methods

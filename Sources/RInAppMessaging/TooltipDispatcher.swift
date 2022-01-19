@@ -124,7 +124,11 @@ extension TooltipDispatcher {
         viewDidChangeSubview(view, identifier: identifier)
     }
 
-    func viewDidGetRemovedFromSuperview(_ view: UIView, identifier: String) { }
+    func viewDidGetRemovedFromSuperview(_ view: UIView, identifier: String) {
+        // unused
+    }
 
-    func viewDidUpdateIdentifier(from: String?, to: String?, view: UIView) { }
+    func viewDidUpdateIdentifier(from: String?, to: String?, view: UIView) {
+        // unused
+    }
 }

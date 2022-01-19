@@ -27,7 +27,7 @@ internal final class ViewListener: ViewListenerType {
     @AtomicGetSet private(set) var isListening = false
     fileprivate var observers = [WeakWrapper<ViewListenerObserver>]()
 
-    private init() { }
+    private init() { /* unavailable */ }
 
     func startListening() {
         guard !isListening else {

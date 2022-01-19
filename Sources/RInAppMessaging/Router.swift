@@ -5,7 +5,7 @@ import RSDKUtilsMain // SPM version
 import RSDKUtils
 #endif
 
-internal protocol RouterType: AnyObject {
+internal protocol RouterType: ErrorReportable {
     var accessibilityCompatibleDisplay: Bool { get set }
 
     /// Contains logic to display the correct view type and create
@@ -46,6 +46,7 @@ internal class Router: RouterType, ViewListenerObserver {
     private var displayedTooltips = [String: TooltipView]()
     private var observers = [WeakWrapper<NSKeyValueObservation>]()
 
+    weak var errorDelegate: ErrorDelegate?
     var accessibilityCompatibleDisplay = false
 
     init(dependencyManager: TypedDependencyManager, viewListener: ViewListenerType) {
@@ -153,11 +154,16 @@ internal class Router: RouterType, ViewListenerObserver {
             self.displayedTooltips[identifier]?.removeFromSuperview()
             self.displayedTooltips[identifier] = nil
 
+            guard let image = UIImage(data: imageBlob) else {
+                self.reportError(description: "Invalid image data for tooltip targeting \(tooltipData.bodyData.uiElementIdentifier)", data: nil)
+                return
+            }
+
             let position = tooltipData.bodyData.position
             let tooltipView = TooltipView(
                 model: TooltipViewModel(
                 position: position,
-                image: UIImage(data: imageBlob)!,
+                image: image,
                 backgroundColor: UIColor(hexString: tooltipData.backgroundColor) ?? .white))
 
             let onClose = {
@@ -176,7 +182,7 @@ internal class Router: RouterType, ViewListenerObserver {
 
             let superview = self.findParentViewForTooltip(targetView)
             guard superview != targetView else {
-                Logger.debug("Cannot find suitable view for tooltip targeting: \(targetView.description)")
+                self.reportError(description: "Invalid image data for tooltip targeting \(tooltipData.bodyData.uiElementIdentifier)", data: targetView)
                 return
             }
 
@@ -188,34 +194,24 @@ internal class Router: RouterType, ViewListenerObserver {
 
             self.updateFrame(targetView: targetView, tooltipView: tooltipView, superview: superview, position: position)
 
+            let newPositionHandler = { [weak self] in
+                self?.updateFrame(targetView: targetView, tooltipView: tooltipView, superview: superview, position: position)
+                if self?.isTooltipVisible(tooltipView) == true {
+                    becameVisibleHandler(tooltipView)
+                }
+            }
+
             if let parentScrollView = superview as? UIScrollView {
-                let observer = parentScrollView.observe(\.contentOffset, options: [.new, .old]) { [weak self] layer, change in
-                    self?.updateFrame(targetView: targetView, tooltipView: tooltipView, superview: superview, position: position)
-                    if self?.isTooltipVisible(tooltipView) == true {
-                        becameVisibleHandler(tooltipView)
-                    }
+                let observer = parentScrollView.observe(\.contentOffset, options: [.new, .old]) { _, _ in
+                    newPositionHandler()
                 }
                 self.observers.append(WeakWrapper(value: observer))
             } else {
-                let observer = targetView.observe(\.frame, options: [.new, .old]) { [weak self] layer, change in
-                    self?.updateFrame(targetView: targetView, tooltipView: tooltipView, superview: superview, position: position)
-                    if self?.isTooltipVisible(tooltipView) == true {
-                        becameVisibleHandler(tooltipView)
-                    }
+                let observer = targetView.observe(\.frame, options: [.new, .old]) { _, _ in
+                    newPositionHandler()
                 }
                 self.observers.append(WeakWrapper(value: observer))
             }
-
-            // TOOLTIP: Keep tooltip away from sceen edges
-    //        let distFromRightEdge = view.window!.bounds.maxX - tooltipView.frame.maxX
-    //        if distFromRightEdge < UIConstants.minDistFromEdge {
-    //            tooltipView.frame.origin.x -= UIConstants.minDistFromEdge - distFromRightEdge
-    //        }
-    //
-    //        let distFromLeftEdge = UIConstants.minDistFromEdge - tooltipView.frame.minX
-    //        if distFromLeftEdge < UIConstants.minDistFromEdge {
-    //            tooltipView.frame.origin.x += distFromLeftEdge
-    //        }
 
             self.displayedTooltips[identifier] = tooltipView
         }
@@ -236,23 +232,23 @@ internal class Router: RouterType, ViewListenerObserver {
     }
 
     private func findParentViewForTooltip(_ sourceView: UIView) -> UIView {
-        let superview = sourceView.superview
+        guard let superview = sourceView.superview else {
+            return sourceView
+        }
 
-        if superview?.isKind(of: UIScrollView.self) == true {
-            return superview!
-        } else if superview?.isKind(of: UIWindow.self) == true {
+        if superview.isKind(of: UIScrollView.self) == true {
+            return superview
+        } else if superview.isKind(of: UIWindow.self) == true {
             if accessibilityCompatibleDisplay,
                let transitionViewClass = NSClassFromString("UITransitionView"),
-               let transitionView = superview?.subviews.first(where: { !$0.isKind(of: transitionViewClass) }) {
+               let transitionView = superview.subviews.first(where: { !$0.isKind(of: transitionViewClass) }) {
 
                 return transitionView
             } else {
-                return superview!
+                return superview
             }
-        } else if let superview = superview {
-            return findParentViewForTooltip(superview)
         } else {
-            return sourceView
+            return findParentViewForTooltip(superview)
         }
     }
 
@@ -302,9 +298,13 @@ internal class Router: RouterType, ViewListenerObserver {
 
 // MARK: - ViewListenerObserver
 extension Router {
-    func viewDidChangeSubview(_ view: UIView, identifier: String) { }
+    func viewDidChangeSubview(_ view: UIView, identifier: String) {
+        // unused
+    }
 
-    func viewDidMoveToWindow(_ view: UIView, identifier: String) { }
+    func viewDidMoveToWindow(_ view: UIView, identifier: String) {
+        // unused
+    }
 
     func viewDidGetRemovedFromSuperview(_ view: UIView, identifier: String) {
         displayedTooltips[identifier]?.removeFromSuperview()
