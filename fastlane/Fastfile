@@ -42,7 +42,8 @@ platform :ios do
   end
 
   lane :build_swift_package do
-    sh 'swift build -Xswiftc "-sdk" -Xswiftc `xcrun --sdk iphonesimulator --show-sdk-path` -Xswiftc "-target" -Xswiftc "x86_64-apple-ios15.0-simulator"'
+    swift_target = ENV['REM_FL_SWIFT_TARGET'] || "x86_64-apple-ios15.0-simulator"
+    sh "swift build -Xswiftc \"-sdk\" -Xswiftc `xcrun --sdk iphonesimulator --show-sdk-path` -Xswiftc \"-target\" -Xswiftc #{swift_target}"
   end
 
   lane :coverage do
