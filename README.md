@@ -8,6 +8,12 @@ In-App Messaging (IAM) module allows app developers to easily configure and disp
 
 This module supports iOS 12.0 and above. It has been tested with iOS 12.5 and above.
 
+# Requirements
+
+Xcode 12.5.x or Xcode 13+
+
+Note: The SDK may build on earlier Xcode versions but it is not officially supported or tested.
+
 # **How to install**
 
 RInAppMessaging SDK is distributed as a Cocoapod and as a Swift Package.
