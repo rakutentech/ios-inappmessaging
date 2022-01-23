@@ -16,8 +16,7 @@ class CustomEventsSpec: QuickSpec {
 
         beforeEach {
             campaignRepository = CampaignRepository(userDataCache: UserDataCacheMock(),
-                                                    accountRepository: AccountRepository(userDataCache: UserDataCacheMock()),
-                                                    viewListener: ViewListenerMock())
+                                                    accountRepository: AccountRepository(userDataCache: UserDataCacheMock()))
             eventMatcher = EventMatcher(campaignRepository: campaignRepository)
             campaignsValidator = CampaignsValidator(
                 campaignRepository: campaignRepository,

@@ -45,8 +45,7 @@ internal enum MainContainerFactory {
             }),
             ContainerElement(type: CampaignRepositoryType.self, factory: {
                 CampaignRepository(userDataCache: manager.resolve(type: UserDataCacheable.self)!,
-                                   accountRepository: manager.resolve(type: AccountRepositoryType.self)!,
-                                   viewListener: manager.resolve(type: ViewListenerType.self)!)
+                                   accountRepository: manager.resolve(type: AccountRepositoryType.self)!)
             }),
             ContainerElement(type: EventMatcherType.self, factory: {
                 EventMatcher(campaignRepository: manager.resolve(type: CampaignRepositoryType.self)!)

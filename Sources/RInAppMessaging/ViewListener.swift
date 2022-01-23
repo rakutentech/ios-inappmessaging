@@ -67,6 +67,9 @@ internal final class ViewListener: ViewListenerType {
     }
 
     func iterateOverDisplayedViews(_ handler: @escaping (UIView, String, inout Bool) -> Void) {
+        guard isListening else {
+            return
+        }
         DispatchQueue.main.async {
             guard let allWindowSubviews = UIApplication.shared.getKeyWindow()?.getAllSubviews() else {
                 return
@@ -90,15 +93,6 @@ internal final class ViewListener: ViewListenerType {
          swizzle(#selector(setter: UIView.accessibilityIdentifier),
                  with: #selector(NSObject.swizzled_setAccessibilityIdentifier),
                  of: NSObject.self),
-//         swizzle(#selector(setter: UILabel.text),
-//                 with: #selector(UILabel.swizzled_setText),
-//                 of: UILabel.self),
-//         swizzle(#selector(setter: UILabel.attributedText),
-//                 with: #selector(UILabel.swizzled_setAttributedText),
-//                 of: UILabel.self),
-//         swizzle(#selector(setter: UITextView.attributedText),
-//                 with: #selector(UITextView.swizzled_setAttributedText),
-//                 of: UITextView.self),
          swizzle(#selector(UIView.didMoveToWindow), with: #selector(UIView.swizzled_didMoveToWindow))].allSatisfy { $0 == true }
     }
 
@@ -126,40 +120,6 @@ private extension NSObject {
         let newIdentifier = identifier ?? (self as? UILabel)?.text ?? (self as? UITextView)?.text
         ViewListener.instance.observers.forEach {
             $0.value?.viewDidUpdateIdentifier(from: oldIdentifier ?? (self as? UILabel)?.text ?? (self as? UITextView)?.text, to: newIdentifier, view: self)
-        }
-    }
-}
-
-private extension UILabel {
-    @objc func swizzled_setText(_ newText: String?) {
-        let oldText = text
-        self.swizzled_setText(newText)
-
-        let newIdentifier = accessibilityIdentifier ?? newText
-        ViewListener.instance.observers.forEach {
-            $0.value?.viewDidUpdateIdentifier(from: accessibilityIdentifier ?? oldText, to: newIdentifier, view: self)
-        }
-    }
-
-    @objc func swizzled_setAttributedText(_ newText: NSAttributedString?) {
-        let oldText = attributedText
-        self.swizzled_setAttributedText(newText)
-
-        let newIdentifier = accessibilityIdentifier ?? newText?.string
-        ViewListener.instance.observers.forEach {
-            $0.value?.viewDidUpdateIdentifier(from: accessibilityIdentifier ?? oldText?.string, to: newIdentifier, view: self)
-        }
-    }
-}
-
-private extension UITextView { // to be removed
-    @objc func swizzled_setAttributedText(_ newText: NSAttributedString?) {
-        let oldText = newText
-        self.swizzled_setAttributedText(newText)
-
-        let newIdentifier = accessibilityIdentifier ?? newText?.string
-        ViewListener.instance.observers.forEach {
-            $0.value?.viewDidUpdateIdentifier(from: accessibilityIdentifier ?? oldText?.string, to: newIdentifier, view: self)
         }
     }
 }

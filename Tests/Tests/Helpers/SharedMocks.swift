@@ -23,6 +23,7 @@ class CampaignRepositoryMock: CampaignRepositoryType {
     var tooltipsList: [Campaign] = []
     var lastSyncInMilliseconds: Int64?
     var resourcesToLock: [LockableResource] = []
+    weak var delegate: CampaignRepositoryDelegate?
 
     private(set) var decrementImpressionsCalls = 0
     private(set) var incrementImpressionsCalls = 0
@@ -289,6 +290,7 @@ class RouterMock: RouterType {
     var displayedCampaignsCount = 0
     var wasDiscardCampaignCalled = false
     var displayTime = TimeInterval(0.1)
+    weak var errorDelegate: ErrorDelegate?
 
     func displayCampaign(_ campaign: Campaign,
                          associatedImageData: Data?,

@@ -182,7 +182,7 @@ internal class Router: RouterType, ViewListenerObserver {
 
             let superview = self.findParentViewForTooltip(targetView)
             guard superview != targetView else {
-                self.reportError(description: "Invalid image data for tooltip targeting \(tooltipData.bodyData.uiElementIdentifier)", data: targetView)
+                self.reportError(description: "Cannot find suitable view for tooltip targeting \(tooltipData.bodyData.uiElementIdentifier)", data: targetView)
                 return
             }
 
@@ -236,9 +236,10 @@ internal class Router: RouterType, ViewListenerObserver {
             return sourceView
         }
 
-        if superview.isKind(of: UIScrollView.self) == true {
+        switch superview {
+        case is UIScrollView:
             return superview
-        } else if superview.isKind(of: UIWindow.self) == true {
+        case is UIWindow:
             if accessibilityCompatibleDisplay,
                let transitionViewClass = NSClassFromString("UITransitionView"),
                let transitionView = superview.subviews.first(where: { !$0.isKind(of: transitionViewClass) }) {
@@ -247,7 +248,7 @@ internal class Router: RouterType, ViewListenerObserver {
             } else {
                 return superview
             }
-        } else {
+        default:
             return findParentViewForTooltip(superview)
         }
     }

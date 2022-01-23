@@ -108,11 +108,15 @@ import RSDKUtils
                 errorDelegate?.inAppMessagingDidReturnError(error)
             }
             initializedModule?.delegate = delegate
-            initializedModule?.initialize(deinitHandler: {
-                self.initializedModule = nil
-                self.dependencyManager = nil
-                viewListener.stopListening()
-            })
+            initializedModule?.initialize { shouldDeinit in
+                if shouldDeinit {
+                    self.initializedModule = nil
+                    self.dependencyManager = nil
+                    viewListener.stopListening()
+                } else {
+                    viewListener.startListening()
+                }
+            }
         }
     }
 

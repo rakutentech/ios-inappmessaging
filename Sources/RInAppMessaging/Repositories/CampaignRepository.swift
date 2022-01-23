@@ -9,6 +9,7 @@ internal protocol CampaignRepositoryType: AnyObject, Lockable {
     var list: [Campaign] { get }
     var tooltipsList: [Campaign] { get }
     var lastSyncInMilliseconds: Int64? { get }
+    var delegate: CampaignRepositoryDelegate? { get set }
 
     /// Used to sync with list from the server. Server list is considered as source of truth.
     /// Order must be preserved.
@@ -43,6 +44,10 @@ internal protocol CampaignRepositoryType: AnyObject, Lockable {
     func clearLastUserData()
 }
 
+internal protocol CampaignRepositoryDelegate: AnyObject {
+    func didUpdateCampaignList()
+}
+
 /// Repository to store campaigns retrieved from ping request.
 internal class CampaignRepository: CampaignRepositoryType {
 
@@ -53,7 +58,8 @@ internal class CampaignRepository: CampaignRepositoryType {
     private let campaignsAndTooltips = LockableObject([Campaign]())
     private let tooltips = LockableObject([Campaign]())
     private(set) var lastSyncInMilliseconds: Int64?
-    private let viewListener: ViewListenerType
+
+    weak var delegate: CampaignRepositoryDelegate?
 
     var list: [Campaign] {
         campaignsAndTooltips.get()
@@ -66,10 +72,9 @@ internal class CampaignRepository: CampaignRepositoryType {
         [campaignsAndTooltips, tooltips]
     }
 
-    init(userDataCache: UserDataCacheable, accountRepository: AccountRepositoryType, viewListener: ViewListenerType) {
+    init(userDataCache: UserDataCacheable, accountRepository: AccountRepositoryType) {
         self.userDataCache = userDataCache
         self.accountRepository = accountRepository
-        self.viewListener = viewListener
 
         loadCachedData(syncWithLastUserData: true)
     }
@@ -111,10 +116,7 @@ internal class CampaignRepository: CampaignRepositoryType {
         tooltips.set(value: (updatedList + testCampaigns).filter({ $0.isTooltip }))
         saveDataToCache(updatedList)
 
-        // TOOLTIP: make TooltipDispatcher validate all views against new tooltip list (to be refactored)
-        // EDIT: This is probably not needed anymore - to be tested
-        viewListener.stopListening()
-        viewListener.startListening()
+        delegate?.didUpdateCampaignList()
     }
 
     @discardableResult

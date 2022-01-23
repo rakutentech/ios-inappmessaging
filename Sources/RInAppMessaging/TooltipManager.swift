@@ -2,10 +2,10 @@ import Foundation
 import class UIKit.UIView
 
 protocol TooltipManagerType: AnyObject {
-
+    
 }
 
-class TooltipManager: TooltipManagerType, ViewListenerObserver {
+class TooltipManager: TooltipManagerType, ViewListenerObserver, CampaignRepositoryDelegate {
 
     private let viewListener: ViewListenerType
     private let campaignRepository: CampaignRepositoryType
@@ -16,14 +16,17 @@ class TooltipManager: TooltipManagerType, ViewListenerObserver {
 
         self.viewListener = viewListener
         self.campaignRepository = campaignRepository
+        self.campaignRepository.delegate = self
         viewListener.addObserver(self)
     }
-}
 
-// MARK: - ViewListenerObserver
-extension TooltipManager {
+    func didUpdateCampaignList() {
+        viewListener.iterateOverDisplayedViews { view, identifier, _ in
+            self.verify(view: view, identifier: identifier)
+        }
+    }
 
-    func viewDidChangeSubview(_ view: UIView, identifier: String) {
+    private func verify(view: UIView, identifier: String) {
         guard view.superview != nil,
               let tooltip = campaignRepository.tooltipsList.first(where: {
                   guard let tooltipData = $0.tooltipData else {
@@ -41,9 +44,17 @@ extension TooltipManager {
         triggeredTooltipIds.append(tooltip.id)
         RInAppMessaging.logEvent(ViewAppearedEvent(viewIdentifier: identifier))
     }
+}
+
+// MARK: - ViewListenerObserver
+extension TooltipManager {
+
+    func viewDidChangeSubview(_ view: UIView, identifier: String) {
+        verify(view: view, identifier: identifier)
+    }
 
     func viewDidMoveToWindow(_ view: UIView, identifier: String) {
-        viewDidChangeSubview(view, identifier: identifier)
+        verify(view: view, identifier: identifier)
     }
 
     func viewDidGetRemovedFromSuperview(_ view: UIView, identifier: String) {

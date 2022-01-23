@@ -59,7 +59,7 @@ internal class InAppMessagingModule: ErrorDelegate, CampaignDispatcherDelegate, 
     }
 
     // should be called once
-    func initialize(deinitHandler: @escaping () -> Void) {
+    func initialize(completion: @escaping (_ shouldDeinit: Bool) -> Void) {
         guard !isInitialized else {
             return
         }
@@ -70,14 +70,15 @@ internal class InAppMessagingModule: ErrorDelegate, CampaignDispatcherDelegate, 
             }
             let enabled = self.isEnabled(config: config)
             self.isEnabled = enabled
-            self.isInitialized = true
 
             if enabled {
+                self.isInitialized = true
                 self.campaignsListManager.refreshList()
                 self.flushEventBuffer(discardEvents: false)
+                completion(false)
             } else {
                 self.flushEventBuffer(discardEvents: true)
-                deinitHandler()
+                completion(true)
             }
         }
     }
