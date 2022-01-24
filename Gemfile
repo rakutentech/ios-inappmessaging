@@ -1,6 +1,7 @@
 source "https://rubygems.org"
 
-gem "fastlane", "~> 2.174"
+# unpin once https://github.com/fastlane/fastlane/issues/19841 is solved
+gem "fastlane", "2.200.0"
 gem "cocoapods"
 gem "xcode-install"
 gem "jazzy"
