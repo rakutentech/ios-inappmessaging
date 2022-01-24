@@ -230,7 +230,6 @@ class BaseViewPresenterMock: BaseViewPresenterType {
     func viewDidInitialize() { }
     func handleButtonTrigger(_ trigger: Trigger?) { }
     func optOutCampaign() { }
-    func loadResources() { }
 }
 
 class FullViewPresenterMock: FullViewPresenterType {
@@ -250,7 +249,6 @@ class FullViewPresenterMock: FullViewPresenterType {
     }
     func handleButtonTrigger(_ trigger: Trigger?) { }
     func optOutCampaign() { }
-    func loadResources() { }
 }
 
 class SlideUpViewPresenterMock: SlideUpViewPresenterType {
@@ -269,7 +267,6 @@ class SlideUpViewPresenterMock: SlideUpViewPresenterType {
     }
     func handleButtonTrigger(_ trigger: Trigger?) { }
     func optOutCampaign() { }
-    func loadResources() { }
 }
 
 extension FullViewModel {

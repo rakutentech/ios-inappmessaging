@@ -4,6 +4,7 @@ internal enum EventType: Int, Codable, Equatable {
     case loginSuccessful
     case purchaseSuccessful
     case custom
+    case viewAppeared = 100
 
     var name: String {
         switch self {
@@ -17,6 +18,8 @@ internal enum EventType: Int, Codable, Equatable {
             return Constants.Event.purchaseSuccessful
         case .custom:
             return Constants.Event.custom
+        case .viewAppeared:
+            return Constants.Event.viewAppeared
         }
     }
 }

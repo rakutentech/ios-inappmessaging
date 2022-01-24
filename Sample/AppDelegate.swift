@@ -14,6 +14,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
         if !AppDelegate.isTestEnvironment || CommandLine.arguments.contains("--uitesting") {
+            // To mock API using ping.json file, uncomment the line below and enable `RIAM_CONFIG_URL` override in Example-Debug.xcconfig
+            MockServerHelper.setupForSampleApp()
             RInAppMessaging.configure()
         }
 

@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
-    <device id="retina6_1" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="SecondPageViewController" customModule="InAppMessaging_Example" customModuleProvider="target">
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="SecondPageViewController" customModule="RInAppMessaging_Example" customModuleProvider="target">
             <connections>
                 <outlet property="view" destination="iN0-l3-epB" id="ZgL-O2-Y54"/>
             </connections>
@@ -20,25 +19,146 @@
             <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="roI-sB-TSB">
-                    <rect key="frame" x="137" y="222" width="140" height="30"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="roI-sB-TSB">
+                    <rect key="frame" x="137" y="800" width="140" height="30"/>
                     <state key="normal" title="Return to homepage"/>
                     <connections>
                         <action selector="returnToHomepage:" destination="-1" eventType="touchUpInside" id="amB-Mg-c5j"/>
                     </connections>
                 </button>
-                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" text="Second page" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="aLQ-Th-CJC">
-                    <rect key="frame" x="137" y="81" width="140" height="47"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                </textView>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Second page" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ys1-Pr-pdf">
+                    <rect key="frame" x="156.5" y="76" width="101" height="21"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tooltip target" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Cg7-fK-ZsM">
+                    <rect key="frame" x="147" y="418" width="120" height="60"/>
+                    <color key="backgroundColor" systemColor="systemOrangeColor"/>
+                    <accessibility key="accessibilityConfiguration" identifier="tooltip.test.1"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="60" id="IJl-dF-gLa"/>
+                        <constraint firstAttribute="width" constant="120" id="XyM-6d-f01"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tooltip target" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1IC-fr-U9Q">
+                    <rect key="frame" x="147" y="418" width="120" height="60"/>
+                    <color key="backgroundColor" systemColor="systemOrangeColor"/>
+                    <accessibility key="accessibilityConfiguration" identifier="tooltip.test.2"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="120" id="3VV-T4-tQd"/>
+                        <constraint firstAttribute="height" constant="60" id="8xc-aO-Ylu"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tooltip target" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Idr-XZ-Jfl">
+                    <rect key="frame" x="147" y="418" width="120" height="60"/>
+                    <color key="backgroundColor" systemColor="systemOrangeColor"/>
+                    <accessibility key="accessibilityConfiguration" identifier="tooltip.test.3"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="60" id="Zrr-1P-Bhg"/>
+                        <constraint firstAttribute="width" constant="120" id="dJf-fQ-Ojo"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tooltip target" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1bn-jZ-lPc">
+                    <rect key="frame" x="147" y="418" width="120" height="60"/>
+                    <color key="backgroundColor" systemColor="systemOrangeColor"/>
+                    <accessibility key="accessibilityConfiguration" identifier="tooltip.test.4"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="60" id="7Ti-Ko-1bv"/>
+                        <constraint firstAttribute="width" constant="120" id="eWW-cM-I3s"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tooltip target" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FPp-Qt-Pyz">
+                    <rect key="frame" x="147" y="418" width="120" height="60"/>
+                    <color key="backgroundColor" systemColor="systemOrangeColor"/>
+                    <accessibility key="accessibilityConfiguration" identifier="tooltip.test.5"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="60" id="Gg3-am-1M3"/>
+                        <constraint firstAttribute="width" constant="120" id="OVD-7y-ZzM"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tooltip target" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sAE-ak-h2j">
+                    <rect key="frame" x="147" y="418" width="120" height="60"/>
+                    <color key="backgroundColor" systemColor="systemOrangeColor"/>
+                    <accessibility key="accessibilityConfiguration" identifier="tooltip.test.6"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="60" id="18H-Yw-35e"/>
+                        <constraint firstAttribute="width" constant="120" id="CY3-Of-Jic"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tooltip target" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vFh-qi-gIW">
+                    <rect key="frame" x="147" y="418" width="120" height="60"/>
+                    <color key="backgroundColor" systemColor="systemOrangeColor"/>
+                    <accessibility key="accessibilityConfiguration" identifier="tooltip.test.7"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="120" id="28R-ue-Uwr"/>
+                        <constraint firstAttribute="height" constant="60" id="qWM-7C-ZXu"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tooltip target" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jCJ-h9-eMI">
+                    <rect key="frame" x="147" y="418" width="120" height="60"/>
+                    <color key="backgroundColor" systemColor="systemOrangeColor"/>
+                    <accessibility key="accessibilityConfiguration" identifier="tooltip.test.8"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="60" id="gKc-QJ-kMc"/>
+                        <constraint firstAttribute="width" constant="120" id="oKT-dw-6Fg"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
             </subviews>
-            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="1IC-fr-U9Q" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="2ot-gm-NID"/>
+                <constraint firstItem="roI-sB-TSB" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="8Co-nb-W5z"/>
+                <constraint firstItem="vFh-qi-gIW" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="8dq-z7-OO4"/>
+                <constraint firstItem="1bn-jZ-lPc" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="FhL-Qq-5bn"/>
+                <constraint firstItem="jCJ-h9-eMI" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="HuR-Ev-QDh"/>
+                <constraint firstItem="vFh-qi-gIW" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="Oop-8j-r7j"/>
+                <constraint firstItem="Cg7-fK-ZsM" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="P6v-2e-oAG"/>
+                <constraint firstItem="sAE-ak-h2j" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="ScC-nA-o79"/>
+                <constraint firstItem="Idr-XZ-Jfl" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="X14-tt-cje"/>
+                <constraint firstItem="jCJ-h9-eMI" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="XRU-Fo-AsF"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="roI-sB-TSB" secondAttribute="bottom" constant="32" id="ZRd-54-LoI"/>
+                <constraint firstItem="ys1-Pr-pdf" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="aKO-nk-wEQ"/>
+                <constraint firstItem="sAE-ak-h2j" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="edG-N5-reS"/>
+                <constraint firstItem="Idr-XZ-Jfl" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="g5g-9R-EtH"/>
+                <constraint firstItem="Cg7-fK-ZsM" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="jQ4-aw-qIt"/>
+                <constraint firstItem="FPp-Qt-Pyz" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="kTy-hN-odL"/>
+                <constraint firstItem="1bn-jZ-lPc" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="ksF-Rl-96a"/>
+                <constraint firstItem="FPp-Qt-Pyz" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="pm6-7t-472"/>
+                <constraint firstItem="1IC-fr-U9Q" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="swe-XS-B57"/>
+                <constraint firstItem="ys1-Pr-pdf" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="32" id="zz8-5J-f51"/>
+            </constraints>
             <point key="canvasLocation" x="47.826086956521742" y="35.491071428571423"/>
         </view>
     </objects>
+    <resources>
+        <systemColor name="systemOrangeColor">
+            <color red="1" green="0.58431372549019611" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+    </resources>
 </document>
