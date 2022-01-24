@@ -269,7 +269,7 @@ internal class Router: RouterType, ViewListenerObserver {
         let targetViewFrame = superview.convert(targetView.frame, from: targetView.superview)
 
         switch position {
-        case .topCentre:
+        case .topCenter:
             tooltipView.frame.origin = CGPoint(x: targetViewFrame.midX - tooltipView.frame.width / 2.0,
                                                y: targetViewFrame.origin.y - tooltipView.frame.height - UIConstants.Tooltip.targetViewSpacing)
         case .topLeft:
@@ -284,7 +284,7 @@ internal class Router: RouterType, ViewListenerObserver {
         case .bottomRight:
             tooltipView.frame.origin = CGPoint(x: targetViewFrame.maxX,
                                                y: targetViewFrame.maxY + UIConstants.Tooltip.targetViewSpacing)
-        case .bottomCentre:
+        case .bottomCenter:
             tooltipView.frame.origin = CGPoint(x: targetViewFrame.midX - tooltipView.frame.width / 2.0,
                                                y: targetViewFrame.maxY + UIConstants.Tooltip.targetViewSpacing)
         case .left:

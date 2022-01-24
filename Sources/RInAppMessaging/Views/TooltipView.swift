@@ -51,7 +51,7 @@ internal class TooltipView: UIView {
         case .bottomRight, .bottomLeft, .topLeft, .topRight:
             frame.size.width += UIConstants.cornerTipSize.height
             frame.size.height += UIConstants.cornerTipSize.height
-        case .bottomCentre, .topCentre:
+        case .bottomCenter, .topCenter:
             frame.size.height += UIConstants.tipSize.height
         case .left, .right:
             frame.size.width += UIConstants.tipSize.height
@@ -88,7 +88,7 @@ internal class TooltipView: UIView {
         let path: UIBezierPath
 
         switch position {
-        case .topCentre:
+        case .topCenter:
             let imageRectSize = CGSize(width: bounds.size.width,
                                        height: bounds.size.height - UIConstants.tipSize.height)
             path = UIBezierPath(roundedRect: CGRect(origin: .zero,
@@ -145,7 +145,7 @@ internal class TooltipView: UIView {
             path.addLine(to: .zero)
             path.addLine(to: CGPoint(x: UIConstants.cornerTipSize.height, y: UIConstants.cornerTipSize.height + UIConstants.cornerTipOffset))
 
-        case .bottomCentre:
+        case .bottomCenter:
             let imageRectSize = CGSize(width: bounds.size.width,
                                        height: bounds.size.height - UIConstants.tipSize.height)
             path = UIBezierPath(roundedRect: CGRect(origin: CGPoint(x: 0, y: UIConstants.tipSize.height),
@@ -204,7 +204,7 @@ internal class TooltipView: UIView {
             constraints.append(exitButton.bottomAnchor.constraint(equalTo: self.topAnchor,
                                                                   constant: -UIConstants.exitButtonTopMargin + UIConstants.tipSize.height))
         }
-        else if position == .bottomCentre {
+        else if position == .bottomCenter {
             constraints.append(exitButton.bottomAnchor.constraint(equalTo: self.bottomAnchor,
                                                                   constant: -UIConstants.exitButtonTopMargin + UIConstants.tipSize.height))
 
@@ -264,7 +264,7 @@ internal class TooltipView: UIView {
             imageView.frame.origin.x += UIConstants.tipSize.height
         case .bottomLeft:
             imageView.frame.origin.y += UIConstants.cornerTipSize.height
-        case .bottomCentre:
+        case .bottomCenter:
             imageView.frame.origin.y += UIConstants.tipSize.height
         case .bottomRight:
             imageView.frame.origin.x += UIConstants.cornerTipSize.height
@@ -293,13 +293,13 @@ internal class TooltipView: UIView {
             shadowOffset = CGSize(width: -1, height: 2)
         case .bottomLeft:
             shadowOffset = CGSize(width: 1, height: -2)
-        case .bottomCentre:
+        case .bottomCenter:
             shadowOffset = CGSize(width: 1, height: -2)
         case .bottomRight:
             shadowOffset = CGSize(width: -1, height: -2)
         case .topLeft:
             shadowOffset = CGSize(width: 1, height: 2)
-        case .topCentre:
+        case .topCenter:
             shadowOffset = CGSize(width: 1, height: 2)
         case .left:
             shadowOffset = CGSize(width: 1, height: 2)

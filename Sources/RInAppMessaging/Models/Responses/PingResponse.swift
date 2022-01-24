@@ -17,10 +17,10 @@ internal struct TooltipBodyData: Decodable, Hashable {
     enum Position: String, Decodable {
         case topLeft = "top-left"
         case topRight = "top-right"
-        case topCentre = "top-centre"
+        case topCenter = "top-center"
         case bottomLeft = "bottom-left"
         case bottomRight = "bottom-right"
-        case bottomCentre = "bottom-centre"
+        case bottomCenter = "bottom-center"
         case left
         case right
     }
