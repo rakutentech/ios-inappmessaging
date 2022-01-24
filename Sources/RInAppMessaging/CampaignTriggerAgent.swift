@@ -5,15 +5,18 @@ internal protocol CampaignTriggerAgentType {
 internal struct CampaignTriggerAgent: CampaignTriggerAgentType {
 
     private let eventMatcher: EventMatcherType
-    private let dispatcher: CampaignDispatcherType
+    private let campaignDispatcher: CampaignDispatcherType
+    private let tooltipDispatcher: TooltipDispatcherType
     private let validator: CampaignsValidatorType
 
     init(eventMatcher: EventMatcherType,
          readyCampaignDispatcher: CampaignDispatcherType,
+         tooltipDispatcher: TooltipDispatcherType,
          campaignsValidator: CampaignsValidatorType) {
 
         self.eventMatcher = eventMatcher
-        self.dispatcher = readyCampaignDispatcher
+        self.campaignDispatcher = readyCampaignDispatcher
+        self.tooltipDispatcher = tooltipDispatcher
         self.validator = campaignsValidator
     }
 
@@ -22,12 +25,16 @@ internal struct CampaignTriggerAgent: CampaignTriggerAgentType {
             validator.validate { (campaign, triggeredEvents) in
                 do {
                     try eventMatcher.removeSetOfMatchedEvents(triggeredEvents, for: campaign)
-                    dispatcher.addToQueue(campaignID: campaign.id)
+                    if campaign.isTooltip {
+                        tooltipDispatcher.setNeedsDisplay(tooltip: campaign)
+                    } else {
+                        campaignDispatcher.addToQueue(campaignID: campaign.id)
+                    }
                 } catch {
                     // Campaign is not ready to be displayed
                 }
             }
         }
-        dispatcher.dispatchAllIfNeeded()
+        campaignDispatcher.dispatchAllIfNeeded()
     }
 }

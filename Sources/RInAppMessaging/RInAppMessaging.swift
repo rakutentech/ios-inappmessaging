@@ -84,7 +84,9 @@ import RSDKUtils
                 let campaignRepository = dependencyManager.resolve(type: CampaignRepositoryType.self),
                 let router = dependencyManager.resolve(type: RouterType.self),
                 let randomizer = dependencyManager.resolve(type: Randomizer.self),
-                let displayPermissionService = dependencyManager.resolve(type: DisplayPermissionServiceType.self) else {
+                let displayPermissionService = dependencyManager.resolve(type: DisplayPermissionServiceType.self),
+                let viewListener = dependencyManager.resolve(type: ViewListenerType.self),
+                let _ = dependencyManager.resolve(type: TooltipManagerType.self) else {
 
                     assertionFailure("In-App Messaging SDK module initialization failure: Dependencies could not be resolved")
                     return
@@ -106,10 +108,15 @@ import RSDKUtils
                 errorDelegate?.inAppMessagingDidReturnError(error)
             }
             initializedModule?.delegate = delegate
-            initializedModule?.initialize(deinitHandler: {
-                self.initializedModule = nil
-                self.dependencyManager = nil
-            })
+            initializedModule?.initialize { shouldDeinit in
+                if shouldDeinit {
+                    self.initializedModule = nil
+                    self.dependencyManager = nil
+                    viewListener.stopListening()
+                } else {
+                    viewListener.startListening()
+                }
+            }
         }
     }
 
@@ -150,6 +157,7 @@ import RSDKUtils
     /// For testing purposes
     internal static func deinitializeModule() {
         inAppQueue.sync {
+            dependencyManager?.resolve(type: ViewListenerType.self)?.stopListening()
             initializedModule = nil
             dependencyManager = nil
         }

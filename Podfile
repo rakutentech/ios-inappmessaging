@@ -7,6 +7,7 @@ target 'RInAppMessaging_Example' do
   pod 'RInAppMessaging', :path => '.'
   pod 'SwiftLint', '~> 0.42'
   pod 'RSDKUtils', '~> 2.1', :testspecs => ['Nimble', 'TestHelpers']
+  pod 'Shock', '~> 6.0'
 
   abstract_target 'Tests-Common' do
     pod 'Quick'

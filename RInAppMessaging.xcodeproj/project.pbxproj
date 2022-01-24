@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		45073FA4277CDA70007CB732 /* MockServerHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4592B4B527024925004FF27B /* MockServerHelper.swift */; };
+		45073FA5277CDBC6007CB732 /* display-permission.json in Resources */ = {isa = PBXBuildFile; fileRef = 4592B4B927024D0C004FF27B /* display-permission.json */; };
+		45073FA6277CDBCA007CB732 /* config.json in Resources */ = {isa = PBXBuildFile; fileRef = 4592B4B2270229D1004FF27B /* config.json */; };
+		45073FA8277CDBF0007CB732 /* ping.json in Resources */ = {isa = PBXBuildFile; fileRef = 45073FA7277CDBF0007CB732 /* ping.json */; };
 		4516601D23CD740300310181 /* MainContainerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4516601C23CD740300310181 /* MainContainerSpec.swift */; };
 		4534947223C6ABF700189A81 /* SerializationSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4534947123C6ABF700189A81 /* SerializationSpec.swift */; };
 		45357AE52457EBBC007D8FDC /* config_success.json in Resources */ = {isa = PBXBuildFile; fileRef = 45357AE42457EBBC007D8FDC /* config_success.json */; };
@@ -109,6 +113,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		45073FA7277CDBF0007CB732 /* ping.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ping.json; sourceTree = "<group>"; };
 		4516601C23CD740300310181 /* MainContainerSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainContainerSpec.swift; sourceTree = "<group>"; };
 		4518EEDD270F73BB00E8CBBC /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		4534947123C6ABF700189A81 /* SerializationSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SerializationSpec.swift; sourceTree = "<group>"; };
@@ -344,6 +349,7 @@
 		607FACD21AFB9204008FA782 /* Sample */ = {
 			isa = PBXGroup;
 			children = (
+				45073FA7277CDBF0007CB732 /* ping.json */,
 				607FACD51AFB9204008FA782 /* AppDelegate.swift */,
 				607FACD71AFB9204008FA782 /* ViewController.swift */,
 				607FACD91AFB9204008FA782 /* Main.storyboard */,
@@ -605,12 +611,15 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				45073FA6277CDBCA007CB732 /* config.json in Resources */,
 				D924268722D91C15002F50D3 /* Localizable.strings in Resources */,
 				4B1A88AB274F6896002724B6 /* dummy-font.otf in Resources */,
 				D920D8C92277B80F008FB38D /* SecondPageViewController.xib in Resources */,
+				45073FA8277CDBF0007CB732 /* ping.json in Resources */,
 				607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */,
 				607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */,
 				607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */,
+				45073FA5277CDBC6007CB732 /* display-permission.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -678,6 +687,7 @@
 			files = (
 				D920D8CB2277B965008FB38D /* SecondPageViewController.swift in Sources */,
 				607FACD81AFB9204008FA782 /* ViewController.swift in Sources */,
+				45073FA4277CDA70007CB732 /* MockServerHelper.swift in Sources */,
 				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
