@@ -30,24 +30,36 @@ internal class TooltipView: UIView {
                                           height: ceil(tipSize.height / sqrt(2)))
     }
 
-    private let position: TooltipBodyData.Position
-    private let imageBgColor: UIColor
+    private var position: TooltipBodyData.Position?
+    private var imageBgColor: UIColor?
     private var autoFadeTimer: Timer?
     private let exitButton = ExitButton()
-
-    var onImageTap: () -> Void = { }
-    var onExitButtonTap: () -> Void = { }
+    private let presenter: TooltipPresenterType
 
     // MARK: - Init
 
-    init(model: TooltipViewModel) {
+    init(presenter: TooltipPresenterType) {
+        self.presenter = presenter
+        super.init(frame: .zero)
+
+        backgroundColor = .clear
+        clipsToBounds = false
+        autoresizingMask = []
+        accessibilityIdentifier = "IAMView-Tooltip"
+
+        layer.shadowColor = UIColor.black.cgColor
+        layer.shadowRadius = UIConstants.shadowRadius
+        layer.shadowOpacity = UIConstants.shadowOpacity
+    }
+
+    func setup(model: TooltipViewModel) {
         position = model.position
         imageBgColor = model.backgroundColor
 
         let imageViewSize = model.image.size.applying(.init(scaleX: 1.0 / UIScreen.main.scale, y: 1.0 / UIScreen.main.scale)) // convert pixels to points
         var frame = CGRect(origin: .zero, size: CGSize(width: imageViewSize.width + UIConstants.imagePadding * 2,
                                                        height: imageViewSize.height + UIConstants.imagePadding * 2))
-        switch position {
+        switch model.position {
         case .bottomRight, .bottomLeft, .topLeft, .topRight:
             frame.size.width += UIConstants.cornerTipSize.height
             frame.size.height += UIConstants.cornerTipSize.height
@@ -56,21 +68,11 @@ internal class TooltipView: UIView {
         case .left, .right:
             frame.size.width += UIConstants.tipSize.height
         }
+        self.frame = frame
 
-        super.init(frame: frame)
-
-        setupImageView(image: model.image, position: position, size: imageViewSize)
+        setupImageView(image: model.image, position: model.position, size: imageViewSize)
         setupExitButton()
-
-        backgroundColor = .clear
-        clipsToBounds = false
-        autoresizingMask = []
-        accessibilityIdentifier = "IAMView-Tooltip"
-
-        setupShadowOffset()
-        layer.shadowColor = UIColor.black.cgColor
-        layer.shadowRadius = UIConstants.shadowRadius
-        layer.shadowOpacity = UIConstants.shadowOpacity
+        setupShadowOffset(position: model.position)
     }
 
     required init?(coder: NSCoder) {
@@ -84,6 +86,9 @@ internal class TooltipView: UIView {
     // MARK: - UIView overrides
 
     override func draw(_ rect: CGRect) {
+        guard let imageBgColor = imageBgColor, let position = position else {
+            return
+        }
 
         imageBgColor.set()
         let path: UIBezierPath
@@ -236,7 +241,7 @@ internal class TooltipView: UIView {
         }
 
         let timer = Timer(fire: Date().addingTimeInterval(TimeInterval(seconds)), interval: 0, repeats: false, block: { [weak self] _ in
-            self?.onExitButtonTap()
+            self?.presenter.didTapExitButton()
         })
 
         autoFadeTimer = timer
@@ -286,7 +291,7 @@ internal class TooltipView: UIView {
         exitButton.layer.shadowOpacity = UIConstants.shadowOpacity
     }
 
-    private func setupShadowOffset() {
+    private func setupShadowOffset(position: TooltipBodyData.Position) {
         let shadowOffset: CGSize
         switch position {
         case .topRight:
@@ -313,11 +318,11 @@ internal class TooltipView: UIView {
 
     @objc private func didTapImage() {
         autoFadeTimer?.invalidate()
-        onImageTap()
+        presenter.didTapImage()
     }
 
     @objc private func didTapExitButton() {
         autoFadeTimer?.invalidate()
-        onExitButtonTap()
+        presenter.didTapExitButton()
     }
 }

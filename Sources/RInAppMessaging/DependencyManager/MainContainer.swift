@@ -128,6 +128,9 @@ internal enum MainContainerFactory {
                                      readyCampaignDispatcher: manager.resolve(type: CampaignDispatcherType.self)!,
                                      tooltipDispatcher: manager.resolve(type: TooltipDispatcherType.self)!,
                                      campaignsValidator: manager.resolve(type: CampaignsValidatorType.self)!)
+            }, transient: true),
+            ContainerElement(type: TooltipPresenterType.self, factory: {
+                TooltipPresenter(impressionService: manager.resolve(type: ImpressionServiceType.self)!)
             }, transient: true)
         ])
 

@@ -20,7 +20,7 @@ internal protocol RouterType: ErrorReportable {
                          confirmation: @escaping @autoclosure () -> Bool,
                          completion: @escaping (_ cancelled: Bool) -> Void)
 
-    func displayTooltip(_ tooltipData: TooltipData,
+    func displayTooltip(_ tooltip: Campaign,
                         targetView: UIView,
                         identifier: String,
                         imageBlob: Data,
@@ -106,6 +106,7 @@ internal class Router: RouterType, ViewListenerObserver {
         func getPresenter<T>(type: T.Type) -> T? {
             guard let presenter = self.dependencyManager.resolve(type: type) else {
                 Logger.debug("Error: \(type) couldn't be resolved")
+                assertionFailure()
                 return nil
             }
             return presenter
@@ -143,12 +144,21 @@ internal class Router: RouterType, ViewListenerObserver {
         return nil
     }
 
-    func displayTooltip(_ tooltipData: TooltipData,
+    func displayTooltip(_ tooltip: Campaign,
                         targetView: UIView,
                         identifier: String,
                         imageBlob: Data,
                         becameVisibleHandler: @escaping (_ tooltipView: TooltipView) -> Void,
                         completion: @escaping () -> Void) {
+
+        guard let presenter = self.dependencyManager.resolve(type: TooltipPresenterType.self) else {
+            Logger.debug("Error: TooltipPresenterType couldn't be resolved")
+            assertionFailure()
+            return
+        }
+        guard let tooltipData = tooltip.tooltipData else {
+            return
+        }
 
         DispatchQueue.main.async {
             self.displayedTooltips[identifier]?.removeFromSuperview()
@@ -160,25 +170,14 @@ internal class Router: RouterType, ViewListenerObserver {
             }
 
             let position = tooltipData.bodyData.position
-            let tooltipView = TooltipView(
-                model: TooltipViewModel(
-                position: position,
-                image: image,
-                backgroundColor: UIColor(hexString: tooltipData.backgroundColor) ?? .white))
+            let tooltipView = TooltipView(presenter: presenter)
 
-            let onClose = {
-                self.displayedTooltips[identifier]?.removeFromSuperview()
-                self.displayedTooltips[identifier] = nil
+            presenter.set(view: tooltipView, data: tooltip, image: image)
+            presenter.onClose = { [weak self] in
+                self?.displayedTooltips[identifier]?.removeFromSuperview()
+                self?.displayedTooltips[identifier] = nil
                 completion()
             }
-
-            tooltipView.onImageTap = {
-                if let uriToOpen = URL(string: tooltipData.bodyData.redirectURL ?? "") {
-                    UIApplication.shared.open(uriToOpen)
-                    onClose()
-                }
-            }
-            tooltipView.onExitButtonTap = onClose
 
             let superview = self.findParentViewForTooltip(targetView)
             guard superview != targetView else {
