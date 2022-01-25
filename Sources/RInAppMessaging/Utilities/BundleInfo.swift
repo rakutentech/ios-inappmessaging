@@ -33,15 +33,15 @@ internal class BundleInfo {
         return Bundle.main.infoDictionary?[Constants.Info.configurationURLKey] as? String
     }
 
-    static var customFontNameTitle: String? {
+    class var customFontNameTitle: String? {
         Bundle.main.infoDictionary?[Constants.Info.customFontNameTitleKey] as? String
     }
 
-    static var customFontNameText: String? {
+    class var customFontNameText: String? {
         Bundle.main.infoDictionary?[Constants.Info.customFontNameTextKey] as? String
     }
 
-    static var customFontNameButton: String? {
+    class var customFontNameButton: String? {
         Bundle.main.infoDictionary?[Constants.Info.customFontNameButtonKey] as? String
     }
 }

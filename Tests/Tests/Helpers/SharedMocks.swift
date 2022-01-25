@@ -248,12 +248,14 @@ class BundleInfoMock: BundleInfo {
     static var appVersionMock: String? = "1.2.3"
     static var inAppSdkVersionMock: String? = "0.0.5"
     static var inAppSubscriptionIdMock: String? = "sub-id"
+    static var customFontMock: String? = "blank-Bold"
 
     static func reset() {
         applicationIdMock = "app.id"
         appVersionMock = "1.2.3"
         inAppSdkVersionMock = "0.0.5"
         inAppSubscriptionIdMock = "sub-id"
+        customFontMock = "blank-Bold"
     }
 
     override class var applicationId: String? {
@@ -270,6 +272,18 @@ class BundleInfoMock: BundleInfo {
 
     override class var inAppSubscriptionId: String? {
         return inAppSubscriptionIdMock
+    }
+    
+    override class var customFontNameTitle: String? {
+        customFontMock
+    }
+
+    override class var customFontNameText: String? {
+        customFontMock
+    }
+
+    override class var customFontNameButton: String? {
+        customFontMock
     }
 }
 
