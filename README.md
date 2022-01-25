@@ -255,6 +255,38 @@ If user (with registered identifier using `registerPerference()`) opts out from 
 
 Campaign impressions (displays) are counted locally for each user. Meaning that a campaign with maxImpression value of 3 will be displayed to each user (registered with `registerPerference()`) max 3 times. Campaign's max impression number can be modified in the dashboard/backend. Then the SDK, after next ping call, will compare new value with old max impression number and add the difference to the current impression counter. The max impression data is not shared between devices. The same applies for anonymous user.
 
+## (Optional) How enable custom fonts in your Campaigns
+
+The SDK will optionally use custom fonts in your Campaigns if your app has them pre-registered. Specify one for the text body/headers and one for the buttons in either `ttf` or `otf` format. Fallsback to the system font if unset.
+
+First add the two font files to your Xcode target.
+
+Get the "PostScript name" of your fonts by:
+
+```bash
+$ fc-scan --format "%{postscriptname}\n" customfont-medium.otf
+
+AdventPro-Medium
+```
+
+In your `Info.plist` configuration, set the PostScript names under `InAppMessagingCustomFontNameTitle`, `InAppMessagingCustomFontNameText` and `InAppMessagingCustomFontNameButton` along with the file names of the fonts under `UIAppFonts`.
+
+```xml
+<key>InAppMessagingCustomFontNameTitle</key>
+<string>AdventPro-Bold</string>
+<key>InAppMessagingCustomFontNameText</key>
+<string>AdventPro-Regular</string>
+<key>InAppMessagingCustomFontNameButton</key>
+<string>AdventPro-Medium</string>
+
+<key>UIAppFonts</key>
+<array>
+    <string>customfont-bold.otf</string>
+    <string>customfont-regular.otf</string>
+    <string>customfont-medium.otf</string>
+</array>
+```
+
 # **Troubleshooting & F.A.Q.**
 
 * Configuration service returns `RequestError.missingMetadata` error

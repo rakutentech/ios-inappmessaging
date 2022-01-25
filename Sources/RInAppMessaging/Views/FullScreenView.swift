@@ -26,24 +26,14 @@ internal class FullScreenView: FullView {
         uiConstants.cornerRadiusForDialogView = 0
         uiConstants.dialogViewWidthOffset = 0
         uiConstants.dialogViewWidthMultiplier = 1.0
-        uiConstants.exitButtonVerticalOffset = -(36 + UIApplication.shared.statusBarFrame.height)
-        uiConstants.exitButtonSize = 25
-        uiConstants.exitButtonFontSize = 14
-        uiConstants.bodyViewSafeAreaOffsetY =
-            -uiConstants.exitButtonVerticalOffset - uiConstants.exitButtonSize + 8.0
-
-        if UIDevice.current.userInterfaceIdiom == .pad {
-            uiConstants.exitButtonSize = 32
-            uiConstants.exitButtonFontSize = 16
-        }
     }
 
     override func setup(viewModel: FullViewModel) {
         super.setup(viewModel: viewModel)
 
-        contentView.addSubview(statusBarBackgroundView)
+        addSubview(statusBarBackgroundView)
         NSLayoutConstraint.activate([
-            statusBarBackgroundView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            statusBarBackgroundView.topAnchor.constraint(equalTo: topAnchor),
             statusBarBackgroundView.leftAnchor.constraint(equalTo: contentView.leftAnchor),
             statusBarBackgroundView.rightAnchor.constraint(equalTo: contentView.rightAnchor),
             statusBarBackgroundViewHeightConstraint

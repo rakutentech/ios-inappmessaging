@@ -13,16 +13,14 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
     struct UIConstants {
         var backgroundColor: UIColor?
         var cornerRadiusForDialogView: CGFloat = 0 // Adjust how round the edge the dialog view will be.
-        var headerMessageFontSize: CGFloat = 16 // Font size for the header message.
         var bodyMessageFontSize: CGFloat = 14 // Font size for the body message.
-        var bodyMarginTop: CGFloat = 18 // Distance from header (body) to top edge or image
+        var headerMessageFontSize: CGFloat = 22 // Font size for the header message.
+        var bodyMarginBottom: CGFloat = 18 // Distance from header (body) to top edge or image
         var buttonHeight: CGFloat = 40 // Define the height to use for the button.
         var buttonsSpacing: CGFloat = 8 // Size of the gap between the buttons when there are two buttons.
-        var singleButtonWidthMargin: CGFloat = 24 // Width offset when only one button is given.
+        var singleButtonWidthMargin: CGFloat = 0 // Width offset when only one button is given.
         var exitButtonFontSize: CGFloat = 13 // Size of the exit button.
-        var exitButtonSize: CGFloat = 15 // Size of the exit button.
-        var exitButtonVerticalOffset: CGFloat = 16 // Position of where the button should be relative to the safe area frame.
-        var exitButtonTouchAreaSize: CGFloat = 44 // Clickable area of exit button used in hitTest
+        var exitButtonSize: CGFloat = 44 // Size of the exit button.
         var dialogViewHorizontalMargin: CGFloat = 20 // The spacing between dialog view and the children elements.
         var dialogViewWidthOffset: CGFloat = 0 // Spacing on the left and right side of subviews.
         var dialogViewWidthMultiplier: CGFloat = 1 // Spacing on the left and right side of subviews.
@@ -59,7 +57,6 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
     @IBOutlet private weak var contentScrollView: UIScrollView!
     @IBOutlet private(set) weak var exitButton: ExitButton! {
         didSet {
-            exitButton.invertedColors = hasImage
             exitButton.addTarget(self, action: #selector(onExitButtonClick), for: .touchUpInside)
         }
     }
@@ -86,7 +83,6 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
     private var layout: Layout?
     private(set) var hasImage = false {
         didSet {
-            exitButton.invertedColors = hasImage
             imageView.isHidden = !hasImage
         }
     }
@@ -106,7 +102,6 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         super.layoutSubviews()
 
         updateUIConstants()
-        exitButtonYPositionConstraint.constant = uiConstants.exitButtonVerticalOffset
         bodyViewOffsetYConstraint.constant = hasImage ? 0 : uiConstants.bodyViewSafeAreaOffsetY
 
         DispatchQueue.main.async {
@@ -114,13 +109,6 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
             // (landscape iPad), resulting in horizontal scroll bouncing.
             self.contentScrollView.contentSize.width = self.contentScrollView.bounds.width
         }
-    }
-
-    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-        if exitButton?.isTouchInside(touchPoint: point, from: self, touchAreaSize: uiConstants.exitButtonTouchAreaSize) == true {
-            return exitButton
-        }
-        return super.hitTest(point, with: event)
     }
 
     func setup(viewModel: FullViewModel) {
@@ -210,25 +198,32 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         layoutMargins = .zero
         backgroundColor = .clear
 
-        switch mode {
-        case .fullScreen:
-            contentView.topAnchor.constraint(equalTo: topAnchor).isActive = true
-            contentView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor).isActive = true
-        case .modal(let maxWindowHeightPercentage):
-            contentView.heightAnchor.constraint(lessThanOrEqualTo: backgroundView.heightAnchor,
-                                                multiplier: maxWindowHeightPercentage).isActive = true
-        default:
-            assertionFailure("Unsupported mode")
-        }
-
         contentWidthOffsetConstraint.constant = -uiConstants.dialogViewWidthOffset
         contentWidthOffsetConstraint.setMultiplier(uiConstants.dialogViewWidthMultiplier)
 
         bodyViewOffsetYConstraint.constant = hasImage ? 0 : uiConstants.bodyViewSafeAreaOffsetY
 
+        exitButton.invertedColors = viewModel.backgroundColor.isBright
         contentView.backgroundColor = viewModel.backgroundColor
         contentView.clipsToBounds = true
         contentView.layer.cornerRadius = uiConstants.cornerRadiusForDialogView
+        
+        switch mode {
+        case .fullScreen:
+            contentView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor).isActive = true
+            contentView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor).isActive = true
+        case .modal(let maxWindowHeightPercentage):
+            contentView.heightAnchor.constraint(lessThanOrEqualTo: backgroundView.heightAnchor,
+                                                multiplier: maxWindowHeightPercentage).isActive = true
+            // add drop shadow
+            contentView.layer.masksToBounds = false
+            contentView.layer.shadowColor = UIColor.black.cgColor
+            contentView.layer.shadowOpacity = 0.2
+            contentView.layer.shadowOffset = .zero
+            contentView.layer.shadowRadius = 10
+        default:
+            assertionFailure("Unsupported mode")
+        }
     }
 
     private func layoutUIComponents() {
@@ -242,17 +237,14 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
 
         exitButton.widthAnchor.constraint(equalToConstant: uiConstants.exitButtonSize).isActive = true
         exitButton.heightAnchor.constraint(equalToConstant: uiConstants.exitButtonSize).isActive = true
-        exitButtonYPositionConstraint.constant = uiConstants.exitButtonVerticalOffset
-        exitButton.fontSize = uiConstants.exitButtonFontSize
     }
 
     private func createMessageBody(viewModel: FullViewModel) {
         bodyView.isLayoutMarginsRelativeArrangement = true
-        bodyView.layoutMargins.top = uiConstants.bodyMarginTop
+        bodyView.layoutMargins.bottom = uiConstants.bodyMarginBottom
 
         if viewModel.isHTML, let htmlBody = viewModel.messageBody {
             hasImage = false
-            exitButton.invertedColors = true
             bodyContainerView.isHidden = true
             setupWebView(withHtmlString: htmlBody)
         } else {
@@ -299,8 +291,8 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         bodyLabel.text = bodyMessage
         bodyLabel.textColor = viewModel.messageBodyColor
         bodyLabel.setLineSpacing(lineSpacing: 3.0)
-        bodyLabel.font = .systemFont(ofSize: uiConstants.bodyMessageFontSize)
-        bodyLabel.textAlignment = .left
+        bodyLabel.font = .iamText(ofSize: uiConstants.bodyMessageFontSize)
+        bodyLabel.textAlignment = .center
         bodyLabel.lineBreakMode = .byWordWrapping
         bodyLabel.numberOfLines = 0
     }
@@ -312,7 +304,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         headerLabel.textAlignment = .center
         headerLabel.lineBreakMode = .byWordWrapping
         headerLabel.numberOfLines = 0
-        headerLabel.font = .boldSystemFont(ofSize: uiConstants.headerMessageFontSize)
+        headerLabel.font = .iamTitle(ofSize: uiConstants.headerMessageFontSize)
     }
 
     func addButtons(_ buttons: [(ActionButton, viewModel: ActionButtonViewModel)]) {

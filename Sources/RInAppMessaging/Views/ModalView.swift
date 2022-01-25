@@ -15,27 +15,16 @@ internal class ModalView: FullView {
         }
     }
 
-    override func setup(viewModel: FullViewModel) {
-        super.setup(viewModel: viewModel)
-        exitButton.invertedColors = true
-    }
-
     override func updateUIConstants() {
         super.updateUIConstants()
 
-        uiConstants.backgroundColor = UIColor.black.withAlphaComponent(0.66)
-        uiConstants.cornerRadiusForDialogView = 8
+        uiConstants.backgroundColor = UIColor.black.withAlphaComponent(0.14)
+        uiConstants.cornerRadiusForDialogView = 10
         uiConstants.dialogViewWidthMultiplier = 1
-        uiConstants.exitButtonVerticalOffset = 10
         uiConstants.dialogViewWidthOffset = 100
-        uiConstants.exitButtonSize = 15
-        uiConstants.exitButtonFontSize = 13
 
         if UIDevice.current.userInterfaceIdiom == .pad {
-            uiConstants.exitButtonVerticalOffset = 16
             uiConstants.dialogViewWidthMultiplier = 0.6
-            uiConstants.exitButtonSize = 22
-            uiConstants.exitButtonFontSize = 16
         }
     }
 }

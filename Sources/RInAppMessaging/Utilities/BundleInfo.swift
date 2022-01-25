@@ -32,6 +32,18 @@ internal class BundleInfo {
     class var inAppConfigurationURL: String? {
         return Bundle.main.infoDictionary?[Constants.Info.configurationURLKey] as? String
     }
+
+    class var customFontNameTitle: String? {
+        Bundle.main.infoDictionary?[Constants.Info.customFontNameTitleKey] as? String
+    }
+
+    class var customFontNameText: String? {
+        Bundle.main.infoDictionary?[Constants.Info.customFontNameTextKey] as? String
+    }
+
+    class var customFontNameButton: String? {
+        Bundle.main.infoDictionary?[Constants.Info.customFontNameButtonKey] as? String
+    }
 }
 
 internal extension Bundle {

@@ -5,10 +5,9 @@ internal class SlideUpView: UIView, SlideUpViewType {
 
     enum UIConstants {
         static let bodyMessageLabelFontSize: CGFloat = 14
-        static let exitButtonSize: CGFloat = 20
-        static let exitButtonTopMargin: CGFloat = 12
-        static let exitButtonRightMargin: CGFloat = 16
-        static let exitButtonTouchAreaSize: CGFloat = 44
+        static let exitButtonSize: CGFloat = 44
+        static let exitButtonTopMargin: CGFloat = 4
+        static let exitButtonRightMargin: CGFloat = 4
         static let slideAnimationDuration: TimeInterval = 0.4
         static var messageBodyPadding: UIEdgeInsets {
             let bottomSafeArea = UIApplication.shared.getKeyWindow()?.safeAreaInsets.bottom ?? CGFloat(0)
@@ -48,13 +47,6 @@ internal class SlideUpView: UIView, SlideUpViewType {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-        if exitButton.isTouchInside(touchPoint: point, from: self, touchAreaSize: UIConstants.exitButtonTouchAreaSize) {
-            return exitButton
-        }
-        return super.hitTest(point, with: event)
-    }
-
     func setup(viewModel: SlideUpViewModel) {
 
         self.slideFromDirection = viewModel.slideFromDirection
@@ -62,7 +54,7 @@ internal class SlideUpView: UIView, SlideUpViewType {
 
         setupDialogView()
         setupMessageBody(viewModel.messageBody, color: viewModel.messageBodyColor)
-        setupExitButton()
+        setupExitButton(viewModel.backgroundColor)
 
         presenter.logImpression(type: .impression)
     }
@@ -122,7 +114,7 @@ internal class SlideUpView: UIView, SlideUpViewType {
 
         bodyMessageLabel.text = message
         bodyMessageLabel.textColor = color
-        bodyMessageLabel.font = .systemFont(ofSize: UIConstants.bodyMessageLabelFontSize)
+        bodyMessageLabel.font = .iamText(ofSize: UIConstants.bodyMessageLabelFontSize)
         bodyMessageLabel.setLineSpacing(lineSpacing: 3.0)
         bodyMessageLabel.numberOfLines = 0
         bodyMessageLabel.lineBreakMode = .byWordWrapping
@@ -145,9 +137,9 @@ internal class SlideUpView: UIView, SlideUpViewType {
         ])
     }
 
-    private func setupExitButton() {
-        exitButton.fontSize = 14.0
-        exitButton.invertedColors = false
+    private func setupExitButton(_ contextualColour: UIColor) {
+        let exitButton = ExitButton()
+        exitButton.invertedColors = contextualColour.isBright
         exitButton.addTarget(self, action: #selector(onExitButtonClick), for: .touchUpInside)
         exitButton.translatesAutoresizingMaskIntoConstraints = false
 
