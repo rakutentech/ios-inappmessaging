@@ -44,7 +44,7 @@ internal class Router: RouterType, ViewListenerObserver {
     private let dependencyManager: TypedDependencyManager
     private let displayQueue = DispatchQueue(label: "IAM.MessageLoader")
     private var displayedTooltips = [String: TooltipView]()
-    private var observers = [WeakWrapper<NSKeyValueObservation>]()
+    private var observers = [NSKeyValueObservation]()
 
     weak var errorDelegate: ErrorDelegate?
     var accessibilityCompatibleDisplay = false
@@ -194,23 +194,32 @@ internal class Router: RouterType, ViewListenerObserver {
 
             self.updateFrame(targetView: targetView, tooltipView: tooltipView, superview: superview, position: position)
 
-            let newPositionHandler = { [weak self] in
-                self?.updateFrame(targetView: targetView, tooltipView: tooltipView, superview: superview, position: position)
-                if self?.isTooltipVisible(tooltipView) == true {
+            var didBecomeVisible = false
+            weak var weakSelf = self
+            func verifyVisibility() {
+                if !didBecomeVisible && weakSelf?.isTooltipVisible(tooltipView) == true {
+                    didBecomeVisible = true
                     becameVisibleHandler(tooltipView)
                 }
             }
+            verifyVisibility()
+
+            let newPositionHandler = { [weak self] in
+                self?.updateFrame(targetView: targetView, tooltipView: tooltipView, superview: superview, position: position)
+                verifyVisibility()
+            }
 
             if let parentScrollView = superview as? UIScrollView {
-                let observer = parentScrollView.observe(\.contentOffset, options: [.new, .old]) { _, _ in
+                let observer = parentScrollView.observe(\.frame, options: [.new, .old]) { _, _ in
+                    // update for changes like landscape/portrait screen transitions
                     newPositionHandler()
                 }
-                self.observers.append(WeakWrapper(value: observer))
+                self.observers.append(observer)
             } else {
                 let observer = targetView.observe(\.frame, options: [.new, .old]) { _, _ in
                     newPositionHandler()
                 }
-                self.observers.append(WeakWrapper(value: observer))
+                self.observers.append(observer)
             }
 
             self.displayedTooltips[identifier] = tooltipView

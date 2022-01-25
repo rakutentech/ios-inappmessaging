@@ -36,6 +36,11 @@ internal class ExitButton: UIControl {
         accessibilityTraits = .button
     }
 
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        layer.cornerRadius = bounds.width / 2.0
+    }
+
     /// If invertedColors, show dark icon
     private var coordinatedExitIcon: UIImage {
         let insetValue: CGFloat = -14
