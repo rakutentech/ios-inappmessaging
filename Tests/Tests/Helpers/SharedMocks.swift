@@ -273,7 +273,7 @@ class BundleInfoMock: BundleInfo {
     override class var inAppSubscriptionId: String? {
         return inAppSubscriptionIdMock
     }
-    
+
     override class var customFontNameTitle: String? {
         customFontMock
     }

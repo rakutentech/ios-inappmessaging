@@ -264,7 +264,7 @@ First add the two font files to your Xcode target.
 Get the "PostScript name" of your fonts by:
 
 ```bash
-$ fc-scan customfont-medium.otf --format "%{postscriptname}\n"
+$ fc-scan --format "%{postscriptname}\n" customfont-medium.otf
 
 AdventPro-Medium
 ```
