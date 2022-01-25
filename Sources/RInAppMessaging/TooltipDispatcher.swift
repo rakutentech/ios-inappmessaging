@@ -12,7 +12,7 @@ internal class TooltipDispatcher: TooltipDispatcherType, ViewListenerObserver {
     private let viewListener: ViewListenerType
     private let dispatchQueue = DispatchQueue(label: "IAM.TooltipDisplay", qos: .userInteractive)
     private(set) var httpSession: URLSession
-    private(set) var queuedTooltips = Set<Campaign>()
+    private(set) var queuedTooltips = Set<Campaign>() // ensure to access only in dispatchQueue
     private(set) var displayedViews = [UIView]()
 
     init(router: RouterType,
@@ -83,8 +83,10 @@ internal class TooltipDispatcher: TooltipDispatcherType, ViewListenerObserver {
                     }
                     tooltipView.startAutoFadingIfNeeded(seconds: autoFadeSeconds)
                 }, completion: {
-                    self.campaignRepository.decrementImpressionsLeftInCampaign(id: tooltip.id)
-                    self.queuedTooltips.remove(tooltip)
+                    self.dispatchQueue.async {
+                        self.campaignRepository.decrementImpressionsLeftInCampaign(id: tooltip.id)
+                        self.queuedTooltips.remove(tooltip)
+                    }
                 })
         }
     }
@@ -104,19 +106,21 @@ internal class TooltipDispatcher: TooltipDispatcherType, ViewListenerObserver {
 extension TooltipDispatcher {
 
     func viewDidChangeSubview(_ view: UIView, identifier: String) {
-        guard view.superview != nil,
-              let tooltip = queuedTooltips.first(where: {
-                  guard let tooltipData = $0.tooltipData else {
-                      return false
-                  }
-                  return identifier.contains(tooltipData.bodyData.uiElementIdentifier)
-              })
-        else { return }
+        guard view.superview != nil else {
+            return
+        }
 
         // refresh currently displayed tooltip or
         // restore tooltip if view appeared again
         dispatchQueue.async {
-            self.displayTooltip(tooltip, targetView: view, identifier: identifier)
+            if let tooltip = self.queuedTooltips.first(where: {
+                guard let tooltipData = $0.tooltipData else {
+                    return false
+                }
+                return identifier.contains(tooltipData.bodyData.uiElementIdentifier)
+            }) {
+                self.displayTooltip(tooltip, targetView: view, identifier: identifier)
+            }
         }
     }
 

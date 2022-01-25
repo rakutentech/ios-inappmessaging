@@ -65,6 +65,7 @@ internal class TooltipView: UIView {
         backgroundColor = .clear
         clipsToBounds = false
         autoresizingMask = []
+        accessibilityIdentifier = "IAMView-Tooltip"
 
         setupShadowOffset()
         layer.shadowColor = UIColor.black.cgColor
@@ -274,10 +275,12 @@ internal class TooltipView: UIView {
     }
 
     private func setupExitButton() {
-        exitButton.invertedColors = true
+        exitButton.invertedColors = false
         exitButton.addTarget(self, action: #selector(didTapExitButton), for: .touchUpInside)
         exitButton.translatesAutoresizingMaskIntoConstraints = false
+        exitButton.accessibilityIdentifier = "IAM.tooltip.exitButton"
 
+        exitButton.backgroundColor = UIColor(white: 77.0/255.0, alpha: 1.0)
         exitButton.layer.shadowColor = UIColor.black.cgColor
         exitButton.layer.shadowRadius = UIConstants.shadowRadius
         exitButton.layer.shadowOpacity = UIConstants.shadowOpacity

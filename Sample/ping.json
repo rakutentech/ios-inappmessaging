@@ -18,12 +18,12 @@
                 ],
                 "messagePayload": {
                     "title": "[ToolTip] tooltip 1",
-                    "messageBody": "{\"UIElement\" : \"tooltip.test.1\", \"position\": \"bottom-right\", \"color\": \"#FFD9D9\"}",
+                    "messageBody": "{\"UIElement\" : \"tooltip.test.1\", \"position\": \"bottom-right\"}",
                     "header": "Test Campaign",
                     "titleColor": "#000000",
                     "headerColor": "#000000",
                     "messageBodyColor": "#000000",
-                    "backgroundColor": "#ffffff",
+                    "backgroundColor": "#FFD9D9",
                     "frameColor": "#ffffff",
                     "resource": {
                         "imageUrl": "https://static.id.rakuten.co.jp/static/com/img/id/Rakuten_pc_20px@2x.png",
@@ -62,12 +62,12 @@
                 ],
                 "messagePayload": {
                     "title": "[ToolTip] tooltip 2",
-                    "messageBody": "{\"UIElement\" : \"tooltip.test.2\", \"position\": \"bottom-centre\", \"color\": \"#FFD9D9\"}",
+                    "messageBody": "{\"UIElement\" : \"tooltip.test.2\", \"position\": \"bottom-center\"}",
                     "header": "Test Campaign",
                     "titleColor": "#000000",
                     "headerColor": "#000000",
                     "messageBodyColor": "#000000",
-                    "backgroundColor": "#ffffff",
+                    "backgroundColor": "#FFD9D9",
                     "frameColor": "#ffffff",
                     "resource": {
                         "imageUrl": "https://static.id.rakuten.co.jp/static/com/img/id/Rakuten_pc_20px@2x.png",
@@ -106,12 +106,12 @@
                 ],
                 "messagePayload": {
                     "title": "[ToolTip] tooltip 3",
-                    "messageBody": "{\"UIElement\" : \"tooltip.test.3\", \"position\": \"bottom-left\", \"color\": \"#FFD9D9\"}",
+                    "messageBody": "{\"UIElement\" : \"tooltip.test.3\", \"position\": \"bottom-left\"}",
                     "header": "Test Campaign",
                     "titleColor": "#000000",
                     "headerColor": "#000000",
                     "messageBodyColor": "#000000",
-                    "backgroundColor": "#ffffff",
+                    "backgroundColor": "#FFD9D9",
                     "frameColor": "#ffffff",
                     "resource": {
                         "imageUrl": "https://static.id.rakuten.co.jp/static/com/img/id/Rakuten_pc_20px@2x.png",
@@ -150,12 +150,12 @@
                 ],
                 "messagePayload": {
                     "title": "[ToolTip] tooltip 4",
-                    "messageBody": "{\"UIElement\" : \"tooltip.test.4\", \"position\": \"left\", \"color\": \"#FFD9D9\"}",
+                    "messageBody": "{\"UIElement\" : \"tooltip.test.4\", \"position\": \"left\"}",
                     "header": "Test Campaign",
                     "titleColor": "#000000",
                     "headerColor": "#000000",
                     "messageBodyColor": "#000000",
-                    "backgroundColor": "#ffffff",
+                    "backgroundColor": "#FFD9D9",
                     "frameColor": "#ffffff",
                     "resource": {
                         "imageUrl": "https://static.id.rakuten.co.jp/static/com/img/id/Rakuten_pc_20px@2x.png",
@@ -194,12 +194,12 @@
                 ],
                 "messagePayload": {
                     "title": "[ToolTip] tooltip 5",
-                    "messageBody": "{\"UIElement\" : \"tooltip.test.5\", \"position\": \"top-left\", \"color\": \"#FFD9D9\"}",
+                    "messageBody": "{\"UIElement\" : \"tooltip.test.5\", \"position\": \"top-left\"}",
                     "header": "Test Campaign",
                     "titleColor": "#000000",
                     "headerColor": "#000000",
                     "messageBodyColor": "#000000",
-                    "backgroundColor": "#ffffff",
+                    "backgroundColor": "#FFD9D9",
                     "frameColor": "#ffffff",
                     "resource": {
                         "imageUrl": "https://static.id.rakuten.co.jp/static/com/img/id/Rakuten_pc_20px@2x.png",
@@ -238,12 +238,12 @@
                 ],
                 "messagePayload": {
                     "title": "[ToolTip] tooltip 6",
-                    "messageBody": "{\"UIElement\" : \"tooltip.test.6\", \"position\": \"top-centre\", \"color\": \"#FFD9D9\"}",
+                    "messageBody": "{\"UIElement\" : \"tooltip.test.6\", \"position\": \"top-center\"}",
                     "header": "Test Campaign",
                     "titleColor": "#000000",
                     "headerColor": "#000000",
                     "messageBodyColor": "#000000",
-                    "backgroundColor": "#ffffff",
+                    "backgroundColor": "#FFD9D9",
                     "frameColor": "#ffffff",
                     "resource": {
                         "imageUrl": "https://static.id.rakuten.co.jp/static/com/img/id/Rakuten_pc_20px@2x.png",
@@ -282,12 +282,12 @@
                 ],
                 "messagePayload": {
                     "title": "[ToolTip] tooltip 7",
-                    "messageBody": "{\"UIElement\" : \"tooltip.test.7\", \"position\": \"top-right\", \"color\": \"#FFD9D9\"}",
+                    "messageBody": "{\"UIElement\" : \"tooltip.test.7\", \"position\": \"top-right\"}",
                     "header": "Test Campaign",
                     "titleColor": "#000000",
                     "headerColor": "#000000",
                     "messageBodyColor": "#000000",
-                    "backgroundColor": "#ffffff",
+                    "backgroundColor": "#FFD9D9",
                     "frameColor": "#ffffff",
                     "resource": {
                         "imageUrl": "https://static.id.rakuten.co.jp/static/com/img/id/Rakuten_pc_20px@2x.png",
@@ -326,12 +326,12 @@
                 ],
                 "messagePayload": {
                     "title": "[ToolTip] tooltip 8",
-                    "messageBody": "{\"UIElement\" : \"tooltip.test.8\", \"position\": \"right\", \"color\": \"#FFD9D9\"}",
+                    "messageBody": "{\"UIElement\" : \"tooltip.test.8\", \"position\": \"right\"}",
                     "header": "Test Campaign",
                     "titleColor": "#000000",
                     "headerColor": "#000000",
                     "messageBodyColor": "#000000",
-                    "backgroundColor": "#ffffff",
+                    "backgroundColor": "#FFD9D9",
                     "frameColor": "#ffffff",
                     "resource": {
                         "imageUrl": "https://static.id.rakuten.co.jp/static/com/img/id/Rakuten_pc_20px@2x.png",
