@@ -59,8 +59,7 @@ internal class TooltipDispatcher: TooltipDispatcherType, ViewListenerObserver {
     private func displayTooltip(_ tooltip: Campaign,
                                 targetView: UIView,
                                 identifier: String) {
-        guard let tooltipData = tooltip.tooltipData,
-              let resImgUrlString = tooltip.tooltipData?.imageUrl,
+        guard let resImgUrlString = tooltip.tooltipData?.imageUrl,
               let resImgUrl = URL(string: resImgUrlString)
         else {
             // TOOLTIP: display premission?
@@ -73,12 +72,12 @@ internal class TooltipDispatcher: TooltipDispatcherType, ViewListenerObserver {
                 return
             }
             self.router.displayTooltip(
-                tooltipData,
+                tooltip,
                 targetView: targetView,
                 identifier: identifier,
                 imageBlob: imageBlob,
                 becameVisibleHandler: { tooltipView in
-                    guard let autoFadeSeconds = tooltipData.bodyData.autoFadeSeconds, autoFadeSeconds > 0 else {
+                    guard let autoFadeSeconds = tooltip.tooltipData?.bodyData.autoFadeSeconds, autoFadeSeconds > 0 else {
                         return
                     }
                     tooltipView.startAutoFadingIfNeeded(seconds: autoFadeSeconds)

@@ -325,7 +325,7 @@ class RouterMock: RouterType {
         }
     }
 
-    func displayTooltip(_ tooltipData: TooltipData,
+    func displayTooltip(_ tooltip: Campaign,
                         targetView: UIView,
                         identifier: String,
                         imageBlob: Data,
