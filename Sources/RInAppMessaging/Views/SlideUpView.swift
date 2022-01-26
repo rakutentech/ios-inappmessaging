@@ -138,7 +138,6 @@ internal class SlideUpView: UIView, SlideUpViewType {
     }
 
     private func setupExitButton(_ contextualColour: UIColor) {
-        let exitButton = ExitButton()
         exitButton.invertedColors = contextualColour.isBright
         exitButton.addTarget(self, action: #selector(onExitButtonClick), for: .touchUpInside)
         exitButton.translatesAutoresizingMaskIntoConstraints = false
