@@ -209,13 +209,16 @@ internal class Router: RouterType, ViewListenerObserver {
             }
 
             if let parentScrollView = superview as? UIScrollView {
-                let observer = parentScrollView.observe(\.frame, options: [.new, .old]) { _, _ in
-                    // update for changes like landscape/portrait screen transitions
+                let screenTransitionObserver = parentScrollView.observe(\.frame, options: []) { _, _ in
                     newPositionHandler()
                 }
-                self.observers.append(observer)
+                let viewVisibilityObserver = parentScrollView.observe(\.contentOffset, options: []) { _, _ in
+                    verifyVisibility()
+                }
+                self.observers.append(screenTransitionObserver)
+                self.observers.append(viewVisibilityObserver)
             } else {
-                let observer = targetView.observe(\.frame, options: [.new, .old]) { _, _ in
+                let observer = targetView.observe(\.frame, options: []) { _, _ in
                     newPositionHandler()
                 }
                 self.observers.append(observer)
