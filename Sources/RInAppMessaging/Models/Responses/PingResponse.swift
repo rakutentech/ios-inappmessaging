@@ -29,13 +29,13 @@ internal struct TooltipBodyData: Decodable, Hashable {
         case uiElementIdentifier = "UIElement"
         case position
         case redirectURL
-        case autoFadeSeconds = "auto-disappear"
+        case autoCloseSeconds = "auto-disappear"
     }
 
     let uiElementIdentifier: String
     let position: Position
     let redirectURL: String?
-    let autoFadeSeconds: UInt?
+    let autoCloseSeconds: UInt?
 }
 
 internal struct TooltipData: Hashable {
@@ -78,17 +78,8 @@ internal struct Campaign: Codable, Hashable {
         let decodedData = try container.decode(CampaignData.self, forKey: .data)
         impressionsLeft = (try? container.decode(Int.self, forKey: .impressionsLeft)) ?? decodedData.maxImpressions
         isOptedOut = (try? container.decode(Bool.self, forKey: .isOptedOut)) ?? false
-        self.data = decodedData
-
-        if let tooltipJsonData = decodedData.messagePayload.messageBody?.data(using: .utf8),
-            let tooltipBodyData = try? JSONDecoder().decode(TooltipBodyData.self, from: tooltipJsonData),
-            let imageUrl = data.messagePayload.resource.imageUrl {
-            tooltipData = TooltipData(bodyData: tooltipBodyData,
-                                      backgroundColor: data.messagePayload.backgroundColor,
-                                      imageUrl: imageUrl)
-        } else {
-            tooltipData = nil
-        }
+        data = decodedData
+        tooltipData = Campaign.parseTooltipData(messagePayload: decodedData.messagePayload)
     }
 
     func encode(to encoder: Encoder) throws {
@@ -101,7 +92,7 @@ internal struct Campaign: Codable, Hashable {
     init(data: CampaignData) {
         self.data = data
         impressionsLeft = data.maxImpressions
-        tooltipData = nil
+        tooltipData = Campaign.parseTooltipData(messagePayload: data.messagePayload)
     }
 
     static func == (lhs: Campaign, rhs: Campaign) -> Bool {
@@ -118,6 +109,18 @@ internal struct Campaign: Codable, Hashable {
         var updatedCampaign = campaign
         updatedCampaign.isOptedOut = isOptedOut
         return updatedCampaign
+    }
+
+    private static func parseTooltipData(messagePayload: MessagePayload) -> TooltipData? {
+        if let tooltipJsonData = messagePayload.messageBody?.data(using: .utf8),
+           let tooltipBodyData = try? JSONDecoder().decode(TooltipBodyData.self, from: tooltipJsonData),
+           let imageUrl = messagePayload.resource.imageUrl {
+            return TooltipData(bodyData: tooltipBodyData,
+                               backgroundColor: messagePayload.backgroundColor,
+                               imageUrl: imageUrl)
+        } else {
+            return nil
+        }
     }
 }
 

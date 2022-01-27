@@ -29,12 +29,12 @@ internal class TooltipView: UIView {
         static let cornerTipSize = CGSize(width: tipSize.width,
                                           height: ceil(tipSize.height / sqrt(2)))
     }
-
+    
+    let presenter: TooltipPresenterType
     private var position: TooltipBodyData.Position?
     private var imageBgColor: UIColor?
-    private var autoFadeTimer: Timer?
+    private(set) var autoCloseTimer: Timer?
     private let exitButton = ExitButton()
-    private let presenter: TooltipPresenterType
 
     // MARK: - Init
 
@@ -73,6 +73,19 @@ internal class TooltipView: UIView {
         setupImageView(image: model.image, position: model.position, size: imageViewSize)
         setupExitButton()
         setupShadowOffset(position: model.position)
+    }
+
+    func startAutoDisappearIfNeeded(seconds: UInt) {
+        guard autoCloseTimer == nil else {
+            return
+        }
+
+        let timer = Timer(fire: Date().addingTimeInterval(TimeInterval(seconds)), interval: 0, repeats: false, block: { [weak self] _ in
+            self?.presenter.didTapExitButton()
+        })
+
+        autoCloseTimer = timer
+        RunLoop.current.add(timer, forMode: .common)
     }
 
     required init?(coder: NSCoder) {
@@ -233,21 +246,6 @@ internal class TooltipView: UIView {
         return super.hitTest(point, with: event)
     }
 
-    // MARK: - Interface methods
-
-    func startAutoFadingIfNeeded(seconds: UInt) {
-        guard autoFadeTimer == nil else {
-            return
-        }
-
-        let timer = Timer(fire: Date().addingTimeInterval(TimeInterval(seconds)), interval: 0, repeats: false, block: { [weak self] _ in
-            self?.presenter.didTapExitButton()
-        })
-
-        autoFadeTimer = timer
-        RunLoop.current.add(timer, forMode: .common)
-    }
-
     // MARK: - Private methods
 
     private func setupImageView(image: UIImage,
@@ -317,12 +315,12 @@ internal class TooltipView: UIView {
     }
 
     @objc private func didTapImage() {
-        autoFadeTimer?.invalidate()
+        autoCloseTimer?.invalidate()
         presenter.didTapImage()
     }
 
     @objc private func didTapExitButton() {
-        autoFadeTimer?.invalidate()
+        autoCloseTimer?.invalidate()
         presenter.didTapExitButton()
     }
 }

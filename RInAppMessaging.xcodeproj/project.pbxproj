@@ -70,6 +70,11 @@
 		45BDFD0724232714004DEA0C /* PublicAPISpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45BDFD0624232714004DEA0C /* PublicAPISpec.swift */; };
 		45D4DA4F240F5597009B9B37 /* ViewPresenterSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D4DA4E240F5597009B9B37 /* ViewPresenterSpec.swift */; };
 		45DA01AD23D5831900A27CC6 /* ConfigurationManagerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA01AC23D5831900A27CC6 /* ConfigurationManagerSpec.swift */; };
+		45DC6D0127A33BB300B28C13 /* TooltipDispatcherSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DC6D0027A33BB300B28C13 /* TooltipDispatcherSpec.swift */; };
+		45DC6D0327A41CE700B28C13 /* TooltipManagerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DC6D0227A41CE700B28C13 /* TooltipManagerSpec.swift */; };
+		45DC6D0527A426C000B28C13 /* ViewListenerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DC6D0427A426C000B28C13 /* ViewListenerSpec.swift */; };
+		45DC6D0727A44CA900B28C13 /* TooltipViewSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DC6D0627A44CA800B28C13 /* TooltipViewSpec.swift */; };
+		45DC6D0927A4501300B28C13 /* TooltipPresenterSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DC6D0827A4501300B28C13 /* TooltipPresenterSpec.swift */; };
 		45EA720525B71FA2001B2049 /* UIApplicationExtensionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45EA720425B71FA2001B2049 /* UIApplicationExtensionSpec.swift */; };
 		45EA720D25B72002001B2049 /* UIViewExtensionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45EA720C25B72002001B2049 /* UIViewExtensionSpec.swift */; };
 		4B1A88AB274F6896002724B6 /* dummy-font.otf in Resources */ = {isa = PBXBuildFile; fileRef = 4B1A88AA274F6891002724B6 /* dummy-font.otf */; };
@@ -179,6 +184,11 @@
 		45BDFD0624232714004DEA0C /* PublicAPISpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicAPISpec.swift; sourceTree = "<group>"; };
 		45D4DA4E240F5597009B9B37 /* ViewPresenterSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewPresenterSpec.swift; sourceTree = "<group>"; };
 		45DA01AC23D5831900A27CC6 /* ConfigurationManagerSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationManagerSpec.swift; sourceTree = "<group>"; };
+		45DC6D0027A33BB300B28C13 /* TooltipDispatcherSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TooltipDispatcherSpec.swift; sourceTree = "<group>"; };
+		45DC6D0227A41CE700B28C13 /* TooltipManagerSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TooltipManagerSpec.swift; sourceTree = "<group>"; };
+		45DC6D0427A426C000B28C13 /* ViewListenerSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewListenerSpec.swift; sourceTree = "<group>"; };
+		45DC6D0627A44CA800B28C13 /* TooltipViewSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TooltipViewSpec.swift; sourceTree = "<group>"; };
+		45DC6D0827A4501300B28C13 /* TooltipPresenterSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TooltipPresenterSpec.swift; sourceTree = "<group>"; };
 		45EA720425B71FA2001B2049 /* UIApplicationExtensionSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIApplicationExtensionSpec.swift; sourceTree = "<group>"; };
 		45EA720C25B72002001B2049 /* UIViewExtensionSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewExtensionSpec.swift; sourceTree = "<group>"; };
 		4B1A88AA274F6891002724B6 /* dummy-font.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "dummy-font.otf"; sourceTree = "<group>"; };
@@ -412,12 +422,17 @@
 				45563B02240614AE004EAFD3 /* ReadyCampaignDispatcherSpec.swift */,
 				45ADA541247D206B00A9E2A3 /* RouterSpec.swift */,
 				4534947123C6ABF700189A81 /* SerializationSpec.swift */,
+				45DC6D0027A33BB300B28C13 /* TooltipDispatcherSpec.swift */,
+				45DC6D0227A41CE700B28C13 /* TooltipManagerSpec.swift */,
 				45EA720425B71FA2001B2049 /* UIApplicationExtensionSpec.swift */,
 				4BBE7EAE274F1A6A0039D2BF /* UIFontExtensionSpec.swift */,
 				45EA720C25B72002001B2049 /* UIViewExtensionSpec.swift */,
 				4538BCF5262AE8FA009952BE /* UserDataCacheSpec.swift */,
+				45DC6D0427A426C000B28C13 /* ViewListenerSpec.swift */,
 				45D4DA4E240F5597009B9B37 /* ViewPresenterSpec.swift */,
 				456FE1EC2429C4D200304872 /* ViewSpec.swift */,
+				45DC6D0627A44CA800B28C13 /* TooltipViewSpec.swift */,
+				45DC6D0827A4501300B28C13 /* TooltipPresenterSpec.swift */,
 				607FACE91AFB9204008FA782 /* Supporting Files */,
 			);
 			name = Tests;
@@ -716,16 +731,21 @@
 				45357AF7245AD49E007D8FDC /* HttpRequestableSpec.swift in Sources */,
 				459B227C245289F300D218CE /* ConfigurationServiceSpec.swift in Sources */,
 				45DA01AD23D5831900A27CC6 /* ConfigurationManagerSpec.swift in Sources */,
+				45DC6D0327A41CE700B28C13 /* TooltipManagerSpec.swift in Sources */,
+				45DC6D0927A4501300B28C13 /* TooltipPresenterSpec.swift in Sources */,
 				4BBE7EAF274F1A6A0039D2BF /* UIFontExtensionSpec.swift in Sources */,
 				456FE1ED2429C4D200304872 /* ViewSpec.swift in Sources */,
 				4595F4F4262DE12C0001F30B /* KeyHasherSpec.swift in Sources */,
 				4534947223C6ABF700189A81 /* SerializationSpec.swift in Sources */,
+				45DC6D0527A426C000B28C13 /* ViewListenerSpec.swift in Sources */,
 				45A86D0F2669877F00D0C43F /* HeaderAttributesBuilderSpec.swift in Sources */,
 				45EA720525B71FA2001B2049 /* UIApplicationExtensionSpec.swift in Sources */,
 				45AFB308246CFB640080D21B /* LocaleSpec.swift in Sources */,
 				4516601D23CD740300310181 /* MainContainerSpec.swift in Sources */,
+				45DC6D0127A33BB300B28C13 /* TooltipDispatcherSpec.swift in Sources */,
 				459B228224528A7D00D218CE /* DisplayPermissionServiceSpec.swift in Sources */,
 				45BDFD0724232714004DEA0C /* PublicAPISpec.swift in Sources */,
+				45DC6D0727A44CA900B28C13 /* TooltipViewSpec.swift in Sources */,
 				459DE86C2407B5750002F451 /* CustomEventSpec.swift in Sources */,
 				45563B0724064D78004EAFD3 /* CampaignRepositorySpec.swift in Sources */,
 				456FE1EB2428C51E00304872 /* CommonUtilitySpec.swift in Sources */,
