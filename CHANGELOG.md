@@ -1,5 +1,16 @@
 ## Changelog
 
+### 6.1.0 (2022-02-04)
+- Improvements:
+	- Campaign UI has been updated to be in line with internal Rakuten UI design guide [SDKCF-4471]
+	- Added Swift Package Manager (SPM) support [SDKCF-4388]
+	- Improved network request error handling [SDKCF-4728] [SDKCF-4637]
+	- Added Xcode requirements to README [SDKCF-4790]
+	- Integrated SonarQube to track SDK code quality [SDKCF-4693]
+- Bug fixes:
+	- Custom event attributes are now handled as case insensitive [SDKCF-4550]
+	- Fixed test campaign triggers [SDKCF-4525]
+
 ### 6.0.0 (2021-11-12)
 - **Breaking changes:**
 	- The minimum supported OS version is now iOS 12.0 [SDKCF-4361]
