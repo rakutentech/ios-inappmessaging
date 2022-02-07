@@ -12,6 +12,8 @@ This module supports iOS 12.0 and above. It has been tested with iOS 12.5 and ab
 
 Xcode 12.5.x or Xcode 13+
 
+Swift >= 5.4 is supported.
+
 Note: The SDK may build on earlier Xcode versions but it is not officially supported or tested.
 
 # **How to install**
