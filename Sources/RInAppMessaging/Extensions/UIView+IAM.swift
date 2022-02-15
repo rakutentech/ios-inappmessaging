@@ -2,12 +2,24 @@ import UIKit
 
 extension UIView {
 
-    func findIAMViewSubview() -> BaseView? {
+    func findIAMView() -> BaseView? {
         for subview in subviews {
             if let iamView = subview as? BaseView {
                 return iamView
-            } else if let nestedIAMView = subview.findIAMViewSubview() {
+            } else if let nestedIAMView = subview.findIAMView() {
                 return nestedIAMView
+            }
+        }
+
+        return nil
+    }
+
+    func findTooltipView() -> TooltipView? {
+        for subview in subviews {
+            if let TooltipView = subview as? TooltipView {
+                return TooltipView
+            } else if let nestedTooltipView = subview.findTooltipView() {
+                return nestedTooltipView
             }
         }
 

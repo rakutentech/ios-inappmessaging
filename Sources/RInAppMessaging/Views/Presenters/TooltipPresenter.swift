@@ -1,10 +1,10 @@
 import UIKit
 
 internal protocol TooltipPresenterType: ImpressionTrackable {
-    var tooltip: Campaign? { get set }
+    var tooltip: Campaign? { get }
     var onClose: () -> Void { get set }
 
-    func set(view: TooltipView, data: Campaign, image: UIImage)
+    func set(view: TooltipView, dataModel: Campaign, image: UIImage)
     func didTapExitButton()
     func didTapImage()
 }
@@ -13,7 +13,7 @@ internal class TooltipPresenter: TooltipPresenterType {
 
     private(set) var impressionService: ImpressionServiceType
 
-    var tooltip: Campaign?
+    private(set) var tooltip: Campaign?
     var impressions: [Impression] = []
     var onClose: () -> Void = { }
 
@@ -21,24 +21,15 @@ internal class TooltipPresenter: TooltipPresenterType {
         self.impressionService = impressionService
     }
 
-    func set(view: TooltipView, data: Campaign, image: UIImage) {
-        guard let tooltipData = data.tooltipData else {
+    func set(view: TooltipView, dataModel: Campaign, image: UIImage) {
+        guard let tooltipData = dataModel.tooltipData else {
             return
         }
-        tooltip = data
+        tooltip = dataModel
         view.setup(model: TooltipViewModel(position: tooltipData.bodyData.position,
                                            image: image,
                                            backgroundColor: UIColor(hexString: tooltipData.backgroundColor) ?? .white))
         logImpression(type: .impression)
-    }
-
-    func sendImpressions() {
-        guard let tooltip = tooltip else {
-            return
-        }
-
-        sendImpressions(for: tooltip)
-        impressions.removeAll()
     }
 
     func didTapImage() {
@@ -57,5 +48,14 @@ internal class TooltipPresenter: TooltipPresenterType {
         logImpression(type: .exit)
         sendImpressions()
         onClose()
+    }
+
+    private func sendImpressions() {
+        guard let tooltip = tooltip else {
+            return
+        }
+
+        sendImpressions(for: tooltip)
+        impressions.removeAll()
     }
 }

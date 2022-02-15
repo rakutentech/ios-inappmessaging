@@ -1,9 +1,7 @@
 import Foundation
 import class UIKit.UIView
 
-protocol TooltipManagerType: AnyObject {
-    
-}
+protocol TooltipManagerType: AnyObject { }
 
 class TooltipManager: TooltipManagerType, ViewListenerObserver, CampaignRepositoryDelegate {
 
@@ -18,12 +16,6 @@ class TooltipManager: TooltipManagerType, ViewListenerObserver, CampaignReposito
         self.campaignRepository = campaignRepository
         self.campaignRepository.delegate = self
         viewListener.addObserver(self)
-    }
-
-    func didUpdateCampaignList() {
-        viewListener.iterateOverDisplayedViews { view, identifier, _ in
-            self.verify(view: view, identifier: identifier)
-        }
     }
 
     private func verify(view: UIView, identifier: String) {
@@ -46,10 +38,20 @@ class TooltipManager: TooltipManagerType, ViewListenerObserver, CampaignReposito
     }
 }
 
+// MARK: - CampaignRepositoryDelegate
+extension TooltipManager {
+
+    func didUpdateCampaignList() {
+        viewListener.iterateOverDisplayedViews { view, identifier, _ in
+            self.verify(view: view, identifier: identifier)
+        }
+    }
+}
+
 // MARK: - ViewListenerObserver
 extension TooltipManager {
 
-    func viewDidChangeSubview(_ view: UIView, identifier: String) {
+    func viewDidChangeSuperview(_ view: UIView, identifier: String) {
         verify(view: view, identifier: identifier)
     }
 

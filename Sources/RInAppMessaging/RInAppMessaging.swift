@@ -22,7 +22,7 @@ import RSDKUtils
 /// Class that contains the public methods for host application to call.
 /// Entry point for host application to communicate with InAppMessaging.
 /// Conforms to NSObject and exposed with objc tag to make it work with Obj-c projects.
-@objc public class RInAppMessaging: NSObject {
+@objc public final class RInAppMessaging: NSObject {
 
     internal private(set) static var initializedModule: InAppMessagingModule?
     private(set) static var dependencyManager: TypedDependencyManager?
@@ -154,15 +154,6 @@ import RSDKUtils
         }
     }
 
-    /// For testing purposes
-    internal static func deinitializeModule() {
-        inAppQueue.sync {
-            dependencyManager?.resolve(type: ViewListenerType.self)?.stopListening()
-            initializedModule = nil
-            dependencyManager = nil
-        }
-    }
-
     private static func notifyIfModuleNotInitialized() {
         guard initializedModule == nil else {
             return
@@ -174,5 +165,18 @@ import RSDKUtils
                             userInfo: [NSLocalizedDescriptionKey: "InAppMessaging: " + description])
         Logger.debug(description)
         errorDelegate?.inAppMessagingDidReturnError(error)
+    }
+
+    // MARK: - Unit tests
+    internal static func deinitializeModule() {
+        inAppQueue.sync {
+            dependencyManager?.resolve(type: ViewListenerType.self)?.stopListening()
+            initializedModule = nil
+            dependencyManager = nil
+        }
+    }
+
+    internal static func setModule(_ iamModule: InAppMessagingModule?) {
+        initializedModule = iamModule
     }
 }

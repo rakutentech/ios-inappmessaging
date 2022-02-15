@@ -14,7 +14,7 @@ internal protocol ViewListenerType: AnyObject {
 }
 
 internal protocol ViewListenerObserver: AnyObject {
-    func viewDidChangeSubview(_ view: UIView, identifier: String)
+    func viewDidChangeSuperview(_ view: UIView, identifier: String)
     func viewDidMoveToWindow(_ view: UIView, identifier: String)
     func viewDidGetRemovedFromSuperview(_ view: UIView, identifier: String)
     func viewDidUpdateIdentifier(from: String?, to: String?, view: UIView)
@@ -111,15 +111,14 @@ internal final class ViewListener: ViewListenerType {
 
 private extension NSObject {
     @objc func swizzled_setAccessibilityIdentifier(_ identifier: String?) {
-        let oldIdentifier = (self as? UIAccessibilityIdentification)?.accessibilityIdentifier
+        let oldIdentifier = (self as? UIView)?.accessibilityIdentifier
         self.swizzled_setAccessibilityIdentifier(identifier)
 
-        guard let self = self as? UIView else {
+        guard let self = self as? UIView, oldIdentifier != identifier else {
             return
         }
-        let newIdentifier = identifier ?? (self as? UILabel)?.text ?? (self as? UITextView)?.text
         ViewListener.instance.observers.forEach {
-            $0.value?.viewDidUpdateIdentifier(from: oldIdentifier ?? (self as? UILabel)?.text ?? (self as? UITextView)?.text, to: newIdentifier, view: self)
+            $0.value?.viewDidUpdateIdentifier(from: oldIdentifier, to: identifier, view: self)
         }
     }
 }
@@ -127,7 +126,7 @@ private extension NSObject {
 private extension UIView {
 
     var identifier: String {
-        accessibilityIdentifier ?? (self as? UILabel)?.text ?? (self as? UITextView)?.text ?? ""
+        accessibilityIdentifier ?? ""
     }
 
     // TOOLTIP: support isHidden
@@ -139,7 +138,7 @@ private extension UIView {
             return
         }
         ViewListener.instance.observers.forEach {
-            $0.value?.viewDidChangeSubview(self, identifier: identifier)
+            $0.value?.viewDidChangeSuperview(self, identifier: identifier)
         }
     }
 

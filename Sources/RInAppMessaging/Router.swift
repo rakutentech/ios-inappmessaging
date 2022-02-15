@@ -58,7 +58,7 @@ internal class Router: RouterType, ViewListenerObserver {
         displayQueue.sync {
             DispatchQueue.main.async {
                 guard let rootView = UIApplication.shared.getKeyWindow(),
-                      let presentedView = rootView.findIAMViewSubview() else {
+                      let presentedView = rootView.findIAMView() else {
                     return
                 }
 
@@ -88,7 +88,7 @@ internal class Router: RouterType, ViewListenerObserver {
 
             DispatchQueue.main.async {
                 guard let rootView = UIApplication.shared.getKeyWindow(),
-                      rootView.findIAMViewSubview() == nil,
+                      rootView.findIAMView() == nil,
                       confirmation() else {
 
                     completion(true)
@@ -172,7 +172,7 @@ internal class Router: RouterType, ViewListenerObserver {
             let position = tooltipData.bodyData.position
             let tooltipView = TooltipView(presenter: presenter)
 
-            presenter.set(view: tooltipView, data: tooltip, image: image)
+            presenter.set(view: tooltipView, dataModel: tooltip, image: image)
             presenter.onClose = { [weak self] in
                 self?.displayedTooltips[identifier]?.removeFromSuperview()
                 self?.displayedTooltips[identifier] = nil
@@ -187,7 +187,7 @@ internal class Router: RouterType, ViewListenerObserver {
 
             superview.addSubview(tooltipView)
             superview.layoutIfNeeded()
-            if let displayedCampaign = superview.findIAMViewSubview() {
+            if let displayedCampaign = superview.findIAMView() {
                 superview.bringSubviewToFront(displayedCampaign)
             }
 
@@ -310,7 +310,7 @@ internal class Router: RouterType, ViewListenerObserver {
 
 // MARK: - ViewListenerObserver
 extension Router {
-    func viewDidChangeSubview(_ view: UIView, identifier: String) {
+    func viewDidChangeSuperview(_ view: UIView, identifier: String) {
         // unused
     }
 
@@ -325,13 +325,13 @@ extension Router {
 
     func viewDidUpdateIdentifier(from: String?, to: String?, view: UIView) {
         if let oldIdentifier = from, displayedTooltips[oldIdentifier] != nil {
+            // update or remove (TBC)
             if let newIdentifier = to {
                 displayedTooltips[newIdentifier] = displayedTooltips[oldIdentifier]
+                displayedTooltips[oldIdentifier] = nil
             } else {
                 viewDidGetRemovedFromSuperview(view, identifier: oldIdentifier)
             }
-        } else if let newIdentifier = to {
-            viewDidMoveToWindow(view, identifier: newIdentifier)
         }
     }
 }

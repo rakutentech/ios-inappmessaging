@@ -70,9 +70,9 @@ internal class InAppMessagingModule: ErrorDelegate, CampaignDispatcherDelegate, 
             }
             let enabled = self.isEnabled(config: config)
             self.isEnabled = enabled
+            self.isInitialized = true
 
             if enabled {
-                self.isInitialized = true
                 self.campaignsListManager.refreshList()
                 self.flushEventBuffer(discardEvents: false)
                 completion(false)

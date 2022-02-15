@@ -13,7 +13,6 @@ internal class TooltipDispatcher: TooltipDispatcherType, ViewListenerObserver {
     private let dispatchQueue = DispatchQueue(label: "IAM.TooltipDisplay", qos: .userInteractive)
     private(set) var httpSession: URLSession
     private(set) var queuedTooltips = Set<Campaign>() // ensure to access only in dispatchQueue
-    private(set) var displayedViews = [UIView]()
 
     init(router: RouterType,
          campaignRepository: CampaignRepositoryType,
@@ -77,10 +76,10 @@ internal class TooltipDispatcher: TooltipDispatcherType, ViewListenerObserver {
                 identifier: identifier,
                 imageBlob: imageBlob,
                 becameVisibleHandler: { tooltipView in
-                    guard let autoFadeSeconds = tooltip.tooltipData?.bodyData.autoFadeSeconds, autoFadeSeconds > 0 else {
+                    guard let autoCloseSeconds = tooltip.tooltipData?.bodyData.autoCloseSeconds, autoCloseSeconds > 0 else {
                         return
                     }
-                    tooltipView.startAutoFadingIfNeeded(seconds: autoFadeSeconds)
+                    tooltipView.startAutoDisappearIfNeeded(seconds: autoCloseSeconds)
                 }, completion: {
                     self.dispatchQueue.async {
                         self.campaignRepository.decrementImpressionsLeftInCampaign(id: tooltip.id)
@@ -104,7 +103,7 @@ internal class TooltipDispatcher: TooltipDispatcherType, ViewListenerObserver {
 // MARK: - ViewListenerObserver
 extension TooltipDispatcher {
 
-    func viewDidChangeSubview(_ view: UIView, identifier: String) {
+    func viewDidChangeSuperview(_ view: UIView, identifier: String) {
         guard view.superview != nil else {
             return
         }
@@ -124,7 +123,7 @@ extension TooltipDispatcher {
     }
 
     func viewDidMoveToWindow(_ view: UIView, identifier: String) {
-        viewDidChangeSubview(view, identifier: identifier)
+        viewDidChangeSuperview(view, identifier: identifier)
     }
 
     func viewDidGetRemovedFromSuperview(_ view: UIView, identifier: String) {
@@ -132,6 +131,8 @@ extension TooltipDispatcher {
     }
 
     func viewDidUpdateIdentifier(from: String?, to: String?, view: UIView) {
-        // unused
+        if let newIdentifier = to {
+            viewDidMoveToWindow(view, identifier: newIdentifier)
+        }
     }
 }
