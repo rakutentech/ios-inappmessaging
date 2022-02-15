@@ -99,22 +99,22 @@ class ViewListenerSpec: QuickSpec {
             describe("ViewListenerObserver") {
 
                 var observer: ViewListenerObserverObject!
-                let view: UIView = {
-                    let view = UIView()
-                    view.accessibilityIdentifier = TooltipViewIdentifierMock
-                    return view
-                }()
+                var view: UIView!
 
                 beforeEach {
                     observer = ViewListenerObserverObject()
                     viewListener.addObserver(observer)
+                    view = UIView()
+                    view.accessibilityIdentifier = TooltipViewIdentifierMock
                     window.addSubview(view)
+
                     viewListener.startListening()
                     // wait for iterateOverDisplayedViews to finish
                     expect(observer.wasViewDidMoveToWindowCalled).toEventually(beTrue())
                 }
 
                 afterEach {
+                    observer = nil
                     view.removeFromSuperview()
                 }
 
