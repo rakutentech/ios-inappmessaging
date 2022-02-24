@@ -1,6 +1,0 @@
-ignore:
-  - "Pods"
-  - "Tests"
-  - "Sample"
-  - "IntegrationTests"
-  - "UITests"
