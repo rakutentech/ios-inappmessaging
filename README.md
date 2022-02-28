@@ -51,7 +51,7 @@ To use the module you must set the following values in your app's `Info.plist`:
 
 | Key     | Value     |
 | :---:   | :---:     |
-| `InAppMessagingAppSubscriptionID` | your_subscription_key |
+| `InAppMessagingAppSubscriptionID` | your\_subscription\_key |
 | `InAppMessagingConfigurationURL` | Endpoint for fetching the configuration |
 
 
@@ -196,12 +196,13 @@ From the SDK side, host app developers will be able to log custom events as show
 
 ## **Optional features**
 
-### **RInAppMessagingDelegate**
+### **Campaign context verification**
 
-An optional delegate. Set the `RInAppMessaging.delegate` and implement the protocol method `inAppMessagingShouldShowCampaignWithContexts(contexts:campaignTitle:)` in order to be called before a message is displayed when a campaign title contains one or more contexts. A context is defined as the text inside "[]" within an IAM portal "Campaign Name" e.g. the campaign name is "[ctx1] title" so the context is "ctx1".
+An optional variable `onVerifyContext` is called before a message is displayed for campaigns that have one or more contexts defined. A context can be added as the text inside "[]" within an IAM portal "Campaign Name" e.g. the campaign name is "[ctx1] title" so the context is "ctx1". Return `false` in `onVerifyContext` closure to prevent campaign from displaying (it won't count as an impression).<br/>
+__Note__: `onVerifyContext` is not called for campaigns without defined contexts
 
 ```swift
-func inAppMessagingShouldShowCampaignWithContexts(contexts: [String], campaignTitle: String) -> Bool {
+RInAppMessaging.onVerifyContext = { (contexts: [String], campaignTitle: String) in
     guard campaignTitle == "[context1] campaign-title-1", contexts.contains("context1") else {
         return true
     }
@@ -213,14 +214,23 @@ func inAppMessagingShouldShowCampaignWithContexts(contexts: [String], campaignTi
 }
 ```
 
-### **RInAppMessagingErrorDelegate**
+### **Error callback**
 
-An optional error delegate. Set the `RInAppMessaging.errorDelegate` and implement the protocol method `inAppMessagingDidReturnError(error:)` to receive an `NSError` object whenever an internal SDK error occurs. This allows you to log the errors somewhere, e.g. a 3rd party analytics service, for later troubleshooting.
+Developers can set an optional variable `errorCallback` to receive internal SDK errors. This allows you to log the errors somewhere, e.g. a 3rd party analytics service, for later troubleshooting.
+```swift
+import RInAppMessaging
 
-### **(BOOL)accessibilityCompatibleDisplay**  
+func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+    RInAppMessaging.errorCallback = { [weak self] error in
+        self?.logger.log(error.description)
+    }
+}
+```
 
-This flag can be used to support UI test automation tools like Appium. When set to `true`, the SDK will use a different display method which changes campaign messages' view hierarchy. This can solve issues with accessibility tools having problems detecting visible items.
- __Note__: There is a possibility that changing this flag will cause campaigns to display incorrectly.
+### **Accessibility / Automation tests support**  
+
+The campaign message view contains elements with `accessibilityIdentifier` value. In some apps those elements might not visible for test automation tools like Appium. To fix that issue set `accessibilityCompatibleDisplay` flag to `true`. The SDK will use a different logic to display campaign messages.<br/>
+__Note__: This feature changes the way campaign views are added to the view hierarchy which, in some apps, might result in campaigns to be displayed incorrectly.
 
 ```swift
 import RInAppMessaging

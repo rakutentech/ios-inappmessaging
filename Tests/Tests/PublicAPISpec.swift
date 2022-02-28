@@ -21,7 +21,8 @@ class PublicAPISpec: QuickSpec {
         var campaignRepository: CampaignRepositoryType!
         var configurationManager: ConfigurationManagerMock!
         var dataCache: UserDataCache!
-        var delegate: Delegate!
+        var contextVerifier: ContextVerifier!
+        var errorReceiver: ErrorReceiver!
 
         func mockContainer() -> TypedDependencyManager.Container {
             return TypedDependencyManager.Container([
@@ -63,14 +64,22 @@ class PublicAPISpec: QuickSpec {
 
         beforeEach {
             reinitializeSDK()
-            delegate = Delegate()
-            RInAppMessaging.delegate = delegate
+            contextVerifier = ContextVerifier()
+            RInAppMessaging.onVerifyContext = { contexts, campaignTitle in
+                contextVerifier.onVerifyContext(contexts: contexts, campaignTitle: campaignTitle)
+            }
+            errorReceiver = ErrorReceiver()
+            RInAppMessaging.errorCallback = { error in
+                errorReceiver.inAppMessagingDidReturnError(error)
+            }
             // wait for initialization to finish
             expect(RInAppMessaging.initializedModule).toEventuallyNot(beNil())
         }
 
         afterEach {
             RInAppMessaging.deinitializeModule()
+            RInAppMessaging.onVerifyContext = nil
+            RInAppMessaging.errorCallback = nil
             UserDefaults.standard.removePersistentDomain(forName: "PublicAPISpec")
             UIApplication.shared.getKeyWindow()?.findIAMViewSubview()?.removeFromSuperview()
         }
@@ -81,9 +90,9 @@ class PublicAPISpec: QuickSpec {
                 RInAppMessaging.deinitializeModule()
                 expect(RInAppMessaging.initializedModule).to(beNil())
 
-                let errorDelegate = ErrorDelegate()
-                RInAppMessaging.delegate = delegate
-                RInAppMessaging.errorDelegate = errorDelegate
+                RInAppMessaging.onVerifyContext = { _, _ in
+                    true
+                }
                 RInAppMessaging.accessibilityCompatibleDisplay = true
                 RInAppMessaging.closeMessage(clearQueuedCampaigns: true)
                 RInAppMessaging.logEvent(LoginSuccessfulEvent())
@@ -93,13 +102,11 @@ class PublicAPISpec: QuickSpec {
             it("will send an error if api methods are called prior to configure()") {
                 RInAppMessaging.deinitializeModule()
                 expect(RInAppMessaging.initializedModule).to(beNil())
-
-                let errorDelegate = ErrorDelegate()
-                RInAppMessaging.errorDelegate = errorDelegate
+                errorReceiver = ErrorReceiver()
 
                 RInAppMessaging.closeMessage(clearQueuedCampaigns: true) // 1st error sent
                 RInAppMessaging.logEvent(LoginSuccessfulEvent()) // 2nd error sent
-                expect(errorDelegate.totalErrorNumber).toEventually(equal(2))
+                expect(errorReceiver.totalErrorNumber).toEventually(equal(2))
             }
 
             it("won't reinitialize module if config was called more than once") {
@@ -132,13 +139,11 @@ class PublicAPISpec: QuickSpec {
             }
 
             it("will pass errors to errorDelegate") {
-                let delegate = ErrorDelegate()
-                RInAppMessaging.errorDelegate = delegate
                 messageMixerService.mockedError = .invalidConfiguration
                 campaignsListManager.refreshList()
-                expect(delegate.returnedError?.domain).toEventually(
+                expect(errorReceiver.returnedError?.domain).toEventually(
                     equal("InAppMessaging.CampaignsListManager"))
-                expect(delegate.returnedError?.localizedDescription).toEventually(
+                expect(errorReceiver.returnedError?.localizedDescription).toEventually(
                     equal("InAppMessaging: Error retrieving InAppMessaging Mixer Server URL"))
             }
 
@@ -225,17 +230,17 @@ class PublicAPISpec: QuickSpec {
                 it("will not call the method if there are no contexts") {
                     generateAndDisplayLoginCampaigns(count: 1, addContexts: false)
 
-                    expect(delegate.shouldShowCampaignCallCount).toAfterTimeout(equal(0))
+                    expect(contextVerifier.onVerifyContextCallCount).toAfterTimeout(equal(0))
                 }
 
                 it("will call the method just before showing a message") {
                     generateAndDisplayLoginCampaigns(count: 1, addContexts: true)
 
-                    expect(delegate.shouldShowCampaignCallCount).toEventually(equal(1))
+                    expect(contextVerifier.onVerifyContextCallCount).toEventually(equal(1))
                 }
 
                 it("will show a message if the method returned true") {
-                    delegate.shouldShowCampaign = true
+                    contextVerifier.shouldShowCampaign = true
                     generateAndDisplayLoginCampaigns(count: 2, addContexts: true)
 
                     expect(UIApplication.shared.getKeyWindow()?.subviews).toEventually(containElementSatisfying({
@@ -245,19 +250,19 @@ class PublicAPISpec: QuickSpec {
                         }
                         return false
                     }))
-                    expect(delegate.shouldShowCampaignCallCount).toEventually(equal(2))
+                    expect(contextVerifier.onVerifyContextCallCount).toEventually(equal(2))
                 }
 
                 it("will not show a message if the method returned false") {
-                    delegate.shouldShowCampaign = false
+                    contextVerifier.shouldShowCampaign = false
                     generateAndDisplayLoginCampaigns(count: 2, addContexts: true)
 
                     expect(UIApplication.shared.getKeyWindow()?.findIAMViewSubview()).toAfterTimeout(beNil())
-                    expect(delegate.shouldShowCampaignCallCount).toAfterTimeout(equal(2))
+                    expect(contextVerifier.onVerifyContextCallCount).toAfterTimeout(equal(2))
                 }
 
                 it("will call the method before showing a message with proper parameters") {
-                    delegate.shouldShowCampaign = true
+                    contextVerifier.shouldShowCampaign = true
                     messageMixerService.mockedResponse = PingResponse(
                         nextPingMilliseconds: Int.max,
                         currentPingMilliseconds: 0,
@@ -275,8 +280,8 @@ class PublicAPISpec: QuickSpec {
                     campaignsListManager.refreshList()
                     RInAppMessaging.logEvent(LoginSuccessfulEvent())
 
-                    expect(delegate.shouldShowCampaignCallParameters?.title).toEventually(equal("[ctx1][ctx2] title"), timeout: .seconds(2))
-                    expect(delegate.shouldShowCampaignCallParameters?.contexts)
+                    expect(contextVerifier.onVerifyContextCallParameters?.title).toEventually(equal("[ctx1][ctx2] title"), timeout: .seconds(2))
+                    expect(contextVerifier.onVerifyContextCallParameters?.contexts)
                         .toEventually(contain(["ctx1", "ctx2"]), timeout: .seconds(2))
                 }
             }
@@ -409,7 +414,7 @@ class PublicAPISpec: QuickSpec {
     }
 }
 
-private class ErrorDelegate: RInAppMessagingErrorDelegate {
+private class ErrorReceiver {
     private(set) var returnedError: NSError?
     private(set) var totalErrorNumber = 0
     func inAppMessagingDidReturnError(_ error: NSError) {
@@ -418,14 +423,14 @@ private class ErrorDelegate: RInAppMessagingErrorDelegate {
     }
 }
 
-private class Delegate: RInAppMessagingDelegate {
-    var shouldShowCampaignCallCount = 0
+private class ContextVerifier {
+    var onVerifyContextCallCount = 0
     var shouldShowCampaign = true
-    var shouldShowCampaignCallParameters: (title: String, contexts: [String])?
+    var onVerifyContextCallParameters: (title: String, contexts: [String])?
 
-    func inAppMessagingShouldShowCampaignWithContexts(contexts: [String], campaignTitle: String) -> Bool {
-        shouldShowCampaignCallCount += 1
-        shouldShowCampaignCallParameters = (campaignTitle, contexts)
+    func onVerifyContext(contexts: [String], campaignTitle: String) -> Bool {
+        onVerifyContextCallCount += 1
+        onVerifyContextCallParameters = (campaignTitle, contexts)
         return shouldShowCampaign
     }
 }

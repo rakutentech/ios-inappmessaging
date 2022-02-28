@@ -28,7 +28,6 @@ class InAppMessagingModuleSpec: QuickSpec {
             var campaignRepository: CampaignRepositoryMock!
             var router: RouterMock!
             var randomizer: RandomizerMock!
-            var delegate: Delegate!
 
             beforeEach {
                 configurationManager = ConfigurationManagerMock()
@@ -44,7 +43,6 @@ class InAppMessagingModuleSpec: QuickSpec {
                 campaignRepository = CampaignRepositoryMock()
                 router = RouterMock()
                 randomizer = RandomizerMock()
-                delegate = Delegate()
                 iamModule = InAppMessagingModule(configurationManager: configurationManager,
                                                  campaignsListManager: campaignsListManager,
                                                  impressionService: impressionService,
@@ -56,21 +54,26 @@ class InAppMessagingModuleSpec: QuickSpec {
                                                  router: router,
                                                  randomizer: randomizer,
                                                  displayPermissionService: DisplayPermissionServiceMock())
-                iamModule.delegate = delegate
             }
 
             it("is enabled by deafult") {
                 expect(iamModule.isEnabled).to(beTrue())
             }
 
-            it("will return true for shouldShowCampaignMessage if delegate is nil") {
-                iamModule.delegate = nil
+            it("will return true for shouldShowCampaignMessage if onVerifyContext is nil") {
+                iamModule.onVerifyContext = nil
                 expect(iamModule.shouldShowCampaignMessage(title: "", contexts: [])).to(beTrue())
             }
 
             it("will call delegate method if shouldShowCampaignMessage was called") {
+                var onVerifyContextCalled = false
+                iamModule.onVerifyContext = { _, _ in
+                    onVerifyContextCalled = true
+                    return true
+                }
                 _ = iamModule.shouldShowCampaignMessage(title: "", contexts: [])
-                expect(delegate.wasShouldShowCampaignCalled).to(beTrue())
+
+                expect(onVerifyContextCalled).to(beTrue())
             }
 
             context("when calling initialize") {
@@ -639,14 +642,5 @@ class InAppMessagingModuleSpec: QuickSpec {
                 }
             }
         }
-    }
-}
-
-private class Delegate: RInAppMessagingDelegate {
-    var wasShouldShowCampaignCalled = false
-
-    func inAppMessagingShouldShowCampaignWithContexts(contexts: [String], campaignTitle: String) -> Bool {
-        wasShouldShowCampaignCalled = true
-        return true
     }
 }
