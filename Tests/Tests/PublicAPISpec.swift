@@ -138,9 +138,11 @@ class PublicAPISpec: QuickSpec {
                 })))
             }
 
-            it("will pass errors to errorDelegate") {
+            it("will pass internal errors to errorCallback") {
                 messageMixerService.mockedError = .invalidConfiguration
                 campaignsListManager.refreshList()
+
+                // errorReceiver is updated inside errorCallback
                 expect(errorReceiver.returnedError?.domain).toEventually(
                     equal("InAppMessaging.CampaignsListManager"))
                 expect(errorReceiver.returnedError?.localizedDescription).toEventually(
@@ -225,7 +227,7 @@ class PublicAPISpec: QuickSpec {
                 }
             }
 
-            context("delegate") {
+            context("onVerifyContext") {
 
                 it("will not call the method if there are no contexts") {
                     generateAndDisplayLoginCampaigns(count: 1, addContexts: false)

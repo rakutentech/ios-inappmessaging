@@ -65,7 +65,7 @@ class InAppMessagingModuleSpec: QuickSpec {
                 expect(iamModule.shouldShowCampaignMessage(title: "", contexts: [])).to(beTrue())
             }
 
-            it("will call delegate method if shouldShowCampaignMessage was called") {
+            it("will call onVerifyContext if shouldShowCampaignMessage was called") {
                 var onVerifyContextCalled = false
                 iamModule.onVerifyContext = { _, _ in
                     onVerifyContextCalled = true

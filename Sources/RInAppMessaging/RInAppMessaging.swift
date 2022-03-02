@@ -99,7 +99,6 @@ import RSDKUtils
             initializedModule?.initialize(deinitHandler: {
                 self.initializedModule = nil
                 self.dependencyManager = nil
-                self.onVerifyContext = nil
             })
         }
     }
