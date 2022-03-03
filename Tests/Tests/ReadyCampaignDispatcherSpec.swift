@@ -300,10 +300,10 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
                         dispatcher.dispatchAllIfNeeded()
                     }
 
-                    it("will not stop dispatching if campaign is displayed") {
-                        router.displayTime = 2.0
+                    it("will not change dispatching mode to false if campaign is displayed") {
+                        router.displayTime = 3.0
                         expect(dispatcher.isDispatching).toEventually(beTrue())
-                        expect(dispatcher.scheduledTask).toEventually(beNil()) // wait
+                        expect(dispatcher.scheduledTask).to(beNil())
                         dispatcher.resetQueue()
                         expect(dispatcher.isDispatching).toAfterTimeout(beTrue())
                     }
