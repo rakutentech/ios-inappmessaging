@@ -301,6 +301,7 @@ class RouterMock: RouterType {
     var lastDisplayedCampaign: Campaign?
     var displayedCampaignsCount = 0
     var wasDiscardCampaignCalled = false
+    var wasDisplayCampaignCalled = false
     var displayTime = TimeInterval(0.1)
 
     private let displayQueue = DispatchQueue(label: "RouterMock.displayQueue")
@@ -309,6 +310,8 @@ class RouterMock: RouterType {
                          associatedImageData: Data?,
                          confirmation: @escaping @autoclosure () -> Bool,
                          completion: @escaping (_ cancelled: Bool) -> Void) {
+
+        wasDisplayCampaignCalled = true
         guard confirmation() else {
             completion(true)
             return

@@ -293,38 +293,45 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
 
                     let testCampaigns = TestHelpers.MockResponse.withGeneratedCampaigns(count: 3, test: true, delay: 1000).data
 
+                    func dispatchWithDisplayTime(_ displayTime: TimeInterval) {
+                        router.displayTime = displayTime
+                        dispatcher.dispatchAllIfNeeded()
+                    }
+
                     beforeEach {
                         campaignRepository.list = testCampaigns
                         dispatcher.addToQueue(campaignID: testCampaigns[0].id)
                         dispatcher.addToQueue(campaignID: testCampaigns[1].id)
-                        dispatcher.dispatchAllIfNeeded()
                     }
 
                     it("will not change dispatching mode to false if campaign is displayed") {
-                        router.displayTime = 3.0
+                        dispatchWithDisplayTime(2.0)
                         expect(dispatcher.isDispatching).toEventually(beTrue())
-                        expect(dispatcher.scheduledTask).to(beNil())
+                        expect(router.wasDisplayCampaignCalled).toEventually(beTrue())
                         dispatcher.resetQueue()
                         expect(dispatcher.isDispatching).toAfterTimeout(beTrue())
                     }
 
                     it("will stop dispatching if campaign is not displayed") {
+                        dispatchWithDisplayTime(1.0)
                         expect(dispatcher.isDispatching).toEventually(beTrue())
-                        expect(dispatcher.scheduledTask).toEventuallyNot(beNil()) // wait
+                        expect(dispatcher.scheduledTask).toEventuallyNot(beNil(), timeout: .seconds(2)) // wait for close
                         dispatcher.resetQueue()
                         expect(dispatcher.isDispatching).toEventually(beFalse())
                     }
 
                     it("will remove all queued campaigns") {
+                        dispatchWithDisplayTime(0.5)
                         expect(dispatcher.isDispatching).toEventually(beTrue()) // wait
                         dispatcher.resetQueue()
                         dispatcher.addToQueue(campaignID: testCampaigns[2].id)
                         dispatcher.dispatchAllIfNeeded()
-                        expect(router.lastDisplayedCampaign).toEventually(equal(testCampaigns[2]), timeout: .seconds(2))
+                        expect(router.lastDisplayedCampaign).toEventually(equal(testCampaigns[2]), timeout: .seconds(3))
                         expect(router.displayedCampaignsCount).to(equal(2))
                     }
 
                     it("will stop scheduled dispatch") {
+                        dispatchWithDisplayTime(0.5)
                         expect(dispatcher.scheduledTask).toEventuallyNot(beNil()) // wait
                         dispatcher.resetQueue()
                         expect(dispatcher.scheduledTask?.isCancelled).toEventually(beTrue())
