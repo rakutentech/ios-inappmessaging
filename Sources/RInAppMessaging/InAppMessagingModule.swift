@@ -24,7 +24,7 @@ internal class InAppMessagingModule: ErrorDelegate, CampaignDispatcherDelegate, 
     private var eventBuffer = [Event]()
 
     var aggregatedErrorHandler: ((NSError) -> Void)?
-    weak var delegate: RInAppMessagingDelegate?
+    var onVerifyContext: ((_ contexts: [String], _ campaignTitle: String) -> Bool)?
 
     init(configurationManager: ConfigurationManagerType,
          campaignsListManager: CampaignsListManagerType,
@@ -150,11 +150,7 @@ extension InAppMessagingModule {
     }
 
     func shouldShowCampaignMessage(title: String, contexts: [String]) -> Bool {
-        guard let delegate = delegate else {
-            return true
-        }
-        return delegate.inAppMessagingShouldShowCampaignWithContexts(contexts: contexts,
-                                                                     campaignTitle: title)
+        onVerifyContext?(contexts, title) ?? true
     }
 }
 

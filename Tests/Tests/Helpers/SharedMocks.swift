@@ -301,21 +301,26 @@ class RouterMock: RouterType {
     var lastDisplayedCampaign: Campaign?
     var displayedCampaignsCount = 0
     var wasDiscardCampaignCalled = false
+    var wasDisplayCampaignCalled = false
     var displayTime = TimeInterval(0.1)
+
+    private let displayQueue = DispatchQueue(label: "RouterMock.displayQueue")
 
     func displayCampaign(_ campaign: Campaign,
                          associatedImageData: Data?,
                          confirmation: @escaping @autoclosure () -> Bool,
                          completion: @escaping (_ cancelled: Bool) -> Void) {
+
+        wasDisplayCampaignCalled = true
         guard confirmation() else {
             completion(true)
             return
         }
-        DispatchQueue.global().async { [weak self] in
+        let delayUSeconds = Int(displayTime * Double(USEC_PER_SEC))
+        displayQueue.asyncAfter(deadline: .now() + .microseconds(delayUSeconds)) { [weak self] in
             guard let self = self else {
                 return
             }
-            usleep(useconds_t(self.displayTime * Double(USEC_PER_SEC))) // simulate display time
             self.lastDisplayedCampaign = campaign
             self.displayedCampaignsCount += 1
             completion(false)

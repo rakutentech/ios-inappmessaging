@@ -5,20 +5,6 @@ import RSDKUtilsMain // SPM version
 import RSDKUtils
 #endif
 
-/// Protocol for optional delagate
-@objc public protocol RInAppMessagingDelegate: AnyObject {
-    /// Method called only for campaigns with context just before displaying its message
-    func inAppMessagingShouldShowCampaignWithContexts(contexts: [String], campaignTitle: String) -> Bool
-}
-
-/// Protocol for optional error delegate of InAppMessaging module
-@objc public protocol RInAppMessagingErrorDelegate {
-    /// Method will be called whenever any internal error occurs.
-    /// This functionality is made for debugging purposes.
-    /// Normally those errors handled by the SDK
-    func inAppMessagingDidReturnError(_ error: NSError)
-}
-
 /// Class that contains the public methods for host application to call.
 /// Entry point for host application to communicate with InAppMessaging.
 /// Conforms to NSObject and exposed with objc tag to make it work with Obj-c projects.
@@ -43,13 +29,19 @@ import RSDKUtils
         }
     }
 
-    /// Optional error delegate for debugging purposes
-    @objc public static weak var errorDelegate: RInAppMessagingErrorDelegate?
-
-    /// Optional delegate for advanced features
-    @objc public static weak var delegate: RInAppMessagingDelegate? {
+    /// An optional callback called only for campaigns with defined context just before displaying its message.
+    /// Return `false` to prevent the message from displaying.
+    @objc public static var onVerifyContext: ((_ contexts: [String], _ campaignTitle: String) -> Bool)? {
         didSet {
-            initializedModule?.delegate = delegate
+            initializedModule?.onVerifyContext = onVerifyContext
+        }
+    }
+
+    /// A closure called whenever any internal error occurs.
+    /// This functionality is made for debugging purposes to provide more information for developers.
+    @objc public static var errorCallback: ((NSError) -> Void)? {
+        didSet {
+            initializedModule?.aggregatedErrorHandler = errorCallback
         }
     }
 
@@ -66,7 +58,7 @@ import RSDKUtils
         configure(dependencyManager: dependencyManager)
     }
 
-    static func configure(dependencyManager: TypedDependencyManager) {
+    internal static func configure(dependencyManager: TypedDependencyManager) {
         self.dependencyManager = dependencyManager
 
         inAppQueue.async {
@@ -102,10 +94,8 @@ import RSDKUtils
                                                      router: router,
                                                      randomizer: randomizer,
                                                      displayPermissionService: displayPermissionService)
-            initializedModule?.aggregatedErrorHandler = { error in
-                errorDelegate?.inAppMessagingDidReturnError(error)
-            }
-            initializedModule?.delegate = delegate
+            initializedModule?.aggregatedErrorHandler = errorCallback
+            initializedModule?.onVerifyContext = onVerifyContext
             initializedModule?.initialize(deinitHandler: {
                 self.initializedModule = nil
                 self.dependencyManager = nil
@@ -165,6 +155,6 @@ import RSDKUtils
                             code: 0,
                             userInfo: [NSLocalizedDescriptionKey: "InAppMessaging: " + description])
         Logger.debug(description)
-        errorDelegate?.inAppMessagingDidReturnError(error)
+        errorCallback?(error)
     }
 }
