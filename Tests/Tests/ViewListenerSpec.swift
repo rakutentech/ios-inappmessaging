@@ -33,13 +33,23 @@ class ViewListenerSpec: QuickSpec {
 
             context("when calling iterateOverDisplayedViews") {
 
-                it("will include all views in hierarchy") {
-                    let view1 = UIView()
+                let view1 = UIView()
+                let view2 = UIView()
+                let view3 = UIView()
+
+                beforeEach {
                     view1.accessibilityIdentifier = TooltipViewIdentifierMock
-                    let view2 = UIView()
                     view2.accessibilityIdentifier = TooltipViewIdentifierMock
-                    let view3 = UIView()
                     view3.accessibilityIdentifier = TooltipViewIdentifierMock
+                }
+
+                afterEach {
+                    [view1, view2, view3].forEach {
+                        $0.removeFromSuperview()
+                    }
+                }
+
+                it("will include all views in hierarchy") {
                     let subview1 = UIView()
                     let subview2 = UIView()
                     subview1.addSubview(subview2)
@@ -48,8 +58,8 @@ class ViewListenerSpec: QuickSpec {
                         window.addSubview($0)
                     }
 
-                    viewListener.startListening()
                     var expectedViews = [UIView]()
+                    viewListener.startListening()
                     viewListener.iterateOverDisplayedViews { view, identifier, _ in
                         if identifier == TooltipViewIdentifierMock {
                             expectedViews.append(view)
@@ -57,29 +67,37 @@ class ViewListenerSpec: QuickSpec {
                     }
                     expect(expectedViews).toEventually(elementsEqualOrderAgnostic([view1, view2, view3]))
 
-                    [view1, view2, subview1].forEach {
-                        $0.removeFromSuperview()
-                    }
+                    subview1.removeFromSuperview()
                 }
 
                 it("will stop iterating when stop flag was set to true in the closure") {
-                    let view1 = UIView()
-                    let view2 = UIView()
                     [view1, view2].forEach {
                         window.addSubview($0)
                     }
 
-                    viewListener.startListening()
                     var expectedViews = [UIView]()
+                    viewListener.startListening()
                     viewListener.iterateOverDisplayedViews { view, _, stop in
                         expectedViews.append(view)
                         stop = true
                     }
                     expect(expectedViews).toAfterTimeout(haveCount(1))
+                }
 
-                    [view1, view2].forEach {
-                        $0.removeFromSuperview()
+                it("will not call closure for views without (or empty) accessibilityIdentifier") {
+                    view1.accessibilityIdentifier = nil
+                    view2.accessibilityIdentifier = ""
+                    view3.accessibilityIdentifier = TooltipViewIdentifierMock
+                    [view1, view2, view3].forEach {
+                        window.addSubview($0)
                     }
+
+                    var expectedViews = [UIView]()
+                    viewListener.startListening()
+                    viewListener.iterateOverDisplayedViews { view, _, _ in
+                        expectedViews.append(view)
+                    }
+                    expect(expectedViews).toAfterTimeout(haveCount(1))
                 }
 
                 it("will not call closure when startListening() was not called") {
@@ -91,8 +109,6 @@ class ViewListenerSpec: QuickSpec {
                         expectedViews.append(view)
                     }
                     expect(expectedViews).toAfterTimeout(beEmpty())
-
-                    view1.removeFromSuperview()
                 }
             }
 
