@@ -1,5 +1,9 @@
 ## Changelog
 
+### 6.1.0-tooltip (2022-03-08)
+- Features:
+	- PoC implementation of Tooltip campaigns feature [SDKCF-4750]
+
 ### 6.1.0 (2022-02-04)
 - Improvements:
 	- Campaign UI has been updated to be in line with internal Rakuten UI design guide [SDKCF-4471]
