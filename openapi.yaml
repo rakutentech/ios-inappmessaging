@@ -6,7 +6,7 @@ info:
   license:
     name: MIT
     url: https://opensource.org/licenses/MIT
-  version: 6.1.0
+  version: 6.1.0-tooltip
 tags:
 - name: Configuration
 - name: Campaign
