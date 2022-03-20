@@ -26,68 +26,34 @@ class ValidatorHandler {
 struct TestHelpers {
 
     static func generateCampaign(id: String,
-                                 test: Bool,
-                                 delay: Int,
-                                 maxImpressions: Int,
                                  title: String = "testTitle",
-                                 triggers: [Trigger] = []) -> Campaign {
-        return Campaign(
-            data: CampaignData(
-                campaignId: id,
-                maxImpressions: maxImpressions,
-                type: .modal,
-                triggers: triggers,
-                isTest: test,
-                messagePayload: MessagePayload(
-                    title: title,
-                    messageBody: "testBody",
-                    header: "testHeader",
-                    titleColor: "color",
-                    headerColor: "color2",
-                    messageBodyColor: "color3",
-                    backgroundColor: "color4",
-                    frameColor: "color5",
-                    resource: Resource(
-                        imageUrl: nil,
-                        cropType: .fill),
-                    messageSettings: MessageSettings(
-                        displaySettings: DisplaySettings(
-                            orientation: .portrait,
-                            slideFrom: .bottom,
-                            endTimeMilliseconds: Int64.max,
-                            textAlign: .fill,
-                            optOut: false,
-                            html: false,
-                            delay: delay),
-                        controlSettings: ControlSettings(buttons: [], content: nil))
-                )
-            )
-        )
-    }
-
-    static func generateCampaign(id: String,
-                                 title: String = "testTitle",
+                                 maxImpressions: Int = 1,
+                                 delay: Int = 0,
                                  type: CampaignDisplayType = .modal,
-                                 isTest: Bool = false,
+                                 test: Bool = false,
                                  hasImage: Bool = false,
                                  content: Content? = nil,
+                                 triggers: [Trigger] = [],
                                  buttons: [Button] = []) -> Campaign {
         return Campaign(
             data: CampaignData(
                 campaignId: id,
-                maxImpressions: 1,
+                maxImpressions: maxImpressions,
                 type: type,
-                triggers: [],
-                isTest: isTest,
+                triggers: triggers,
+                isTest: test,
+                infiniteImpressions: false,
+                hasNoEndDate: false,
+                isCampaignDismissable: true,
                 messagePayload: MessagePayload(
                     title: title,
                     messageBody: "testBody",
                     header: "testHeader",
-                    titleColor: "color",
-                    headerColor: "color2",
-                    messageBodyColor: "color3",
-                    backgroundColor: "color4",
-                    frameColor: "color5",
+                    titleColor: "#000000",
+                    headerColor: "#444444",
+                    messageBodyColor: "#FAFAFA",
+                    backgroundColor: "#FAFAFA",
+                    frameColor: "#FF2222",
                     resource: Resource(
                         imageUrl: hasImage ? "https://www.example.com/cat.jpg" : nil,
                         cropType: .fill),
@@ -99,7 +65,7 @@ struct TestHelpers {
                             textAlign: .fill,
                             optOut: false,
                             html: false,
-                            delay: 0),
+                            delay: delay),
                         controlSettings: ControlSettings(
                             buttons: buttons,
                             content: content))
@@ -122,10 +88,10 @@ struct TestHelpers {
                 for i in 1...count {
                     campaigns.append(generateCampaign(
                         id: "testCampaignId\(i)",
-                        test: test,
-                        delay: delay,
-                        maxImpressions: maxImpressions,
                         title: title,
+                        maxImpressions: maxImpressions,
+                        delay: delay,
+                        test: test,
                         triggers: triggers))
                 }
             }
@@ -453,6 +419,11 @@ struct TestHelpers {
             assertionFailure()
             return nil
         }
+    }
+
+    static func getJSONModel<T: Decodable>(fileName: String) -> T! {
+        let data = getJSONData(fileName: fileName)!
+        return try? JSONDecoder().decode(T.self, from: data)
     }
 }
 

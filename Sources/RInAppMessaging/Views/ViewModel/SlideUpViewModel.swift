@@ -5,4 +5,5 @@ internal struct SlideUpViewModel {
     let backgroundColor: UIColor
     let messageBody: String
     let messageBodyColor: UIColor
+    let isDismissable: Bool
 }

@@ -8,6 +8,9 @@
                 "maxImpressions": 999,
                 "type": 3,
                 "isTest": false,
+                "isCampaignDismissable": false,
+                "hasNoEndDate": false,
+                "infiniteImpressions": true,
                 "triggers": [
                     {
                         "type": 1,

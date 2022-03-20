@@ -155,11 +155,9 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
 
                             it("will dispatch next campaign immediately") {
                                 let firstCampaign = TestHelpers.generateCampaign(
-                                    id: "test1", test: false, delay: 10000, maxImpressions: 1,
-                                    title: "[ctx] title")
+                                    id: "test1", title: "[ctx] title", maxImpressions: 1, delay: 10000)
                                 let secondCampaign = TestHelpers.generateCampaign(
-                                    id: "test2", test: false, delay: 10000, maxImpressions: 1,
-                                    title: "title")
+                                    id: "test2", title: "title", maxImpressions: 1, delay: 10000)
                                 campaignRepository.list = [firstCampaign, secondCampaign]
                                 dispatcher.addToQueue(campaignID: firstCampaign.id)
                                 dispatcher.addToQueue(campaignID: secondCampaign.id)
@@ -176,7 +174,7 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
                             }
 
                             it("will always dispatch test campaigns") {
-                                let campaign = TestHelpers.generateCampaign(id: "test", title: "[ctx] title", isTest: true)
+                                let campaign = TestHelpers.generateCampaign(id: "test", title: "[ctx] title", test: true)
                                 campaignRepository.list = [campaign]
                                 dispatcher.addToQueue(campaignID: campaign.id)
                                 dispatcher.dispatchAllIfNeeded()
@@ -203,7 +201,7 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
                     }
 
                     it("will display campaign when imageUrl is defined") {
-                        let campaign = TestHelpers.generateCampaign(id: "test", title: "title", type: .modal, isTest: false, hasImage: true)
+                        let campaign = TestHelpers.generateCampaign(id: "test", title: "title", type: .modal, test: false, hasImage: true)
                         campaignRepository.list = [campaign]
                         dispatcher.addToQueue(campaignID: campaign.id)
                         dispatcher.dispatchAllIfNeeded()
@@ -220,7 +218,7 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
                         }
 
                         it("won't display campaign when imageUrl is defined") {
-                            let campaign = TestHelpers.generateCampaign(id: "test", title: "title", type: .modal, isTest: false, hasImage: true)
+                            let campaign = TestHelpers.generateCampaign(id: "test", title: "title", type: .modal, test: false, hasImage: true)
                             campaignRepository.list = [campaign]
                             dispatcher.addToQueue(campaignID: campaign.id)
                             dispatcher.dispatchAllIfNeeded()
@@ -248,9 +246,9 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
 
                     it("will dispatch next campaign immediately") {
                         let firstCampaign = TestHelpers.generateCampaign(
-                            id: "test1", test: false, delay: 10000, maxImpressions: 1)
+                            id: "test1", maxImpressions: 1, delay: 10000, test: false)
                         let secondCampaign = TestHelpers.generateCampaign(
-                            id: "test2", test: true, delay: 10000, maxImpressions: 1)
+                            id: "test2", maxImpressions: 1, delay: 10000, test: true)
                         campaignRepository.list = [firstCampaign, secondCampaign]
                         dispatcher.addToQueue(campaignID: firstCampaign.id)
                         dispatcher.addToQueue(campaignID: secondCampaign.id)

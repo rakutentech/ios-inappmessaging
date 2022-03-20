@@ -3,8 +3,10 @@ import Quick
 import Nimble
 @testable import RInAppMessaging
 
+// swiftlint:disable:next type_body_length
 class ViewPresenterSpec: QuickSpec {
 
+    // swiftlint:disable:next function_body_length
     override func spec() {
 
         var campaignRepository: CampaignRepositoryMock!
@@ -22,8 +24,7 @@ class ViewPresenterSpec: QuickSpec {
         describe("BaseViewPresenter") {
 
             var presenter: BaseViewPresenter!
-            let testCampaign = TestHelpers.generateCampaign(id: "test", test: false,
-                                                            delay: 0, maxImpressions: 1)
+            let testCampaign = TestHelpers.generateCampaign(id: "test", maxImpressions: 1)
 
             beforeEach {
                 presenter = BaseViewPresenter(campaignRepository: campaignRepository,
@@ -97,7 +98,7 @@ class ViewPresenterSpec: QuickSpec {
             context("when optOutCampaign is called") {
 
                 it("will opt out provided campaign") {
-                    let campaign = TestHelpers.generateCampaign(id: "test", test: false, delay: 0, maxImpressions: 1)
+                    let campaign = TestHelpers.generateCampaign(id: "test")
                     presenter.campaign = campaign
                     presenter.optOutCampaign()
                     expect(presenter.campaign.isOptedOut).to(beTrue())
@@ -141,6 +142,16 @@ class ViewPresenterSpec: QuickSpec {
                 it("will call initializeView on the view object") {
                     presenter.viewDidInitialize()
                     expect(view.wasSetupCalled).to(beTrue())
+                }
+
+                it("will call initializeView on the view object with expected model") {
+                    presenter.viewDidInitialize()
+                    expect(view.viewModel).toNot(beNil())
+                    expect(view.viewModel?.isDismissable).to(equal(campaign.data.isCampaignDismissable))
+                    expect(view.viewModel?.backgroundColor).to(equal(UIColor(hexString: campaign.data.messagePayload.backgroundColor)!))
+                    expect(view.viewModel?.messageBody).to(equal(campaign.data.messagePayload.messageBody))
+                    expect(view.viewModel?.messageBodyColor).to(equal(UIColor(hexString: campaign.data.messagePayload.messageBodyColor)!))
+                    expect(view.viewModel?.slideFromDirection).to(equal(campaign.data.messagePayload.messageSettings.displaySettings.slideFrom))
                 }
             }
 
@@ -278,9 +289,29 @@ class ViewPresenterSpec: QuickSpec {
             context("when viewDidInitialize is called") {
 
                 it("will call initializeView on the view object") {
-
                     presenter.viewDidInitialize()
                     expect(view.wasSetupCalled).to(beTrue())
+                }
+
+                if #available(iOS 13.0, *) {
+                    it("will call initializeView on the view object with expected model") {
+                        presenter.associatedImage = UIImage(systemName: "photo.artframe")
+                        presenter.viewDidInitialize()
+
+                        expect(view.viewModel).toNot(beNil())
+                        expect(view.viewModel?.isDismissable).to(equal(campaign.data.isCampaignDismissable))
+                        expect(view.viewModel?.backgroundColor).to(equal(UIColor(hexString: campaign.data.messagePayload.backgroundColor)!))
+                        expect(view.viewModel?.messageBody).to(equal(campaign.data.messagePayload.messageBody))
+                        expect(view.viewModel?.messageBodyColor).to(equal(UIColor(hexString: campaign.data.messagePayload.messageBodyColor)!))
+                        expect(view.viewModel?.image).to(equal(presenter.associatedImage))
+                        expect(view.viewModel?.title).to(equal(campaign.data.messagePayload.title))
+                        expect(view.viewModel?.titleColor).to(equal(UIColor(hexString: campaign.data.messagePayload.titleColor)!))
+                        expect(view.viewModel?.header).to(equal(campaign.data.messagePayload.header))
+                        expect(view.viewModel?.headerColor).to(equal(UIColor(hexString: campaign.data.messagePayload.headerColor)!))
+                        expect(view.viewModel?.showOptOut).to(equal(campaign.data.messagePayload.messageSettings.displaySettings.optOut))
+                        expect(view.viewModel?.showButtons).to(equal(!campaign.data.messagePayload.messageSettings.controlSettings.buttons.isEmpty))
+                        expect(view.viewModel?.isHTML).to(beFalse())
+                    }
                 }
             }
 
@@ -441,9 +472,11 @@ private class FullViewMock: UIView, FullViewType {
     private(set) var wasDismissCalled = false
     private(set) var wasShowAlertCalled = false
     private(set) var addedButtons = [(ActionButton, viewModel: ActionButtonViewModel)]()
+    private(set) var viewModel: FullViewModel?
 
     func setup(viewModel: FullViewModel) {
         wasSetupCalled = true
+        self.viewModel = viewModel
     }
 
     func dismiss() {
@@ -472,9 +505,11 @@ private class SlideUpViewMock: UIView, SlideUpViewType {
     private(set) var wasSetupCalled = false
     private(set) var wasDismissCalled = false
     private(set) var wasShowAlertCalled = false
+    private(set) var viewModel: SlideUpViewModel?
 
     func setup(viewModel: SlideUpViewModel) {
         wasSetupCalled = true
+        self.viewModel = viewModel
     }
 
     func dismiss() {

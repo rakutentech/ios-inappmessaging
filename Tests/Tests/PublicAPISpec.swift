@@ -270,9 +270,6 @@ class PublicAPISpec: QuickSpec {
                         currentPingMilliseconds: 0,
                         data: [
                             TestHelpers.generateCampaign(id: "1",
-                                                         test: false,
-                                                         delay: 0,
-                                                         maxImpressions: 1,
                                                          title: "[ctx1][ctx2] title",
                                                          triggers: [
                                                             Trigger(type: .event,
@@ -319,7 +316,7 @@ class PublicAPISpec: QuickSpec {
                     let mockedResponse = PingResponse(
                         nextPingMilliseconds: Int.max,
                         currentPingMilliseconds: 0,
-                        data: [TestHelpers.generateCampaign(id: "test", test: false, delay: 100, maxImpressions: 1,
+                        data: [TestHelpers.generateCampaign(id: "test", maxImpressions: 1, delay: 100, test: false,
                                                             triggers: [Trigger(type: .event, eventType: .loginSuccessful,
                                                                                eventName: "e1", attributes: [])])])
                     messageMixerService.mockedResponse = mockedResponse

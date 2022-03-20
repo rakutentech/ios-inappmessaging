@@ -23,7 +23,8 @@ internal class FullViewPresenter: BaseViewPresenter, FullViewPresenterType {
                                       messageBodyColor: UIColor(hexString: messagePayload.messageBodyColor) ?? .black,
                                       isHTML: messagePayload.messageSettings.displaySettings.html,
                                       showOptOut: messagePayload.messageSettings.displaySettings.optOut,
-                                      showButtons: !messagePayload.messageSettings.controlSettings.buttons.isEmpty)
+                                      showButtons: !messagePayload.messageSettings.controlSettings.buttons.isEmpty,
+                                      isDismissable: campaign.data.isCampaignDismissable)
 
         view?.setup(viewModel: viewModel)
     }
