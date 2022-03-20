@@ -107,6 +107,13 @@ class SlideUpViewSpec: QuickSpec {
                     expect(iamView.exists).to(beFalse())
                     expect(iamView.exists).toEventually(beTrue(), timeout: .seconds(2))
                 }
+
+                context("when campaign is not dismissable") {
+
+                    it("should not have exit button") {
+                        expect(iamView.buttons["exitButton"].exists).to(beFalse())
+                    }
+                }
             }
         }
     }

@@ -31,7 +31,7 @@ class CampaignsValidatorSpec: QuickSpec {
 
             it("will accept every non-test campaign matching criteria") {
                 let campaign = TestHelpers.generateCampaign(
-                    id: "test", test: false, delay: 0, maxImpressions: 2,
+                    id: "test", maxImpressions: 2,
                     triggers: [Trigger(
                         type: .event,
                         eventType: .loginSuccessful,
@@ -49,7 +49,7 @@ class CampaignsValidatorSpec: QuickSpec {
 
             it("won't accept campaigns with no impressions left") {
                 let campaign = TestHelpers.generateCampaign(
-                    id: "test", test: false, delay: 0, maxImpressions: 0,
+                    id: "test", maxImpressions: 0,
                     triggers: [Trigger(
                         type: .event,
                         eventType: .loginSuccessful,
@@ -71,7 +71,7 @@ class CampaignsValidatorSpec: QuickSpec {
 
             it("won't accept opted out campaigns") {
                 let campaign = TestHelpers.generateCampaign(
-                    id: "test", test: false, delay: 0, maxImpressions: 2,
+                    id: "test", maxImpressions: 2,
                     triggers: [Trigger(
                         type: .event,
                         eventType: .loginSuccessful,
@@ -89,7 +89,7 @@ class CampaignsValidatorSpec: QuickSpec {
 
                 it("will accept campaign when triggers are satifsied") {
                     let campaign = TestHelpers.generateCampaign(
-                        id: "test", test: false, delay: 0, maxImpressions: 2,
+                        id: "test", maxImpressions: 2,
                         triggers: [
                             Trigger(
                                 type: .event,
@@ -111,7 +111,7 @@ class CampaignsValidatorSpec: QuickSpec {
 
                 it("won't accept campaign with no triggers") {
                     let campaign = TestHelpers.generateCampaign(
-                        id: "test", test: false, delay: 0, maxImpressions: 2,
+                        id: "test", maxImpressions: 2,
                         triggers: [])
                     campaignRepository.syncWith(list: [campaign], timestampMilliseconds: 0)
                     eventMatcher.matchAndStore(event: LoginSuccessfulEvent())
@@ -121,7 +121,7 @@ class CampaignsValidatorSpec: QuickSpec {
 
                 it("won't accept campaign when not all triggers are satisfied") {
                     let campaign = TestHelpers.generateCampaign(
-                        id: "test", test: false, delay: 0, maxImpressions: 2,
+                        id: "test", maxImpressions: 2,
                         triggers: [
                             Trigger(
                                 type: .event,
@@ -145,78 +145,80 @@ class CampaignsValidatorSpec: QuickSpec {
 }
 
 private enum MockedCampaigns {
-    static let testCampaign: Campaign = {
-        return Campaign(
-            data: CampaignData(
-                campaignId: "test",
-                maxImpressions: 0,
-                type: .modal,
-                triggers: [],
-                isTest: true,
-                messagePayload: MessagePayload(
-                    title: "testTitle",
-                    messageBody: "testBody",
-                    header: "testHeader",
-                    titleColor: "color",
-                    headerColor: "color2",
-                    messageBodyColor: "color3",
-                    backgroundColor: "color4",
-                    frameColor: "color5",
-                    resource: Resource(
-                        imageUrl: nil,
-                        cropType: .fill),
-                    messageSettings: MessageSettings(
-                        displaySettings: DisplaySettings(
-                            orientation: .portrait,
-                            slideFrom: .bottom,
-                            endTimeMilliseconds: 0,
-                            textAlign: .fill,
-                            optOut: false,
-                            html: false,
-                            delay: 0),
-                        controlSettings: ControlSettings(buttons: [], content: nil))
-                )
+    static let testCampaign = Campaign(
+        data: CampaignData(
+            campaignId: "test",
+            maxImpressions: 0,
+            type: .modal,
+            triggers: [],
+            isTest: true,
+            infiniteImpressions: false,
+            hasNoEndDate: false,
+            isCampaignDismissable: true,
+            messagePayload: MessagePayload(
+                title: "testTitle",
+                messageBody: "testBody",
+                header: "testHeader",
+                titleColor: "#000000",
+                headerColor: "#444444",
+                messageBodyColor: "#FAFAFA",
+                backgroundColor: "#FAFAFA",
+                frameColor: "#FF2222",
+                resource: Resource(
+                    imageUrl: nil,
+                    cropType: .fill),
+                messageSettings: MessageSettings(
+                    displaySettings: DisplaySettings(
+                        orientation: .portrait,
+                        slideFrom: .bottom,
+                        endTimeMilliseconds: 0,
+                        textAlign: .fill,
+                        optOut: false,
+                        html: false,
+                        delay: 0),
+                    controlSettings: ControlSettings(buttons: [], content: nil))
+            )
         ))
-    }()
 
-    static let outdatedCampaign: Campaign = {
-        return Campaign(
-            data: CampaignData(
-                campaignId: "test",
-                maxImpressions: 2,
-                type: .modal,
-                triggers: [
-                    Trigger(
-                        type: .event,
-                        eventType: .loginSuccessful,
-                        eventName: "testevent",
-                        attributes: []
-                    )
-                ],
-                isTest: false,
-                messagePayload: MessagePayload(
-                    title: "testTitle",
-                    messageBody: "testBody",
-                    header: "testHeader",
-                    titleColor: "color",
-                    headerColor: "color2",
-                    messageBodyColor: "color3",
-                    backgroundColor: "color4",
-                    frameColor: "color5",
-                    resource: Resource(
-                        imageUrl: nil,
-                        cropType: .fill),
-                    messageSettings: MessageSettings(
-                        displaySettings: DisplaySettings(
-                            orientation: .portrait,
-                            slideFrom: .bottom,
-                            endTimeMilliseconds: 0,
-                            textAlign: .fill,
-                            optOut: false,
-                            html: false,
-                            delay: 0),
-                        controlSettings: ControlSettings(buttons: [], content: nil))
+    static let outdatedCampaign = Campaign(
+        data: CampaignData(
+            campaignId: "test",
+            maxImpressions: 2,
+            type: .modal,
+            triggers: [
+                Trigger(
+                    type: .event,
+                    eventType: .loginSuccessful,
+                    eventName: "testevent",
+                    attributes: []
                 )
+            ],
+            isTest: false,
+            infiniteImpressions: false,
+            hasNoEndDate: false,
+            isCampaignDismissable: true,
+            messagePayload: MessagePayload(
+                title: "testTitle",
+                messageBody: "testBody",
+                header: "testHeader",
+                titleColor: "#000000",
+                headerColor: "#444444",
+                messageBodyColor: "#FAFAFA",
+                backgroundColor: "#FAFAFA",
+                frameColor: "#FF2222",
+                resource: Resource(
+                    imageUrl: nil,
+                    cropType: .fill),
+                messageSettings: MessageSettings(
+                    displaySettings: DisplaySettings(
+                        orientation: .portrait,
+                        slideFrom: .bottom,
+                        endTimeMilliseconds: 0,
+                        textAlign: .fill,
+                        optOut: false,
+                        html: false,
+                        delay: 0),
+                    controlSettings: ControlSettings(buttons: [], content: nil))
+            )
         ))
-    }()
 }

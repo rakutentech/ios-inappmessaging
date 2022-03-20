@@ -20,6 +20,18 @@ class SerializationSpec: QuickSpec {
         }
 
         describe("Campaign model") {
+
+            it("should set impressionsLeft to Int.max if infiniteImpressions is true") {
+                let pingResponse: PingResponse = TestHelpers.getJSONModel(fileName: "ping_success")
+                let campaign = pingResponse.data[0]
+                expect(campaign.impressionsLeft).to(equal(Int.max))
+            }
+
+            it("should return true for isOutdated even if endTimeMillis is in the past") {
+                let campaign = MockedCampaigns.outdatedCampaignWithNoEndDate
+                expect(campaign.isOutdated).to(beFalse())
+            }
+
             context("When parsing title for contexts") {
 
                 it("will return empty array if there are no contexts") {
@@ -94,4 +106,48 @@ class SerializationSpec: QuickSpec {
             }
         }
     }
+}
+
+private enum MockedCampaigns {
+    static let outdatedCampaignWithNoEndDate = Campaign(
+        data: CampaignData(
+            campaignId: "test",
+            maxImpressions: 2,
+            type: .modal,
+            triggers: [
+                Trigger(
+                    type: .event,
+                    eventType: .loginSuccessful,
+                    eventName: "testevent",
+                    attributes: []
+                )
+            ],
+            isTest: false,
+            infiniteImpressions: false,
+            hasNoEndDate: true,
+            isCampaignDismissable: true,
+            messagePayload: MessagePayload(
+                title: "testTitle",
+                messageBody: "testBody",
+                header: "testHeader",
+                titleColor: "#000000",
+                headerColor: "#444444",
+                messageBodyColor: "#FAFAFA",
+                backgroundColor: "#FAFAFA",
+                frameColor: "#FF2222",
+                resource: Resource(
+                    imageUrl: nil,
+                    cropType: .fill),
+                messageSettings: MessageSettings(
+                    displaySettings: DisplaySettings(
+                        orientation: .portrait,
+                        slideFrom: .bottom,
+                        endTimeMilliseconds: 0,
+                        textAlign: .fill,
+                        optOut: false,
+                        html: false,
+                        delay: 0),
+                    controlSettings: ControlSettings(buttons: [], content: nil))
+            )
+        ))
 }

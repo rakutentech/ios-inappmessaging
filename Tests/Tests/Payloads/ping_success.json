@@ -8,6 +8,9 @@
                 "maxImpressions": 1,
                 "type": 1,
                 "isTest": false,
+                "isCampaignDismissable": true,
+                "hasNoEndDate": true,
+                "infiniteImpressions": true,
                 "triggers": [
                     {
                         "type": 1,
@@ -51,6 +54,9 @@
                 "maxImpressions": 5,
                 "type": 1,
                 "isTest": false,
+                "isCampaignDismissable": true,
+                "hasNoEndDate": false,
+                "infiniteImpressions": false,
                 "triggers": [
                     {
                         "type": 1,

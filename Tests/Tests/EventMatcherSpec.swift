@@ -11,8 +11,6 @@ class EventMatcherSpec: QuickSpec {
 
             let testCampaign = TestHelpers.generateCampaign(
                 id: "test",
-                test: false, delay: 0,
-                maxImpressions: 1,
                 triggers: [
                     Trigger(type: .event,
                             eventType: .appStart,
@@ -26,8 +24,6 @@ class EventMatcherSpec: QuickSpec {
             )
             let testCampaignCustom = TestHelpers.generateCampaign(
                 id: "test",
-                test: false, delay: 0,
-                maxImpressions: 1,
                 triggers: [
                     Trigger(type: .event,
                             eventType: .custom,
@@ -40,7 +36,6 @@ class EventMatcherSpec: QuickSpec {
                 ]
             )
             let persistentEventOnlyCampaign = TestHelpers.generateCampaign(id: "test",
-                                                                           test: false, delay: 0,
                                                                            maxImpressions: 2,
                                                                            triggers: [
                                                                             Trigger(type: .event,
@@ -238,10 +233,7 @@ class EventMatcherSpec: QuickSpec {
                 }
 
                 it("will return false campaign has no triggers (which is an invalid state)") {
-                    let campaign = TestHelpers.generateCampaign(id: "test",
-                                                                test: false, delay: 0,
-                                                                maxImpressions: 1,
-                                                                triggers: [])
+                    let campaign = TestHelpers.generateCampaign(id: "test", triggers: [])
                     campaignRepository.list = [campaign]
                     eventMatcher.matchAndStore(event: AppStartEvent())
                     eventMatcher.matchAndStore(event: LoginSuccessfulEvent())

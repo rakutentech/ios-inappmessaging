@@ -28,6 +28,9 @@ internal struct Campaign: Codable, Hashable {
         return data.campaignId
     }
     var isOutdated: Bool {
+        guard !data.hasNoEndDate else {
+            return false
+        }
         let endTimeMilliseconds = data.messagePayload.messageSettings.displaySettings.endTimeMilliseconds
         return endTimeMilliseconds < Date().millisecondsSince1970
     }
@@ -40,7 +43,8 @@ internal struct Campaign: Codable, Hashable {
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let decodedData = try container.decode(CampaignData.self, forKey: .data)
-        impressionsLeft = (try? container.decode(Int.self, forKey: .impressionsLeft)) ?? decodedData.maxImpressions
+        let maxImpressions = decodedData.infiniteImpressions ? Int.max : decodedData.maxImpressions
+        impressionsLeft = (try? container.decode(Int.self, forKey: .impressionsLeft)) ?? maxImpressions
         isOptedOut = (try? container.decode(Bool.self, forKey: .isOptedOut)) ?? false
         self.data = decodedData
     }
@@ -80,6 +84,9 @@ internal struct CampaignData: Codable, Hashable {
     let type: CampaignDisplayType
     let triggers: [Trigger]?
     let isTest: Bool
+    let infiniteImpressions: Bool
+    let hasNoEndDate: Bool
+    let isCampaignDismissable: Bool
     let messagePayload: MessagePayload
 
     var intervalBetweenDisplaysInMS: Int? {

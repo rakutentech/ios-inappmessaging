@@ -284,7 +284,8 @@ extension FullViewModel {
                      messageBodyColor: .black,
                      isHTML: false,
                      showOptOut: true,
-                     showButtons: true)
+                     showButtons: true,
+                     isDismissable: true)
     }
 }
 
@@ -293,7 +294,8 @@ extension SlideUpViewModel {
         return .init(slideFromDirection: .bottom,
                      backgroundColor: .black,
                      messageBody: "",
-                     messageBodyColor: .black)
+                     messageBodyColor: .black,
+                     isDismissable: true)
     }
 }
 

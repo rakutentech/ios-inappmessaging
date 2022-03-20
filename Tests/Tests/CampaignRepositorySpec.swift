@@ -21,13 +21,10 @@ class CampaignRepositorySpec: QuickSpec {
             }
             let userInfoProvider = UserInfoProviderMock()
             let campaign = TestHelpers.generateCampaign(id: "campaign-id",
-                                                        test: false,
-                                                        delay: 0,
                                                         maxImpressions: 3)
             let testCampaign = TestHelpers.generateCampaign(id: "test-campaign-id",
-                                                            test: true,
-                                                            delay: 0,
-                                                            maxImpressions: 3)
+                                                            maxImpressions: 3,
+                                                            test: true)
 
             func insertRandomCampaigns() {
                 let campaigns = TestHelpers.MockResponse.withGeneratedCampaigns(count: 2, test: false, delay: 1).data
@@ -110,9 +107,9 @@ class CampaignRepositorySpec: QuickSpec {
                     expect(firstPersistedCampaign?.impressionsLeft).to(equal(1))
 
                     let updatedCampaign = TestHelpers.generateCampaign(id: campaign.id,
-                                                                       test: false,
+                                                                       maxImpressions: 6,
                                                                        delay: 0,
-                                                                       maxImpressions: 6)
+                                                                       test: false)
                     campaignRepository.syncWith(list: [updatedCampaign], timestampMilliseconds: 0)
                     expect(firstPersistedCampaign?.impressionsLeft).to(equal(4))
                 }
@@ -203,10 +200,7 @@ class CampaignRepositorySpec: QuickSpec {
                 }
 
                 it("will not decrement campaign's impressionsLeft value if it's already 0") {
-                    let testCampaign = TestHelpers.generateCampaign(id: "testImpressions",
-                                                                    test: false,
-                                                                    delay: 0,
-                                                                    maxImpressions: 0)
+                    let testCampaign = TestHelpers.generateCampaign(id: "testImpressions", maxImpressions: 0)
                     campaignRepository.syncWith(list: [testCampaign], timestampMilliseconds: 0)
                     campaignRepository.decrementImpressionsLeftInCampaign(id: testCampaign.id)
 
@@ -283,14 +277,8 @@ class CampaignRepositorySpec: QuickSpec {
 
             context("when loadCache is called") {
 
-                let modifiedCampaign = TestHelpers.generateCampaign(id: campaign.id,
-                                                                    test: false,
-                                                                    delay: 0,
-                                                                    maxImpressions: 0)
-                let otherCampaign = TestHelpers.generateCampaign(id: "test2",
-                                                                 test: false,
-                                                                 delay: 0,
-                                                                 maxImpressions: 3)
+                let modifiedCampaign = TestHelpers.generateCampaign(id: campaign.id, maxImpressions: 0)
+                let otherCampaign = TestHelpers.generateCampaign(id: "test2", maxImpressions: 3)
 
                 context("and lastUserDataMock is not empty") {
 

@@ -138,13 +138,12 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
 
         setupAccessibility()
         updateUIConstants()
-
-        backgroundView.backgroundColor = uiConstants.backgroundColor ?? viewModel.backgroundColor
-
         layoutContentView(viewModel: viewModel)
         layoutUIComponents()
-
         createMessageBody(viewModel: viewModel)
+
+        backgroundView.backgroundColor = uiConstants.backgroundColor ?? viewModel.backgroundColor
+        exitButton.isHidden = !viewModel.isDismissable
 
         presenter.logImpression(type: .impression)
     }

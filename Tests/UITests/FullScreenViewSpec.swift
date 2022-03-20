@@ -216,6 +216,13 @@ class FullScreenViewSpec: QuickSpec {
                 it("should not contain text elements") {
                     expect(iamView.otherElements.otherElements["textView"].staticTexts.count).to(equal(0))
                 }
+
+                context("when campaign is not dismissable") {
+
+                    it("should have hidden exit button") {
+                        expect(iamView.buttons["exitButton"].exists).to(beFalse())
+                    }
+                }
             }
         }
     }

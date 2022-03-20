@@ -54,7 +54,9 @@ internal class SlideUpView: UIView, SlideUpViewType {
 
         setupDialogView()
         setupMessageBody(viewModel.messageBody, color: viewModel.messageBodyColor)
-        setupExitButton(viewModel.backgroundColor)
+        if viewModel.isDismissable {
+            setupExitButton(viewModel.backgroundColor)
+        }
 
         presenter.logImpression(type: .impression)
     }
