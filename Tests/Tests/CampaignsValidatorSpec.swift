@@ -22,11 +22,25 @@ class CampaignsValidatorSpec: QuickSpec {
         }
 
         describe("CampaignsValidator") {
-            it("will accept every test campaign (not looking at triggers)") {
+            it("will accept test campaign (not looking at triggers)") {
                 campaignRepository.syncWith(list: [MockedCampaigns.testCampaign], timestampMilliseconds: 0)
                 campaignsValidator.validate(validatedCampaignHandler: validatorHandler.closure)
                 expect(validatorHandler.validatedElements).to(elementsEqual(
                     [ValidatorHandler.Element(MockedCampaigns.testCampaign, [])]))
+            }
+
+            it("will not accept outdated test campaign") {
+                campaignRepository.syncWith(list: [MockedCampaigns.outdatedTestCampaign], timestampMilliseconds: 0)
+                campaignsValidator.validate(validatedCampaignHandler: validatorHandler.closure)
+                expect(validatorHandler.validatedElements).to(beEmpty())
+            }
+
+            it("will not accept test campaign with impressionLeft < 1") {
+                let testCampaign = TestHelpers.generateCampaign(id: "test", maxImpressions: 1, test: true)
+                campaignRepository.syncWith(list: [testCampaign], timestampMilliseconds: 0)
+                campaignRepository.decrementImpressionsLeftInCampaign(id: testCampaign.id)
+                campaignsValidator.validate(validatedCampaignHandler: validatorHandler.closure)
+                expect(validatorHandler.validatedElements).to(beEmpty())
             }
 
             it("will accept every non-test campaign matching criteria") {
@@ -148,7 +162,42 @@ private enum MockedCampaigns {
     static let testCampaign = Campaign(
         data: CampaignData(
             campaignId: "test",
-            maxImpressions: 0,
+            maxImpressions: 1,
+            type: .modal,
+            triggers: [],
+            isTest: true,
+            infiniteImpressions: false,
+            hasNoEndDate: false,
+            isCampaignDismissable: true,
+            messagePayload: MessagePayload(
+                title: "testTitle",
+                messageBody: "testBody",
+                header: "testHeader",
+                titleColor: "#000000",
+                headerColor: "#444444",
+                messageBodyColor: "#FAFAFA",
+                backgroundColor: "#FAFAFA",
+                frameColor: "#FF2222",
+                resource: Resource(
+                    imageUrl: nil,
+                    cropType: .fill),
+                messageSettings: MessageSettings(
+                    displaySettings: DisplaySettings(
+                        orientation: .portrait,
+                        slideFrom: .bottom,
+                        endTimeMilliseconds: Int64.max,
+                        textAlign: .fill,
+                        optOut: false,
+                        html: false,
+                        delay: 0),
+                    controlSettings: ControlSettings(buttons: [], content: nil))
+            )
+        ))
+
+    static let outdatedTestCampaign = Campaign(
+        data: CampaignData(
+            campaignId: "test",
+            maxImpressions: 1,
             type: .modal,
             triggers: [],
             isTest: true,
