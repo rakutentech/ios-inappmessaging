@@ -127,10 +127,10 @@ class CampaignRepositorySpec: QuickSpec {
                     expect(lastUserCache?.campaignData).to(equal(userCache?.campaignData))
                 }
 
-                it("will not save test campaigns to the cache") {
+                it("will save test campaigns to the cache") {
                     userInfoProvider.userID = "user"
                     campaignRepository.syncWith(list: [testCampaign], timestampMilliseconds: 0)
-                    expect(userCache?.campaignData).toNot(equal([testCampaign]))
+                    expect(userCache?.campaignData).to(equal([testCampaign]))
                     expect(lastUserCache?.campaignData).to(equal(userCache?.campaignData))
                 }
             }
@@ -170,12 +170,12 @@ class CampaignRepositorySpec: QuickSpec {
                     expect(lastUserCache?.campaignData).to(equal(userCache?.campaignData))
                 }
 
-                it("will NOT save updated list to the cache if campaign is marked as `isTest`") {
+                it("will NOT cache updated campaign if it's marked as `isTest`") {
                     userInfoProvider.userID = "user"
                     campaignRepository.syncWith(list: [testCampaign], timestampMilliseconds: 0)
                     campaignRepository.optOutCampaign(testCampaign)
-                    expect(userCache?.campaignData).to(beEmpty())
-                    expect(lastUserCache?.campaignData).to(beEmpty())
+                    expect(userCache?.campaignData?.first?.isOptedOut).to(beFalse())
+                    expect(lastUserCache?.campaignData?.first?.isOptedOut).to(beFalse())
                 }
             }
 
@@ -222,12 +222,12 @@ class CampaignRepositorySpec: QuickSpec {
                     expect(lastUserCache?.campaignData).to(equal(userCache?.campaignData))
                 }
 
-                it("will NOT save updated list to the cache if campaign is marked as `isTest`") {
+                it("will save updated campaign even if it's marked as `isTest`") {
                     userInfoProvider.userID = "user"
                     campaignRepository.syncWith(list: [testCampaign], timestampMilliseconds: 0)
                     campaignRepository.decrementImpressionsLeftInCampaign(id: testCampaign.id)
-                    expect(userCache?.campaignData).to(beEmpty())
-                    expect(lastUserCache?.campaignData).to(beEmpty())
+                    expect(userCache?.campaignData?.first?.impressionsLeft).to(equal(2))
+                    expect(lastUserCache?.campaignData?.first?.impressionsLeft).to(equal(2))
                 }
             }
 
@@ -266,12 +266,12 @@ class CampaignRepositorySpec: QuickSpec {
                     expect(lastUserCache?.campaignData).to(equal(userCache?.campaignData))
                 }
 
-                it("will NOT save updated list to the cache if campaign is marked as `isTest`") {
+                it("will save updated campaign even if it's marked as `isTest`") {
                     userInfoProvider.userID = "user"
                     campaignRepository.syncWith(list: [testCampaign], timestampMilliseconds: 0)
                     campaignRepository.incrementImpressionsLeftInCampaign(id: testCampaign.id)
-                    expect(userCache?.campaignData).to(beEmpty())
-                    expect(lastUserCache?.campaignData).to(beEmpty())
+                    expect(userCache?.campaignData?.first?.impressionsLeft).to(equal(4))
+                    expect(lastUserCache?.campaignData?.first?.impressionsLeft).to(equal(4))
                 }
             }
 

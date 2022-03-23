@@ -96,7 +96,7 @@ internal class CampaignDispatcher: CampaignDispatcherType, TaskSchedulable {
             delegate?.performPing()
         }
 
-        guard campaign.data.isTest || (permissionResponse.display && campaign.impressionsLeft > 0) else {
+        guard campaign.impressionsLeft > 0 && (permissionResponse.display || campaign.data.isTest) else {
             dispatchNext()
             return
         }

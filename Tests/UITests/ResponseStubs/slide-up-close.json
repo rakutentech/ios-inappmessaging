@@ -7,7 +7,7 @@
                 "campaignId": "slide-up-redirect",
                 "maxImpressions": 999,
                 "type": 3,
-                "isTest": true,
+                "isTest": false,
                 "isCampaignDismissable": true,
                 "hasNoEndDate": false,
                 "infiniteImpressions": true,
@@ -34,7 +34,7 @@
                     "messageSettings": {
                         "displaySettings": {
                             "slideFrom": 1,
-                            "endTimeMillis": 0,
+                            "endTimeMillis": 9999999999999,
                             "orientation": 1,
                             "textAlign": 2,
                             "optOut": true,

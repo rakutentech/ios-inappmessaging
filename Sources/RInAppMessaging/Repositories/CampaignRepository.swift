@@ -97,7 +97,7 @@ internal class CampaignRepository: CampaignRepositoryType {
             updatedList.append(updatedCampaign)
         }
         campaigns.set(value: updatedList + testCampaigns)
-        saveDataToCache(updatedList)
+        saveDataToCache(updatedList + testCampaigns)
     }
 
     @discardableResult
@@ -171,10 +171,7 @@ internal class CampaignRepository: CampaignRepositoryType {
         newList[index] = updatedCampaign
         campaigns.set(value: newList)
 
-        if !campaign.data.isTest {
-            saveDataToCache(newList)
-        }
-
+        saveDataToCache(newList)
         return updatedCampaign
     }
 
