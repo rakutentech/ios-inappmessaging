@@ -10,11 +10,14 @@ internal protocol FullViewPresenterType: BaseViewPresenterType {
 
 internal class FullViewPresenter: BaseViewPresenter, FullViewPresenterType {
     weak var view: FullViewType?
+    private var viewBackgroundColor: UIColor {
+        UIColor(hexString: campaign.data.messagePayload.backgroundColor) ?? .white
+    }
 
     override func viewDidInitialize() {
         let messagePayload = campaign.data.messagePayload
         let viewModel = FullViewModel(image: associatedImage,
-                                      backgroundColor: UIColor(hexString: messagePayload.backgroundColor) ?? .white,
+                                      backgroundColor: viewBackgroundColor,
                                       title: messagePayload.title,
                                       messageBody: messagePayload.messageBody,
                                       header: messagePayload.header,
@@ -38,14 +41,15 @@ internal class FullViewPresenter: BaseViewPresenter, FullViewPresenterType {
 
         var buttonsToAdd = [(ActionButton, ActionButtonViewModel)]()
         for (index, button) in supportedButtons.enumerated() {
+            let backgroundColor = UIColor(hexString: button.buttonBackgroundColor) ?? .white
             buttonsToAdd.append((
                 ActionButton(impression: index == 0 ? ImpressionType.actionOne : ImpressionType.actionTwo,
                              uri: button.buttonBehavior.uri,
                              trigger: button.campaignTrigger),
                 ActionButtonViewModel(text: button.buttonText,
                                       textColor: UIColor(hexString: button.buttonTextColor) ?? .black,
-                                      backgroundColor: UIColor(hexString: button.buttonBackgroundColor) ?? .white)))
-
+                                      backgroundColor: UIColor(hexString: button.buttonBackgroundColor) ?? .white,
+                                      shouldDrawBorder: viewBackgroundColor == backgroundColor)))
         }
 
         view?.addButtons(buttonsToAdd)

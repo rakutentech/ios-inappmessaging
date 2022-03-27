@@ -1,4 +1,9 @@
 import UIKit
+#if canImport(RSDKUtilsMain)
+import RSDKUtilsMain // SPM version
+#else
+import RSDKUtils
+#endif
 
 // Button object used in campaigns's message view.
 internal class ActionButton: UIButton {
@@ -8,7 +13,8 @@ internal class ActionButton: UIButton {
         static let minFontSize: CGFloat = 10
         static let labelMargin = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
         static let cornerRadius: CGFloat = 8
-        static let borderWidth: CGFloat = 0
+        static let borderWidth: CGFloat = 0.5
+        static let borderColor = UIColor(hexString: "#D1D1D1")!
     }
 
     let impression: ImpressionType
@@ -42,8 +48,8 @@ internal class ActionButton: UIButton {
 
         layer.cornerRadius = Constants.cornerRadius
         self.backgroundColor = viewModel.backgroundColor
-        layer.borderColor = viewModel.textColor.cgColor
-        layer.borderWidth = Constants.borderWidth
+        layer.borderColor = Constants.borderColor.cgColor
+        layer.borderWidth = viewModel.shouldDrawBorder ? Constants.borderWidth : 0
     }
 
     private func addLabel() {
