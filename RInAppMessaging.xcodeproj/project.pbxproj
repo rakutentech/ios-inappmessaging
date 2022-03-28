@@ -37,6 +37,7 @@
 		45563B03240614AE004EAFD3 /* ReadyCampaignDispatcherSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45563B02240614AE004EAFD3 /* ReadyCampaignDispatcherSpec.swift */; };
 		45563B0724064D78004EAFD3 /* CampaignRepositorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45563B0624064D78004EAFD3 /* CampaignRepositorySpec.swift */; };
 		4557A8B1257E544C00C9D241 /* AccountRepositorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4557A8B0257E544C00C9D241 /* AccountRepositorySpec.swift */; };
+		455FEBE227F214640064470D /* UIColorExtensionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 455FEBE127F214640064470D /* UIColorExtensionSpec.swift */; };
 		4560062C26FB968B003227FE /* UserInfoProviderSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4560062B26FB968B003227FE /* UserInfoProviderSpec.swift */; };
 		456FE1E72428513200304872 /* ErrorReportableSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456FE1E62428513200304872 /* ErrorReportableSpec.swift */; };
 		456FE1E924288C6500304872 /* CampaignTriggerAgentSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456FE1E824288C6500304872 /* CampaignTriggerAgentSpec.swift */; };
@@ -142,6 +143,7 @@
 		45563B02240614AE004EAFD3 /* ReadyCampaignDispatcherSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadyCampaignDispatcherSpec.swift; sourceTree = "<group>"; };
 		45563B0624064D78004EAFD3 /* CampaignRepositorySpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CampaignRepositorySpec.swift; sourceTree = "<group>"; };
 		4557A8B0257E544C00C9D241 /* AccountRepositorySpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountRepositorySpec.swift; sourceTree = "<group>"; };
+		455FEBE127F214640064470D /* UIColorExtensionSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIColorExtensionSpec.swift; sourceTree = "<group>"; };
 		4560062B26FB968B003227FE /* UserInfoProviderSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoProviderSpec.swift; sourceTree = "<group>"; };
 		456FE1E62428513200304872 /* ErrorReportableSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorReportableSpec.swift; sourceTree = "<group>"; };
 		456FE1E824288C6500304872 /* CampaignTriggerAgentSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CampaignTriggerAgentSpec.swift; sourceTree = "<group>"; };
@@ -407,6 +409,7 @@
 				45ADA541247D206B00A9E2A3 /* RouterSpec.swift */,
 				4534947123C6ABF700189A81 /* SerializationSpec.swift */,
 				45EA720425B71FA2001B2049 /* UIApplicationExtensionSpec.swift */,
+				455FEBE127F214640064470D /* UIColorExtensionSpec.swift */,
 				4BBE7EAE274F1A6A0039D2BF /* UIFontExtensionSpec.swift */,
 				45EA720C25B72002001B2049 /* UIViewExtensionSpec.swift */,
 				4538BCF5262AE8FA009952BE /* UserDataCacheSpec.swift */,
@@ -718,6 +721,7 @@
 				45BDFD0724232714004DEA0C /* PublicAPISpec.swift in Sources */,
 				459DE86C2407B5750002F451 /* CustomEventSpec.swift in Sources */,
 				45563B0724064D78004EAFD3 /* CampaignRepositorySpec.swift in Sources */,
+				455FEBE227F214640064470D /* UIColorExtensionSpec.swift in Sources */,
 				456FE1EB2428C51E00304872 /* CommonUtilitySpec.swift in Sources */,
 				4538BAE326282DE4009952BE /* GetConfigResponseSpec.swift in Sources */,
 				C9827558262C423C00476505 /* BackoffSpec.swift in Sources */,

@@ -49,7 +49,7 @@ internal class FullViewPresenter: BaseViewPresenter, FullViewPresenterType {
                 ActionButtonViewModel(text: button.buttonText,
                                       textColor: UIColor(hexString: button.buttonTextColor) ?? .black,
                                       backgroundColor: UIColor(hexString: button.buttonBackgroundColor) ?? .white,
-                                      shouldDrawBorder: viewBackgroundColor == backgroundColor)))
+                                      shouldDrawBorder: backgroundColor.isComparable(to: viewBackgroundColor))))
         }
 
         view?.addButtons(buttonsToAdd)
