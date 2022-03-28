@@ -1,4 +1,9 @@
 import UIKit
+#if canImport(RSDKUtilsMain)
+import RSDKUtilsMain // SPM version
+#else
+import RSDKUtils
+#endif
 
 /// Extension to `UIColor` class to provide addtional initializers required by InAppMessaging.
 internal extension UIColor {
@@ -10,6 +15,8 @@ internal extension UIColor {
             return white.withAlphaComponent(0.4)
         }
     }
+
+    static let buttonBorderDefaultColor = UIColor(hexString: "#D1D1D1")!
 
     /// Returns perceived brightness value based on [Darel Rex Finley's HSP Colour Model](http://alienryderflex.com/hsp.html) from 0 to 1.0 (max brightness)
     var brightness: CGFloat {
