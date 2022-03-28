@@ -19,12 +19,12 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         var buttonHeight: CGFloat = 40 // Define the height to use for the button.
         var buttonsSpacing: CGFloat = 8 // Size of the gap between the buttons when there are two buttons.
         var singleButtonWidthMargin: CGFloat = 0 // Width offset when only one button is given.
-        var exitButtonFontSize: CGFloat = 13 // Size of the exit button.
         var exitButtonSize: CGFloat = 44 // Size of the exit button.
         var dialogViewHorizontalMargin: CGFloat = 20 // The spacing between dialog view and the children elements.
         var dialogViewWidthOffset: CGFloat = 0 // Spacing on the left and right side of subviews.
         var dialogViewWidthMultiplier: CGFloat = 1 // Spacing on the left and right side of subviews.
         var bodyViewSafeAreaOffsetY: CGFloat = 0 // Offset for text content applied when there is no image
+        var textTopMarginForNotDismissableCampaigns: CGFloat = 20 // A space added between top edge and text/body view when exit button is hidden.
     }
 
     internal enum Mode: Equatable {
@@ -62,9 +62,8 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
     }
 
     @IBOutlet private weak var contentWidthOffsetConstraint: NSLayoutConstraint!
-    /// Constriaint for vertical position above content view
-    @IBOutlet private weak var exitButtonYPositionConstraint: NSLayoutConstraint!
     @IBOutlet private weak var bodyViewOffsetYConstraint: NSLayoutConstraint!
+    private weak var exitButtonHeightConstraint: NSLayoutConstraint!
 
     private let presenter: FullViewPresenterType
 
@@ -139,11 +138,20 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         setupAccessibility()
         updateUIConstants()
         layoutContentView(viewModel: viewModel)
-        layoutUIComponents()
+        layoutUIComponents(viewModel: viewModel)
         createMessageBody(viewModel: viewModel)
 
         backgroundView.backgroundColor = uiConstants.backgroundColor ?? viewModel.backgroundColor
+
+        exitButton.invertedColors = viewModel.backgroundColor.isBright
         exitButton.isHidden = !viewModel.isDismissable
+        if exitButton.isHidden {
+            if layout == .imageOnly {
+                exitButtonHeightConstraint.constant = 0
+            } else {
+                exitButtonHeightConstraint.constant = uiConstants.textTopMarginForNotDismissableCampaigns
+            }
+        }
 
         presenter.logImpression(type: .impression)
     }
@@ -202,7 +210,6 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
 
         bodyViewOffsetYConstraint.constant = hasImage ? 0 : uiConstants.bodyViewSafeAreaOffsetY
 
-        exitButton.invertedColors = viewModel.backgroundColor.isBright
         contentView.backgroundColor = viewModel.backgroundColor
         contentView.clipsToBounds = true
         contentView.layer.cornerRadius = uiConstants.cornerRadiusForDialogView
@@ -225,7 +232,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         }
     }
 
-    private func layoutUIComponents() {
+    private func layoutUIComponents(viewModel: FullViewModel) {
         bodyView.isLayoutMarginsRelativeArrangement = true
         bodyView.layoutMargins = UIEdgeInsets(top: 0, left: uiConstants.dialogViewHorizontalMargin,
                                                 bottom: 0, right: uiConstants.dialogViewHorizontalMargin)
@@ -235,7 +242,14 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
                                                   bottom: 0, right: uiConstants.dialogViewHorizontalMargin)
 
         exitButton.widthAnchor.constraint(equalToConstant: uiConstants.exitButtonSize).isActive = true
-        exitButton.heightAnchor.constraint(equalToConstant: uiConstants.exitButtonSize).isActive = true
+        exitButtonHeightConstraint = exitButton.heightAnchor.constraint(equalToConstant: uiConstants.exitButtonSize)
+        exitButtonHeightConstraint.isActive = true
+
+        if !viewModel.isDismissable && layout == .imageOnly {
+            imageView.layer.cornerRadius = uiConstants.cornerRadiusForDialogView
+            imageView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+            imageView.layer.masksToBounds = true
+        }
     }
 
     private func createMessageBody(viewModel: FullViewModel) {
