@@ -16,7 +16,7 @@ internal extension UIColor {
         }
     }
 
-    static let buttonBorderDefaultColor = UIColor(hexString: "#D1D1D1")!
+    static let buttonBorderDefaultColor = UIColor(hexString: "#D1D1D1") ?? .lightGray
 
     /// Returns perceived brightness value based on [Darel Rex Finley's HSP Colour Model](http://alienryderflex.com/hsp.html) from 0 to 1.0 (max brightness)
     var brightness: CGFloat {
