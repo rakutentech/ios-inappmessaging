@@ -53,7 +53,6 @@ internal class EventMatcher: EventMatcherType {
 
         campaignRepository.list.forEach { campaign in
             guard let campaignTriggers = campaign.data.triggers else {
-                Logger.debug("campaign (\(campaign.id)) has no triggers.")
                 return
             }
             guard isEventMatchingOneOfTriggers(event: event, triggers: campaignTriggers) else {
