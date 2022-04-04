@@ -8,7 +8,7 @@ internal class ActionButton: UIButton {
         static let minFontSize: CGFloat = 10
         static let labelMargin = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
         static let cornerRadius: CGFloat = 8
-        static let borderWidth: CGFloat = 0
+        static let borderWidth: CGFloat = 0.5
     }
 
     let impression: ImpressionType
@@ -42,8 +42,12 @@ internal class ActionButton: UIButton {
 
         layer.cornerRadius = Constants.cornerRadius
         self.backgroundColor = viewModel.backgroundColor
-        layer.borderColor = viewModel.textColor.cgColor
-        layer.borderWidth = Constants.borderWidth
+        layer.borderWidth = viewModel.shouldDrawBorder ? Constants.borderWidth : 0
+        if viewModel.backgroundColor == .white {
+            layer.borderColor = UIColor.buttonBorderDefaultColor.cgColor
+        } else {
+            layer.borderColor = viewModel.textColor.cgColor
+        }
     }
 
     private func addLabel() {

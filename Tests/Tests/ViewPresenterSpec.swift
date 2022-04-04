@@ -333,10 +333,12 @@ class ViewPresenterSpec: QuickSpec {
                     expect(view.addedButtons.map({ $0.viewModel })).to(elementsEqual([
                         ActionButtonViewModel(text: "button1",
                                               textColor: .blackRGB,
-                                              backgroundColor: .blackRGB),
+                                              backgroundColor: .blackRGB,
+                                              shouldDrawBorder: false),
                         ActionButtonViewModel(text: "button2",
                                               textColor: .whiteRGB,
-                                              backgroundColor: .whiteRGB)
+                                              backgroundColor: .whiteRGB,
+                                              shouldDrawBorder: true)
                     ]))
                 }
 
@@ -358,7 +360,8 @@ class ViewPresenterSpec: QuickSpec {
                     expect(view.addedButtons.map({ $0.viewModel })).to(elementsEqual([
                         ActionButtonViewModel(text: "button1",
                                               textColor: .whiteRGB,
-                                              backgroundColor: .whiteRGB)
+                                              backgroundColor: .whiteRGB,
+                                              shouldDrawBorder: true)
                     ]))
                 }
             }
