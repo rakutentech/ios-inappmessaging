@@ -1,4 +1,9 @@
 import UIKit
+#if canImport(RSDKUtils)
+import class RSDKUtils.AnalyticsBroadcaster
+#else // SPM Version
+import class RSDKUtilsMain.AnalyticsBroadcaster
+#endif
 
 internal protocol BaseViewPresenterType: ImpressionTrackable {
     var campaign: Campaign! { get set }
@@ -20,6 +25,7 @@ internal class BaseViewPresenter: BaseViewPresenterType {
     var campaign: Campaign!
     var impressions: [Impression] = []
     var associatedImage: UIImage?
+    var bundleInfo = BundleInfo.self
 
     init(campaignRepository: CampaignRepositoryType,
          impressionService: ImpressionServiceType,
@@ -34,11 +40,6 @@ internal class BaseViewPresenter: BaseViewPresenterType {
 
     func viewDidInitialize() {
         // To be called by associated view after init
-    }
-
-    func sendImpressions() {
-        sendImpressions(for: campaign)
-        impressions.removeAll()
     }
 
     func handleButtonTrigger(_ trigger: Trigger?) {
@@ -61,5 +62,32 @@ internal class BaseViewPresenter: BaseViewPresenterType {
                                                style: .default,
                                                handler: nil)
         ])
+    }
+}
+
+// MARK: - ImpressionTrackable
+extension BaseViewPresenter {
+    func sendImpressions() {
+        sendImpressions(for: campaign)
+        impressions.removeAll()
+    }
+
+    func logImpression(type: ImpressionType) {
+        let impression = Impression(
+            type: type,
+            timestamp: Date().millisecondsSince1970
+        )
+        impressions.append(impression)
+
+        guard type == .impression else {
+            return
+        }
+        // Broadcast only `impression` type here. Other types are sent after campaign is closed.
+        let impressionData = [impression].encodeForAnalytics()
+        AnalyticsBroadcaster.sendEventName(Constants.RAnalytics.impressionsEventName,
+                                           dataObject: [Constants.RAnalytics.Keys.impressions: impressionData,
+                                                        Constants.RAnalytics.Keys.campaignID: campaign.id,
+                                                        Constants.RAnalytics.Keys.subscriptionID: bundleInfo.inAppSubscriptionId ?? "n/a"],
+                                           customAccountNumber: bundleInfo.analyticsAccountNumber)
     }
 }

@@ -249,6 +249,7 @@ class BundleInfoMock: BundleInfo {
     static var inAppSdkVersionMock: String? = "0.0.5"
     static var inAppSubscriptionIdMock: String? = "sub-id"
     static var customFontMock: String? = "blank-Bold"
+    static var analyticsAccountNumberMock: NSNumber = -1
 
     static func reset() {
         applicationIdMock = "app.id"
@@ -256,6 +257,7 @@ class BundleInfoMock: BundleInfo {
         inAppSdkVersionMock = "0.0.5"
         inAppSubscriptionIdMock = "sub-id"
         customFontMock = "blank-Bold"
+        analyticsAccountNumberMock = -1
     }
 
     override class var applicationId: String? {
@@ -284,6 +286,10 @@ class BundleInfoMock: BundleInfo {
 
     override class var customFontNameButton: String? {
         customFontMock
+    }
+
+    override class var analyticsAccountNumber: NSNumber {
+        analyticsAccountNumberMock
     }
 }
 

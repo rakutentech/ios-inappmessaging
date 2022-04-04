@@ -56,6 +56,15 @@ class BundleSpec: QuickSpec {
                 bundleMock.infoDictionaryMock[Constants.Info.customFontNameButtonKey] = "font-button"
                 expect(bundleInfo.customFontNameButton).to(equal("font-button"))
             }
+
+            it("should return expected analyticsAccountNumber") {
+                bundleMock.infoDictionaryMock[Constants.Info.analyticsAccountNumberKey] = 123
+                expect(bundleInfo.analyticsAccountNumber).to(equal(123))
+            }
+
+            it("should return default analyticsAccountNumber if the key is not present in Info.plist") {
+                expect(bundleInfo.analyticsAccountNumber).to(equal(1))
+            }
         }
 
         describe("Bundle extensions") {

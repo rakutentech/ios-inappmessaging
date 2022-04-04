@@ -140,14 +140,6 @@ class PublicAPISpec: QuickSpec {
                 expect(eventMatcher.loggedEvents).toEventually(contain(event))
             }
 
-            it("will post notification (RAT) when logEvent is called") {
-                expect {
-                    RInAppMessaging.logEvent(AppStartEvent())
-                }.toEventually(postNotifications(containElementSatisfying({
-                    $0.name == Notification.Name("com.rakuten.esd.sdk.events.custom")
-                })))
-            }
-
             it("will pass internal errors to errorCallback") {
                 messageMixerService.mockedError = .invalidConfiguration
                 campaignsListManager.refreshList()

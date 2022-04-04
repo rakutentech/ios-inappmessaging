@@ -1,9 +1,4 @@
 import Foundation
-#if canImport(RSDKUtils)
-import class RSDKUtils.AnalyticsBroadcaster
-#else // SPM Version
-import class RSDKUtilsMain.AnalyticsBroadcaster
-#endif
 
 /// Class represents bootstrap behaviour and main functionality of InAppMessaging.
 internal class InAppMessagingModule: ErrorDelegate, CampaignDispatcherDelegate, UserChangeObserver {
@@ -85,8 +80,6 @@ internal class InAppMessagingModule: ErrorDelegate, CampaignDispatcherDelegate, 
         guard isEnabled else {
             return
         }
-
-        AnalyticsBroadcaster.sendEventName(Constants.RAnalytics.loggedEvent, dataObject: event.analyticsParameters)
 
         guard isInitialized else {
             // Events that were logged after first getConfig request failed,

@@ -16,11 +16,6 @@ internal class ImpressionService: ImpressionServiceType, HttpRequestable, TaskSc
             static let impression = "impressions"
             static let campaign = "campaign"
         }
-        enum Analytics {
-            static let impressions = "impressions"
-            static let action = "action"
-            static let timestamp = "timestamp"
-        }
     }
 
     private let accountRepository: AccountRepositoryType
@@ -55,18 +50,15 @@ internal class ImpressionService: ImpressionServiceType, HttpRequestable, TaskSc
         ]
 
         // Broadcast impression data to RAnalytics.
-        AnalyticsBroadcaster.sendEventName(Constants.RAnalytics.impressions,
-                                           dataObject: [Keys.Analytics.impressions: encodeForAnalytics(impressionList: impressions)])
+        // `impression` type is sent separately, just after campaign is displayed.
+        let impressionData = impressions.filter({ $0.type != .impression }).encodeForAnalytics()
+        AnalyticsBroadcaster.sendEventName(Constants.RAnalytics.impressionsEventName,
+                                           dataObject: [Constants.RAnalytics.Keys.impressions: impressionData,
+                                                        Constants.RAnalytics.Keys.campaignID: campaignData.campaignId,
+                                                        Constants.RAnalytics.Keys.subscriptionID: bundleInfo.inAppSubscriptionId ?? "n/a"],
+                                           customAccountNumber: bundleInfo.analyticsAccountNumber)
         
         sendImpressionRequest(endpoint: impressionEndpoint, parameters: parameters)
-    }
-
-    private func encodeForAnalytics(impressionList: [Impression]) -> [Any] {
-
-        return impressionList.map { impression in
-            return [Keys.Analytics.action: impression.type.rawValue,
-                    Keys.Analytics.timestamp: impression.timestamp]
-        }
     }
 
     private func sendImpressionRequest(endpoint: URL, parameters: [String : Any]) {

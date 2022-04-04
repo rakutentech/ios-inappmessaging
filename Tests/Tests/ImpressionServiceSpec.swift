@@ -30,6 +30,7 @@ class ImpressionServiceSpec: QuickSpec {
         var configurationRepository: ConfigurationRepository!
         var httpSession: URLSessionMock!
         var errorDelegate: ErrorDelegateMock!
+        let bundleInfo = BundleInfoMock.self
 
         func sendRequestAndWaitForResponse() {
             waitUntil { done in
@@ -164,7 +165,8 @@ class ImpressionServiceSpec: QuickSpec {
 
             context("when making a request") {
                 beforeEach {
-                    service.bundleInfo = BundleInfoMock.self
+                    service.bundleInfo = bundleInfo
+                    bundleInfo.reset()
                 }
 
                 it("will send a valid data object") {
@@ -219,6 +221,30 @@ class ImpressionServiceSpec: QuickSpec {
                     expect(headers?[Keys.subscriptionID]).to(equal(BundleInfoMock.inAppSubscriptionId))
                     expect(headers?[Keys.deviceID]).toNot(beEmpty())
                     expect(headers?[Keys.authorization]).to(equal("OAuth2 token"))
+                }
+
+                it("will send impressions excluding `impression` type to RAnalytics with all required properties") {
+                    bundleInfo.inAppSubscriptionIdMock = "sub-id"
+                    bundleInfo.analyticsAccountNumberMock = 111
+                    let impressionTypes: [ImpressionType] = [.actionOne, .actionTwo, .exit, .clickContent, .invalid, .optOut, .impression]
+
+                    expect {
+                        service.pingImpression(impressions: impressionTypes.map { Impression(type: $0, timestamp: 1) },
+                                               campaignData: campaign.data)
+                    }.toEventually(postNotifications(containElementSatisfying({
+                        let params = $0.object as? [String: Any]
+                        let data = params?["eventData"] as? [String: Any]
+                        let impressions = data?[Constants.RAnalytics.Keys.impressions] as? [[String: Any]]
+
+                        return data != nil &&
+                        impressions?.count == impressionTypes.count - 1 &&
+                        impressions?.first(where: {
+                            ($0[Constants.RAnalytics.Keys.action] as? Int) == ImpressionType.impression.rawValue
+                        }) == nil &&
+                        data?[Constants.RAnalytics.Keys.subscriptionID] as? String == bundleInfo.inAppSubscriptionIdMock &&
+                        data?[Constants.RAnalytics.Keys.campaignID] as? String == campaign.id &&
+                        params?["customAccNumber"] as? NSNumber == bundleInfo.analyticsAccountNumberMock
+                    })))
                 }
             }
 
