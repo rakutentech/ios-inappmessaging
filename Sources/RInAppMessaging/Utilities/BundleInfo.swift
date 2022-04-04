@@ -7,12 +7,16 @@ import RSDKUtils
 
 internal class BundleInfo {
 
+    class var bundle: Bundle {
+        .main
+    }
+
     class var applicationId: String? {
-        return Bundle.main.infoDictionary?["CFBundleIdentifier"] as? String
+        bundle.infoDictionary?["CFBundleIdentifier"] as? String
     }
 
     class var appVersion: String? {
-        return Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
+        bundle.infoDictionary?["CFBundleShortVersionString"] as? String
     }
 
     class var inAppSdkVersion: String? {
@@ -26,23 +30,23 @@ internal class BundleInfo {
     }
 
     class var inAppSubscriptionId: String? {
-        return Bundle.main.infoDictionary?[Constants.Info.subscriptionIDKey] as? String
+        bundle.infoDictionary?[Constants.Info.subscriptionIDKey] as? String
     }
 
     class var inAppConfigurationURL: String? {
-        return Bundle.main.infoDictionary?[Constants.Info.configurationURLKey] as? String
+        bundle.infoDictionary?[Constants.Info.configurationURLKey] as? String
     }
 
     class var customFontNameTitle: String? {
-        Bundle.main.infoDictionary?[Constants.Info.customFontNameTitleKey] as? String
+        bundle.infoDictionary?[Constants.Info.customFontNameTitleKey] as? String
     }
 
     class var customFontNameText: String? {
-        Bundle.main.infoDictionary?[Constants.Info.customFontNameTextKey] as? String
+        bundle.infoDictionary?[Constants.Info.customFontNameTextKey] as? String
     }
 
     class var customFontNameButton: String? {
-        Bundle.main.infoDictionary?[Constants.Info.customFontNameButtonKey] as? String
+        bundle.infoDictionary?[Constants.Info.customFontNameButtonKey] as? String
     }
 }
 
