@@ -259,19 +259,19 @@ class BundleInfoMock: BundleInfo {
     }
 
     override class var applicationId: String? {
-        return applicationIdMock
+        applicationIdMock
     }
 
     override class var appVersion: String? {
-        return appVersionMock
+        appVersionMock
     }
 
     override class var inAppSdkVersion: String? {
-        return inAppSdkVersionMock
+        inAppSdkVersionMock
     }
 
     override class var inAppSubscriptionId: String? {
-        return inAppSubscriptionIdMock
+        inAppSubscriptionIdMock
     }
 
     override class var customFontNameTitle: String? {
