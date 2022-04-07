@@ -111,6 +111,70 @@
                     }
                 }
             }
+        },
+        {
+            "campaignData": {
+                "campaignId": "testId1",
+                "maxImpressions": 5,
+                "type": 1,
+                "isTest": true,
+                "isCampaignDismissable": true,
+                "hasNoEndDate": false,
+                "infiniteImpressions": true,
+                "triggers": [
+                    {
+                        "type": 1,
+                        "eventType": 1,
+                        "eventName": "Launch the App Event",
+                        "attributes": []
+                    }
+                ],
+                "messagePayload": {
+                    "title": "Campaign with image test-1",
+                    "messageBody": "body",
+                    "header": "ABC DEF GHI ",
+                    "titleColor": "#000000",
+                    "headerColor": "#000000",
+                    "messageBodyColor": "#000000",
+                    "backgroundColor": "#ffffff",
+                    "frameColor": "#ffffff",
+                    "resource": {
+                        "cropType": 2
+                    },
+                    "messageSettings": {
+                        "displaySettings": {
+                            "slideFrom": 1,
+                            "endTimeMillis": 1582873200000,
+                            "orientation": 1,
+                            "textAlign": 2,
+                            "optOut": true,
+                            "delay": 3000,
+                            "html": false
+                        },
+                        "controlSettings": {
+                            "buttons": [
+                                {
+                                    "buttonText": "Cancel",
+                                    "buttonTextColor": "#1d1d1d",
+                                    "buttonBackgroundColor": "#f76b6b",
+                                    "buttonBehavior": {
+                                        "action": 3
+                                    }
+                                },
+                                {
+                                    "buttonText": "Portal",
+                                    "buttonTextColor": "#1d1d1d",
+                                    "buttonBackgroundColor": "#ffffff",
+                                    "buttonBehavior": {
+                                        "action": 1,
+                                        "uri": "https://rakuten.co.jp"
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
         }
     ]
 }

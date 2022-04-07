@@ -43,7 +43,10 @@ internal struct Campaign: Codable, Hashable {
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let decodedData = try container.decode(CampaignData.self, forKey: .data)
-        let maxImpressions = decodedData.infiniteImpressions ? Int.max : decodedData.maxImpressions
+        var maxImpressions = decodedData.infiniteImpressions ? Int.max : decodedData.maxImpressions
+        if decodedData.isTest {
+            maxImpressions = 1
+        }
         impressionsLeft = (try? container.decode(Int.self, forKey: .impressionsLeft)) ?? maxImpressions
         isOptedOut = (try? container.decode(Bool.self, forKey: .isOptedOut)) ?? false
         self.data = decodedData

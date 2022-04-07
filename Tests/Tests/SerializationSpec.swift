@@ -27,6 +27,12 @@ class SerializationSpec: QuickSpec {
                 expect(campaign.impressionsLeft).to(equal(Int.max))
             }
 
+            it("should always set impressionsLeft to 1 for test campaigns (ignore infiniteImpressions and maxImpressions)") {
+                let pingResponse: PingResponse = TestHelpers.getJSONModel(fileName: "ping_success")
+                let campaign = pingResponse.data[2]
+                expect(campaign.impressionsLeft).to(equal(1))
+            }
+
             it("should return true for isOutdated even if endTimeMillis is in the past") {
                 let campaign = MockedCampaigns.outdatedCampaignWithNoEndDate
                 expect(campaign.isOutdated).to(beFalse())
