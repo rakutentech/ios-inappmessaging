@@ -69,18 +69,9 @@ internal class CampaignRepository: CampaignRepositoryType {
     func syncWith(list: [Campaign], timestampMilliseconds: Int64) {
         lastSyncInMilliseconds = timestampMilliseconds
         let oldList = campaigns.get()
-        var updatedList = [Campaign]()
-
-        let (testCampaigns, newCampaigns) = list.reduce(into: ([Campaign](), [Campaign]())) { partialResult, campaign in
-            if campaign.data.isTest {
-                partialResult.0.append(campaign)
-            } else {
-                partialResult.1.append(campaign)
-            }
-        }
 
         let retainImpressionsLeftValue = true // Left for feature flag functionality
-        newCampaigns.forEach { newCampaign in
+        let updatedList: [Campaign] = list.map { newCampaign in
             var updatedCampaign = newCampaign
             if let oldCampaign = oldList.first(where: { $0.id == newCampaign.id }) {
                 updatedCampaign = Campaign.updatedCampaign(updatedCampaign, asOptedOut: oldCampaign.isOptedOut)
@@ -94,10 +85,10 @@ internal class CampaignRepository: CampaignRepositoryType {
                     updatedCampaign = Campaign.updatedCampaign(updatedCampaign, withImpressionLeft: newImpressionsLeft)
                 }
             }
-            updatedList.append(updatedCampaign)
+            return updatedCampaign
         }
-        campaigns.set(value: updatedList + testCampaigns)
-        saveDataToCache(updatedList + testCampaigns)
+        campaigns.set(value: updatedList)
+        saveDataToCache(updatedList)
     }
 
     @discardableResult

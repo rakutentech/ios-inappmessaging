@@ -73,13 +73,13 @@ class CampaignRepositorySpec: QuickSpec {
                     expect(firstPersistedCampaign?.impressionsLeft).to(equal(2))
                 }
 
-                it("will not persist impressionsLeft value for test campaigns") {
+                it("will persist impressionsLeft value for test campaigns") {
                     campaignRepository.syncWith(list: [testCampaign], timestampMilliseconds: 0)
                     campaignRepository.decrementImpressionsLeftInCampaign(id: testCampaign.id)
                     expect(firstPersistedCampaign?.impressionsLeft).to(equal(2))
 
                     campaignRepository.syncWith(list: [testCampaign], timestampMilliseconds: 0)
-                    expect(firstPersistedCampaign?.impressionsLeft).to(equal(3))
+                    expect(firstPersistedCampaign?.impressionsLeft).to(equal(2))
                 }
 
                 it("will persist isOptedOut value") {

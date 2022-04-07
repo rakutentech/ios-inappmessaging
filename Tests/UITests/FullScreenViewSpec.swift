@@ -48,7 +48,7 @@ class FullScreenViewSpec: QuickSpec {
                     launchAppIfNecessary(context: "full-text-only")
                     if !iamView.exists {
                         app.buttons["login_successful"].tap()
-                        expect(iamView.exists).toEventually(beTrue(), timeout: .seconds(2))
+                        expect(iamView.exists).toEventually(beTrue(), timeout: .seconds(5))
                     }
                 }
 
