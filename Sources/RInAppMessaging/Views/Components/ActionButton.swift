@@ -43,7 +43,7 @@ internal class ActionButton: UIButton {
         layer.cornerRadius = Constants.cornerRadius
         self.backgroundColor = viewModel.backgroundColor
         layer.borderWidth = viewModel.shouldDrawBorder ? Constants.borderWidth : 0
-        if viewModel.backgroundColor == .white {
+        if viewModel.backgroundColor.isRGBAEqual(to: .white) {
             layer.borderColor = UIColor.buttonBorderDefaultColor.cgColor
         } else {
             layer.borderColor = viewModel.textColor.cgColor
