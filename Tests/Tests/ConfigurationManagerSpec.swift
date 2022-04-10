@@ -1,6 +1,6 @@
+import Foundation
 import Quick
 import Nimble
-import class Foundation.DispatchQueue
 @testable import RInAppMessaging
 
 class ConfigurationManagerSpec: QuickSpec {
