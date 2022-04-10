@@ -1,58 +1,90 @@
 PODS:
-  - CNIOAtomics (2.22.1)
-  - CNIODarwin (2.22.1)
-  - CNIOHTTPParser (2.22.1)
-  - CNIOLinux (2.22.1)
-  - CNIOSHA1 (2.22.1)
+  - _NIODataStructures (2.40.0)
+  - CNIOAtomics (2.40.0)
+  - CNIODarwin (2.40.0)
+  - CNIOHTTPParser (2.40.0)
+  - CNIOLinux (2.40.0)
+  - CNIOWindows (2.40.0)
   - GRMustache.swift (4.0.1)
-  - Nimble (9.2.1)
-  - Quick (4.0.0)
+  - Nimble (10.0.0)
+  - Quick (5.0.1)
   - RInAppMessaging (6.1.0-tooltip):
-    - RSDKUtils (~> 2.1)
-  - RSDKUtils (2.1.0):
-    - RSDKUtils/Main (= 2.1.0)
-  - RSDKUtils/Main (2.1.0):
+    - RSDKUtils (~> 3.0)
+  - RSDKUtils (3.0.0):
+    - RSDKUtils/Main (= 3.0.0)
+  - RSDKUtils/Main (3.0.0):
     - RSDKUtils/RLogger
-  - RSDKUtils/Nimble (2.1.0):
+  - RSDKUtils/Nimble (3.0.0):
     - Nimble
     - RSDKUtils/Main
-  - RSDKUtils/RLogger (2.1.0)
-  - RSDKUtils/TestHelpers (2.1.0):
+  - RSDKUtils/RLogger (3.0.0)
+  - RSDKUtils/TestHelpers (3.0.0):
     - RSDKUtils/Main
-  - Shock (6.0.3):
+  - Shock (6.1.2):
     - GRMustache.swift (~> 4.0.1)
-    - SwiftNIOHTTP1 (~> 2.22.1)
-  - SwiftLint (0.45.1)
-  - SwiftNIO (2.22.1):
-    - CNIOAtomics (= 2.22.1)
-    - CNIODarwin (= 2.22.1)
-    - CNIOLinux (= 2.22.1)
-    - CNIOSHA1 (= 2.22.1)
-    - SwiftNIOConcurrencyHelpers (= 2.22.1)
-  - SwiftNIOConcurrencyHelpers (2.22.1):
-    - CNIOAtomics (= 2.22.1)
-  - SwiftNIOHTTP1 (2.22.1):
-    - CNIOHTTPParser (= 2.22.1)
-    - SwiftNIO (= 2.22.1)
-    - SwiftNIOConcurrencyHelpers (= 2.22.1)
+    - SwiftNIOHTTP1 (~> 2.40.0)
+  - SwiftLint (0.48.0)
+  - SwiftNIO (2.40.0):
+    - _NIODataStructures (= 2.40.0)
+    - CNIOAtomics (= 2.40.0)
+    - CNIODarwin (= 2.40.0)
+    - CNIOLinux (= 2.40.0)
+    - CNIOWindows (= 2.40.0)
+    - SwiftNIOConcurrencyHelpers (= 2.40.0)
+    - SwiftNIOCore (= 2.40.0)
+    - SwiftNIOEmbedded (= 2.40.0)
+    - SwiftNIOPosix (= 2.40.0)
+  - SwiftNIOConcurrencyHelpers (2.40.0):
+    - CNIOAtomics (= 2.40.0)
+  - SwiftNIOCore (2.40.0):
+    - CNIOAtomics (= 2.40.0)
+    - CNIOLinux (= 2.40.0)
+    - SwiftNIOConcurrencyHelpers (= 2.40.0)
+  - SwiftNIOEmbedded (2.40.0):
+    - _NIODataStructures (= 2.40.0)
+    - CNIOAtomics (= 2.40.0)
+    - CNIOLinux (= 2.40.0)
+    - SwiftNIOConcurrencyHelpers (= 2.40.0)
+    - SwiftNIOCore (= 2.40.0)
+  - SwiftNIOHTTP1 (2.40.0):
+    - _NIODataStructures (= 2.40.0)
+    - CNIOAtomics (= 2.40.0)
+    - CNIODarwin (= 2.40.0)
+    - CNIOHTTPParser (= 2.40.0)
+    - CNIOLinux (= 2.40.0)
+    - CNIOWindows (= 2.40.0)
+    - SwiftNIO (= 2.40.0)
+    - SwiftNIOConcurrencyHelpers (= 2.40.0)
+    - SwiftNIOCore (= 2.40.0)
+    - SwiftNIOEmbedded (= 2.40.0)
+    - SwiftNIOPosix (= 2.40.0)
+  - SwiftNIOPosix (2.40.0):
+    - _NIODataStructures (= 2.40.0)
+    - CNIOAtomics (= 2.40.0)
+    - CNIODarwin (= 2.40.0)
+    - CNIOLinux (= 2.40.0)
+    - CNIOWindows (= 2.40.0)
+    - SwiftNIOConcurrencyHelpers (= 2.40.0)
+    - SwiftNIOCore (= 2.40.0)
 
 DEPENDENCIES:
   - Nimble
-  - Quick
+  - Quick (~> 5.0)
   - RInAppMessaging (from `.`)
-  - RSDKUtils (~> 2.1)
-  - RSDKUtils/Nimble (~> 2.1)
-  - RSDKUtils/TestHelpers (~> 2.1)
-  - Shock (~> 6.0)
+  - RSDKUtils (~> 3.0)
+  - RSDKUtils/Nimble (~> 3.0)
+  - RSDKUtils/TestHelpers (~> 3.0)
+  - Shock (~> 6.1.2)
   - SwiftLint (~> 0.42)
 
 SPEC REPOS:
   trunk:
+    - _NIODataStructures
     - CNIOAtomics
     - CNIODarwin
     - CNIOHTTPParser
     - CNIOLinux
-    - CNIOSHA1
+    - CNIOWindows
     - GRMustache.swift
     - Nimble
     - Quick
@@ -61,29 +93,36 @@ SPEC REPOS:
     - SwiftLint
     - SwiftNIO
     - SwiftNIOConcurrencyHelpers
+    - SwiftNIOCore
+    - SwiftNIOEmbedded
     - SwiftNIOHTTP1
+    - SwiftNIOPosix
 
 EXTERNAL SOURCES:
   RInAppMessaging:
     :path: "."
 
 SPEC CHECKSUMS:
-  CNIOAtomics: 55026298b0bd7524bb8ca85bd9d00983ef2b6ab5
-  CNIODarwin: 65c40ddcfa113c0cb0bf5947dbef3165a0098b59
-  CNIOHTTPParser: 869e928f9f9b7bb68837e085b3ae921125d28d76
-  CNIOLinux: 896c5715ebe479fbfcdac5340717bbbd7936901b
-  CNIOSHA1: fd4d38fb42778ed971a75d87530f842106d4b4f4
+  _NIODataStructures: 3d45d8e70a1d17a15b1dc59d102c63dbc0525ffd
+  CNIOAtomics: 8edf08644e5e6fa0f021c239be9e8beb1cd9ef18
+  CNIODarwin: 93850990d29f2626b05306c6c9309f9be0d74c2f
+  CNIOHTTPParser: 8ce395236fa1d09ac3b4f4bcfba79b849b2ac684
+  CNIOLinux: 62e3505f50de558c393dc2f273dde71dcce518da
+  CNIOWindows: 3047f2d8165848a3936a0a755fee27c6b5ee479b
   GRMustache.swift: a6436504284b22b4b05daf5f46f77bd3fe00a9a2
-  Nimble: e7e615c0335ee4bf5b0d786685451e62746117d5
-  Quick: 6473349e43b9271a8d43839d9ba1c442ed1b7ac4
-  RInAppMessaging: ee3aa1d572835c00b771c15112fef44346425bfb
-  RSDKUtils: 47d28aac1347d712e6d4db9a1332cae41b17738f
-  Shock: 94c2d3f5f781fe63317c4ee1621dfb2d4cc271d3
-  SwiftLint: 06ac37e4d38c7068e0935bb30cda95f093bec761
-  SwiftNIO: 763188229de166e046cc8975383cca388832e992
-  SwiftNIOConcurrencyHelpers: 34d2e9d4d2b7886fa765086e845e6b19417be927
-  SwiftNIOHTTP1: c0a9ce48ba256f349af4f09648a0e0939b11a65c
+  Nimble: 5316ef81a170ce87baf72dd961f22f89a602ff84
+  Quick: 749aa754fd1e7d984f2000fe051e18a3a9809179
+  RInAppMessaging: 9ae497e631df33dc996e1bf319080f87e6886fcd
+  RSDKUtils: 36d97c9a41b5663ba56e73c626d27034a6c317e5
+  Shock: ce3b9330525069b70f2959ce1a42112ffc9fe4b4
+  SwiftLint: 284cea64b6187c5d6bd83e9a548a64104d546447
+  SwiftNIO: 829958aab300642625091f82fc2f49cb7cf4ef24
+  SwiftNIOConcurrencyHelpers: 697370136789b1074e4535eaae75cbd7f900370e
+  SwiftNIOCore: 473fdfe746534d7aa25766916459eeaf6f92ef49
+  SwiftNIOEmbedded: ffcb5147db67d9686c8366b7f8427b36132f2c8a
+  SwiftNIOHTTP1: ef56706550a1dc135ea69d65215b9941e643c23b
+  SwiftNIOPosix: b49af4bdbecaadfadd5c93dfe28594d6722b75e4
 
-PODFILE CHECKSUM: 5dd8b00dee5af0d7e8dbe27541d171d95da0c117
+PODFILE CHECKSUM: b6f6ccc43408ede41c29ea041d13c993ac624f19
 
-COCOAPODS: 1.11.2
+COCOAPODS: 1.11.3
