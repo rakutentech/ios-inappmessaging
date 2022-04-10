@@ -53,10 +53,6 @@ internal extension Bundle {
         module
         #else
 
-        if let resourceBundle = bundle(bundleIdSubstring: "RInAppMessagingResources") {
-            return resourceBundle
-        }
-
         guard let sdkBundleURL = sdk?.resourceURL else {
             return nil
         }

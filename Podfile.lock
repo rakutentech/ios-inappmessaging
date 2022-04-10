@@ -8,16 +8,16 @@ PODS:
   - Nimble (9.2.1)
   - Quick (4.0.0)
   - RInAppMessaging (6.2.0-snapshot):
-    - RSDKUtils (~> 2.1)
-  - RSDKUtils (2.1.0):
-    - RSDKUtils/Main (= 2.1.0)
-  - RSDKUtils/Main (2.1.0):
+    - RSDKUtils (~> 3.0.0)
+  - RSDKUtils (3.0.0):
+    - RSDKUtils/Main (= 3.0.0)
+  - RSDKUtils/Main (3.0.0):
     - RSDKUtils/RLogger
-  - RSDKUtils/Nimble (2.1.0):
+  - RSDKUtils/Nimble (3.0.0):
     - Nimble
     - RSDKUtils/Main
-  - RSDKUtils/RLogger (2.1.0)
-  - RSDKUtils/TestHelpers (2.1.0):
+  - RSDKUtils/RLogger (3.0.0)
+  - RSDKUtils/TestHelpers (3.0.0):
     - RSDKUtils/Main
   - Shock (6.0.3):
     - GRMustache.swift (~> 4.0.1)
@@ -40,9 +40,9 @@ DEPENDENCIES:
   - Nimble
   - Quick
   - RInAppMessaging (from `.`)
-  - RSDKUtils (~> 2.1)
-  - RSDKUtils/Nimble (~> 2.1)
-  - RSDKUtils/TestHelpers (~> 2.1)
+  - RSDKUtils (~> 3.0.0)
+  - RSDKUtils/Nimble (~> 3.0.0)
+  - RSDKUtils/TestHelpers (~> 3.0.0)
   - Shock (~> 6.0.0)
   - SwiftLint (~> 0.42)
 
@@ -76,14 +76,14 @@ SPEC CHECKSUMS:
   GRMustache.swift: a6436504284b22b4b05daf5f46f77bd3fe00a9a2
   Nimble: e7e615c0335ee4bf5b0d786685451e62746117d5
   Quick: 6473349e43b9271a8d43839d9ba1c442ed1b7ac4
-  RInAppMessaging: c8389bcfd9b9f385c715d4869e6449be3f1cbab5
-  RSDKUtils: 47d28aac1347d712e6d4db9a1332cae41b17738f
+  RInAppMessaging: 8d7da5c76ebaba4e6e6fcbcafb0636ac02f94c16
+  RSDKUtils: 36d97c9a41b5663ba56e73c626d27034a6c317e5
   Shock: 94c2d3f5f781fe63317c4ee1621dfb2d4cc271d3
   SwiftLint: d41cc46a2ae58ac6d9f26954bc89f1d72e71fdef
   SwiftNIO: 763188229de166e046cc8975383cca388832e992
   SwiftNIOConcurrencyHelpers: 34d2e9d4d2b7886fa765086e845e6b19417be927
   SwiftNIOHTTP1: c0a9ce48ba256f349af4f09648a0e0939b11a65c
 
-PODFILE CHECKSUM: 8bd240bd2189148291411477038ce08d951f86ec
+PODFILE CHECKSUM: f9faf4923b89e833dabb8c93e5d0bc199d0cbe94
 
 COCOAPODS: 1.11.3
