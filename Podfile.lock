@@ -19,10 +19,10 @@ PODS:
   - RSDKUtils/RLogger (2.1.0)
   - RSDKUtils/TestHelpers (2.1.0):
     - RSDKUtils/Main
-  - Shock (6.1.0):
+  - Shock (6.0.3):
     - GRMustache.swift (~> 4.0.1)
     - SwiftNIOHTTP1 (~> 2.22.1)
-  - SwiftLint (0.46.5)
+  - SwiftLint (0.47.0)
   - SwiftNIO (2.22.1):
     - CNIOAtomics (= 2.22.1)
     - CNIODarwin (= 2.22.1)
@@ -43,7 +43,7 @@ DEPENDENCIES:
   - RSDKUtils (~> 2.1)
   - RSDKUtils/Nimble (~> 2.1)
   - RSDKUtils/TestHelpers (~> 2.1)
-  - Shock (~> 6.0)
+  - Shock (~> 6.0.0)
   - SwiftLint (~> 0.42)
 
 SPEC REPOS:
@@ -78,12 +78,12 @@ SPEC CHECKSUMS:
   Quick: 6473349e43b9271a8d43839d9ba1c442ed1b7ac4
   RInAppMessaging: c8389bcfd9b9f385c715d4869e6449be3f1cbab5
   RSDKUtils: 47d28aac1347d712e6d4db9a1332cae41b17738f
-  Shock: 010380120f64f6f47ea33fae9019758460d76172
-  SwiftLint: 2c16e8fa99dac2e440dc0c70ea74d2532048f6cf
+  Shock: 94c2d3f5f781fe63317c4ee1621dfb2d4cc271d3
+  SwiftLint: d41cc46a2ae58ac6d9f26954bc89f1d72e71fdef
   SwiftNIO: 763188229de166e046cc8975383cca388832e992
   SwiftNIOConcurrencyHelpers: 34d2e9d4d2b7886fa765086e845e6b19417be927
   SwiftNIOHTTP1: c0a9ce48ba256f349af4f09648a0e0939b11a65c
 
-PODFILE CHECKSUM: 2fed098bab616d1b22c6d7df52c1f022f9a008f7
+PODFILE CHECKSUM: 8bd240bd2189148291411477038ce08d951f86ec
 
-COCOAPODS: 1.11.2
+COCOAPODS: 1.11.3

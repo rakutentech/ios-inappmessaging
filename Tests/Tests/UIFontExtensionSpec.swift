@@ -1,5 +1,7 @@
+import Foundation
 import Quick
 import Nimble
+import CoreText
 import class UIKit.UIFont
 @testable import RInAppMessaging
 

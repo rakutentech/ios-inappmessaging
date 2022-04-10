@@ -12,15 +12,16 @@ target 'RInAppMessaging_Example' do
     pod 'Quick'
     pod 'Nimble'
 
-    target 'Tests' do
-    end
+    target 'Tests'
 
     target 'UITests' do
-      pod 'Shock', '~> 6.0'
+      # Version 6.1 currently relies on swift-nio version (2.38) which has following issue
+      # https://github.com/apple/swift-nio/issues/2073
+      # Version 6.0 uses older swift-nio version which doesn't have that problem
+      pod 'Shock', '~> 6.0.0'
     end
 
-    target 'IntegrationTests' do
-    end
+    target 'IntegrationTests'
   end
 end
 
