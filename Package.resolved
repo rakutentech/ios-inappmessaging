@@ -15,8 +15,8 @@
         "repositoryURL": "https://github.com/mattgallagher/CwlPreconditionTesting.git",
         "state": {
           "branch": null,
-          "revision": "fb7a26374e8570ff5c68142e5c83406d6abae0d8",
-          "version": "2.0.2"
+          "revision": "c21f7bab5ca8eee0a9998bbd17ca1d0eb45d4688",
+          "version": "2.1.0"
         }
       },
       {
@@ -24,8 +24,8 @@
         "repositoryURL": "https://github.com/rakutentech/ios-sdkutils.git",
         "state": {
           "branch": null,
-          "revision": "5b56df0859c94ec4c253d5554eb568b4e6a4214d",
-          "version": "2.1.0"
+          "revision": "82592c03840b1ced37d1902bd0daef916a754999",
+          "version": "3.0.0"
         }
       },
       {

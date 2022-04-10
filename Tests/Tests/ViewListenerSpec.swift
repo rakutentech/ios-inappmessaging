@@ -43,12 +43,6 @@ class ViewListenerSpec: QuickSpec {
                     view3.accessibilityIdentifier = TooltipViewIdentifierMock
                 }
 
-                afterEach {
-                    [view1, view2, view3].forEach {
-                        $0.removeFromSuperview()
-                    }
-                }
-
                 it("will include all views in hierarchy") {
                     let subview1 = UIView()
                     let subview2 = UIView()
@@ -66,8 +60,6 @@ class ViewListenerSpec: QuickSpec {
                         }
                     }
                     expect(expectedViews).toEventually(elementsEqualOrderAgnostic([view1, view2, view3]))
-
-                    subview1.removeFromSuperview()
                 }
 
                 it("will stop iterating when stop flag was set to true in the closure") {
@@ -88,14 +80,19 @@ class ViewListenerSpec: QuickSpec {
                     view1.accessibilityIdentifier = nil
                     view2.accessibilityIdentifier = ""
                     view3.accessibilityIdentifier = TooltipViewIdentifierMock
-                    [view1, view2, view3].forEach {
+                    let views = [view1, view2, view3]
+                    views.forEach {
                         window.addSubview($0)
                     }
 
                     var expectedViews = [UIView]()
                     viewListener.startListening()
                     viewListener.iterateOverDisplayedViews { view, _, _ in
-                        expectedViews.append(view)
+                        // Excluding all existing views of sample app
+                        // (logo image view has "IAM" identifier set by IB)
+                        if views.contains(view) {
+                            expectedViews.append(view)
+                        }
                     }
                     expect(expectedViews).toAfterTimeout(haveCount(1))
                 }
