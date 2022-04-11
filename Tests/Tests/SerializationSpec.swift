@@ -38,6 +38,17 @@ class SerializationSpec: QuickSpec {
                 expect(campaign.isOutdated).to(beFalse())
             }
 
+            it("should decode legacy (cached) data by setting default values in new properties") {
+                let pingResponse: PingResponse? = TestHelpers.getJSONModel(fileName: "legacy_ping")
+                let campaign = pingResponse?.data.first
+                expect(pingResponse).toNot(beNil())
+                expect(campaign).toNot(beNil())
+
+                expect(campaign?.data.infiniteImpressions).to(beFalse())
+                expect(campaign?.data.hasNoEndDate).to(beFalse())
+                expect(campaign?.data.isCampaignDismissable).to(beTrue())
+            }
+
             context("When parsing title for contexts") {
 
                 it("will return empty array if there are no contexts") {
