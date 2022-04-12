@@ -9,14 +9,7 @@ internal class SlideUpView: UIView, SlideUpViewType {
         static let exitButtonTopMargin: CGFloat = 4
         static let exitButtonRightMargin: CGFloat = 4
         static let slideAnimationDuration: TimeInterval = 0.4
-        static var messageBodyPadding: UIEdgeInsets {
-            let bottomSafeArea = UIApplication.shared.getKeyWindow()?.safeAreaInsets.bottom ?? CGFloat(0)
-
-            return UIEdgeInsets(top: 16,
-                                left: 24,
-                                bottom: 12 + bottomSafeArea,
-                                right: 16 + exitButtonRightMargin + exitButtonSize)
-        }
+        static let messageBodyBasePadding = UIEdgeInsets(top: 16, left: 24, bottom: 12, right: 16)
     }
 
     static var viewIdentifier: String {
@@ -35,6 +28,13 @@ internal class SlideUpView: UIView, SlideUpViewType {
     private var bottomConstraint: NSLayoutConstraint!
     private var leftConstraint: NSLayoutConstraint!
     private var rightConstraint: NSLayoutConstraint!
+    private var isDismissable = true
+    private var messageBodyPadding: UIEdgeInsets {
+        var padding = UIConstants.messageBodyBasePadding
+        padding.bottom += safeAreaInsets.bottom
+        padding.right += UIConstants.exitButtonRightMargin + (isDismissable ? UIConstants.exitButtonSize : 0)
+        return padding
+    }
 
     init(presenter: SlideUpViewPresenterType) {
         self.presenter = presenter
@@ -51,6 +51,7 @@ internal class SlideUpView: UIView, SlideUpViewType {
 
         self.slideFromDirection = viewModel.slideFromDirection
         backgroundColor = viewModel.backgroundColor
+        self.isDismissable = viewModel.isDismissable
 
         setupDialogView()
         setupMessageBody(viewModel.messageBody, color: viewModel.messageBodyColor)
@@ -129,13 +130,13 @@ internal class SlideUpView: UIView, SlideUpViewType {
         dialogView.addSubview(bodyMessageLabel)
         NSLayoutConstraint.activate([
             bodyMessageLabel.trailingAnchor.constraint(equalTo: dialogView.trailingAnchor,
-                                                       constant: -UIConstants.messageBodyPadding.right),
+                                                       constant: -messageBodyPadding.right),
             bodyMessageLabel.leadingAnchor.constraint(equalTo: dialogView.leadingAnchor,
-                                                      constant: UIConstants.messageBodyPadding.left),
+                                                      constant: messageBodyPadding.left),
             bodyMessageLabel.topAnchor.constraint(equalTo: dialogView.topAnchor,
-                                                  constant: UIConstants.messageBodyPadding.top),
+                                                  constant: messageBodyPadding.top),
             bodyMessageLabel.bottomAnchor.constraint(equalTo: dialogView.bottomAnchor,
-                                                    constant: -UIConstants.messageBodyPadding.bottom)
+                                                    constant: -messageBodyPadding.bottom)
         ])
     }
 
