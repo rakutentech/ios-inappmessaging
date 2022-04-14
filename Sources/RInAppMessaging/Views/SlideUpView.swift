@@ -30,8 +30,9 @@ internal class SlideUpView: UIView, SlideUpViewType {
     private var rightConstraint: NSLayoutConstraint!
     private var isDismissable = true
     private var messageBodyPadding: UIEdgeInsets {
+        let bottomSafeArea = UIApplication.shared.getKeyWindow()?.safeAreaInsets.bottom ?? CGFloat(0)
         var padding = UIConstants.messageBodyBasePadding
-        padding.bottom += safeAreaInsets.bottom
+        padding.bottom += bottomSafeArea
         padding.right += UIConstants.exitButtonRightMargin + (isDismissable ? UIConstants.exitButtonSize : 0)
         return padding
     }
