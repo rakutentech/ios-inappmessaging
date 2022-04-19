@@ -119,7 +119,6 @@ internal class CampaignDispatcher: CampaignDispatcherType, TaskSchedulable {
     }
 
     private func displayCampaign(_ campaign: Campaign, imageBlob: Data? = nil) {
-        campaignRepository.decrementImpressionsLeftInCampaign(id: campaign.id)
         let campaignTitle = campaign.data.messagePayload.title
 
         router.displayCampaign(campaign, associatedImageData: imageBlob, confirmation: {
@@ -139,8 +138,8 @@ internal class CampaignDispatcher: CampaignDispatcherType, TaskSchedulable {
     }
 
     private func commitCampaignDisplay(_ campaign: Campaign, cancelled: Bool) {
-        if cancelled {
-            campaignRepository.incrementImpressionsLeftInCampaign(id: campaign.id)
+        if !cancelled {
+            campaignRepository.decrementImpressionsLeftInCampaign(id: campaign.id)
         }
         guard !queuedCampaignIDs.isEmpty else {
             isDispatching = false
