@@ -53,10 +53,10 @@ internal class CampaignRepository: CampaignRepositoryType {
     private(set) var lastSyncInMilliseconds: Int64?
 
     var list: [Campaign] {
-        return campaigns.get()
+        campaigns.get()
     }
     var resourcesToLock: [LockableResource] {
-        return [campaigns]
+        [campaigns]
     }
 
     init(userDataCache: UserDataCacheable, accountRepository: AccountRepositoryType) {
