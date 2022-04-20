@@ -121,7 +121,7 @@ class ModalViewSpec: QuickSpec {
 
                 it("should trigger another campaign after tapping button 2") {
                     iamView.buttons["Button1"].tap()
-                    expect(iamView.exists).to(beFalse())
+                    expect(iamView.exists).toEventually(beFalse())
                     expect(iamView.exists).toEventually(beTrue(), timeout: .seconds(2))
                 }
             }
