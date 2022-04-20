@@ -272,15 +272,11 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
     }
 
     private func updateUIComponentsVisibility(viewModel: FullViewModel) {
-        let shouldHideBody = (viewModel.isHTML || !viewModel.hasText) &&
-            !viewModel.showOptOut &&
-            !viewModel.showButtons
-
         buttonsContainer.isHidden = !viewModel.showButtons
         optOutView.isHidden = !viewModel.showOptOut
         optOutAndButtonsSpacer.isHidden = buttonsContainer.isHidden || optOutView.isHidden
         controlsView.isHidden = buttonsContainer.isHidden && optOutView.isHidden
-        bodyView.isHidden = shouldHideBody
+        bodyView.isHidden = viewModel.isHTML || !viewModel.hasText
     }
 
     private func setupWebView(withHtmlString htmlString: String) {
