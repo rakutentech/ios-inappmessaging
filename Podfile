@@ -15,6 +15,13 @@ target 'RInAppMessaging_Example' do
     target 'Tests'
 
     target 'UITests' do
+      # Shock 6.1 currently relies on swift-nio version (2.38) which has following issue:
+      # https://github.com/apple/swift-nio/issues/2073
+      # The issue has been fixed in https://github.com/apple/swift-nio/pull/2082
+      # The fixed script has been used to generate custom SwiftNIOPosix podspec as a workaround
+      # This workaround can probably be removed after the next SwiftNIO release
+      # (Older versions of Shock cannot be used with Xcode 13.3)
+      pod 'SwiftNIOPosix', :podspec => './SwiftNIOPosix.podspec'
       pod 'Shock', '~> 6.1.0'
     end
 
