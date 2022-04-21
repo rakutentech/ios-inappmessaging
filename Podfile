@@ -9,7 +9,7 @@ target 'RInAppMessaging_Example' do
   pod 'RSDKUtils', '~> 3.0.0', :testspecs => ['Nimble', 'TestHelpers']
 
   abstract_target 'Tests-Common' do
-    pod 'Quick'
+    pod 'Quick', '~> 5.0'
     pod 'Nimble'
 
     target 'Tests'
