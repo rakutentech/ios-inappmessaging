@@ -21,7 +21,7 @@ target 'RInAppMessaging_Example' do
       # The fixed script has been used to generate custom SwiftNIOPosix podspec as a workaround
       # This workaround can probably be removed after the next SwiftNIO release
       # (Older versions of Shock cannot be used with Xcode 13.3)
-      pod 'SwiftNIOPosix', :podspec => './SwiftNIOPosix.podspec'
+      pod 'SwiftNIOPosix', :podspec => 'External Podspecs/SwiftNIOPosix.podspec'
       pod 'Shock', '~> 6.1.0'
     end
 
