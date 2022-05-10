@@ -84,10 +84,10 @@ extension BaseViewPresenter {
         }
         // Broadcast only `impression` type here. Other types are sent after campaign is closed.
         let impressionData = [impression].encodeForAnalytics()
-        AnalyticsBroadcaster.sendEventName(Constants.RAnalytics.impressionsEventName,
-                                           dataObject: [Constants.RAnalytics.Keys.impressions: impressionData,
-                                                        Constants.RAnalytics.Keys.campaignID: campaign.id,
-                                                        Constants.RAnalytics.Keys.subscriptionID: bundleInfo.inAppSubscriptionId ?? "n/a"],
-                                           customAccountNumber: bundleInfo.analyticsAccountNumber)
+        IAMAnalyticsBroadcaster.sendEventName(Constants.RAnalytics.impressionsEventName,
+                                              dataObject: [Constants.RAnalytics.Keys.impressions: impressionData,
+                                                           Constants.RAnalytics.Keys.campaignID: campaign.id,
+                                                           Constants.RAnalytics.Keys.subscriptionID: bundleInfo.inAppSubscriptionId ?? "n/a"],
+                                              customAccountNumber: bundleInfo.analyticsAccountNumber)
     }
 }

@@ -52,11 +52,11 @@ internal class ImpressionService: ImpressionServiceType, HttpRequestable, TaskSc
         // Broadcast impression data to RAnalytics.
         // `impression` type is sent separately, just after campaign is displayed.
         let impressionData = impressions.filter({ $0.type != .impression }).encodeForAnalytics()
-        AnalyticsBroadcaster.sendEventName(Constants.RAnalytics.impressionsEventName,
-                                           dataObject: [Constants.RAnalytics.Keys.impressions: impressionData,
-                                                        Constants.RAnalytics.Keys.campaignID: campaignData.campaignId,
-                                                        Constants.RAnalytics.Keys.subscriptionID: bundleInfo.inAppSubscriptionId ?? "n/a"],
-                                           customAccountNumber: bundleInfo.analyticsAccountNumber)
+        IAMAnalyticsBroadcaster.sendEventName(Constants.RAnalytics.impressionsEventName,
+                                              dataObject: [Constants.RAnalytics.Keys.impressions: impressionData,
+                                                           Constants.RAnalytics.Keys.campaignID: campaignData.campaignId,
+                                                           Constants.RAnalytics.Keys.subscriptionID: bundleInfo.inAppSubscriptionId ?? "n/a"],
+                                              customAccountNumber: bundleInfo.analyticsAccountNumber)
         
         sendImpressionRequest(endpoint: impressionEndpoint, parameters: parameters)
     }
