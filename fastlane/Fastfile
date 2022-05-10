@@ -52,7 +52,7 @@ platform :ios do
 
   lane :build_swift_package do
     Dir.chdir("..") do
-      ios_version = sh 'xcodebuild -showBuildSettings | grep "IPHONEOS_DEPLOYMENT_TARGET =" | tr -d "IPHONEOS_DEPLOYMENT_TARGET ="'
+      ios_version = sh 'xcodebuild -showBuildSettings 2>/dev/null | grep "IPHONEOS_DEPLOYMENT_TARGET =" | tr -d "IPHONEOS_DEPLOYMENT_TARGET ="'
       sh "swift build -Xswiftc '-sdk' -Xswiftc `xcrun --sdk iphonesimulator --show-sdk-path` -Xswiftc '-target' -Xswiftc 'x86_64-apple-ios#{ios_version}-simulator'"
     end
   end
