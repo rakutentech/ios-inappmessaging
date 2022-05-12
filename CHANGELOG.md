@@ -1,5 +1,22 @@
 ## Changelog
 
+### 7.0.0 (2022-05-13)
+- **Breaking changes:**
+	- Aligned public API with Android IAM SDK [SDKCF-4940]
+		- `RInAppMessagingDelegate` and `RInAppMessagingErrorDelegate` have been removed.
+		- `inAppMessagingShouldShowCampaignWithContexts()` delegate method has been replaced with `onVerifyContext` callback variable..
+		- `inAppMessagingDidReturnError()` delegate method has been replaced with `errorCallback` variable.
+- Features:
+	- Implemented new UX features - Campaigns with no end date, infinite impressions and no ❌ button [SDKCF-5003]
+- Improvements:
+	- Improved test campaigns handling [SDKCF-5027]
+	- Added border in campaign buttons when their color is similar to message body background color [SDKCF-4859]
+	- Xcode 13 compatibility
+	- Removed Codecov support in favor of SonarQube coverage reports
+	- Switched to shared bitrise yaml [file](https://github.com/rakutentech/ios-buildconfig/blob/master/shared-bitrise.yml)
+- Bug fixes:
+	- Fixed impression counting when application was terminated during campaign display
+
 ### 6.1.0 (2022-02-04)
 - Improvements:
 	- Campaign UI has been updated to be in line with internal Rakuten UI design guide [SDKCF-4471]
