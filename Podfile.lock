@@ -8,7 +8,7 @@ PODS:
   - GRMustache.swift (4.0.1)
   - Nimble (10.0.0)
   - Quick (5.0.1)
-  - RInAppMessaging (7.1.0-snapshot):
+  - RInAppMessaging (7.2.0-snapshot):
     - RSDKUtils (~> 3.0.0)
   - RSDKUtils (3.0.0):
     - RSDKUtils/Main (= 3.0.0)
@@ -118,7 +118,7 @@ SPEC CHECKSUMS:
   GRMustache.swift: a6436504284b22b4b05daf5f46f77bd3fe00a9a2
   Nimble: 5316ef81a170ce87baf72dd961f22f89a602ff84
   Quick: 749aa754fd1e7d984f2000fe051e18a3a9809179
-  RInAppMessaging: 626a2ce356830003bbb09ba78fac65cb880d16fa
+  RInAppMessaging: 469eae7fd518ad717fcd485f685623af91203019
   RSDKUtils: 36d97c9a41b5663ba56e73c626d27034a6c317e5
   Shock: 1f3473acb4741c4fe71fc30ae9329bf471c64018
   SwiftLint: f80f1be7fa96d30e0aa68e58d45d4ea1ccaac519
