@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>CONTRIBUTING  Reference</title>
+    <link rel="stylesheet" type="text/css" href="css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="js/jquery.min.js" defer></script>
+    <script src="js/jazzy.js" defer></script>
+    
+    <script src="js/lunr.min.js" defer></script>
+    <script src="js/typeahead.jquery.js" defer></script>
+    <script src="js/jazzy.search.js" defer></script>
+  </head>
+  <body>
+    <a title="CONTRIBUTING  Reference"></a>
+    <header>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+      <link rel="stylesheet" type="text/css" href="css/version-select.css" />
+      <script src="js/version-select.js" defer></script>
+      <script src="../versions.js"></script>
+      <div class="content-wrapper">
+        <p><a href="index.html">RInAppMessaging Docs</a></p>
+        <div class="version-dropdown">
+          <button onclick="toggleVersionSelect()" class="versionbtn">7.0.0 <i class="fa fa-caret-down"></i></button>
+          <div id="versions" class="version-dropdown-content"></div>
+        </div> 
+        <p class="header-right"><a href="https://github.com/rakutentech/ios-inappmessaging"><img src="img/gh.png"/>View on GitHub</a></p>
+        <p class="header-right">
+          <form role="search" action="search.json">
+            <input type="text" placeholder="Search documentation" data-typeahead>
+          </form>
+        </p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="index.html">RInAppMessaging Reference</a>
+        <img id="carat" src="img/carat.png" />
+        CONTRIBUTING  Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="Guides.html">Guides</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="changelog.html">CHANGELOG</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="contributing.html">CONTRIBUTING</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="deploy.html">DEPLOY</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="readme.html">README</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Classes/AppStartEvent.html">AppStartEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/CustomAttribute.html">CustomAttribute</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/CustomEvent.html">CustomEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Event.html">Event</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/LoginSuccessfulEvent.html">LoginSuccessfulEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/PurchaseSuccessfulEvent.html">PurchaseSuccessfulEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/RInAppMessaging.html">RInAppMessaging</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Protocols/UserInfoProvider.html">UserInfoProvider</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            
+            <h1 id='contributing' class='heading'>Contributing</h1>
+<h2 id='found-a-bug-got-a-suggestion' class='heading'>Found a Bug? Got a suggestion?</h2>
+
+<p>If you find a bug in the source code, or want to make a suggestion, you can help us by submitting an issue to our GitHub Repository. Or even better, you could submit a Pull Request.</p>
+
+<p><strong>Considering making your first Pull Request?</strong> You can learn how from this <em>free</em> series <a href="https://egghead.io/series/how-to-contribute-to-an-open-source-project-on-github">How to Contribute to an Open Source Project on GitHub</a></p>
+<h2 id='pull-requests' class='heading'>Pull Requests</h2>
+
+<ol>
+<li>Fork the project</li>
+<li>Implement feature/fix bug &amp; add test cases</li>
+<li>Ensure test cases &amp; static analysis run successfully</li>
+<li>Submit a pull request to <code>master</code> branch</li>
+</ol>
+
+<p>Please include unit tests where necessary to cover any functionality that is introduced.</p>
+<h2 id='coding-guidelines' class='heading'>Coding Guidelines</h2>
+
+<ul>
+<li>All features or bug fixes <strong>must be tested</strong> by one or more unit tests/specs</li>
+<li>All public API methods <strong>must be documented</strong> and potentially also described in the user guide.</li>
+<li>All code should follow the style of the existing code.</li>
+</ul>
+<h2 id='commit-messages' class='heading'>Commit messages</h2>
+
+<p>Each commit message consists of a header, and an optional body and footer. The header has a special format that includes a type, a subject and an optional ticket number:</p>
+<pre class="highlight plaintext"><code>&lt;type&gt;: &lt;subject&gt; (&lt;ticket-no&gt;)
+&lt;BLANK LINE&gt;
+&lt;body&gt;
+&lt;BLANK LINE&gt;
+&lt;footer&gt;
+</code></pre>
+
+<p>The <strong>header</strong> is mandatory but the <code>&lt;ticket-no&gt;</code> part of the header is optional.</p>
+
+<p>Any line of the commit message cannot be longer than 100 characters! This allows the message to be easier
+to read on GitHub as well as in various git tools.</p>
+
+<p>Footer should contain a <a href="https://help.github.com/articles/closing-issues-via-commit-messages/">closing reference to an issue</a> if any.</p>
+<h3 id='revert' class='heading'>Revert</h3>
+
+<p>If the commit reverts a previous commit, it should begin with <code>revert:</code>, followed by the header of the reverted commit. In the body it should say: <code>This reverts commit &lt;hash&gt;.</code>, where the hash is the SHA of the commit being reverted.</p>
+<h3 id='type' class='heading'>Type</h3>
+
+<p>Must be one of the following:</p>
+
+<ul>
+<li><strong>fix</strong>: A bug fix</li>
+<li><strong>feat</strong>: A new feature, new UI</li>
+<li><strong>refactor</strong>: (or <strong>improve:</strong>) A code change that neither fixes a bug nor adds a feature (incl. Swift/Kotlin migration)</li>
+<li><strong>build</strong>: Changes that affect the build system or external dependencies (example scopes: gradle, fastlane, npm)</li>
+<li><strong>ci</strong>: Changes to our CI configuration files and scripts (Jenkins, Bitrise, Circle CI, SonarCloud, Mobscansf, etc)</li>
+<li><strong>docs</strong>: Documentation only changes</li>
+<li><strong>chore</strong>: Changes that do not affect the meaning of the code (formatting/linting, etc). Changes as a part of routine tasks like <strong>Pre/Post release operation</strong> (version bump + CHANGELOG, merge fix, etc).</li>
+<li><strong>test(s)</strong>: Adding missing tests or correcting existing tests</li>
+</ul>
+<h3 id='subject' class='heading'>Subject</h3>
+
+<p>The subject contains a succinct description of the change:</p>
+
+<ul>
+<li>use the imperative, present tense: &ldquo;change&rdquo; not &ldquo;changed&rdquo; nor &ldquo;changes&rdquo;</li>
+<li>don&rsquo;t capitalize first letter</li>
+<li>no dot (.) at the end</li>
+<li>an issue reference e.g. SDK-1234 can be added to the end of the subject in parentheses</li>
+</ul>
+<h3 id='body' class='heading'>Body</h3>
+
+<p>Just as in the <strong>subject</strong>, use the imperative, present tense: &ldquo;change&rdquo; not &ldquo;changed&rdquo; nor &ldquo;changes&rdquo;.
+The body should include the motivation for the change and contrast this with previous behavior.</p>
+<h3 id='footer' class='heading'>Footer</h3>
+
+<p>The footer should reference GitHub issues that this commit <strong>Closes</strong>.</p>
+<h3 id='examples' class='heading'>Examples</h3>
+<h4 id='bad-examples' class='heading'>Bad examples:</h4>
+
+<ul>
+<li><p><em><strong>Pull request #519:</strong></em> improve: refactor user data handling (SDKCF-3970)
+<br>Remove default prefixes added by Bitbucket.</p></li>
+<li><p>improve: refactor user data handling (SDKCF-3970) <em><strong>(#23)</strong></em>
+<br>Remove default suffixes added by Github.</p></li>
+<li><p><em><strong>Revert &ldquo;refactor user data handling&rdquo;</strong></em>
+<br>Revert should start with <code>revert:</code> followed by exact original commit message of reverted commit (without quotes).</p></li>
+<li><p>fix: <em><strong>fix crash on iOS 15</strong></em> (SDKCF-0000)
+<br>Commit message should contain some context. In this case - a cause of the crash.</p></li>
+<li><p>feat: <em><strong>add new build configuration for users that require user data to be stored in another directory and add migration logic with exception of users migration from SDK version 1.0.0</strong></em>
+<br>Try to fit within 100 characters limit. Use abbreviations if necessary. Focus on the most important change.</p></li>
+</ul>
+<h4 id='good-examples' class='heading'>Good examples:</h4>
+
+<ul>
+<li>improve: refactor user data handling (SDKCF-3970)</li>
+<li>improve: refine URL session configuration, add timeouts (SDKCF-0000)</li>
+<li>docs: update README with SPM information (SDKCF-4388)</li>
+<li>chore: bump RSDKUtils to 2.1.0 (SDKCF-4392)</li>
+<li>chore: prepare 5.0.0 release (SDKCF-4160)</li>
+<li>revert: improve: refine URL session configuration, add timeouts (SDKCF-0000)
+<br>This reverts commit 6608beb114610ec0a5e96b77e62a5590753e247e.</li>
+<li>feat: add support for id tracking (SDKCF-4072)</li>
+<li>ci: add mobsfscan config (SDKCF-0000)</li>
+<li>tests: add UI tests (SDKCF-2246)</li>
+<li>tests: fix and refactor integration tests (SDKCF-0000)</li>
+<li>fix: fix startup crash caused by wrong build config (SDKCF-0000)</li>
+</ul>
+
+          </section>
+        </section>
+        <section id="footer">
+          <p>&copy; 2022 <a class="link" href="https://github.com/rakutentech/ios-inappmessaging" target="_blank" rel="external noopener">Rakuten Group, Inc.</a>. All rights reserved. (Last updated: 2022-05-13)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.14.2</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>
