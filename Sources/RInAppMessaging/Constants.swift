@@ -41,7 +41,6 @@ internal enum Constants {
         static let customFontNameTitleKey = "InAppMessagingCustomFontNameTitle"
         static let customFontNameTextKey = "InAppMessagingCustomFontNameText"
         static let customFontNameButtonKey = "InAppMessagingCustomFontNameButton"
-        static let analyticsAccountNumberKey = "InAppMessagingRATEventsAccountID"
     }
 
     enum Versions {

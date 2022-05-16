@@ -225,7 +225,6 @@ class ImpressionServiceSpec: QuickSpec {
 
                 it("will send impressions excluding `impression` type to RAnalytics with all required properties") {
                     bundleInfo.inAppSubscriptionIdMock = "sub-id"
-                    bundleInfo.analyticsAccountNumberMock = 111
                     let impressionTypes: [ImpressionType] = [.actionOne, .actionTwo, .exit, .clickContent, .invalid, .optOut, .impression]
 
                     expect {
@@ -242,8 +241,7 @@ class ImpressionServiceSpec: QuickSpec {
                             ($0[Constants.RAnalytics.Keys.action] as? Int) == ImpressionType.impression.rawValue
                         }) == nil &&
                         data?[Constants.RAnalytics.Keys.subscriptionID] as? String == bundleInfo.inAppSubscriptionIdMock &&
-                        data?[Constants.RAnalytics.Keys.campaignID] as? String == campaign.id &&
-                        params?["customAccNumber"] as? NSNumber == bundleInfo.analyticsAccountNumberMock
+                        data?[Constants.RAnalytics.Keys.campaignID] as? String == campaign.id
                     })))
                 }
             }

@@ -50,7 +50,6 @@ class ViewPresenterSpec: QuickSpec {
 
                 it("will send `impression` type to RAnalytics with all required properties") {
                     bundleInfo.inAppSubscriptionIdMock = "sub-id"
-                    bundleInfo.analyticsAccountNumberMock = 111
 
                     expect {
                         presenter.logImpression(type: .impression)
@@ -63,8 +62,7 @@ class ViewPresenterSpec: QuickSpec {
                         impressions?.count == 1 &&
                         impressions?.first?[Constants.RAnalytics.Keys.action] as? Int == ImpressionType.impression.rawValue &&
                         data?[Constants.RAnalytics.Keys.subscriptionID] as? String == bundleInfo.inAppSubscriptionIdMock &&
-                        data?[Constants.RAnalytics.Keys.campaignID] as? String == testCampaign.id &&
-                        params?["customAccNumber"] as? NSNumber == bundleInfo.analyticsAccountNumberMock
+                        data?[Constants.RAnalytics.Keys.campaignID] as? String == testCampaign.id
                     })))
                 }
 

@@ -48,10 +48,6 @@ internal class BundleInfo {
     class var customFontNameButton: String? {
         bundle.infoDictionary?[Constants.Info.customFontNameButtonKey] as? String
     }
-
-    class var analyticsAccountNumber: NSNumber {
-        bundle.infoDictionary?[Constants.Info.analyticsAccountNumberKey] as? NSNumber ?? 1
-    }
 }
 
 internal extension Bundle {
