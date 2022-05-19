@@ -48,8 +48,15 @@ internal enum Constants {
     }
 
     enum RAnalytics {
-        static let impressions = "InAppMessaging_impressions"
-        static let loggedEvent = "InAppMessaging_triggeredEvent"
+        static let impressionsEventName = "_rem_iam_impressions"
+        
+        enum Keys {
+            static let action = "action"
+            static let timestamp = "timestamp"
+            static let impressions = "impressions"
+            static let campaignID = "campaign_id"
+            static let subscriptionID = "subscription_id"
+        }
     }
 
     enum Retry {

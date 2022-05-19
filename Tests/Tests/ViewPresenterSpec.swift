@@ -13,12 +13,14 @@ class ViewPresenterSpec: QuickSpec {
         var impressionService: ImpressionServiceMock!
         var eventMatcher: EventMatcherMock!
         var campaignTriggerAgent: CampaignTriggerAgentMock!
+        let bundleInfo = BundleInfoMock.self
 
         beforeEach {
             campaignRepository = CampaignRepositoryMock()
             impressionService = ImpressionServiceMock()
             eventMatcher = EventMatcherMock()
             campaignTriggerAgent = CampaignTriggerAgentMock()
+            bundleInfo.reset()
         }
 
         describe("BaseViewPresenter") {
@@ -28,10 +30,11 @@ class ViewPresenterSpec: QuickSpec {
 
             beforeEach {
                 presenter = BaseViewPresenter(campaignRepository: campaignRepository,
-                                             impressionService: impressionService,
-                                             eventMatcher: eventMatcher,
-                                             campaignTriggerAgent: campaignTriggerAgent)
+                                              impressionService: impressionService,
+                                              eventMatcher: eventMatcher,
+                                              campaignTriggerAgent: campaignTriggerAgent)
                 presenter.campaign = testCampaign
+                presenter.bundleInfo = bundleInfo
             }
 
             context("when logImpression is called") {
@@ -43,6 +46,41 @@ class ViewPresenterSpec: QuickSpec {
                     }
 
                     expect(presenter.impressions.map({ $0.type })).to(elementsEqual(impressions))
+                }
+
+                it("will send `impression` type to RAnalytics with all required properties") {
+                    bundleInfo.inAppSubscriptionIdMock = "sub-id"
+
+                    expect {
+                        presenter.logImpression(type: .impression)
+                    }.toEventually(postNotifications(containElementSatisfying({
+                        let params = $0.object as? [String: Any]
+                        let data = params?["eventData"] as? [String: Any]
+                        let impressions = data?[Constants.RAnalytics.Keys.impressions] as? [[String: Any]]
+
+                        return data != nil &&
+                        impressions?.count == 1 &&
+                        impressions?.first?[Constants.RAnalytics.Keys.action] as? Int == ImpressionType.impression.rawValue &&
+                        data?[Constants.RAnalytics.Keys.subscriptionID] as? String == bundleInfo.inAppSubscriptionIdMock &&
+                        data?[Constants.RAnalytics.Keys.campaignID] as? String == testCampaign.id
+                    })))
+                }
+
+                it("will not send impression types other than `impression` to RAnalytics") {
+                    var receivedNotification: Notification?
+                    let observer = NotificationCenter.default.addObserver(forName: .rAnalyticsCustomEvent,
+                                                                          object: nil,
+                                                                          queue: OperationQueue()) { notification in
+                        receivedNotification = notification
+                    }
+
+                    let impressions: [ImpressionType] = [.actionOne, .actionTwo, .exit, .clickContent, .invalid, .optOut]
+                    impressions.forEach {
+                        presenter.logImpression(type: $0)
+                    }
+
+                    expect(receivedNotification).toAfterTimeout(beNil())
+                    NotificationCenter.default.removeObserver(observer)
                 }
             }
 
