@@ -1,0 +1,22 @@
+on: 
+  workflow_dispatch:
+    inputs:
+      archiveUrl:
+        description: 'URL containing zip file with xcarchive'     
+        required: true
+        type: string
+      archiveName:
+        description: '.xcarchive file name'     
+        required: false
+        default: 'RInAppMessaging' 
+        type: string
+
+jobs:
+  upload-to-emerge:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download and unzip archive
+        run: |
+          curl -sS "${{ github.event.inputs.archiveUrl }}" > archive.zip
+          unzip archive.zip -d ./archive
+          ls ./archive
