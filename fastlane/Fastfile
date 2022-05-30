@@ -22,19 +22,6 @@ platform :ios do
     cocoapods(repo_update: ENV['REM_FL_CP_REPO_UPDATE'] || false)
 
     scan(
-      clean: true,
-      skip_build: true,
-      configuration: 'UITests',
-      output_directory: './artifacts/ui-tests',
-      scheme: ENV['REM_FL_UITESTS_SCHEME'] || 'UITests',
-      device: ENV['REM_FL_TESTS_DEVICE'] || 'iPhone 11',
-      code_coverage: false,
-      slack_only_on_failure: true,
-      skip_slack: ENV['PREVIOUS_BUILD_STATUS'] == 'error', # var defined in Bitrise step
-      output_types: 'json-compilation-database,html,junit',
-      output_files: 'compile_commands.json,report.html,report.junit')
-
-    scan(
       clean: false,
       skip_build: true,
       output_directory: './artifacts/unit-tests',

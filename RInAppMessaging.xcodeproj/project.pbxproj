@@ -22,19 +22,6 @@
 		4537DBAE2804C8260038E0D2 /* legacy_ping.json in Resources */ = {isa = PBXBuildFile; fileRef = 4537DBAD2804C8260038E0D2 /* legacy_ping.json */; };
 		4538BAE326282DE4009952BE /* GetConfigResponseSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4538BAE226282DE4009952BE /* GetConfigResponseSpec.swift */; };
 		4538BCF6262AE8FA009952BE /* UserDataCacheSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4538BCF5262AE8FA009952BE /* UserDataCacheSpec.swift */; };
-		453D242926A0DE5100FB9E6A /* ModalViewSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453D242826A0DE5100FB9E6A /* ModalViewSpec.swift */; };
-		453D243226A172F600FB9E6A /* modal-text-only.json in Resources */ = {isa = PBXBuildFile; fileRef = 453D243126A172F600FB9E6A /* modal-text-only.json */; };
-		453D243726A4ABD000FB9E6A /* modal-text-image.json in Resources */ = {isa = PBXBuildFile; fileRef = 453D243426A4ABD000FB9E6A /* modal-text-image.json */; };
-		453D243926A4ABD000FB9E6A /* modal-image-only.json in Resources */ = {isa = PBXBuildFile; fileRef = 453D243526A4ABD000FB9E6A /* modal-image-only.json */; };
-		453D243C26A4B83E00FB9E6A /* modal-controls.json in Resources */ = {isa = PBXBuildFile; fileRef = 453D243A26A4B83E00FB9E6A /* modal-controls.json */; };
-		453D244026A4DB4900FB9E6A /* FullScreenViewSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453D243E26A4DB4900FB9E6A /* FullScreenViewSpec.swift */; };
-		453D244126A4DB4900FB9E6A /* SlideUpViewSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453D243F26A4DB4900FB9E6A /* SlideUpViewSpec.swift */; };
-		453D244726A4DBDC00FB9E6A /* full-controls.json in Resources */ = {isa = PBXBuildFile; fileRef = 453D244226A4DBDC00FB9E6A /* full-controls.json */; };
-		453D244926A4DBDC00FB9E6A /* full-image-only.json in Resources */ = {isa = PBXBuildFile; fileRef = 453D244326A4DBDC00FB9E6A /* full-image-only.json */; };
-		453D244B26A4DBDC00FB9E6A /* full-text-only.json in Resources */ = {isa = PBXBuildFile; fileRef = 453D244426A4DBDC00FB9E6A /* full-text-only.json */; };
-		453D244D26A4DBDC00FB9E6A /* full-text-image.json in Resources */ = {isa = PBXBuildFile; fileRef = 453D244526A4DBDC00FB9E6A /* full-text-image.json */; };
-		453D245026A4DCD800FB9E6A /* slide-up-trigger.json in Resources */ = {isa = PBXBuildFile; fileRef = 453D244E26A4DCD800FB9E6A /* slide-up-trigger.json */; };
-		453D245326A4DF1D00FB9E6A /* slide-up-close.json in Resources */ = {isa = PBXBuildFile; fileRef = 453D245126A4DF1D00FB9E6A /* slide-up-close.json */; };
 		45491059247F58660019864D /* CustomAttributeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45491058247F58660019864D /* CustomAttributeSpec.swift */; };
 		45563B03240614AE004EAFD3 /* ReadyCampaignDispatcherSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45563B02240614AE004EAFD3 /* ReadyCampaignDispatcherSpec.swift */; };
 		45563B0724064D78004EAFD3 /* CampaignRepositorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45563B0624064D78004EAFD3 /* CampaignRepositorySpec.swift */; };
@@ -45,10 +32,6 @@
 		456FE1E924288C6500304872 /* CampaignTriggerAgentSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456FE1E824288C6500304872 /* CampaignTriggerAgentSpec.swift */; };
 		456FE1EB2428C51E00304872 /* CommonUtilitySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456FE1EA2428C51E00304872 /* CommonUtilitySpec.swift */; };
 		456FE1ED2429C4D200304872 /* ViewSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456FE1EC2429C4D200304872 /* ViewSpec.swift */; };
-		4592B4B3270229D1004FF27B /* config.json in Resources */ = {isa = PBXBuildFile; fileRef = 4592B4B2270229D1004FF27B /* config.json */; };
-		4592B4B627024925004FF27B /* MockServerHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4592B4B527024925004FF27B /* MockServerHelper.swift */; };
-		4592B4BA27024D0C004FF27B /* display-permission.json in Resources */ = {isa = PBXBuildFile; fileRef = 4592B4B927024D0C004FF27B /* display-permission.json */; };
-		4592B4CA27026FB7004FF27B /* istockphoto-1047234038.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 4592B4C627026AE8004FF27B /* istockphoto-1047234038.jpg */; };
 		4595F4F4262DE12C0001F30B /* KeyHasherSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4595F4F3262DE12C0001F30B /* KeyHasherSpec.swift */; };
 		459B227C245289F300D218CE /* ConfigurationServiceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459B227B245289F300D218CE /* ConfigurationServiceSpec.swift */; };
 		459B227E24528A5100D218CE /* MessageMixerServiceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459B227D24528A5000D218CE /* MessageMixerServiceSpec.swift */; };
@@ -85,16 +68,12 @@
 		D924268722D91C15002F50D3 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = D924268522D91C15002F50D3 /* Localizable.strings */; };
 		D92D1F2322249853008EA748 /* CampaignsValidatorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = D92D1F2122249833008EA748 /* CampaignsValidatorSpec.swift */; };
 		D92D1F262224A269008EA748 /* TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = D92D1F242224A265008EA748 /* TestHelpers.swift */; };
+		DA075B3BB837C17888098B6B /* Pods_RInAppMessaging_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0EE5A97A2DA54908CF6034DA /* Pods_RInAppMessaging_Example.framework */; };
+		E7713173DF7A882EBC39AD2C /* Pods_RInAppMessaging_Example_Tests_Common_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 803FDFAF5613253A64573400 /* Pods_RInAppMessaging_Example_Tests_Common_Tests.framework */; };
+		F4BCEDF78ED54D7E6893FC1C /* Pods_RInAppMessaging_Example_Tests_Common_IntegrationTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF9CA1EC86A807E6B809D92C /* Pods_RInAppMessaging_Example_Tests_Common_IntegrationTests.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		453D242B26A0DE5100FB9E6A /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 607FACC81AFB9204008FA782 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 607FACCF1AFB9204008FA782;
-			remoteInfo = RInAppMessaging_Example;
-		};
 		45B5724125ACE90F005A80F7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 607FACC81AFB9204008FA782 /* Project object */;
@@ -112,6 +91,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0EE5A97A2DA54908CF6034DA /* Pods_RInAppMessaging_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RInAppMessaging_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4516601C23CD740300310181 /* MainContainerSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainContainerSpec.swift; sourceTree = "<group>"; };
 		4518EEDD270F73BB00E8CBBC /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		4534947123C6ABF700189A81 /* SerializationSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SerializationSpec.swift; sourceTree = "<group>"; };
@@ -128,21 +108,6 @@
 		4537DBAD2804C8260038E0D2 /* legacy_ping.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = legacy_ping.json; sourceTree = "<group>"; };
 		4538BAE226282DE4009952BE /* GetConfigResponseSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetConfigResponseSpec.swift; sourceTree = "<group>"; };
 		4538BCF5262AE8FA009952BE /* UserDataCacheSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDataCacheSpec.swift; sourceTree = "<group>"; };
-		453D242626A0DE5100FB9E6A /* UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		453D242826A0DE5100FB9E6A /* ModalViewSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModalViewSpec.swift; sourceTree = "<group>"; };
-		453D242A26A0DE5100FB9E6A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		453D243126A172F600FB9E6A /* modal-text-only.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "modal-text-only.json"; sourceTree = "<group>"; };
-		453D243426A4ABD000FB9E6A /* modal-text-image.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "modal-text-image.json"; sourceTree = "<group>"; };
-		453D243526A4ABD000FB9E6A /* modal-image-only.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "modal-image-only.json"; sourceTree = "<group>"; };
-		453D243A26A4B83E00FB9E6A /* modal-controls.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "modal-controls.json"; sourceTree = "<group>"; };
-		453D243E26A4DB4900FB9E6A /* FullScreenViewSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FullScreenViewSpec.swift; sourceTree = "<group>"; };
-		453D243F26A4DB4900FB9E6A /* SlideUpViewSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SlideUpViewSpec.swift; sourceTree = "<group>"; };
-		453D244226A4DBDC00FB9E6A /* full-controls.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "full-controls.json"; sourceTree = "<group>"; };
-		453D244326A4DBDC00FB9E6A /* full-image-only.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "full-image-only.json"; sourceTree = "<group>"; };
-		453D244426A4DBDC00FB9E6A /* full-text-only.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "full-text-only.json"; sourceTree = "<group>"; };
-		453D244526A4DBDC00FB9E6A /* full-text-image.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "full-text-image.json"; sourceTree = "<group>"; };
-		453D244E26A4DCD800FB9E6A /* slide-up-trigger.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "slide-up-trigger.json"; sourceTree = "<group>"; };
-		453D245126A4DF1D00FB9E6A /* slide-up-close.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "slide-up-close.json"; sourceTree = "<group>"; };
 		45491058247F58660019864D /* CustomAttributeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAttributeSpec.swift; sourceTree = "<group>"; };
 		45563B02240614AE004EAFD3 /* ReadyCampaignDispatcherSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadyCampaignDispatcherSpec.swift; sourceTree = "<group>"; };
 		45563B0624064D78004EAFD3 /* CampaignRepositorySpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CampaignRepositorySpec.swift; sourceTree = "<group>"; };
@@ -153,11 +118,7 @@
 		456FE1E824288C6500304872 /* CampaignTriggerAgentSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CampaignTriggerAgentSpec.swift; sourceTree = "<group>"; };
 		456FE1EA2428C51E00304872 /* CommonUtilitySpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonUtilitySpec.swift; sourceTree = "<group>"; };
 		456FE1EC2429C4D200304872 /* ViewSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewSpec.swift; sourceTree = "<group>"; };
-		4592B4B2270229D1004FF27B /* config.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = config.json; sourceTree = "<group>"; };
-		4592B4B527024925004FF27B /* MockServerHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockServerHelper.swift; sourceTree = "<group>"; };
-		4592B4B927024D0C004FF27B /* display-permission.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "display-permission.json"; sourceTree = "<group>"; };
 		4592B4C42702642F004FF27B /* Example-UITests.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Example-UITests.xcconfig"; sourceTree = "<group>"; };
-		4592B4C627026AE8004FF27B /* istockphoto-1047234038.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "istockphoto-1047234038.jpg"; sourceTree = "<group>"; };
 		4595F4F3262DE12C0001F30B /* KeyHasherSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyHasherSpec.swift; sourceTree = "<group>"; };
 		459B227B245289F300D218CE /* ConfigurationServiceSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationServiceSpec.swift; sourceTree = "<group>"; };
 		459B227D24528A5000D218CE /* MessageMixerServiceSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageMixerServiceSpec.swift; sourceTree = "<group>"; };
@@ -175,6 +136,7 @@
 		45B5723C25ACE90F005A80F7 /* IntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		45B5723E25ACE90F005A80F7 /* IntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntegrationTests.swift; sourceTree = "<group>"; };
 		45B5724025ACE90F005A80F7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		45B6EFA453911A4DEF8E850F /* Pods-RInAppMessaging_Example.uitests.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RInAppMessaging_Example.uitests.xcconfig"; path = "Target Support Files/Pods-RInAppMessaging_Example/Pods-RInAppMessaging_Example.uitests.xcconfig"; sourceTree = "<group>"; };
 		45BDFD022421D311004DEA0C /* CampaignsListManagerSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CampaignsListManagerSpec.swift; sourceTree = "<group>"; };
 		45BDFD042421EE7B004DEA0C /* SharedMocks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedMocks.swift; sourceTree = "<group>"; };
 		45BDFD0624232714004DEA0C /* PublicAPISpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicAPISpec.swift; sourceTree = "<group>"; };
@@ -195,7 +157,14 @@
 		607FACEA1AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6DA608F3248603BA00A8260D /* Example-Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Example-Debug.xcconfig"; sourceTree = "<group>"; };
 		6DA608F424860B7F00A8260D /* Example-Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Example-Release.xcconfig"; sourceTree = "<group>"; };
+		777FBCFAE927400B8342331B /* Pods-RInAppMessaging_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RInAppMessaging_Example.debug.xcconfig"; path = "Target Support Files/Pods-RInAppMessaging_Example/Pods-RInAppMessaging_Example.debug.xcconfig"; sourceTree = "<group>"; };
+		803FDFAF5613253A64573400 /* Pods_RInAppMessaging_Example_Tests_Common_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RInAppMessaging_Example_Tests_Common_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A79E9CA4778DA99695B2EF12 /* Pods-RInAppMessaging_Example-Tests-Common-IntegrationTests.uitests.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RInAppMessaging_Example-Tests-Common-IntegrationTests.uitests.xcconfig"; path = "Target Support Files/Pods-RInAppMessaging_Example-Tests-Common-IntegrationTests/Pods-RInAppMessaging_Example-Tests-Common-IntegrationTests.uitests.xcconfig"; sourceTree = "<group>"; };
+		AB64C1F9A5C98D18772F59F4 /* Pods-RInAppMessaging_Example-Tests-Common-Tests.uitests.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RInAppMessaging_Example-Tests-Common-Tests.uitests.xcconfig"; path = "Target Support Files/Pods-RInAppMessaging_Example-Tests-Common-Tests/Pods-RInAppMessaging_Example-Tests-Common-Tests.uitests.xcconfig"; sourceTree = "<group>"; };
+		BF9CA1EC86A807E6B809D92C /* Pods_RInAppMessaging_Example_Tests_Common_IntegrationTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RInAppMessaging_Example_Tests_Common_IntegrationTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C9827557262C423C00476505 /* BackoffSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackoffSpec.swift; sourceTree = "<group>"; };
+		CD373D3B4F22B225CA09F2FB /* Pods-RInAppMessaging_Example-Tests-Common-Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RInAppMessaging_Example-Tests-Common-Tests.debug.xcconfig"; path = "Target Support Files/Pods-RInAppMessaging_Example-Tests-Common-Tests/Pods-RInAppMessaging_Example-Tests-Common-Tests.debug.xcconfig"; sourceTree = "<group>"; };
+		D209312EB98796DDCFFBA5D4 /* Pods-RInAppMessaging_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RInAppMessaging_Example.release.xcconfig"; path = "Target Support Files/Pods-RInAppMessaging_Example/Pods-RInAppMessaging_Example.release.xcconfig"; sourceTree = "<group>"; };
 		D920D8C82277B80F008FB38D /* SecondPageViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SecondPageViewController.xib; sourceTree = "<group>"; };
 		D920D8CA2277B965008FB38D /* SecondPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondPageViewController.swift; sourceTree = "<group>"; };
 		D924268022D91046002F50D3 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Main.strings; sourceTree = "<group>"; };
@@ -205,20 +174,17 @@
 		D92D1F2122249833008EA748 /* CampaignsValidatorSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CampaignsValidatorSpec.swift; sourceTree = "<group>"; };
 		D92D1F242224A265008EA748 /* TestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestHelpers.swift; sourceTree = "<group>"; };
 		D9F418282110FD9F00E2158F /* ConfigurationSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationSpec.swift; sourceTree = "<group>"; };
+		E4FA2D4DE233AE543981D891 /* Pods-RInAppMessaging_Example-Tests-Common-IntegrationTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RInAppMessaging_Example-Tests-Common-IntegrationTests.release.xcconfig"; path = "Target Support Files/Pods-RInAppMessaging_Example-Tests-Common-IntegrationTests/Pods-RInAppMessaging_Example-Tests-Common-IntegrationTests.release.xcconfig"; sourceTree = "<group>"; };
+		F6E3941EEF0A037B0899E470 /* Pods-RInAppMessaging_Example-Tests-Common-IntegrationTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RInAppMessaging_Example-Tests-Common-IntegrationTests.debug.xcconfig"; path = "Target Support Files/Pods-RInAppMessaging_Example-Tests-Common-IntegrationTests/Pods-RInAppMessaging_Example-Tests-Common-IntegrationTests.debug.xcconfig"; sourceTree = "<group>"; };
+		FF3B350D1D5462ED8E183189 /* Pods-RInAppMessaging_Example-Tests-Common-Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RInAppMessaging_Example-Tests-Common-Tests.release.xcconfig"; path = "Target Support Files/Pods-RInAppMessaging_Example-Tests-Common-Tests/Pods-RInAppMessaging_Example-Tests-Common-Tests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		453D242326A0DE5100FB9E6A /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		45B5723925ACE90F005A80F7 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F4BCEDF78ED54D7E6893FC1C /* Pods_RInAppMessaging_Example_Tests_Common_IntegrationTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -226,6 +192,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DA075B3BB837C17888098B6B /* Pods_RInAppMessaging_Example.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -233,6 +200,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E7713173DF7A882EBC39AD2C /* Pods_RInAppMessaging_Example_Tests_Common_Tests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -253,56 +221,6 @@
 				4537DBAD2804C8260038E0D2 /* legacy_ping.json */,
 			);
 			path = Payloads;
-			sourceTree = "<group>";
-		};
-		453D242726A0DE5100FB9E6A /* UITests */ = {
-			isa = PBXGroup;
-			children = (
-				453D242826A0DE5100FB9E6A /* ModalViewSpec.swift */,
-				453D243E26A4DB4900FB9E6A /* FullScreenViewSpec.swift */,
-				453D243F26A4DB4900FB9E6A /* SlideUpViewSpec.swift */,
-				4592B4C827026AF0004FF27B /* Resources */,
-				4592B4B42702490C004FF27B /* Helpers */,
-				453D243026A1724700FB9E6A /* ResponseStubs */,
-				453D242A26A0DE5100FB9E6A /* Info.plist */,
-			);
-			name = UITests;
-			path = Tests/UITests;
-			sourceTree = "<group>";
-		};
-		453D243026A1724700FB9E6A /* ResponseStubs */ = {
-			isa = PBXGroup;
-			children = (
-				453D243126A172F600FB9E6A /* modal-text-only.json */,
-				453D243526A4ABD000FB9E6A /* modal-image-only.json */,
-				453D243426A4ABD000FB9E6A /* modal-text-image.json */,
-				453D243A26A4B83E00FB9E6A /* modal-controls.json */,
-				453D244226A4DBDC00FB9E6A /* full-controls.json */,
-				453D244326A4DBDC00FB9E6A /* full-image-only.json */,
-				453D244526A4DBDC00FB9E6A /* full-text-image.json */,
-				453D244426A4DBDC00FB9E6A /* full-text-only.json */,
-				453D244E26A4DCD800FB9E6A /* slide-up-trigger.json */,
-				453D245126A4DF1D00FB9E6A /* slide-up-close.json */,
-				4592B4B2270229D1004FF27B /* config.json */,
-				4592B4B927024D0C004FF27B /* display-permission.json */,
-			);
-			path = ResponseStubs;
-			sourceTree = "<group>";
-		};
-		4592B4B42702490C004FF27B /* Helpers */ = {
-			isa = PBXGroup;
-			children = (
-				4592B4B527024925004FF27B /* MockServerHelper.swift */,
-			);
-			path = Helpers;
-			sourceTree = "<group>";
-		};
-		4592B4C827026AF0004FF27B /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				4592B4C627026AE8004FF27B /* istockphoto-1047234038.jpg */,
-			);
-			path = Resources;
 			sourceTree = "<group>";
 		};
 		45B5723D25ACE90F005A80F7 /* IntegrationTests */ = {
@@ -330,7 +248,6 @@
 				607FACD21AFB9204008FA782 /* Sample */,
 				607FACE81AFB9204008FA782 /* Tests */,
 				45B5723D25ACE90F005A80F7 /* IntegrationTests */,
-				453D242726A0DE5100FB9E6A /* UITests */,
 				607FACD11AFB9204008FA782 /* Products */,
 				B04D923357C1CC9CB229B066 /* Pods */,
 				9F2EBD0D1344BB8875C0D465 /* Frameworks */,
@@ -343,7 +260,6 @@
 				607FACD01AFB9204008FA782 /* RInAppMessaging_Example.app */,
 				607FACE51AFB9204008FA782 /* Tests.xctest */,
 				45B5723C25ACE90F005A80F7 /* IntegrationTests.xctest */,
-				453D242626A0DE5100FB9E6A /* UITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -439,6 +355,9 @@
 			isa = PBXGroup;
 			children = (
 				4518EEDD270F73BB00E8CBBC /* Foundation.framework */,
+				0EE5A97A2DA54908CF6034DA /* Pods_RInAppMessaging_Example.framework */,
+				BF9CA1EC86A807E6B809D92C /* Pods_RInAppMessaging_Example_Tests_Common_IntegrationTests.framework */,
+				803FDFAF5613253A64573400 /* Pods_RInAppMessaging_Example_Tests_Common_Tests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -446,6 +365,15 @@
 		B04D923357C1CC9CB229B066 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
+				777FBCFAE927400B8342331B /* Pods-RInAppMessaging_Example.debug.xcconfig */,
+				45B6EFA453911A4DEF8E850F /* Pods-RInAppMessaging_Example.uitests.xcconfig */,
+				D209312EB98796DDCFFBA5D4 /* Pods-RInAppMessaging_Example.release.xcconfig */,
+				F6E3941EEF0A037B0899E470 /* Pods-RInAppMessaging_Example-Tests-Common-IntegrationTests.debug.xcconfig */,
+				A79E9CA4778DA99695B2EF12 /* Pods-RInAppMessaging_Example-Tests-Common-IntegrationTests.uitests.xcconfig */,
+				E4FA2D4DE233AE543981D891 /* Pods-RInAppMessaging_Example-Tests-Common-IntegrationTests.release.xcconfig */,
+				CD373D3B4F22B225CA09F2FB /* Pods-RInAppMessaging_Example-Tests-Common-Tests.debug.xcconfig */,
+				AB64C1F9A5C98D18772F59F4 /* Pods-RInAppMessaging_Example-Tests-Common-Tests.uitests.xcconfig */,
+				FF3B350D1D5462ED8E183189 /* Pods-RInAppMessaging_Example-Tests-Common-Tests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -453,31 +381,15 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		453D242526A0DE5100FB9E6A /* UITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 453D242F26A0DE5100FB9E6A /* Build configuration list for PBXNativeTarget "UITests" */;
-			buildPhases = (
-				453D242226A0DE5100FB9E6A /* Sources */,
-				453D242326A0DE5100FB9E6A /* Frameworks */,
-				453D242426A0DE5100FB9E6A /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				453D242C26A0DE5100FB9E6A /* PBXTargetDependency */,
-			);
-			name = UITests;
-			productName = UITests;
-			productReference = 453D242626A0DE5100FB9E6A /* UITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
 		45B5723B25ACE90F005A80F7 /* IntegrationTests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 45B5724325ACE90F005A80F7 /* Build configuration list for PBXNativeTarget "IntegrationTests" */;
 			buildPhases = (
+				A97B82F1B3CCD17975AB1009 /* [CP] Check Pods Manifest.lock */,
 				45B5723825ACE90F005A80F7 /* Sources */,
 				45B5723925ACE90F005A80F7 /* Frameworks */,
 				45B5723A25ACE90F005A80F7 /* Resources */,
+				1F5E80B43F0B5E718EEA7CA5 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -493,10 +405,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 607FACEF1AFB9204008FA782 /* Build configuration list for PBXNativeTarget "RInAppMessaging_Example" */;
 			buildPhases = (
+				7BECBB822A5E0AE05550BD29 /* [CP] Check Pods Manifest.lock */,
 				607FACCC1AFB9204008FA782 /* Sources */,
 				607FACCD1AFB9204008FA782 /* Frameworks */,
 				607FACCE1AFB9204008FA782 /* Resources */,
 				450857B623B5FD9300FBCFBF /* SwiftLint */,
+				D590DA7ECA43BA04DAB3E8E9 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -511,9 +425,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 607FACF21AFB9204008FA782 /* Build configuration list for PBXNativeTarget "Tests" */;
 			buildPhases = (
+				B7253ACC8E673E0AD5F0BC07 /* [CP] Check Pods Manifest.lock */,
 				607FACE11AFB9204008FA782 /* Sources */,
 				607FACE21AFB9204008FA782 /* Frameworks */,
 				607FACE31AFB9204008FA782 /* Resources */,
+				950A94F4E60F470BB71ECEEE /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -535,11 +451,6 @@
 				LastUpgradeCheck = 1210;
 				ORGANIZATIONNAME = "Rakuten Group, Inc.";
 				TargetAttributes = {
-					453D242526A0DE5100FB9E6A = {
-						CreatedOnToolsVersion = 12.5.1;
-						ProvisioningStyle = Automatic;
-						TestTargetID = 607FACCF1AFB9204008FA782;
-					};
 					45B5723B25ACE90F005A80F7 = {
 						CreatedOnToolsVersion = 12.3;
 						DevelopmentTeam = 38KUE5XET9;
@@ -576,32 +487,11 @@
 				607FACCF1AFB9204008FA782 /* RInAppMessaging_Example */,
 				607FACE41AFB9204008FA782 /* Tests */,
 				45B5723B25ACE90F005A80F7 /* IntegrationTests */,
-				453D242526A0DE5100FB9E6A /* UITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		453D242426A0DE5100FB9E6A /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				453D244B26A4DBDC00FB9E6A /* full-text-only.json in Resources */,
-				453D244D26A4DBDC00FB9E6A /* full-text-image.json in Resources */,
-				4592B4B3270229D1004FF27B /* config.json in Resources */,
-				4592B4CA27026FB7004FF27B /* istockphoto-1047234038.jpg in Resources */,
-				453D245026A4DCD800FB9E6A /* slide-up-trigger.json in Resources */,
-				453D243726A4ABD000FB9E6A /* modal-text-image.json in Resources */,
-				4592B4BA27024D0C004FF27B /* display-permission.json in Resources */,
-				453D243C26A4B83E00FB9E6A /* modal-controls.json in Resources */,
-				453D244926A4DBDC00FB9E6A /* full-image-only.json in Resources */,
-				453D243926A4ABD000FB9E6A /* modal-image-only.json in Resources */,
-				453D243226A172F600FB9E6A /* modal-text-only.json in Resources */,
-				453D244726A4DBDC00FB9E6A /* full-controls.json in Resources */,
-				453D245326A4DF1D00FB9E6A /* slide-up-close.json in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		45B5723A25ACE90F005A80F7 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -641,6 +531,30 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		1F5E80B43F0B5E718EEA7CA5 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-RInAppMessaging_Example-Tests-Common-IntegrationTests/Pods-RInAppMessaging_Example-Tests-Common-IntegrationTests-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Nimble/Nimble.framework",
+				"${BUILT_PRODUCTS_DIR}/RInAppMessaging/RInAppMessaging.framework",
+				"${BUILT_PRODUCTS_DIR}/RSDKUtils/RSDKUtils.framework",
+				"${BUILT_PRODUCTS_DIR}/Quick/Quick.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Nimble.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RInAppMessaging.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RSDKUtils.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Quick.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-RInAppMessaging_Example-Tests-Common-IntegrationTests/Pods-RInAppMessaging_Example-Tests-Common-IntegrationTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		450857B623B5FD9300FBCFBF /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -659,20 +573,121 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" lint --config \"${SRCROOT}/.swiftlint.yml\"\n";
 		};
+		7BECBB822A5E0AE05550BD29 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-RInAppMessaging_Example-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		950A94F4E60F470BB71ECEEE /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-RInAppMessaging_Example-Tests-Common-Tests/Pods-RInAppMessaging_Example-Tests-Common-Tests-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Nimble/Nimble.framework",
+				"${BUILT_PRODUCTS_DIR}/RInAppMessaging/RInAppMessaging.framework",
+				"${BUILT_PRODUCTS_DIR}/RSDKUtils/RSDKUtils.framework",
+				"${BUILT_PRODUCTS_DIR}/Quick/Quick.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Nimble.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RInAppMessaging.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RSDKUtils.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Quick.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-RInAppMessaging_Example-Tests-Common-Tests/Pods-RInAppMessaging_Example-Tests-Common-Tests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		A97B82F1B3CCD17975AB1009 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-RInAppMessaging_Example-Tests-Common-IntegrationTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B7253ACC8E673E0AD5F0BC07 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-RInAppMessaging_Example-Tests-Common-Tests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		D590DA7ECA43BA04DAB3E8E9 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-RInAppMessaging_Example/Pods-RInAppMessaging_Example-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Nimble/Nimble.framework",
+				"${BUILT_PRODUCTS_DIR}/RInAppMessaging/RInAppMessaging.framework",
+				"${BUILT_PRODUCTS_DIR}/RSDKUtils/RSDKUtils.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Nimble.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RInAppMessaging.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RSDKUtils.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-RInAppMessaging_Example/Pods-RInAppMessaging_Example-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		453D242226A0DE5100FB9E6A /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				453D244126A4DB4900FB9E6A /* SlideUpViewSpec.swift in Sources */,
-				4592B4B627024925004FF27B /* MockServerHelper.swift in Sources */,
-				453D244026A4DB4900FB9E6A /* FullScreenViewSpec.swift in Sources */,
-				453D242926A0DE5100FB9E6A /* ModalViewSpec.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		45B5723825ACE90F005A80F7 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -743,11 +758,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		453D242C26A0DE5100FB9E6A /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 607FACCF1AFB9204008FA782 /* RInAppMessaging_Example */;
-			targetProxy = 453D242B26A0DE5100FB9E6A /* PBXContainerItemProxy */;
-		};
 		45B5724225ACE90F005A80F7 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 607FACCF1AFB9204008FA782 /* RInAppMessaging_Example */;
@@ -791,53 +801,6 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		453D242D26A0DE5100FB9E6A /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_STYLE = Automatic;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = Tests/UITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = jp.co.rakuten.inappmessaging.UITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
-				SWIFT_VERSION = 5.0;
-				TEST_TARGET_NAME = RInAppMessaging_Example;
-			};
-			name = Debug;
-		};
-		453D242E26A0DE5100FB9E6A /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_STYLE = Automatic;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = Tests/UITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = jp.co.rakuten.inappmessaging.UITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
-				TEST_TARGET_NAME = RInAppMessaging_Example;
-			};
-			name = Release;
-		};
 		4592B4BF270263D4004FF27B /* UITests */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -915,6 +878,7 @@
 		};
 		4592B4C1270263D4004FF27B /* UITests */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = AB64C1F9A5C98D18772F59F4 /* Pods-RInAppMessaging_Example-Tests-Common-Tests.uitests.xcconfig */;
 			buildSettings = {
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -931,6 +895,7 @@
 		};
 		4592B4C2270263D4004FF27B /* UITests */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = A79E9CA4778DA99695B2EF12 /* Pods-RInAppMessaging_Example-Tests-Common-IntegrationTests.uitests.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -955,33 +920,9 @@
 			};
 			name = UITests;
 		};
-		4592B4C3270263D4004FF27B /* UITests */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_STYLE = Automatic;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = Tests/UITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = jp.co.rakuten.inappmessaging.UITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
-				SWIFT_VERSION = 5.0;
-				TEST_TARGET_NAME = RInAppMessaging_Example;
-			};
-			name = UITests;
-		};
 		45B5724425ACE90F005A80F7 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = F6E3941EEF0A037B0899E470 /* Pods-RInAppMessaging_Example-Tests-Common-IntegrationTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -1008,6 +949,7 @@
 		};
 		45B5724525ACE90F005A80F7 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = E4FA2D4DE233AE543981D891 /* Pods-RInAppMessaging_Example-Tests-Common-IntegrationTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -1174,6 +1116,7 @@
 		};
 		607FACF31AFB9204008FA782 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CD373D3B4F22B225CA09F2FB /* Pods-RInAppMessaging_Example-Tests-Common-Tests.debug.xcconfig */;
 			buildSettings = {
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -1190,6 +1133,7 @@
 		};
 		607FACF41AFB9204008FA782 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = FF3B350D1D5462ED8E183189 /* Pods-RInAppMessaging_Example-Tests-Common-Tests.release.xcconfig */;
 			buildSettings = {
 				INFOPLIST_FILE = Tests/Tests/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.co.rakuten.inappmessaging.$(PRODUCT_NAME:rfc1034identifier)";
@@ -1203,16 +1147,6 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		453D242F26A0DE5100FB9E6A /* Build configuration list for PBXNativeTarget "UITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				453D242D26A0DE5100FB9E6A /* Debug */,
-				4592B4C3270263D4004FF27B /* UITests */,
-				453D242E26A0DE5100FB9E6A /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		45B5724325ACE90F005A80F7 /* Build configuration list for PBXNativeTarget "IntegrationTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
