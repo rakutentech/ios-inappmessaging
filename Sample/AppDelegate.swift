@@ -17,6 +17,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             RInAppMessaging.configure()
         }
 
+        sleep(5)
+
         return true
     }
 
