@@ -14,10 +14,6 @@ target 'RInAppMessaging_Example' do
 
     target 'Tests'
 
-    target 'UITests' do
-      pod 'Shock', '~> 6.1.2'
-    end
-
     target 'IntegrationTests'
   end
 end
