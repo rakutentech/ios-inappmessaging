@@ -131,13 +131,7 @@ class ViewSpec: QuickSpec {
 
                 let scriptHandler = WebViewScriptMessageHandler()
                 webView.configuration.userContentController.add(scriptHandler, name: "echo")
-                waitUntil(timeout: .seconds(2)) { done in
-                    DispatchQueue.global(qos: .userInteractive).async {
-                        sleep(1)
-                        expect(scriptHandler.result).toNot(equal("Echo"))
-                        done()
-                    }
-                }
+                expect(scriptHandler.result).toAfterTimeoutNot(equal("Echo"))
 
                 webView.removeFromSuperview()
             }

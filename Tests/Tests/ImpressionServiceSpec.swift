@@ -96,7 +96,7 @@ class ImpressionServiceSpec: QuickSpec {
 
             context("when request fails") {
                 beforeEach {
-                    Constants.Retry.Tests.setInitialDelayMS(1000)
+                    Constants.Retry.Tests.setInitialDelayMS(100)
                     Constants.Retry.Tests.setBackOffUpperBoundSeconds(1)
                 }
 
@@ -157,7 +157,7 @@ class ImpressionServiceSpec: QuickSpec {
                         it("will not retry for \(code) status code") {
                             httpSession.httpResponse = ImpressionURLResponse(statusCode: code)
                             sendRequestAndWaitForResponse()
-                            expect(service.scheduledTask).toAfterTimeout(beNil())
+                            expect(service.scheduledTask).to(beNil())
                         }
                     }
                 }

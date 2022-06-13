@@ -75,18 +75,16 @@ class RouterSpec: QuickSpec {
                     it("will not show any view for invalid campaign type") {
                         let campaign = TestHelpers.generateCampaign(id: "test", type: .invalid)
                         router.displayCampaign(campaign, associatedImageData: nil, confirmation: true, completion: { _ in })
-                        expect(UIApplication.shared.getKeyWindow()?.subviews)
-                            .toAfterTimeout(allPass({ !($0 is BaseView )}))
+                        expect(UIApplication.shared.getKeyWindow()?.findIAMViewSubview()).toAfterTimeout(beNil())
                     }
 
                     it("will not show any view for html campaign type") {
                         let campaign = TestHelpers.generateCampaign(id: "test", type: .html)
                         router.displayCampaign(campaign, associatedImageData: nil, confirmation: true, completion: { _ in })
-                        expect(UIApplication.shared.getKeyWindow()?.subviews)
-                            .toAfterTimeout(allPass({ !($0 is BaseView )}))
+                        expect(UIApplication.shared.getKeyWindow()?.findIAMViewSubview()).toAfterTimeout(beNil())
                     }
 
-                    it("will not show any view when another one is still displayed") {
+                    it("will not show another view when one is already displayed") {
                         let campaign1 = TestHelpers.generateCampaign(id: "test", type: .modal)
                         let campaign2 = TestHelpers.generateCampaign(id: "test", type: .full)
                         router.displayCampaign(campaign1, associatedImageData: nil, confirmation: true, completion: { _ in })

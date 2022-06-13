@@ -170,11 +170,13 @@ class InAppMessagingModuleSpec: QuickSpec {
 
                 context("and fetchAndSaveConfigData has not finished") {
                     let queue = DispatchQueue(label: "iamTestQueue")
+                    let configSemaphore = DispatchGroup()
 
                     beforeEach {
                         configurationManager.fetchCalledClosure = {
-                            sleep(2)
+                            configSemaphore.wait()
                         }
+                        configSemaphore.enter()
                         queue.async {
                             iamModule.initialize { }
                         }
@@ -185,7 +187,8 @@ class InAppMessagingModuleSpec: QuickSpec {
                             iamModule.logEvent(AppStartEvent())
                         }
                         expect(eventMatcher.loggedEvents).toAfterTimeout(beEmpty())
-                        expect(eventMatcher.loggedEvents).toEventually(haveCount(1), timeout: .seconds(2))
+                        configSemaphore.leave()
+                        expect(eventMatcher.loggedEvents).toEventually(haveCount(1))
                     }
 
                     it("should wait synchronously with registerPreference method") {
@@ -194,14 +197,17 @@ class InAppMessagingModuleSpec: QuickSpec {
                             iamModule.registerPreference(preference)
                         }
                         expect(accountRepository.userInfoProvider).toAfterTimeout(beNil())
-                        expect(accountRepository.userInfoProvider).toEventually(beIdenticalTo(preference), timeout: .seconds(2))
+                        configSemaphore.leave()
+                        expect(accountRepository.userInfoProvider).toEventually(beIdenticalTo(preference))
                     }
                 }
 
                 context("and fetchAndSaveConfigData errored (waiting for retry)") {
 
+                    var resume: (() -> Void)!
+
                     beforeEach {
-                        configurationManager.simulateRetryDelay = 1
+                        resume = configurationManager.prepareRetryDelayAndWaitForSignal()
                         iamModule.initialize { }
                     }
 
@@ -211,7 +217,8 @@ class InAppMessagingModuleSpec: QuickSpec {
                         iamModule.logEvent(LoginSuccessfulEvent())
                         expect(eventMatcher.loggedEvents).to(beEmpty())
                         expect(campaignsValidator.wasValidateCalled).to(beFalse())
-                        expect(eventMatcher.loggedEvents).toEventually(haveCount(2), timeout: .seconds(2))
+                        resume()
+                        expect(eventMatcher.loggedEvents).toEventually(haveCount(2))
                         expect(campaignsValidator.wasValidateCalled).to(beTrue())
                     }
 
@@ -219,8 +226,9 @@ class InAppMessagingModuleSpec: QuickSpec {
                         configurationManager.rolloutPercentage = 0
                         iamModule.logEvent(AppStartEvent())
                         iamModule.logEvent(LoginSuccessfulEvent())
-                        expect(eventMatcher.loggedEvents).toAfterTimeout(beEmpty(), timeout: 2)
-                        expect(campaignsValidator.wasValidateCalled).toAfterTimeout(beFalse(), timeout: 2)
+                        resume()
+                        expect(eventMatcher.loggedEvents).to(beEmpty())
+                        expect(campaignsValidator.wasValidateCalled).to(beFalse())
                     }
                 }
 
@@ -273,17 +281,17 @@ class InAppMessagingModuleSpec: QuickSpec {
 
                             it("will not call EventMatcher") {
                                 iamModule.logEvent(PurchaseSuccessfulEvent())
-                                expect(eventMatcher.loggedEvents).toAfterTimeout(beEmpty())
+                                expect(eventMatcher.loggedEvents).to(beEmpty())
                             }
 
                             it("will not validate campaigns") {
                                 iamModule.logEvent(PurchaseSuccessfulEvent())
-                                expect(campaignsValidator.wasValidateCalled).toAfterTimeout(beFalse())
+                                expect(campaignsValidator.wasValidateCalled).to(beFalse())
                             }
 
                             it("will not call dispatchAllIfNeeded") {
                                 iamModule.logEvent(PurchaseSuccessfulEvent())
-                                expect(readyCampaignDispatcher.wasDispatchCalled).toAfterTimeout(beFalse())
+                                expect(readyCampaignDispatcher.wasDispatchCalled).to(beFalse())
                             }
 
                             it("will not call checkUserChanges()") {
@@ -301,17 +309,17 @@ class InAppMessagingModuleSpec: QuickSpec {
 
                         it("will not call EventMatcher") {
                             iamModule.logEvent(PurchaseSuccessfulEvent())
-                            expect(eventMatcher.loggedEvents.isEmpty).toAfterTimeout(beTrue())
+                            expect(eventMatcher.loggedEvents).to(beEmpty())
                         }
 
                         it("will not validate campaigns") {
                             iamModule.logEvent(PurchaseSuccessfulEvent())
-                            expect(campaignsValidator.wasValidateCalled).toAfterTimeout(beFalse())
+                            expect(campaignsValidator.wasValidateCalled).to(beFalse())
                         }
 
                         it("will not call dispatchAllIfNeeded") {
                             iamModule.logEvent(PurchaseSuccessfulEvent())
-                            expect(readyCampaignDispatcher.wasDispatchCalled).toAfterTimeout(beFalse())
+                            expect(readyCampaignDispatcher.wasDispatchCalled).to(beFalse())
                         }
 
                         it("will not call checkUserChanges()") {

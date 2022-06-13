@@ -35,7 +35,7 @@ class CampaignsListManagerSpec: QuickSpec {
                 context("and service error has occured") {
 
                     beforeEach {
-                        Constants.Retry.Tests.setInitialDelayMS(1000)
+                        Constants.Retry.Tests.setInitialDelayMS(100)
                         Constants.Retry.Tests.setBackOffUpperBoundSeconds(1)
                     }
 
