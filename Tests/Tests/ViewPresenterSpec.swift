@@ -333,7 +333,7 @@ class ViewPresenterSpec: QuickSpec {
 
                 if #available(iOS 13.0, *) {
                     it("will call initializeView on the view object with expected model") {
-                        presenter.associatedImage = UIImage(systemName: "photo.artframe")
+                        presenter.associatedImage = UIImage(named: "test-image", in: .unitTests, with: nil)
                         presenter.viewDidInitialize()
 
                         expect(view.viewModel).toNot(beNil())
