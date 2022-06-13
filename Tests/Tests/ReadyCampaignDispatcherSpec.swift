@@ -333,7 +333,8 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
                         expect(dispatcher.scheduledTask).toEventuallyNot(beNil()) // wait
                         dispatcher.resetQueue()
                         expect(dispatcher.scheduledTask?.isCancelled).toEventually(beTrue())
-                        expect(router.displayedCampaignsCount).toAfterTimeout(equal(1), timeout: 2)
+                        expect(dispatcher.queuedCampaignIDs).to(beEmpty())
+                        expect(router.displayedCampaignsCount).to(equal(1))
                     }
                 }
             }
@@ -348,7 +349,7 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
                     campaignRepository.list = [campaign]
                     dispatcher.addToQueue(campaignID: campaign.id)
                     dispatcher.dispatchAllIfNeeded()
-                    expect(campaignRepository.decrementImpressionsCalls).toAfterTimeout(equal(1))
+                    expect(campaignRepository.decrementImpressionsCalls).toEventually(equal(1))
                 }
 
                 it("will not decrement or increment impressions left value if contexts were rejected") {
@@ -367,7 +368,7 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
                     campaignRepository.list = [campaign]
                     dispatcher.addToQueue(campaignID: campaign.id)
                     dispatcher.dispatchAllIfNeeded()
-                    expect(campaignRepository.decrementImpressionsCalls).toAfterTimeout(equal(1))
+                    expect(campaignRepository.decrementImpressionsCalls).toEventually(equal(1))
                     expect(campaignRepository.incrementImpressionsCalls).to(equal(0))
                 }
 
@@ -396,8 +397,9 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
                     campaignRepository.list = [campaign]
                     dispatcher.addToQueue(campaignID: campaign.id)
                     dispatcher.dispatchAllIfNeeded()
+                    expect(dispatcher.isDispatching).toEventually(beTrue())
                     expect(router.displayedCampaignsCount).toEventually(equal(1))
-                    expect(dispatcher.isDispatching).to(beFalse())
+                    expect(dispatcher.isDispatching).toEventually(beFalse())
                 }
             }
         }

@@ -153,34 +153,38 @@ class PublicAPISpec: QuickSpec {
 
             it("will set accessibilityCompatibleDisplay flag in Router") {
                 RInAppMessaging.accessibilityCompatibleDisplay = true
-                expect(router.accessibilityCompatibleDisplay).toAfterTimeout(beTrue())
+                expect(router.accessibilityCompatibleDisplay).toAfterTimeout(beTrue(), timeout: 0.2)
                 RInAppMessaging.accessibilityCompatibleDisplay = false
                 expect(router.accessibilityCompatibleDisplay).toEventually(beFalse())
             }
 
             it("won't send any events until configuration has finished") {
                 RInAppMessaging.deinitializeModule()
+                var resume: (() -> Void)!
                 reinitializeSDK(onDependencyResolved: {
-                    messageMixerService.delay = 3.0
+                    resume = messageMixerService.suspendNextPingAndWaitForSignal()
                 })
                 RInAppMessaging.logEvent(LoginSuccessfulEvent())
-                expect(eventMatcher.loggedEvents).toAfterTimeout(beEmpty(), timeout: 1)
-                expect(eventMatcher.loggedEvents).toEventually(haveCount(1),
-                                                               timeout: .seconds(Int(messageMixerService.delay + 1)),
-                                                               pollInterval: .milliseconds(500))
+                expect(eventMatcher.loggedEvents).toAfterTimeout(beEmpty())
+                resume()
+                expect(eventMatcher.loggedEvents).toEventually(haveCount(1))
             }
 
             // This test checks if events logged after getConfig() failure (bufferedEvents)
             // are re-logged properly when retried getConfig request succeeds.
-            // If buffered events can fill the set of campaign triggers, for example 3 times,
-            // then that campaign should be displayed 3 times if maxImpression allows it.
+            // If buffered events satisfy all campaign triggers, for example 3 times,
+            // then that campaign should be displayed 3 times (if maxImpression allows it).
             // This test also checks if campaigns are queued properly (respecting impressionsLeft value)
-            // when multiple events are logged in very short time.
-            it("will display campaign 2 times after first ping call for matching events that were logged after getConfig request failure") {
+            // when multiple events are logged in a very short time.
+            it("will display campaign 2 times for matching 'buffered' events") {
                 RInAppMessaging.deinitializeModule()
+                var resumeConfig: (() -> Void)!
+                var configCalled = false
                 reinitializeSDK(onDependencyResolved: {
-                    configurationManager.simulateRetryDelay = 1.0
-                    messageMixerService.delay = 1.0
+                    resumeConfig = configurationManager.prepareRetryDelayAndWaitForSignal()
+                    configurationManager.fetchCalledClosure = {
+                        configCalled = true
+                    }
                     messageMixerService.mockedResponse = TestHelpers.MockResponse.withGeneratedCampaigns(
                         count: 1, test: false, delay: 100, maxImpressions: 2, addContexts: false,
                         triggers: [Trigger(type: .event,
@@ -192,13 +196,11 @@ class PublicAPISpec: QuickSpec {
                 RInAppMessaging.logEvent(LoginSuccessfulEvent())
                 RInAppMessaging.logEvent(LoginSuccessfulEvent())
 
-                expect(UIApplication.shared.getKeyWindow()?.subviews).toEventually(containElementSatisfying({
-                    if let view = $0 as? BaseView {
-                        view.dismiss()
-                        return true
-                    }
-                    return false
-                }), timeout: .seconds(3))
+                expect(configCalled).toEventually(beTrue())
+                expect(eventMatcher.loggedEvents).to(beEmpty())
+                resumeConfig()
+                expect(eventMatcher.loggedEvents).toEventually(haveCount(3))
+
                 expect(UIApplication.shared.getKeyWindow()?.subviews).toEventually(containElementSatisfying({
                     if let view = $0 as? BaseView {
                         view.dismiss()
@@ -206,6 +208,14 @@ class PublicAPISpec: QuickSpec {
                     }
                     return false
                 }))
+                expect(UIApplication.shared.getKeyWindow()?.subviews).toEventually(containElementSatisfying({
+                    if let view = $0 as? BaseView {
+                        view.dismiss()
+                        return true
+                    }
+                    return false
+                }))
+                // 3rd event is ignored because maxImpressions = 2
                 expect(UIApplication.shared.getKeyWindow()?.findIAMViewSubview()).toAfterTimeout(beNil())
             }
 
@@ -272,7 +282,7 @@ class PublicAPISpec: QuickSpec {
                     generateAndDisplayLoginCampaigns(count: 2, addContexts: true)
 
                     expect(UIApplication.shared.getKeyWindow()?.findIAMViewSubview()).toAfterTimeout(beNil())
-                    expect(contextVerifier.onVerifyContextCallCount).toAfterTimeout(equal(2))
+                    expect(contextVerifier.onVerifyContextCallCount).to(equal(2))
                 }
 
                 it("will call the method before showing a message with proper parameters") {

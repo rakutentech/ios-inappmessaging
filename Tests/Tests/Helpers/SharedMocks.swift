@@ -137,24 +137,39 @@ class MessageMixerServiceMock: MessageMixerServiceType {
     var wasPingCalled = false
     var mockedResponse: PingResponse?
     var mockedError = MessageMixerServiceError.invalidConfiguration
-    var delay: TimeInterval = 0
     var pingCallCount = 0
+
+    private let suspendSemaphore = DispatchGroup()
+    private var shouldSuspend = false
 
     func ping() -> Result<PingResponse, MessageMixerServiceError> {
         wasPingCalled = true
         pingCallCount += 1
 
-        if delay > 0 {
+        if shouldSuspend {
             guard Thread.current != .main else {
-                fatalError("Delay function shoudn't be used on the main thread")
+                fatalError("Ping suspension shoudn't be used on the main thread")
             }
-            usleep(UInt32(UInt64(delay) * USEC_PER_SEC))
+            shouldSuspend = false
+            suspendSemaphore.wait()
         }
 
         if let mockedResponse = mockedResponse {
             return .success(mockedResponse)
         }
         return .failure(mockedError)
+    }
+
+    /// call returned closure to send resume signal
+    func suspendNextPingAndWaitForSignal() -> (() -> Void) {
+        guard !shouldSuspend else {
+            fatalError("MessageMixerServiceMock: Suspend race condition")
+        }
+        shouldSuspend = true
+        suspendSemaphore.enter()
+        return { [weak self] in
+            self?.suspendSemaphore.leave()
+        }
     }
 }
 
@@ -172,19 +187,32 @@ class DisplayPermissionServiceMock: DisplayPermissionServiceType {
 class ConfigurationManagerMock: ConfigurationManagerType {
     weak var errorDelegate: ErrorDelegate?
     var rolloutPercentage = 100
-    var simulateRetryDelay = TimeInterval(0)
     var fetchCalledClosure = {}
 
+    private let retryQueue = DispatchQueue(label: "ConfigurationManagerMock.retryQueue")
+    private let retrySemaphore = DispatchGroup()
+    private var shouldSimulateRetry = false
+
     func fetchAndSaveConfigData(completion: @escaping (ConfigData) -> Void) {
-        if simulateRetryDelay > 0 {
-            let delayMS = Int(simulateRetryDelay * 1000)
-            simulateRetryDelay = 0
-            WorkScheduler.scheduleTask(milliseconds: delayMS) { [weak self] in
-                self?.fetchAndSaveConfigData(completion: completion)
-            }
-        } else {
-            fetchCalledClosure()
+        fetchCalledClosure()
+
+        guard shouldSimulateRetry else {
             completion(ConfigData(rolloutPercentage: rolloutPercentage, endpoints: .empty))
+            return
+        }
+        shouldSimulateRetry = false
+        retrySemaphore.enter()
+        retryQueue.async { [weak self] in
+            self?.retrySemaphore.wait()
+            self?.fetchAndSaveConfigData(completion: completion)
+        }
+    }
+
+    /// call returned closure to send resume signal
+    func prepareRetryDelayAndWaitForSignal() -> (() -> Void) {
+        shouldSimulateRetry = true
+        return { [weak self] in
+            self?.retrySemaphore.leave()
         }
     }
 }
