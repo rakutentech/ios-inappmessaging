@@ -1,5 +1,12 @@
 ## Changelog
 
+### 7.1.0 (2022-06-14)
+- Improvements:
+	- Updated information sent to Analytics [SDKCF-5252]
+	- Display impression analytics event is now sent when campaign message appears [SDKCF-5252]
+- Bug fixes:
+	- Fixed issues with unit tests on Xcode 13.3 [SDKCF-5124]
+
 ### 7.0.0 (2022-05-13)
 - **Breaking changes:**
 	- Aligned public API with Android IAM SDK [SDKCF-4940]
