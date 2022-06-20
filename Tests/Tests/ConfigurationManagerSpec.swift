@@ -28,6 +28,30 @@ class ConfigurationManagerSpec: QuickSpec {
 
             context("fetchAndSaveConfigData") {
 
+                context("when configurationService is nil (when config URL is missing)") {
+                    beforeEach {
+                        configurationManager = ConfigurationManager(reachability: reachability,
+                                                                    configurationService: nil,
+                                                                    configurationRepository: configurationRepository,
+                                                                    resumeQueue: DispatchQueue(label: "iam.test.request"))
+                        configurationManager.errorDelegate = errorDelegate
+                    }
+
+                    it("should report an error") {
+                        configurationManager.fetchAndSaveConfigData(completion: { _ in })
+                        expect(errorDelegate.wasErrorReceived).to(beTrue())
+                    }
+
+                    it("should call completion with rolloutPercentage 0") {
+                        waitUntil { done in
+                            configurationManager.fetchAndSaveConfigData(completion: { configData in
+                                expect(configData.rolloutPercentage).to(equal(0))
+                                done()
+                            })
+                        }
+                    }
+                }
+
                 context("when connection is not available") {
                     beforeEach {
                         reachability.connectionStub = .unavailable

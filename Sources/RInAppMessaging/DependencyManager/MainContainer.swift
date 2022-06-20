@@ -36,7 +36,7 @@ internal enum MainContainerFactory {
             }),
             ContainerElement(type: ConfigurationManagerType.self, factory: {
                 ConfigurationManager(reachability: manager.resolve(type: ReachabilityType.self),
-                                     configurationService: manager.resolve(type: ConfigurationServiceType.self)!,
+                                     configurationService: manager.resolve(type: ConfigurationServiceType.self),
                                      configurationRepository: manager.resolve(type: ConfigurationRepositoryType.self)!,
                                      resumeQueue: RInAppMessaging.inAppQueue)
             }),

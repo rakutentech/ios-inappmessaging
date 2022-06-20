@@ -10,7 +10,7 @@ internal protocol ConfigurationManagerType: ErrorReportable {
 }
 
 internal class ConfigurationManager: ConfigurationManagerType, TaskSchedulable {
-    private let configurationService: ConfigurationServiceType
+    private let configurationService: ConfigurationServiceType?
     private let configurationRepository: ConfigurationRepositoryType
     private let reachability: ReachabilityType?
     private let resumeQueue: DispatchQueue
@@ -24,7 +24,7 @@ internal class ConfigurationManager: ConfigurationManagerType, TaskSchedulable {
     weak var errorDelegate: ErrorDelegate?
 
     init(reachability: ReachabilityType?,
-         configurationService: ConfigurationServiceType,
+         configurationService: ConfigurationServiceType?,
          configurationRepository: ConfigurationRepositoryType,
          resumeQueue: DispatchQueue) {
 
@@ -39,6 +39,11 @@ internal class ConfigurationManager: ConfigurationManagerType, TaskSchedulable {
     }
 
     func fetchAndSaveConfigData(completion: @escaping (ConfigData) -> Void) {
+        guard let configurationService = configurationService else {
+            reportError(description: "Configuration URL in Info.plist is missing. IAM SDK will be disabled.", data: nil)
+            completion(ConfigData(rolloutPercentage: 0, endpoints: nil))
+            return
+        }
         let retryHandler: () -> Void = { [weak self] in
             self?.fetchAndSaveConfigData(completion: completion)
         }
