@@ -1,31 +1,36 @@
-name: mobile.dev
+name: mobile.dev upload
 on: 
   pull_request_target:
-    branches: [ master, main ]
+    branches: [ master, develop ]
   push:
-    branches: [ master, main ]
-permissions:
-  actions: read
-  checks: read
-  contents: read
-  pull-requests: read
+    branches: [ master, develop ]
 
 jobs:
   upload-to-mobile-dev:
-    runs-on: macos-latest
+    runs-on: macos-11
     name: Upload artifact to mobile.dev
     steps:
       - uses: actions/checkout@v3
+      - name: Install dependencies
+        env:
+          RIAM_CONFIG_URL: https://dummy.url
+          RIAM_APP_SUBSCRIPTION_KEY: xxxx-xxxx-xxxx-xxxx
+        run: |
+          bundle install
+          bundle exec pod install
       - name: Build x86 app
         run: |
           xcrun xcodebuild \
           -scheme RInAppMessaging-Example \
           -workspace RInAppMessaging.xcworkspace \
           -configuration Release \
-          -destination 'platform=iOS Simulator,name=iPhone 11,OS=14.5' \
+          -destination 'platform=iOS Simulator,name=iPhone 11,OS=15.2' \
           -derivedDataPath \
           build
-          zip -r -X app.zip build/Build/Products/Release-iphonesimulator/RInAppMessaging_Example.app
+      - name: Zip binary
+        run: |
+          cd build/Build/Products/Release-iphonesimulator
+          zip -r -X ../../../../app.zip RInAppMessaging_Example.app
       - uses: mobile-dev-inc/action-upload@v1.0.0
         with:
           api-key: ${{ secrets.MOBILE_DEV_API_KEY }}

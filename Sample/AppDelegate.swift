@@ -14,6 +14,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
         if !AppDelegate.isTestEnvironment || CommandLine.arguments.contains("--uitesting") {
+            [1][2] // crash
             RInAppMessaging.configure()
         }
 
