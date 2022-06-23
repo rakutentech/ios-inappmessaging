@@ -1,4 +1,4 @@
-name: mobile.dev
+name: mobile.dev upload
 on: 
   pull_request_target:
     branches: [ master, develop ]
