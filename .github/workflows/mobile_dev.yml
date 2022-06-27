@@ -15,7 +15,7 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
       - name: Install dependencies
         env:
-          RIAM_CONFIG_URL: https://dummy.url
+          RIAM_CONFIG_URL: http://localhost:6789/config
           RIAM_APP_SUBSCRIPTION_KEY: xxxx-xxxx-xxxx-xxxx
         run: |
           bundle install
