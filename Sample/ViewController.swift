@@ -18,7 +18,6 @@ class ViewController: UIViewController {
             }
             return true
         }
-        sleep(2)
     }
 
     @IBAction func purchaseSuccessfulButton(_ sender: Any) {
