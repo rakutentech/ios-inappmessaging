@@ -11,6 +11,8 @@ jobs:
     name: Upload artifact to mobile.dev
     steps:
       - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
       - name: Install dependencies
         env:
           RIAM_CONFIG_URL: https://dummy.url
