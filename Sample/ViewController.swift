@@ -1,5 +1,6 @@
 import UIKit
 import RInAppMessaging
+import OSLog
 
 class ViewController: UIViewController {
 
@@ -11,10 +12,16 @@ class ViewController: UIViewController {
                                                selector: #selector(goToSecondPage(_:)),
                                                name: Notification.Name("showSecondPage"),
                                                object: nil)
+        RInAppMessaging.onVerifyContext = { (contexts: [String], campaignTitle: String) in
+            if campaignTitle.contains("Future") {
+                os_log("purchase trigger 1")
+            }
+            return true
+        }
     }
 
     @IBAction func purchaseSuccessfulButton(_ sender: Any) {
-
+        os_log("purchase trigger 0")
         let purchaseEvent = PurchaseSuccessfulEvent()
         _ = purchaseEvent.setPurchaseAmount(50)
         _ = purchaseEvent.setItemList(["box", "hammer"])
@@ -41,6 +48,7 @@ class ViewController: UIViewController {
 
     @IBAction func goToSecondPage(_ sender: Any) {
         // Register Nib
+        os_log("second page 0")
         let newViewController = SecondPageViewController(nibName: "SecondPageViewController", bundle: nil)
         self.present(newViewController, animated: true, completion: nil)
     }
