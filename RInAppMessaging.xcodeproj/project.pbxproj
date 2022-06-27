@@ -77,6 +77,7 @@
 		4B456B7D286959060045949C /* config.json in Resources */ = {isa = PBXBuildFile; fileRef = 4B456B7C286959060045949C /* config.json */; };
 		4B456B7F28695B030045949C /* displayPermission.json in Resources */ = {isa = PBXBuildFile; fileRef = 4B456B7E28695B030045949C /* displayPermission.json */; };
 		4B456B8028695B0D0045949C /* displayPermission_success.json in Resources */ = {isa = PBXBuildFile; fileRef = 45357AF3245AC836007D8FDC /* displayPermission_success.json */; };
+		4B456BAA2869CE530045949C /* Free_Test_Data_10MB_MP4-2.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 4B456BA92869CE530045949C /* Free_Test_Data_10MB_MP4-2.mp4 */; };
 		4BBE7EAF274F1A6A0039D2BF /* UIFontExtensionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BBE7EAE274F1A6A0039D2BF /* UIFontExtensionSpec.swift */; };
 		607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD51AFB9204008FA782 /* AppDelegate.swift */; };
 		607FACD81AFB9204008FA782 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD71AFB9204008FA782 /* ViewController.swift */; };
@@ -193,6 +194,7 @@
 		4B456B7A286958930045949C /* ping.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ping.json; sourceTree = "<group>"; };
 		4B456B7C286959060045949C /* config.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = config.json; sourceTree = "<group>"; };
 		4B456B7E28695B030045949C /* displayPermission.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = displayPermission.json; sourceTree = "<group>"; };
+		4B456BA92869CE530045949C /* Free_Test_Data_10MB_MP4-2.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Free_Test_Data_10MB_MP4-2.mp4"; sourceTree = "<group>"; };
 		4BBE7EAE274F1A6A0039D2BF /* UIFontExtensionSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIFontExtensionSpec.swift; sourceTree = "<group>"; };
 		607FACD01AFB9204008FA782 /* RInAppMessaging_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RInAppMessaging_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACD41AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -361,6 +363,7 @@
 		607FACD21AFB9204008FA782 /* Sample */ = {
 			isa = PBXGroup;
 			children = (
+				4B456BA92869CE530045949C /* Free_Test_Data_10MB_MP4-2.mp4 */,
 				4B456B75286955E00045949C /* MockServerHelper.swift */,
 				607FACD51AFB9204008FA782 /* AppDelegate.swift */,
 				607FACD71AFB9204008FA782 /* ViewController.swift */,
@@ -634,6 +637,7 @@
 				D920D8C92277B80F008FB38D /* SecondPageViewController.xib in Resources */,
 				607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */,
 				607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */,
+				4B456BAA2869CE530045949C /* Free_Test_Data_10MB_MP4-2.mp4 in Resources */,
 				4B456B7B286958930045949C /* ping.json in Resources */,
 				607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */,
 				4B456B7F28695B030045949C /* displayPermission.json in Resources */,
