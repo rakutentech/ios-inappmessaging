@@ -8,7 +8,7 @@ on:
 jobs:
   upload-to-mobile-dev:
     runs-on: macos-11
-    name: Upload build to mobile.dev
+    name: Upload artifact to mobile.dev
     steps:
       - uses: actions/checkout@v3
         with:
