@@ -1,8 +1,6 @@
 use_frameworks!
 platform :ios, '12.0'
 
-# Variable necessary to parse Shock podspec file from their master branch
-ENV['LIB_VERSION'] = '6.1.1'
 secrets = ["RIAM_CONFIG_URL", "RIAM_APP_SUBSCRIPTION_KEY"]
 
 target 'RInAppMessaging_Example' do
@@ -17,12 +15,7 @@ target 'RInAppMessaging_Example' do
     target 'Tests'
 
     target 'UITests' do
-      # The currently released Shock version relies on swift-nio version (2.38) which has following issue:
-      # https://github.com/apple/swift-nio/issues/2073
-      # The issue has been fixed in SwiftNIO version 2.40
-      # Until a new version of Shock is released, the pod declaration should point to master branch which contains updated SwiftNIO dependency
-      # (Older versions of Shock cannot be used with Xcode 13.3)'
-      pod 'Shock', :git => 'https://github.com/justeat/Shock'
+      pod 'Shock', '~> 6.1.2'
     end
 
     target 'IntegrationTests'
