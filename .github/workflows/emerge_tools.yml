@@ -68,7 +68,7 @@ jobs:
 
           curl -sS -H "Authorization: $access_token" "$artifact_download_url" -o artifact.zip
       - name: Upload artifact to Emerge
-        uses: imaginaris/emerge-upload-action@main
+        uses: EmergeTools/emerge-upload-action@v1.0.3
         with:
           artifact_path: ./artifact.zip
           emerge_api_key: ${{ secrets.EMERGE_API_KEY }}
