@@ -1,0 +1,52 @@
+{
+    "currentPingMillis": 1582855754665,
+    "nextPingMillis": 3600000,
+    "data": [
+        {
+            "campaignData": {
+                "campaignId": "id1",
+                "maxImpressions": 1,
+                "type": 1,
+                "isTest": false,
+                "isCampaignDismissable": true,
+                "hasNoEndDate": true,
+                "infiniteImpressions": true,
+                "triggers": [
+                    {
+                        "type": 1,
+                        "eventType": 3,
+                        "eventName": "Purchase",
+                        "attributes": []
+                    }
+                ],
+                "messagePayload": {
+                    "title": "[Future] Campaign",
+                    "messageBody": "Future",
+                    "header": "Future",
+                    "titleColor": "#000000",
+                    "headerColor": "#000000",
+                    "messageBodyColor": "#000000",
+                    "backgroundColor": "#ffffff",
+                    "frameColor": "#ffffff",
+                    "resource": {
+                        "cropType": 2
+                    },
+                    "messageSettings": {
+                        "displaySettings": {
+                            "slideFrom": 1,
+                            "endTimeMillis": 1582948800000,
+                            "orientation": 1,
+                            "textAlign": 2,
+                            "optOut": false,
+                            "delay": 3000,
+                            "html": false
+                        },
+                        "controlSettings": {
+                            "buttons": []
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

@@ -1,4 +1,5 @@
 import UIKit
+import OSLog
 
 class SecondPageViewController: UIViewController {
 

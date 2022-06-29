@@ -50,6 +50,8 @@ class ViewController: UIViewController {
         // Register Nib
         os_log("second page 0")
         let newViewController = SecondPageViewController(nibName: "SecondPageViewController", bundle: nil)
-        self.present(newViewController, animated: true, completion: nil)
+        self.present(newViewController, animated: true) {
+            os_log("second page 1")
+        }
     }
 }
