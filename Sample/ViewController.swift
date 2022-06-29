@@ -14,11 +14,11 @@ class ViewController: UIViewController {
                                                object: nil)
         RInAppMessaging.onVerifyContext = { (contexts: [String], campaignTitle: String) in
             if campaignTitle.contains("Future") {
+                sleep(2)
                 os_log("purchase trigger 1")
             }
             return true
         }
-        sleep(8)
     }
 
     @IBAction func purchaseSuccessfulButton(_ sender: Any) {
