@@ -3,7 +3,7 @@ on:
   pull_request_target:
     branches: [ master, main, emerge_parallel ]
   push:
-    branches: [ master, main ]
+    branches: [ master, main, emerge_parallel ]
 permissions:
   actions: read
   checks: read
@@ -28,9 +28,10 @@ jobs:
       - name: Compress artifact
         shell: bash
         run: |
-          zip -r artifact.zip ./artifacts/*.xcarchive
+          cd artifacts
+          zip -r artifact.zip *.xcarchive
       - name: Upload artifact to Emerge
         uses: imaginaris/emerge-upload-action@main
         with:
-          artifact_path: ./artifact.zip
+          artifact_path: ./artifacts/artifact.zip
           emerge_api_key: ${{ secrets.EMERGE_API_KEY }}
