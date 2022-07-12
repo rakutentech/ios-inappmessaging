@@ -1,7 +1,7 @@
 name: Emerge
 on: 
   pull_request_target:
-    branches: [ master, main ]
+    branches: [ master, main, emerge_parallel ]
   push:
     branches: [ master, main ]
 permissions:
