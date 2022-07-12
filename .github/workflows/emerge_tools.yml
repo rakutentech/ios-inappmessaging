@@ -17,6 +17,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
+          repository: ${{ github.event.pull_request.head.repo.full_name || github.repository }}
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - uses: ruby/setup-ruby@v1
         with:
