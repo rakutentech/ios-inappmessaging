@@ -15,60 +15,16 @@ jobs:
     runs-on: ubuntu-latest
     name: Upload artifact to Emerge tools
     steps:
-      - name: Wait for build to succeed
-        uses: lewagon/wait-on-check-action@v1.1.1
+      - name: Archive Sample app
+        uses: maierj/fastlane-action@v2.2.0
         with:
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
-          check-name: 'Bitrise'
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          wait-interval: 10
-      - name: Get check runs data
-        uses: octokit/request-action@v2.x
-        id: get_check_runs
-        with:
-          route: GET /repos/{owner}/{repo}/commits/{sha}/check-runs
-          owner: rakutentech
-          repo: ios-inappmessaging
-          sha: ${{ github.event.pull_request.head.sha || github.sha }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Store check runs data in a file
-        uses: jsdaniell/create-json@1.1.2
-        with:
-          name: 'checks.json'
-          json: ${{ steps.get_check_runs.outputs.data }}
-      - name: Extract Bitrise build SLUG
-        uses: sergeysova/jq-action@v2
-        id: get_build_slug
-        with:
-          cmd: jq ".check_runs[] | select(.name==\"Bitrise\") | .external_id" checks.json -r
-      - name: Download artifact
-        env:
-          BITRISE_API_TOKEN: ${{ secrets.BITRISE_API_TOKEN }}
-          BITRISE_BUILD_SLUG: ${{ steps.get_build_slug.outputs.value }}
-          BITRISE_APP_SLUG: ${{ secrets.BITRISE_APP_SLUG }}
+          lane: 'archive'
+      - name: Compress artifact
         shell: bash
         run: |
-          # Based on https://gist.github.com/Marchuck/de230ed681428d47ce1276c14788ef9a#file-print_out_artifact_urls-sh
-          access_token=$BITRISE_API_TOKEN
-          app_slug=$BITRISE_APP_SLUG
-          build_slug=$BITRISE_BUILD_SLUG
-
-          bitrise_api_url="https://api.bitrise.io/v0.1"
-          the_url="$bitrise_api_url/apps/$app_slug/builds/$build_slug/artifacts"
-
-          artifacts_array=$(curl -s -H "Authorization: $access_token" $the_url)
-          artifact=$(echo ${artifacts_array} | jq -r ".data[0]")
-          artifact_slug=$(echo ${artifact} | jq -r '.slug')
-          artifact_url="$the_url/$artifact_slug"
-
-          artifact_metadata_response=$(curl -s -H "Authorization: $access_token" ${artifact_url})
-          artifact_name=$(echo ${artifact_metadata_response} | jq -r '.data .title')
-          artifact_download_url=$(echo ${artifact_metadata_response} | jq -r '.data .expiring_download_url')
-
-          curl -sS -H "Authorization: $access_token" "$artifact_download_url" -o artifact.zip
+          zip -r artifact.zip ./artifacts/*.xcarchive
       - name: Upload artifact to Emerge
-        uses: EmergeTools/emerge-upload-action@v1.0.3
+        uses: imaginaris/emerge-upload-action@main
         with:
           artifact_path: ./artifact.zip
           emerge_api_key: ${{ secrets.EMERGE_API_KEY }}
