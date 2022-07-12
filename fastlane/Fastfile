@@ -6,17 +6,7 @@ platform :ios do
   lane :ci do |options|
     tests(options)
     coverage
-
-    # Create an archive
-    # Take config URL from env variable or set a dummy one
-    config_url = ENV['RIAM_CONFIG_URL'] || 'http://localhost:6789/config'
-    xcodebuild(
-      archive: true,
-      archive_path: "./artifacts/RInAppMessaging.xcarchive",
-      scheme: ENV['REM_FL_SAMPLE_SCHEME'],
-      workspace: ENV['REM_FL_SAMPLE_WORKSPACE'],
-      xcargs: "CODE_SIGN_IDENTITY='' CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO RIAM_CONFIG_URL=#{config_url}",
-    )
+    archive
   end
 
   desc "Run tests"
@@ -66,5 +56,21 @@ platform :ios do
       include_test_targets: false,
       json_report: true
     )  
+  end
+
+  desc "Archive Sample app"
+  lane :archive do
+    cocoapods(repo_update: ENV['REM_FL_CP_REPO_UPDATE'] || false)
+
+    # Take config URL from env variable or set a dummy one
+    config_url = ENV['RIAM_CONFIG_URL'] || 'http://localhost:6789/config'
+
+    xcodebuild(
+      archive: true,
+      archive_path: "./artifacts/RInAppMessaging.xcarchive",
+      scheme: ENV['REM_FL_SAMPLE_SCHEME'],
+      workspace: ENV['REM_FL_SAMPLE_WORKSPACE'],
+      xcargs: "CODE_SIGN_IDENTITY='' CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO RIAM_CONFIG_URL=#{config_url}",
+    )
   end
 end
