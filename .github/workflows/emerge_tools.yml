@@ -15,7 +15,9 @@ jobs:
     runs-on: macos-12
     name: Upload artifact to Emerge tools
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: '2.7.3'
