@@ -15,6 +15,10 @@ jobs:
     runs-on: macos-12
     name: Upload artifact to Emerge tools
     steps:
+      - uses: actions/checkout@v2
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '2.7.3'
       - name: Archive Sample app
         uses: maierj/fastlane-action@v2.2.0
         with:
