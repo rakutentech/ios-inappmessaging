@@ -1,9 +1,9 @@
 name: Emerge
 on: 
   pull_request_target:
-    branches: [ master, main, emerge_parallel ]
+    branches: [ master, main ]
   push:
-    branches: [ master, main, emerge_parallel ]
+    branches: [ master, main ]
 permissions:
   actions: read
   checks: read
