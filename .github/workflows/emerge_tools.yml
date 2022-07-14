@@ -32,7 +32,7 @@ jobs:
           cd artifacts
           zip -r artifact.zip *.xcarchive
       - name: Upload artifact to Emerge
-        uses: imaginaris/emerge-upload-action@main
+        uses: EmergeTools/emerge-upload-action@v1.0.3
         with:
           artifact_path: ./artifacts/artifact.zip
           emerge_api_key: ${{ secrets.EMERGE_API_KEY }}
