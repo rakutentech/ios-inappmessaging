@@ -3,7 +3,9 @@ declared_trivial = git.lines_of_code <= 2
 # Warn when there is a big PR
 warn("Big PR") if git.lines_of_code > 1000
 
-warn "This PR does not have any assignees yet" unless github.pr_json["assignee"]
+if defined?(github)
+  warn "This PR does not have any assignees yet" unless github.pr_json["assignee"]
+end
 
 has_app_changes = !git.modified_files.grep(/Sources/).empty?
 has_test_changes = !git.modified_files.grep(/Tests/).empty?
