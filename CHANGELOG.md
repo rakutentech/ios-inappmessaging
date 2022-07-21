@@ -6,6 +6,7 @@
 	- Display impression analytics event is now sent when campaign message appears [SDKCF-5252]
 - Bug fixes:
 	- Fixed issues with unit tests on Xcode 13.3 [SDKCF-5124]
+	- Fixed Opt-out message visibility on a dark background [SDKCF-5620]
 
 ### 7.0.0 (2022-05-13)
 - **Breaking changes:**

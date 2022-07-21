@@ -39,6 +39,7 @@
 		45563B03240614AE004EAFD3 /* ReadyCampaignDispatcherSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45563B02240614AE004EAFD3 /* ReadyCampaignDispatcherSpec.swift */; };
 		45563B0724064D78004EAFD3 /* CampaignRepositorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45563B0624064D78004EAFD3 /* CampaignRepositorySpec.swift */; };
 		4557A8B1257E544C00C9D241 /* AccountRepositorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4557A8B0257E544C00C9D241 /* AccountRepositorySpec.swift */; };
+		455A7D4B2889D8550059F291 /* OptOutMessageViewSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 455A7D4A2889D8550059F291 /* OptOutMessageViewSpec.swift */; };
 		455FEBE227F214640064470D /* UIColorExtensionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 455FEBE127F214640064470D /* UIColorExtensionSpec.swift */; };
 		4560062C26FB968B003227FE /* UserInfoProviderSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4560062B26FB968B003227FE /* UserInfoProviderSpec.swift */; };
 		456FE1E72428513200304872 /* ErrorReportableSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456FE1E62428513200304872 /* ErrorReportableSpec.swift */; };
@@ -148,6 +149,7 @@
 		45563B02240614AE004EAFD3 /* ReadyCampaignDispatcherSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadyCampaignDispatcherSpec.swift; sourceTree = "<group>"; };
 		45563B0624064D78004EAFD3 /* CampaignRepositorySpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CampaignRepositorySpec.swift; sourceTree = "<group>"; };
 		4557A8B0257E544C00C9D241 /* AccountRepositorySpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountRepositorySpec.swift; sourceTree = "<group>"; };
+		455A7D4A2889D8550059F291 /* OptOutMessageViewSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptOutMessageViewSpec.swift; sourceTree = "<group>"; };
 		455FEBE127F214640064470D /* UIColorExtensionSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIColorExtensionSpec.swift; sourceTree = "<group>"; };
 		4560062B26FB968B003227FE /* UserInfoProviderSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoProviderSpec.swift; sourceTree = "<group>"; };
 		456FE1E62428513200304872 /* ErrorReportableSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorReportableSpec.swift; sourceTree = "<group>"; };
@@ -423,6 +425,7 @@
 				45D4DA4E240F5597009B9B37 /* ViewPresenterSpec.swift */,
 				456FE1EC2429C4D200304872 /* ViewSpec.swift */,
 				4537DBAB28037BF60038E0D2 /* ViewModelSpec.swift */,
+				455A7D4A2889D8550059F291 /* OptOutMessageViewSpec.swift */,
 				607FACE91AFB9204008FA782 /* Supporting Files */,
 			);
 			name = Tests;
@@ -729,6 +732,7 @@
 				45AFB308246CFB640080D21B /* LocaleSpec.swift in Sources */,
 				4516601D23CD740300310181 /* MainContainerSpec.swift in Sources */,
 				459B228224528A7D00D218CE /* DisplayPermissionServiceSpec.swift in Sources */,
+				455A7D4B2889D8550059F291 /* OptOutMessageViewSpec.swift in Sources */,
 				45BDFD0724232714004DEA0C /* PublicAPISpec.swift in Sources */,
 				459DE86C2407B5750002F451 /* CustomEventSpec.swift in Sources */,
 				45563B0724064D78004EAFD3 /* CampaignRepositorySpec.swift in Sources */,

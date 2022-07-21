@@ -11,9 +11,19 @@ internal class OptOutMessageView: UIView {
         static let overflowMargin: CGFloat = 8
     }
 
-    private let checkbox = Checkbox()
+    let checkbox = Checkbox()
+    let optOutMessage = UILabel()
+
     var isChecked: Bool {
-        return checkbox.isChecked
+        checkbox.isChecked
+    }
+    var useBrightColors = false {
+        didSet {
+            optOutMessage.textColor = useBrightColors ? .white : .black
+            checkbox.uncheckedBorderColor = useBrightColors ? .white : .black
+            checkbox.checkedBorderColor = useBrightColors ? .white : .black
+            checkbox.checkmarkColor = useBrightColors ? .white : .black
+        }
     }
 
     override init(frame: CGRect) {
@@ -32,10 +42,8 @@ internal class OptOutMessageView: UIView {
     }
 
     private func commonInit() {
-        let optOutMessage = UILabel()
         optOutMessage.text = "optOut_message".localized
         optOutMessage.font = .systemFont(ofSize: Constants.fontSize)
-        optOutMessage.textColor = .black
         optOutMessage.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapAction)))
         optOutMessage.isUserInteractionEnabled = true
         optOutMessage.adjustsFontSizeToFitWidth = true
@@ -44,14 +52,13 @@ internal class OptOutMessageView: UIView {
         optOutMessage.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
 
         checkbox.borderStyle = .square
-        checkbox.uncheckedBorderColor = .black
-        checkbox.checkedBorderColor = .black
-        checkbox.checkmarkColor = .black
         checkbox.checkmarkStyle = .tick
         checkbox.borderLineWidth = 1
         checkbox.useHapticFeedback = false
         checkbox.accessibilityIdentifier = "optOutCheckbox"
         checkbox.translatesAutoresizingMaskIntoConstraints = false
+
+        useBrightColors = false
 
         let container = UIView()
         container.translatesAutoresizingMaskIntoConstraints = false
