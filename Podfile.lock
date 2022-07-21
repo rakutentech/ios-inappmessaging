@@ -20,7 +20,7 @@ PODS:
   - RSDKUtils/RLogger (3.0.0)
   - RSDKUtils/TestHelpers (3.0.0):
     - RSDKUtils/Main
-  - Shock (6.1.1):
+  - Shock (6.1.2):
     - GRMustache.swift (~> 4.0.1)
     - SwiftNIOHTTP1 (~> 2.40.0)
   - SwiftLint (0.47.1)
@@ -74,7 +74,7 @@ DEPENDENCIES:
   - RSDKUtils (~> 3.0.0)
   - RSDKUtils/Nimble (~> 3.0.0)
   - RSDKUtils/TestHelpers (~> 3.0.0)
-  - Shock (from `https://github.com/justeat/Shock`)
+  - Shock (~> 6.1.2)
   - SwiftLint (~> 0.42)
 
 SPEC REPOS:
@@ -89,6 +89,7 @@ SPEC REPOS:
     - Nimble
     - Quick
     - RSDKUtils
+    - Shock
     - SwiftLint
     - SwiftNIO
     - SwiftNIOConcurrencyHelpers
@@ -100,13 +101,6 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   RInAppMessaging:
     :path: "."
-  Shock:
-    :git: https://github.com/justeat/Shock
-
-CHECKOUT OPTIONS:
-  Shock:
-    :commit: c6c005f48570b2e6f8bee5c509434ebf8a3e7428
-    :git: https://github.com/justeat/Shock
 
 SPEC CHECKSUMS:
   _NIODataStructures: 3d45d8e70a1d17a15b1dc59d102c63dbc0525ffd
@@ -120,7 +114,7 @@ SPEC CHECKSUMS:
   Quick: 749aa754fd1e7d984f2000fe051e18a3a9809179
   RInAppMessaging: 469eae7fd518ad717fcd485f685623af91203019
   RSDKUtils: 36d97c9a41b5663ba56e73c626d27034a6c317e5
-  Shock: 1f3473acb4741c4fe71fc30ae9329bf471c64018
+  Shock: ce3b9330525069b70f2959ce1a42112ffc9fe4b4
   SwiftLint: f80f1be7fa96d30e0aa68e58d45d4ea1ccaac519
   SwiftNIO: 829958aab300642625091f82fc2f49cb7cf4ef24
   SwiftNIOConcurrencyHelpers: 697370136789b1074e4535eaae75cbd7f900370e
@@ -129,6 +123,6 @@ SPEC CHECKSUMS:
   SwiftNIOHTTP1: ef56706550a1dc135ea69d65215b9941e643c23b
   SwiftNIOPosix: b49af4bdbecaadfadd5c93dfe28594d6722b75e4
 
-PODFILE CHECKSUM: 7b837b55cdae62cb46a980a953164a030b76b132
+PODFILE CHECKSUM: 1ac2aaaa3be2fa2b4087a4496f6e2a84b3dfae06
 
 COCOAPODS: 1.11.3
