@@ -142,6 +142,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         createMessageBody(viewModel: viewModel)
 
         backgroundView.backgroundColor = uiConstants.backgroundColor ?? viewModel.backgroundColor
+        optOutView.useBrightColors = !viewModel.backgroundColor.isBright
 
         exitButton.invertedColors = viewModel.backgroundColor.isBright
         exitButton.isHidden = !viewModel.isDismissable
