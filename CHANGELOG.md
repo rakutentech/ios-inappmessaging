@@ -7,6 +7,7 @@
 - Bug fixes:
 	- Fixed issues with unit tests on Xcode 13.3 [SDKCF-5124]
 	- Fixed Opt-out message visibility on a dark background [SDKCF-5620]
+	- Fixed an issue when test campaigns were not displayed [SDKCF-5636]
 
 ### 7.0.0 (2022-05-13)
 - **Breaking changes:**

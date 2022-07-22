@@ -25,14 +25,13 @@ class CampaignsValidatorSpec: QuickSpec {
             it("will accept test campaign (not looking at triggers)") {
                 campaignRepository.syncWith(list: [MockedCampaigns.testCampaign], timestampMilliseconds: 0)
                 campaignsValidator.validate(validatedCampaignHandler: validatorHandler.closure)
-                expect(validatorHandler.validatedElements).to(elementsEqual(
-                    [ValidatorHandler.Element(MockedCampaigns.testCampaign, [])]))
+                expect(validatorHandler.validatedCampaigns).to(elementsEqual([MockedCampaigns.testCampaign]))
             }
 
-            it("will not accept outdated test campaign") {
+            it("will accept outdated test campaign") {
                 campaignRepository.syncWith(list: [MockedCampaigns.outdatedTestCampaign], timestampMilliseconds: 0)
                 campaignsValidator.validate(validatedCampaignHandler: validatorHandler.closure)
-                expect(validatorHandler.validatedElements).to(beEmpty())
+                expect(validatorHandler.validatedCampaigns).to(contain(MockedCampaigns.outdatedTestCampaign))
             }
 
             it("will not accept test campaign with impressionLeft < 1") {
@@ -80,7 +79,7 @@ class CampaignsValidatorSpec: QuickSpec {
                 campaignRepository.syncWith(list: [MockedCampaigns.outdatedCampaign], timestampMilliseconds: 0)
                 eventMatcher.matchAndStore(event: LoginSuccessfulEvent())
                 campaignsValidator.validate(validatedCampaignHandler: validatorHandler.closure)
-                expect(validatorHandler.validatedCampaigns).toEventuallyNot(contain(MockedCampaigns.outdatedCampaign))
+                expect(validatorHandler.validatedCampaigns).toNot(contain(MockedCampaigns.outdatedCampaign))
             }
 
             it("won't accept opted out campaigns") {
