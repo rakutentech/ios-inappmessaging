@@ -123,7 +123,7 @@ struct TestHelpers {
                 triggers: triggers,
                 isTest: isTest,
                 messagePayload: MessagePayload(
-                    title: "[ToolTip] title",
+                    title: "[Tooltip] title",
                     messageBody: """
                     {\"UIElement\" : \"\(targetViewID ?? TooltipViewIdentifierMock)\", \"position\": \"top-center\", \"auto-disappear\": \(autoCloseSeconds), \"redirectURL\": \"\(redirectURL)\"}
                     """, // swiftlint:disable:previous line_length
