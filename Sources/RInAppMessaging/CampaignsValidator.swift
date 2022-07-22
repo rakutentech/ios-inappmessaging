@@ -31,19 +31,18 @@ internal struct CampaignsValidator: CampaignsValidatorType {
     func validate(validatedCampaignHandler: (_ campaign: Campaign, _ events: Set<Event>) -> Void) {
 
         for campaign in campaignRepository.list {
-            guard campaign.impressionsLeft > 0,
-                !campaign.isOutdated else {
-                    // campaign is not ready
-                    continue
+            guard campaign.impressionsLeft > 0 else {
+                continue
             }
-
             guard !campaign.data.isTest else {
                 validatedCampaignHandler(campaign, [])
                 // test campaign triggers are always satisfied
                 continue
             }
-            guard !campaign.isOptedOut else { continue }
-
+            
+            guard !campaign.isOptedOut, !campaign.isOutdated else {
+                continue
+            }
             guard let campaignTriggers = campaign.data.triggers else {
                 Logger.debug("campaign (\(campaign.id)) has no triggers.")
                 continue
