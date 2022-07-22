@@ -61,7 +61,7 @@ internal struct Campaign: Codable, Hashable {
         data.campaignId
     }
     var isTooltip: Bool {
-        data.messagePayload.title.hasPrefix("[ToolTip]") && tooltipData != nil
+        data.messagePayload.title.lowercased().hasPrefix("[tooltip]") && tooltipData != nil
     }
     var isOutdated: Bool {
         let endTimeMilliseconds = data.messagePayload.messageSettings.displaySettings.endTimeMilliseconds

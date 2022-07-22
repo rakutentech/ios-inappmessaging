@@ -97,8 +97,8 @@ class SerializationSpec: QuickSpec {
         describe("Tooltip") {
             context("isTooltip") {
 
-                it("will return true if body contains valid JSON data and title starts with '[ToolTip]'") {
-                    let tooltip = generateTooltip(title: "[ToolTip] t1",
+                it("will return true if body contains valid JSON data") {
+                    let tooltip = generateTooltip(title: "[Tooltip] t1",
                                                   imageURL: "image.url",
                                                   body: """
                         {\"UIElement\" : \"view\", \"position\": \"top-center\", \"auto-disappear\": 2, \"redirectURL\": \"url\"}
@@ -107,7 +107,7 @@ class SerializationSpec: QuickSpec {
                 }
 
                 it("will return true if body contains only required JSON data") {
-                    let tooltip = generateTooltip(title: "[ToolTip] t1",
+                    let tooltip = generateTooltip(title: "[Tooltip] t1",
                                                   imageURL: "image.url",
                                                   body: """
                         {\"UIElement\" : \"view\", \"position\": \"top-center\"}
@@ -116,7 +116,7 @@ class SerializationSpec: QuickSpec {
                 }
 
                 it("will return false if there's no imageUrl") {
-                    let tooltip = generateTooltip(title: "[ToolTip] t1",
+                    let tooltip = generateTooltip(title: "[Tooltip] t1",
                                                   imageURL: nil,
                                                   body: """
                         {\"UIElement\" : \"view\", \"position\": \"top-center\"}
@@ -124,8 +124,8 @@ class SerializationSpec: QuickSpec {
                     expect(tooltip.isTooltip).to(beFalse())
                 }
 
-                it("will return false if title doesn't start with '[ToolTip]'") {
-                    let tooltip = generateTooltip(title: "[Tooltip] t1",
+                it("will return false if title doesn't start with '[Tooltip]'") {
+                    let tooltip = generateTooltip(title: "[ctx] t1",
                                                   imageURL: "image.url",
                                                   body: """
                         {\"UIElement\" : \"view\", \"position\": \"top-center\"}
@@ -133,15 +133,26 @@ class SerializationSpec: QuickSpec {
                     expect(tooltip.isTooltip).to(beFalse())
                 }
 
+                it("will accept '[Tooltip]' prefix in any form (case insensitive)") {
+                    ["[ToolTip]", "[tooltip]", "[tOOltip]"].forEach { titlePrefix in
+                        let tooltip = generateTooltip(title: "\(titlePrefix) t1",
+                                                      imageURL: "image.url",
+                                                      body: """
+                            {\"UIElement\" : \"view\", \"position\": \"top-center\"}
+                            """)
+                        expect(tooltip.isTooltip).to(beTrue())
+                    }
+                }
+
                 it("will return false if body doesn't contain valid JSON data") {
-                    let tooltip = generateTooltip(title: "[ToolTip] t1",
+                    let tooltip = generateTooltip(title: "[Tooltip] t1",
                                                   imageURL: "image.url",
                                                   body: "\"UIElement\" : \"view\"")
                     expect(tooltip.isTooltip).to(beFalse())
                 }
 
                 it("will return false if body doesn't contain required JSON fields") {
-                    let tooltip = generateTooltip(title: "[ToolTip] t1",
+                    let tooltip = generateTooltip(title: "[Tooltip] t1",
                                                   imageURL: "image.url",
                                                   body: "{\"UIElement\" : \"view\"}")
                     expect(tooltip.isTooltip).to(beFalse())

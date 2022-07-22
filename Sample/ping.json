@@ -17,7 +17,7 @@
                     }
                 ],
                 "messagePayload": {
-                    "title": "[ToolTip] tooltip 1",
+                    "title": "[Tooltip] tooltip 1",
                     "messageBody": "{\"UIElement\" : \"tooltip.test.1\", \"position\": \"bottom-right\"}",
                     "header": "Test Campaign",
                     "titleColor": "#000000",
@@ -61,7 +61,7 @@
                     }
                 ],
                 "messagePayload": {
-                    "title": "[ToolTip] tooltip 2",
+                    "title": "[Tooltip] tooltip 2",
                     "messageBody": "{\"UIElement\" : \"tooltip.test.2\", \"position\": \"bottom-center\"}",
                     "header": "Test Campaign",
                     "titleColor": "#000000",
@@ -105,7 +105,7 @@
                     }
                 ],
                 "messagePayload": {
-                    "title": "[ToolTip] tooltip 3",
+                    "title": "[Tooltip] tooltip 3",
                     "messageBody": "{\"UIElement\" : \"tooltip.test.3\", \"position\": \"bottom-left\"}",
                     "header": "Test Campaign",
                     "titleColor": "#000000",
@@ -149,7 +149,7 @@
                     }
                 ],
                 "messagePayload": {
-                    "title": "[ToolTip] tooltip 4",
+                    "title": "[Tooltip] tooltip 4",
                     "messageBody": "{\"UIElement\" : \"tooltip.test.4\", \"position\": \"left\"}",
                     "header": "Test Campaign",
                     "titleColor": "#000000",
@@ -193,7 +193,7 @@
                     }
                 ],
                 "messagePayload": {
-                    "title": "[ToolTip] tooltip 5",
+                    "title": "[Tooltip] tooltip 5",
                     "messageBody": "{\"UIElement\" : \"tooltip.test.5\", \"position\": \"top-left\"}",
                     "header": "Test Campaign",
                     "titleColor": "#000000",
@@ -237,7 +237,7 @@
                     }
                 ],
                 "messagePayload": {
-                    "title": "[ToolTip] tooltip 6",
+                    "title": "[Tooltip] tooltip 6",
                     "messageBody": "{\"UIElement\" : \"tooltip.test.6\", \"position\": \"top-center\"}",
                     "header": "Test Campaign",
                     "titleColor": "#000000",
@@ -281,7 +281,7 @@
                     }
                 ],
                 "messagePayload": {
-                    "title": "[ToolTip] tooltip 7",
+                    "title": "[Tooltip] tooltip 7",
                     "messageBody": "{\"UIElement\" : \"tooltip.test.7\", \"position\": \"top-right\"}",
                     "header": "Test Campaign",
                     "titleColor": "#000000",
@@ -325,7 +325,7 @@
                     }
                 ],
                 "messagePayload": {
-                    "title": "[ToolTip] tooltip 8",
+                    "title": "[Tooltip] tooltip 8",
                     "messageBody": "{\"UIElement\" : \"tooltip.test.8\", \"position\": \"right\"}",
                     "header": "Test Campaign",
                     "titleColor": "#000000",
