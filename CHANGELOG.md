@@ -4,6 +4,7 @@
 - Improvements:
 	- Updated information sent to Analytics [SDKCF-5252]
 	- Display impression analytics event is now sent when campaign message appears [SDKCF-5252]
+	- Refactor for Xcode 14 compatibility [SDCFK-5611]
 - Bug fixes:
 	- Fixed issues with unit tests on Xcode 13.3 [SDKCF-5124]
 	- Fixed Opt-out message visibility on a dark background [SDKCF-5620]

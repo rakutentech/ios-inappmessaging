@@ -123,7 +123,7 @@ internal class CampaignDispatcher: CampaignDispatcherType, TaskSchedulable {
 
         router.displayCampaign(campaign, associatedImageData: imageBlob, confirmation: {
             let contexts = campaign.contexts
-            guard let delegate = delegate, !contexts.isEmpty, !campaign.data.isTest else {
+            guard let delegate = self.delegate, !contexts.isEmpty, !campaign.data.isTest else {
                 return true
             }
             let shouldShow = delegate.shouldShowCampaignMessage(title: campaignTitle,
