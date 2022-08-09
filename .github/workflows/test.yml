@@ -3,7 +3,8 @@ name: Build and Test
 on:
   pull_request_target:
 
-permissions: write-all
+permissions:
+  checks: write
 
 jobs:
   build-test:
