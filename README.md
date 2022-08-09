@@ -4,7 +4,7 @@
 
 # RInAppMessaging
 
-In-App Messaging (IAM) module allows app developers to easily configure and display notifications within their app.
+IIn-App Messaging (IAM) module allows app developers to easily configure and display notifications within their app.
 
 This module supports iOS 12.0 and above. It has been tested with iOS 12.5 and above.
 
