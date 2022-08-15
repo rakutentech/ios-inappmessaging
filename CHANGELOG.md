@@ -1,14 +1,21 @@
 ## Changelog
 
+### 7.2.0 (in-progress)
+- Features:
+	- Added Push Primer feature [SDKCF-5631]
+- Improvements:
+	- Refactor for Xcode 14 compatibility [SDCFK-5611]
+	- Integrated with Emerge Tools [SDKCF-5346]
+- Bug fixes:
+	- Fixed Opt-out message visibility on a dark background [SDKCF-5620]
+	- Fixed an issue when test campaigns were not displayed [SDKCF-5636]
+
 ### 7.1.0 (2022-06-14)
 - Improvements:
 	- Updated information sent to Analytics [SDKCF-5252]
 	- Display impression analytics event is now sent when campaign message appears [SDKCF-5252]
-	- Refactor for Xcode 14 compatibility [SDCFK-5611]
 - Bug fixes:
 	- Fixed issues with unit tests on Xcode 13.3 [SDKCF-5124]
-	- Fixed Opt-out message visibility on a dark background [SDKCF-5620]
-	- Fixed an issue when test campaigns were not displayed [SDKCF-5636]
 
 ### 7.0.0 (2022-05-13)
 - **Breaking changes:**

@@ -11,13 +11,15 @@ internal class ActionButton: UIButton {
         static let borderWidth: CGFloat = 0.5
     }
 
+    let type: ActionType
     let impression: ImpressionType
     let uri: String?
     let trigger: Trigger?
 
     private let textLabel = UILabel()
 
-    init(impression: ImpressionType, uri: String?, trigger: Trigger?) {
+    init(type: ActionType, impression: ImpressionType, uri: String?, trigger: Trigger?) {
+        self.type = type
         self.impression = impression
         self.uri = uri
         self.trigger = trigger
