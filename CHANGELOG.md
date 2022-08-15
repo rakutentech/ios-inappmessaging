@@ -4,6 +4,7 @@
 - Features:
 	- Added Push Primer feature [SDKCF-5631]
 - Improvements:
+    - Enable triggers validation for test campaigns [SDKCF-5776]
 	- Refactor for Xcode 14 compatibility [SDCFK-5611]
 	- Integrated with Emerge Tools [SDKCF-5346]
 - Bug fixes:
