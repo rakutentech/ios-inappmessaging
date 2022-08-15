@@ -34,13 +34,8 @@ internal struct CampaignsValidator: CampaignsValidatorType {
             guard campaign.impressionsLeft > 0 else {
                 continue
             }
-            guard !campaign.data.isTest else {
-                validatedCampaignHandler(campaign, [])
-                // test campaign triggers are always satisfied
-                continue
-            }
             
-            guard !campaign.isOptedOut, !campaign.isOutdated else {
+            guard campaign.data.isTest || (!campaign.isOptedOut && !campaign.isOutdated) else {
                 continue
             }
             guard let campaignTriggers = campaign.data.triggers else {
