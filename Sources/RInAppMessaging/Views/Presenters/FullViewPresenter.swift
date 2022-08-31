@@ -124,12 +124,14 @@ internal class FullViewPresenter: BaseViewPresenter, FullViewPresenterType, Erro
     }
 
     private func pushPrimerAction() {
-        notificationCenter.requestAuthorization(options: pushPrimerOptions) { [weak self] (granted, error) in
-            guard let self = self else { return }
+        notificationCenter.requestAuthorization(options: pushPrimerOptions) { [self] (granted, error) in
+            // `self` becomes nil when the campaign window gets closed
             if let error = error {
                 self.reportError(description: "PushPrimer: UNUserNotificationCenter requestAuthorization failed", data: error)
             } else if granted {
                 DispatchQueue.main.async(execute: self.notificationCenter.registerForRemoteNotifications)
+            } else {
+                self.reportError(description: "PushPrimer: User has not granted authorization", data: nil)
             }
         }
     }

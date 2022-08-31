@@ -518,6 +518,24 @@ class ViewPresenterSpec: QuickSpec {
                     }
 
                     context("when authorization is not granted") {
+                        beforeEach {
+                            notificationCenterMock.authorizationGranted = false
+                        }
+
+                        it("will not try to register for remote notifications") {
+                            presenter.didClickAction(sender: sender)
+                            expect(notificationCenterMock.didCallRegisterForRemoteNotifications).toAfterTimeout(beFalse())
+                        }
+
+                        it("will report an error with expected message") {
+                            presenter.didClickAction(sender: sender)
+                            expect(errorDelegate.wasErrorReceived).to(beTrue())
+                            expect(errorDelegate.receivedError?.localizedDescription)
+                                .to(contain("PushPrimer: User has not granted authorization"))
+                        }
+                    }
+
+                    context("when authorization returned an error") {
                         let authorizationError = NSError(domain: "sample error", code: 100)
 
                         beforeEach {

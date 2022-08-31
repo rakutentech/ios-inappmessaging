@@ -484,16 +484,12 @@ final class UNUserNotificationCenterMock: RemoteNotificationRequestable {
     private(set) var requestAuthorizationCallState: (didCall: Bool, options: UNAuthorizationOptions?) = (false, nil)
     private(set) var didCallRegisterForRemoteNotifications = false
     var authorizationRequestError: Error?
+    var authorizationGranted = true
 
     func requestAuthorization(options: UNAuthorizationOptions = [],
                               completionHandler: @escaping (Bool, Error?) -> Void) {
         requestAuthorizationCallState = (didCall: true, options: options)
-
-        if let authorizationRequestError = authorizationRequestError {
-            completionHandler(false, authorizationRequestError)
-        } else {
-            completionHandler(true, nil)
-        }
+        completionHandler(authorizationGranted, authorizationRequestError)
     }
 
     func registerForRemoteNotifications() {
