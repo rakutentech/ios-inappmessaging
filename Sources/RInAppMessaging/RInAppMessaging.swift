@@ -53,10 +53,16 @@ import RSDKUtils
 
     /// Function to be called by host application to start a new thread that
     /// configures Rakuten InAppMessaging SDK.
-    @objc public static func configure() {
+    /// - Parameter subscriptionKeyOverride: **[TEST PURPOSES ONLY]** a subscription key to be used instead of the one set in Info.plist
+    /// - Parameter configurationURLOverride: **[TEST PURPOSES ONLY]** a configuration URL to be used instead of the one set in Info.plist
+    @objc public static func configure(subscriptionIDOverride: String? = nil,
+                                       configurationURLOverride: String? = nil) {
         guard initializedModule == nil else {
             return
         }
+
+        BundleInfo.configurationURLOverride = configurationURLOverride
+        BundleInfo.subscriptionIDOverride = subscriptionIDOverride
 
         let dependencyManager = TypedDependencyManager()
         let mainContainer = MainContainerFactory.create(dependencyManager: dependencyManager)

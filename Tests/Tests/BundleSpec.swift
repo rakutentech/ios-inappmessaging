@@ -14,6 +14,7 @@ class BundleSpec: QuickSpec {
             beforeEach {
                 bundleMock = BundleMock()
                 bundleInfo.bundleMock = bundleMock
+                bundleInfo.reset()
             }
 
             it("should return expected applicationId") {
@@ -32,14 +33,42 @@ class BundleSpec: QuickSpec {
                 expect(bundleInfo.inAppSdkVersion).to(match(semverRegex))
             }
 
-            it("should return expected inAppSubscriptionId") {
-                bundleMock.infoDictionaryMock[Constants.Info.subscriptionIDKey] = "sub-id"
-                expect(bundleInfo.inAppSubscriptionId).to(equal("sub-id"))
+            context("when calling inAppSubscriptionId") {
+
+                context("and subscriptionIDOverride is nil") {
+                    it("should return the value from Info.plist") {
+                        bundleMock.infoDictionaryMock[Constants.Info.subscriptionIDKey] = "sub-id"
+                        expect(bundleInfo.inAppSubscriptionId).to(equal("sub-id"))
+                    }
+                }
+
+                context("and subscriptionIDOverride is not nil") {
+                    beforeEach {
+                        bundleInfo.subscriptionIDOverride = "another-sub-id"
+                    }
+                    it("should return subscriptionIDOverride value") {
+                        expect(bundleInfo.inAppSubscriptionId).to(equal("another-sub-id"))
+                    }
+                }
             }
 
-            it("should return expected inAppConfigurationURL") {
-                bundleMock.infoDictionaryMock[Constants.Info.configurationURLKey] = "http://config.url"
-                expect(bundleInfo.inAppConfigurationURL).to(equal("http://config.url"))
+            context("when calling inAppConfigurationURL") {
+
+                context("and subscriptionIDOverride is nil") {
+                    it("should return the value from Info.plist") {
+                        bundleMock.infoDictionaryMock[Constants.Info.configurationURLKey] = "http://config.url"
+                        expect(bundleInfo.inAppConfigurationURL).to(equal("http://config.url"))
+                    }
+                }
+
+                context("and subscriptionIDOverride is not nil") {
+                    beforeEach {
+                        bundleInfo.configurationURLOverride = "http://config.alt"
+                    }
+                    it("should return subscriptionIDOverride value") {
+                        expect(bundleInfo.inAppConfigurationURL).to(equal("http://config.alt"))
+                    }
+                }
             }
 
             it("should return expected customFontNameTitle") {
@@ -70,6 +99,11 @@ class BundleInfoMocked: BundleInfo {
     static var bundleMock: BundleMock!
     override class var bundle: Bundle {
         bundleMock
+    }
+
+    static func reset() {
+        subscriptionIDOverride = nil
+        configurationURLOverride = nil
     }
 }
 
