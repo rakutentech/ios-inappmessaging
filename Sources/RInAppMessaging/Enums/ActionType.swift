@@ -3,4 +3,5 @@ internal enum ActionType: Int, Codable {
     case redirect
     case deeplink
     case close
+    case pushPrimer
 }

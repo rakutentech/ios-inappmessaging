@@ -472,8 +472,27 @@ final class LockableTestObject: Lockable {
 
 final class ErrorDelegateMock: ErrorDelegate {
     private(set) var wasErrorReceived = false
+    private(set) var receivedError: NSError?
 
     func didReceive(error: NSError) {
         wasErrorReceived = true
+        receivedError = error
+    }
+}
+
+final class UNUserNotificationCenterMock: RemoteNotificationRequestable {
+    private(set) var requestAuthorizationCallState: (didCall: Bool, options: UNAuthorizationOptions?) = (false, nil)
+    private(set) var didCallRegisterForRemoteNotifications = false
+    var authorizationRequestError: Error?
+    var authorizationGranted = true
+
+    func requestAuthorization(options: UNAuthorizationOptions = [],
+                              completionHandler: @escaping (Bool, Error?) -> Void) {
+        requestAuthorizationCallState = (didCall: true, options: options)
+        completionHandler(authorizationGranted, authorizationRequestError)
+    }
+
+    func registerForRemoteNotifications() {
+        didCallRegisterForRemoteNotifications = true
     }
 }

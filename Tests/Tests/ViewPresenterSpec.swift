@@ -314,14 +314,23 @@ class ViewPresenterSpec: QuickSpec {
                        buttonBehavior: ButtonBehavior(action: .redirect, uri: "uri"),
                        campaignTrigger: nil)
             ])
+            let pushPrimerOptions: UNAuthorizationOptions = [.badge, .sound, .criticalAlert]
+            var notificationCenterMock: UNUserNotificationCenterMock!
+            var errorDelegate: ErrorDelegateMock!
+
             beforeEach {
                 view = FullViewMock()
+                notificationCenterMock = UNUserNotificationCenterMock()
+                errorDelegate = ErrorDelegateMock()
                 presenter = FullViewPresenter(campaignRepository: campaignRepository,
                                               impressionService: impressionService,
                                               eventMatcher: eventMatcher,
-                                              campaignTriggerAgent: campaignTriggerAgent)
+                                              campaignTriggerAgent: campaignTriggerAgent,
+                                              pushPrimerOptions: pushPrimerOptions,
+                                              notificationCenter: notificationCenterMock)
                 presenter.view = view
                 presenter.campaign = campaign
+                presenter.errorDelegate = errorDelegate
             }
 
             context("when viewDidInitialize is called") {
@@ -358,13 +367,15 @@ class ViewPresenterSpec: QuickSpec {
                 it("will call addButtons on the view object with proper data") {
                     presenter.loadButtons()
                     expect(view.addedButtons.map({ $0.0 })).to(elementsEqual([
-                        ActionButton(impression: .actionOne,
+                        ActionButton(type: .close,
+                                     impression: .actionOne,
                                      uri: nil,
                                      trigger: Trigger(type: .event,
                                                       eventType: .custom,
                                                       eventName: "trigger",
                                                       attributes: [])),
-                        ActionButton(impression: .actionTwo,
+                        ActionButton(type: .redirect,
+                                     impression: .actionTwo,
                                      uri: "uri",
                                      trigger: nil)
                     ]))
@@ -406,7 +417,8 @@ class ViewPresenterSpec: QuickSpec {
 
             context("when didClickAction is called") {
 
-                let sender = ActionButton(impression: .actionOne,
+                let sender = ActionButton(type: .close,
+                                          impression: .actionOne,
                                           uri: nil,
                                           trigger: Trigger(type: .event,
                                                            eventType: .custom,
@@ -448,7 +460,8 @@ class ViewPresenterSpec: QuickSpec {
                 }
 
                 it("will show error alert if redirect URL is invalid") {
-                    let sender = ActionButton(impression: .actionOne,
+                    let sender = ActionButton(type: .close,
+                                              impression: .actionOne,
                                               uri: "",
                                               trigger: Trigger(type: .event,
                                                                eventType: .custom,
@@ -459,7 +472,8 @@ class ViewPresenterSpec: QuickSpec {
                 }
 
                 it("will show error alert if redirect URL couldn't be opened") {
-                    let sender = ActionButton(impression: .actionOne,
+                    let sender = ActionButton(type: .close,
+                                              impression: .actionOne,
                                               uri: "unknown_scheme",
                                               trigger: Trigger(type: .event,
                                                                eventType: .custom,
@@ -470,6 +484,79 @@ class ViewPresenterSpec: QuickSpec {
                 }
 
                 // testing positive cases for redirect/deeplink URL requires UIApplication.shared.openURL() function to be mocked
+
+                context("and action type is .pushPrimer") {
+                    let sender = ActionButton(type: .pushPrimer,
+                                              impression: .actionOne,
+                                              uri: nil, trigger: nil)
+
+                    it("will call dismiss on the view object") {
+                        presenter.didClickAction(sender: sender)
+                        expect(view.wasDismissCalled).to(beTrue())
+                    }
+
+                    it("will send impressions containing button's impression") {
+                        presenter.didClickAction(sender: sender)
+                        expect(impressionService.sentImpressions?.list).to(contain(sender.impression))
+                    }
+
+                    it("will request notification authorization") {
+                        presenter.didClickAction(sender: sender)
+                        expect(notificationCenterMock.requestAuthorizationCallState.didCall).to(beTrue())
+                    }
+
+                    it("will request notification authorization with provided options") {
+                        presenter.didClickAction(sender: sender)
+                        expect(notificationCenterMock.requestAuthorizationCallState.options).to(equal(pushPrimerOptions))
+                    }
+
+                    context("when authorization is granted") {
+                        it("will register for remote notifications") {
+                            presenter.didClickAction(sender: sender)
+                            expect(notificationCenterMock.didCallRegisterForRemoteNotifications).toEventually(beTrue())
+                        }
+                    }
+
+                    context("when authorization is not granted") {
+                        beforeEach {
+                            notificationCenterMock.authorizationGranted = false
+                        }
+
+                        it("will not try to register for remote notifications") {
+                            presenter.didClickAction(sender: sender)
+                            expect(notificationCenterMock.didCallRegisterForRemoteNotifications).toAfterTimeout(beFalse())
+                        }
+
+                        it("will report an error with expected message") {
+                            presenter.didClickAction(sender: sender)
+                            expect(errorDelegate.wasErrorReceived).to(beTrue())
+                            expect(errorDelegate.receivedError?.localizedDescription)
+                                .to(contain("PushPrimer: User has not granted authorization"))
+                        }
+                    }
+
+                    context("when authorization returned an error") {
+                        let authorizationError = NSError(domain: "sample error", code: 100)
+
+                        beforeEach {
+                            notificationCenterMock.authorizationRequestError = authorizationError
+                        }
+
+                        it("will not try to register for remote notifications") {
+                            presenter.didClickAction(sender: sender)
+                            expect(notificationCenterMock.didCallRegisterForRemoteNotifications).toAfterTimeout(beFalse())
+                        }
+
+                        it("will report an error with associated error object") {
+                            presenter.didClickAction(sender: sender)
+                            expect(errorDelegate.wasErrorReceived).to(beTrue())
+                            expect(errorDelegate.receivedError?.localizedDescription)
+                                .to(contain("PushPrimer: UNUserNotificationCenter requestAuthorization failed"))
+                            expect(errorDelegate.receivedError?.userInfo["data"] as? NSError)
+                                .to(equal(authorizationError))
+                        }
+                    }
+                }
             }
 
             context("when didClickExitButton is called") {

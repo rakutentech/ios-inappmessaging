@@ -8,6 +8,8 @@ import class RSDKUtils.TypedDependencyManager
 #endif
 @testable import RInAppMessaging
 
+// swiftlint:disable type_body_length
+// swiftlint:disable function_body_length
 class PublicAPISpec: QuickSpec {
 
     override func spec() {
@@ -418,6 +420,33 @@ class PublicAPISpec: QuickSpec {
                     let identifiers = [UserIdentifier(type: .userId, identifier: "user")]
                     expect(dataCache.getUserData(identifiers: identifiers)?.campaignData?.first?.impressionsLeft)
                         .toEventually(equal(2)) // nil -> 2
+                }
+            }
+
+            context("pushPrimerAuthorizationOptions") {
+
+                var pushPrimerAuthorizationOptionsDefault: UNAuthorizationOptions = []
+                beforeSuite {
+                    pushPrimerAuthorizationOptionsDefault = RInAppMessaging.pushPrimerAuthorizationOptions
+                }
+
+                afterEach {
+                    RInAppMessaging.pushPrimerAuthorizationOptions = pushPrimerAuthorizationOptionsDefault
+                }
+
+                it("will have expected default value") {
+                    expect(RInAppMessaging.pushPrimerAuthorizationOptions).to(equal([.sound, .alert, .badge]))
+                }
+
+                it("will return expected value when a new value was set") {
+                    RInAppMessaging.pushPrimerAuthorizationOptions = [.carPlay]
+                    expect(RInAppMessaging.pushPrimerAuthorizationOptions).to(equal([.carPlay]))
+                }
+
+                it("will not re-set the value after calling configure()") {
+                    RInAppMessaging.pushPrimerAuthorizationOptions = [.criticalAlert]
+                    reinitializeSDK()
+                    expect(RInAppMessaging.pushPrimerAuthorizationOptions).to(equal([.criticalAlert]))
                 }
             }
         }

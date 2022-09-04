@@ -103,7 +103,8 @@ internal enum MainContainerFactory {
                 FullViewPresenter(campaignRepository: manager.resolve(type: CampaignRepositoryType.self)!,
                                   impressionService: manager.resolve(type: ImpressionServiceType.self)!,
                                   eventMatcher: manager.resolve(type: EventMatcherType.self)!,
-                                  campaignTriggerAgent: manager.resolve(type: CampaignTriggerAgentType.self)!)
+                                  campaignTriggerAgent: manager.resolve(type: CampaignTriggerAgentType.self)!,
+                                  pushPrimerOptions: RInAppMessaging.pushPrimerAuthorizationOptions)
             }, transient: true),
             ContainerElement(type: SlideUpViewPresenterType.self, factory: {
                 SlideUpViewPresenter(campaignRepository: manager.resolve(type: CampaignRepositoryType.self)!,

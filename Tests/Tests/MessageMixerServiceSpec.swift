@@ -49,12 +49,6 @@ class MessageMixerServiceSpec: QuickSpec {
                 URLSessionMock.stopMockingURLSession()
             }
 
-            it("will use provided URL in a request") {
-                sendRequestAndWaitForResponse()
-                expect(httpSession.sentRequest).toNot(beNil())
-                expect(httpSession.sentRequest?.url).to(equal(configData.endpoints?.ping))
-            }
-
             context("when request succeeds") {
 
                 beforeEach {
@@ -229,6 +223,12 @@ class MessageMixerServiceSpec: QuickSpec {
                     service.bundleInfo = BundleInfoMock.self
                 }
 
+                it("will use ping URL from config data") {
+                    sendRequestAndWaitForResponse()
+                    expect(httpSession.sentRequest).toNot(beNil())
+                    expect(httpSession.sentRequest?.url).to(equal(configData.endpoints?.ping))
+                }
+
                 it("will send a valid data object") {
                     sendRequestAndWaitForResponse()
 
@@ -236,6 +236,7 @@ class MessageMixerServiceSpec: QuickSpec {
 
                     expect(request).toNot(beNil())
                     expect(request?.appVersion).to(equal(BundleInfoMock.appVersion))
+                    expect(request?.supportedCampaignTypes).to(elementsEqualOrderAgnostic([.regular, .pushPrimer]))
                 }
 
                 it("will send user preferences in the request") {

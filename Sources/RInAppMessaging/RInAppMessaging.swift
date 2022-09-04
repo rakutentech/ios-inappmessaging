@@ -1,4 +1,5 @@
 import Foundation
+import struct UserNotifications.UNAuthorizationOptions
 #if canImport(RSDKUtilsMain)
 import RSDKUtilsMain // SPM version
 #else
@@ -44,6 +45,11 @@ import RSDKUtils
             initializedModule?.aggregatedErrorHandler = errorCallback
         }
     }
+
+    /// User Notification Authorization Options used in Push Primer feature.
+    /// Value of this property will be used to register for remote notifications.
+    /// The default value is `[.sound, .alert, .badge]`
+    @objc public static var pushPrimerAuthorizationOptions: UNAuthorizationOptions = [.sound, .alert, .badge]
 
     /// Function to be called by host application to start a new thread that
     /// configures Rakuten InAppMessaging SDK.
