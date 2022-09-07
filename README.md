@@ -47,13 +47,24 @@ Choose `RInAppMessaging` product for your target. If you want to link other targ
 
 **Note:** Currently we do not host any public APIs but you can create your own APIs and configure the SDK to use those.
 
-To use the module you must set the following values in your app's `Info.plist`:
+To use the module you must set your app's subscription key and a config endpoint URL using one of the provided methods:
+
+### Build-time configuration<a name="build-time-config"></a>
+Add the following entries in your app's `Info.plist`:
 
 | Key     | Value     |
 | :---:   | :---:     |
 | `InAppMessagingAppSubscriptionID` | your\_subscription\_key |
 | `InAppMessagingConfigurationURL` | Endpoint for fetching the configuration |
 
+### Runtime configuration
+Provide a value for `subscriptionID` and `configurationURL` parameters when calling `RInAppMessaging.configure` method. 
+```swift
+RInAppMessaging.configure(subscriptionID: "your_subscription_key",
+                          configurationURL: "Endpoint for fetching the configuration")
+```
+
+⚠️ The runtime configuration values take precedence over build-time configuration.
 
 ## **Enable and disable the SDK remotely**
 We recommend, as good engineering practice, that you integrate with a remote config service so that you can fetch a feature flag, e.g. `Enable_IAM_SDK`, and use its value to dynamically enable/disable the SDK without making an app release. There are many remote config services on the market, both free and paid.
@@ -74,12 +85,14 @@ This method initializes the SDK and should be placed in your AppDelegate's `didF
 import RInAppMessaging
 
 func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-    RInAppMessaging.configure()
+    RInAppMessaging.configure(subscriptionID: "runtime-config-subscription-id",
+                              configurationURL: "runtime.config.url")
     return true
 }
 ```
 
 **Note**: 
+* `subscriptionID` and `configurationURL` parameters are optional if you set their values in Info.plist (See [build-time configuration](#build-time-config))
 * You can wrap the call to `configure()` in an `if <enable IAM-SDK boolean value> == true` condition to control enabling/disabling the SDK. 
 * If `configure()` is not called, subsequent calls to other public API SDK functions have no effect.
 

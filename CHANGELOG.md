@@ -3,8 +3,9 @@
 ### 7.2.0 (in-progress)
 - Features:
 	- Added Push Primer feature [SDKCF-5631]
+	- Added a possibility to set subscription ID and config URL in runtime [SDKCF-5614]
 - Improvements:
-    - Enable triggers validation for test campaigns [SDKCF-5776]
+	- Enable triggers validation for test campaigns [SDKCF-5776]
 	- Refactor for Xcode 14 compatibility [SDCFK-5611]
 	- Integrated with Emerge Tools [SDKCF-5346]
 - Bug fixes:
