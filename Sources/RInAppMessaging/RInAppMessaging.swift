@@ -117,6 +117,7 @@ import RSDKUtils
 
     /// Log the event name passed in and also pass the event name to the view controller to display a matching campaign.
     /// - Parameter event: The Event object to log.
+    /// - Warning: ⚠️ Calling this method prior to `configure()` has no effect.
     @objc public static func logEvent(_ event: Event) {
         inAppQueue.async {
             notifyIfModuleNotInitialized()
@@ -129,9 +130,11 @@ import RSDKUtils
     /// Registered object should be updated to reflect current user session state.
     /// Should only be called once unless new `UserInfoProvider` object has been created.
     /// - Note: This method creates a strong reference to provided object.
+    /// - Warning: ⚠️ Calling this method prior to `configure()` has no effect.
     /// - Parameter provider: object that will always contain up-to-date user information.
     @objc public static func registerPreference(_ provider: UserInfoProvider) {
         inAppQueue.async {
+            notifyIfModuleNotInitialized()
             initializedModule?.registerPreference(provider)
         }
     }
