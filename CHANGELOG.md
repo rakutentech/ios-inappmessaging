@@ -8,6 +8,7 @@
 	- Enable triggers validation for test campaigns [SDKCF-5776]
 	- Refactor for Xcode 14 compatibility [SDCFK-5611]
 	- Integrated with Emerge Tools [SDKCF-5346]
+	- Added a warning when `registerPreference()` is called before `configure()`
 - Bug fixes:
 	- Fixed Opt-out message visibility on a dark background [SDKCF-5620]
 	- Fixed an issue when test campaigns were not displayed [SDKCF-5636]
