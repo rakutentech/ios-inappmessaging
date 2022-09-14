@@ -46,7 +46,7 @@
                             "orientation": 1,
                             "textAlign": 2,
                             "optOut": true,
-                            "delay": 100,
+                            "delay": 500,
                             "html": false
                         },
                         "controlSettings": {

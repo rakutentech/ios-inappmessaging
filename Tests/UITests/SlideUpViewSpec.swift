@@ -65,7 +65,7 @@ class SlideUpViewSpec: QuickSpec {
 
                     app.buttons["login_successful"].tap() // show the message again
                     expect(iamView.exists).toEventually(beTrue(), timeout: .seconds(2))
-                    let bottomRightCorner = exitButtonCenter.withOffset(CGVector(dx: 21, dy: 21)) // points on max edges are not counted
+                    let bottomRightCorner = exitButtonCenter.withOffset(CGVector(dx: 20.5, dy: 20.5)) // points on max edges are not counted
                     bottomRightCorner.tap()
                     expect(iamView.exists).to(beFalse())
                 }
