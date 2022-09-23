@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'RInAppMessaging'
-  s.version          = '7.2.0-snapshot'
+  s.version          = '7.2.0'
   s.summary          = 'Rakuten module to manage and display in-app messages'
   s.homepage         = 'https://github.com/rakutentech/ios-inappmessaging'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
