@@ -1,6 +1,6 @@
 ## Changelog
 
-### 7.2.0 (in-progress)
+### 7.2.0 (2022-09-23)
 - Features:
 	- Added Push Primer feature [SDKCF-5631]
 	- Added a possibility to set subscription ID and config URL in runtime [SDKCF-5614]
