@@ -1,5 +1,9 @@
 ## Changelog
 
+### 7.3.0 (in-progress)
+- Bug fixes:
+	- Fixed an edge case of not readable status bar when campaign message is displayed [SDKCF-5134]
+
 ### 7.2.0 (2022-09-23)
 - Features:
 	- Added Push Primer feature [SDKCF-5631]

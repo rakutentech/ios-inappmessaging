@@ -18,7 +18,7 @@ extension UIApplication {
     func getCurrentStatusBarStyle() -> UIStatusBarStyle? {
         if #available(iOS 13.0, *),
            let keyScene = connectedScenes
-                .filter({ $0.activationState == .foregroundActive })
+                .filter({ $0.activationState != .unattached })
                 .compactMap({ $0 as? UIWindowScene })
                 .first {
 
