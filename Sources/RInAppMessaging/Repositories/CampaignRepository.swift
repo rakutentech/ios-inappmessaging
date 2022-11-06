@@ -90,8 +90,6 @@ internal class CampaignRepository: CampaignRepositoryType {
                 updatedCampaign = Campaign.updatedCampaign(updatedCampaign, asOptedOut: oldCampaign.isOptedOut)
 
                 if retainImpressionsLeftValue {
-                    updatedCampaign = Campaign.updatedCampaign(updatedCampaign, withImpressionLeft: oldCampaign.impressionsLeft)
-                } else {
                     var newImpressionsLeft = oldCampaign.impressionsLeft
                     let wasMaxImpressionsEdited = oldCampaign.data.maxImpressions != newCampaign.data.maxImpressions
                     if wasMaxImpressionsEdited {

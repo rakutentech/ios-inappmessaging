@@ -8,7 +8,7 @@ PODS:
   - GRMustache.swift (4.0.1)
   - Nimble (10.0.0)
   - Quick (5.0.1)
-  - RInAppMessaging (7.2.0-snapshot):
+  - RInAppMessaging (7.3.0-snapshot):
     - RSDKUtils (~> 3.0.0)
   - RSDKUtils (3.0.0):
     - RSDKUtils/Main (= 3.0.0)
@@ -112,7 +112,7 @@ SPEC CHECKSUMS:
   GRMustache.swift: a6436504284b22b4b05daf5f46f77bd3fe00a9a2
   Nimble: 5316ef81a170ce87baf72dd961f22f89a602ff84
   Quick: 749aa754fd1e7d984f2000fe051e18a3a9809179
-  RInAppMessaging: 469eae7fd518ad717fcd485f685623af91203019
+  RInAppMessaging: a2222cac79bdb4d59a02e73bc3d4c6a2858f49bb
   RSDKUtils: 36d97c9a41b5663ba56e73c626d27034a6c317e5
   Shock: 34def30d5e729f6c1eea2a5b5c2d024b875af86c
   SwiftLint: 32ee33ded0636d0905ef6911b2b67bbaeeedafa5
@@ -123,6 +123,6 @@ SPEC CHECKSUMS:
   SwiftNIOHTTP1: ef56706550a1dc135ea69d65215b9941e643c23b
   SwiftNIOPosix: b49af4bdbecaadfadd5c93dfe28594d6722b75e4
 
-PODFILE CHECKSUM: 1ac2aaaa3be2fa2b4087a4496f6e2a84b3dfae06
+PODFILE CHECKSUM: 9e922fb3ca31e623e3b88023d57a4c75f174d52b
 
 COCOAPODS: 1.11.3

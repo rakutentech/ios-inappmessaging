@@ -211,7 +211,7 @@ class PublicAPISpec: QuickSpec {
                     return false
                 }))
                 // 3rd event is ignored because maxImpressions = 2
-                expect(UIApplication.shared.getKeyWindow()?.findIAMViewSubview()).toAfterTimeout(beNil())
+                expect(UIApplication.shared.getKeyWindow()?.findIAMView()).toAfterTimeout(beNil())
             }
 
             context("when calling configure()") {
@@ -226,12 +226,14 @@ class PublicAPISpec: QuickSpec {
                     RInAppMessaging.deinitializeModule()
                     expect(RInAppMessaging.initializedModule).to(beNil())
 
+                    var resumeRetry: (() -> Void)!
                     reinitializeSDK {
-                        configurationManager.simulateRetryDelay = 1 // added delay to capture initialized object
+                        resumeRetry = configurationManager.prepareRetryDelayAndWaitForSignal() // added delay to capture initialized object
                         configurationManager.rolloutPercentage = 0 // triggers deinit
                     }
                     expect(RInAppMessaging.initializedModule).toEventuallyNot(beNil())
                     weak var initializedModule = RInAppMessaging.initializedModule
+                    resumeRetry()
                     expect(RInAppMessaging.initializedModule).toEventually(beNil())
                     expect(initializedModule).to(beNil())
                 }
@@ -303,8 +305,8 @@ class PublicAPISpec: QuickSpec {
                     contextVerifier.shouldShowCampaign = true
                     generateAndDisplayLoginCampaigns(count: 2, addContexts: true)
 
-                    expect(UIApplication.shared.getKeyWindow()?.findIAMViewSubview()).toEventuallyNot(beNil())
-                    UIApplication.shared.getKeyWindow()?.findIAMViewSubview()?.dismiss()
+                    expect(UIApplication.shared.getKeyWindow()?.findIAMView()).toEventuallyNot(beNil())
+                    UIApplication.shared.getKeyWindow()?.findIAMView()?.dismiss()
                     expect(contextVerifier.onVerifyContextCallCount).toEventually(equal(2))
                 }
 
@@ -343,8 +345,8 @@ class PublicAPISpec: QuickSpec {
                 it("will show a message if impressionsLeft was greater than 0 in the last session") {
                     generateAndDisplayLoginCampaigns(count: 1, addContexts: false)
 
-                    expect(UIApplication.shared.getKeyWindow()?.findIAMViewSubview()).toEventuallyNot(beNil())
-                    UIApplication.shared.getKeyWindow()?.findIAMViewSubview()?.dismiss()
+                    expect(UIApplication.shared.getKeyWindow()?.findIAMView()).toEventuallyNot(beNil())
+                    UIApplication.shared.getKeyWindow()?.findIAMView()?.dismiss()
                     waitForCache()
 
                     RInAppMessaging.deinitializeModule()
@@ -367,8 +369,8 @@ class PublicAPISpec: QuickSpec {
                     campaignsListManager.refreshList()
                     RInAppMessaging.logEvent(LoginSuccessfulEvent())
 
-                    expect(UIApplication.shared.getKeyWindow()?.findIAMViewSubview()).toEventuallyNot(beNil())
-                    UIApplication.shared.getKeyWindow()?.findIAMViewSubview()?.dismiss()
+                    expect(UIApplication.shared.getKeyWindow()?.findIAMView()).toEventuallyNot(beNil())
+                    UIApplication.shared.getKeyWindow()?.findIAMView()?.dismiss()
                     waitForCache()
 
                     RInAppMessaging.deinitializeModule()

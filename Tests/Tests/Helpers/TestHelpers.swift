@@ -35,7 +35,7 @@ struct TestHelpers {
                                  content: Content? = nil,
                                  triggers: [Trigger] = [],
                                  buttons: [Button] = []) -> Campaign {
-        return Campaign(
+        Campaign(
             data: CampaignData(
                 campaignId: id,
                 maxImpressions: maxImpressions,
@@ -81,13 +81,16 @@ struct TestHelpers {
                                 autoCloseSeconds: Int = 0,
                                 redirectURL: String = "",
                                 triggers: [Trigger] = []) -> Campaign {
-        return Campaign(
+        Campaign(
             data: CampaignData(
                 campaignId: id,
                 maxImpressions: maxImpressions,
                 type: .modal,
                 triggers: triggers,
                 isTest: isTest,
+                infiniteImpressions: false,
+                hasNoEndDate: true,
+                isCampaignDismissable: true,
                 messagePayload: MessagePayload(
                     title: "[Tooltip] title",
                     messageBody: """
@@ -148,311 +151,311 @@ struct TestHelpers {
         }
 
         static let stringTypeWithEqualsOperator: PingResponse = {
-            return withGeneratedCampaigns(count: 1,
-                                          test: false,
-                                          delay: 0,
-                                          triggers: [
-                                            Trigger(
-                                                type: .event,
-                                                eventType: .custom,
-                                                eventName: "testevent",
-                                                attributes: [
-                                                    TriggerAttribute(name: "attributeone", value: "attributeOneValue",
-                                                                     type: .string, operator: .equals)
-                                                ]
-                                            )])
+            withGeneratedCampaigns(count: 1,
+                                   test: false,
+                                   delay: 0,
+                                   triggers: [
+                                    Trigger(
+                                        type: .event,
+                                        eventType: .custom,
+                                        eventName: "testevent",
+                                        attributes: [
+                                            TriggerAttribute(name: "attributeone", value: "attributeOneValue",
+                                                             type: .string, operator: .equals)
+                                        ]
+                                    )])
         }()
 
         static let stringTypeWithNotEqualsOperator: PingResponse = {
-            return withGeneratedCampaigns(count: 1,
-                                          test: false,
-                                          delay: 0,
-                                          triggers: [
-                                            Trigger(
-                                                type: .event,
-                                                eventType: .custom,
-                                                eventName: "testevent",
-                                                attributes: [
-                                                    TriggerAttribute(name: "attributeone", value: "attributeOneValue",
-                                                                     type: .string, operator: .isNotEqual)
-                                                ]
-                                            )])
+            withGeneratedCampaigns(count: 1,
+                                   test: false,
+                                   delay: 0,
+                                   triggers: [
+                                    Trigger(
+                                        type: .event,
+                                        eventType: .custom,
+                                        eventName: "testevent",
+                                        attributes: [
+                                            TriggerAttribute(name: "attributeone", value: "attributeOneValue",
+                                                             type: .string, operator: .isNotEqual)
+                                        ]
+                                    )])
         }()
 
         static let intTypeWithEqualsOperator: PingResponse = {
-            return withGeneratedCampaigns(count: 1,
-                                          test: false,
-                                          delay: 0,
-                                          triggers: [
-                                            Trigger(
-                                                type: .event,
-                                                eventType: .custom,
-                                                eventName: "testevent",
-                                                attributes: [
-                                                    TriggerAttribute(name: "attributeone", value: "123",
-                                                                     type: .integer, operator: .equals)
-                                                ]
-                                            )])
+            withGeneratedCampaigns(count: 1,
+                                   test: false,
+                                   delay: 0,
+                                   triggers: [
+                                    Trigger(
+                                        type: .event,
+                                        eventType: .custom,
+                                        eventName: "testevent",
+                                        attributes: [
+                                            TriggerAttribute(name: "attributeone", value: "123",
+                                                             type: .integer, operator: .equals)
+                                        ]
+                                    )])
         }()
 
         static let intTypeWithNotEqualsOperator: PingResponse = {
-            return withGeneratedCampaigns(count: 1,
-                                          test: false,
-                                          delay: 0,
-                                          triggers: [
-                                            Trigger(
-                                                type: .event,
-                                                eventType: .custom,
-                                                eventName: "testevent",
-                                                attributes: [
-                                                    TriggerAttribute(name: "attributeone", value: "123",
-                                                                     type: .integer, operator: .isNotEqual)
-                                                ]
-                                            )])
+            withGeneratedCampaigns(count: 1,
+                                   test: false,
+                                   delay: 0,
+                                   triggers: [
+                                    Trigger(
+                                        type: .event,
+                                        eventType: .custom,
+                                        eventName: "testevent",
+                                        attributes: [
+                                            TriggerAttribute(name: "attributeone", value: "123",
+                                                             type: .integer, operator: .isNotEqual)
+                                        ]
+                                    )])
         }()
 
         static let intTypeWithGreaterThanOperator: PingResponse = {
-            return withGeneratedCampaigns(count: 1,
-                                          test: false,
-                                          delay: 0,
-                                          triggers: [
-                                            Trigger(
-                                                type: .event,
-                                                eventType: .custom,
-                                                eventName: "testevent",
-                                                attributes: [
-                                                    TriggerAttribute(name: "attributeone", value: "123",
-                                                                     type: .integer, operator: .greaterThan)
-                                                ]
-                                            )])
+            withGeneratedCampaigns(count: 1,
+                                   test: false,
+                                   delay: 0,
+                                   triggers: [
+                                    Trigger(
+                                        type: .event,
+                                        eventType: .custom,
+                                        eventName: "testevent",
+                                        attributes: [
+                                            TriggerAttribute(name: "attributeone", value: "123",
+                                                             type: .integer, operator: .greaterThan)
+                                        ]
+                                    )])
         }()
 
         static let intTypeWithLessThanOperator: PingResponse = {
-            return withGeneratedCampaigns(count: 1,
-                                          test: false,
-                                          delay: 0,
-                                          triggers: [
-                                            Trigger(
-                                                type: .event,
-                                                eventType: .custom,
-                                                eventName: "testevent",
-                                                attributes: [
-                                                    TriggerAttribute(name: "attributeone", value: "123",
-                                                                     type: .integer, operator: .lessThan)
-                                                ]
-                                            )])
+            withGeneratedCampaigns(count: 1,
+                                   test: false,
+                                   delay: 0,
+                                   triggers: [
+                                    Trigger(
+                                        type: .event,
+                                        eventType: .custom,
+                                        eventName: "testevent",
+                                        attributes: [
+                                            TriggerAttribute(name: "attributeone", value: "123",
+                                                             type: .integer, operator: .lessThan)
+                                        ]
+                                    )])
         }()
 
         static let doubleTypeWithEqualsOperator: PingResponse = {
-            return withGeneratedCampaigns(count: 1,
-                                          test: false,
-                                          delay: 0,
-                                          triggers: [
-                                            Trigger(
-                                                type: .event,
-                                                eventType: .custom,
-                                                eventName: "testevent",
-                                                attributes: [
-                                                    TriggerAttribute(name: "attributeone", value: "123.0",
-                                                                     type: .double, operator: .equals)
-                                                ]
-                                            )])
+            withGeneratedCampaigns(count: 1,
+                                   test: false,
+                                   delay: 0,
+                                   triggers: [
+                                    Trigger(
+                                        type: .event,
+                                        eventType: .custom,
+                                        eventName: "testevent",
+                                        attributes: [
+                                            TriggerAttribute(name: "attributeone", value: "123.0",
+                                                             type: .double, operator: .equals)
+                                        ]
+                                    )])
         }()
 
         static let doubleTypeWithNotEqualsOperator: PingResponse = {
-            return withGeneratedCampaigns(count: 1,
-                                          test: false,
-                                          delay: 0,
-                                          triggers: [
-                                            Trigger(
-                                                type: .event,
-                                                eventType: .custom,
-                                                eventName: "testevent",
-                                                attributes: [
-                                                    TriggerAttribute(name: "attributeone", value: "123.0",
-                                                                     type: .double, operator: .isNotEqual)
-                                                ]
-                                            )])
+            withGeneratedCampaigns(count: 1,
+                                   test: false,
+                                   delay: 0,
+                                   triggers: [
+                                    Trigger(
+                                        type: .event,
+                                        eventType: .custom,
+                                        eventName: "testevent",
+                                        attributes: [
+                                            TriggerAttribute(name: "attributeone", value: "123.0",
+                                                             type: .double, operator: .isNotEqual)
+                                        ]
+                                    )])
         }()
 
         static let doubleTypeWithGreaterThanOperator: PingResponse = {
-            return withGeneratedCampaigns(count: 1,
-                                          test: false,
-                                          delay: 0,
-                                          triggers: [
-                                            Trigger(
-                                                type: .event,
-                                                eventType: .custom,
-                                                eventName: "testevent",
-                                                attributes: [
-                                                    TriggerAttribute(name: "attributeone", value: "123.0",
-                                                                     type: .double, operator: .greaterThan)
-                                                ]
-                                            )])
+            withGeneratedCampaigns(count: 1,
+                                   test: false,
+                                   delay: 0,
+                                   triggers: [
+                                    Trigger(
+                                        type: .event,
+                                        eventType: .custom,
+                                        eventName: "testevent",
+                                        attributes: [
+                                            TriggerAttribute(name: "attributeone", value: "123.0",
+                                                             type: .double, operator: .greaterThan)
+                                        ]
+                                    )])
         }()
 
         static let doubleTypeWithLessThanOperator: PingResponse = {
-            return withGeneratedCampaigns(count: 1,
-                                          test: false,
-                                          delay: 0,
-                                          triggers: [
-                                            Trigger(
-                                                type: .event,
-                                                eventType: .custom,
-                                                eventName: "testevent",
-                                                attributes: [
-                                                    TriggerAttribute(name: "attributeone", value: "123.0",
-                                                                     type: .double, operator: .lessThan)
-                                                ]
-                                            )])
+            withGeneratedCampaigns(count: 1,
+                                   test: false,
+                                   delay: 0,
+                                   triggers: [
+                                    Trigger(
+                                        type: .event,
+                                        eventType: .custom,
+                                        eventName: "testevent",
+                                        attributes: [
+                                            TriggerAttribute(name: "attributeone", value: "123.0",
+                                                             type: .double, operator: .lessThan)
+                                        ]
+                                    )])
         }()
 
         static let boolTypeWithEqualsOperator: PingResponse = {
-            return withGeneratedCampaigns(count: 1,
-                                          test: false,
-                                          delay: 0,
-                                          triggers: [
-                                            Trigger(
-                                                type: .event,
-                                                eventType: .custom,
-                                                eventName: "testevent",
-                                                attributes: [
-                                                    TriggerAttribute(name: "attributeone", value: "true",
-                                                                     type: .boolean, operator: .equals)
-                                                ]
-                                            )])
+            withGeneratedCampaigns(count: 1,
+                                   test: false,
+                                   delay: 0,
+                                   triggers: [
+                                    Trigger(
+                                        type: .event,
+                                        eventType: .custom,
+                                        eventName: "testevent",
+                                        attributes: [
+                                            TriggerAttribute(name: "attributeone", value: "true",
+                                                             type: .boolean, operator: .equals)
+                                        ]
+                                    )])
         }()
 
         static let boolTypeWithNotEqualOperator: PingResponse = {
-            return withGeneratedCampaigns(count: 1,
-                                          test: false,
-                                          delay: 0,
-                                          triggers: [
-                                            Trigger(
-                                                type: .event,
-                                                eventType: .custom,
-                                                eventName: "testevent",
-                                                attributes: [
-                                                    TriggerAttribute(name: "attributeone", value: "true",
-                                                                     type: .boolean, operator: .isNotEqual)
-                                                ]
-                                            )])
+            withGeneratedCampaigns(count: 1,
+                                   test: false,
+                                   delay: 0,
+                                   triggers: [
+                                    Trigger(
+                                        type: .event,
+                                        eventType: .custom,
+                                        eventName: "testevent",
+                                        attributes: [
+                                            TriggerAttribute(name: "attributeone", value: "true",
+                                                             type: .boolean, operator: .isNotEqual)
+                                        ]
+                                    )])
         }()
 
         static let timeTypeWithEqualsOperator: PingResponse = {
-            return withGeneratedCampaigns(count: 1,
-                                          test: false,
-                                          delay: 0,
-                                          triggers: [
-                                            Trigger(
-                                                type: .event,
-                                                eventType: .custom,
-                                                eventName: "testevent",
-                                                attributes: [
-                                                    TriggerAttribute(name: "attributeone", value: "1100",
-                                                                     type: .timeInMilliseconds, operator: .equals)
-                                                ]
-                                            )])
+            withGeneratedCampaigns(count: 1,
+                                   test: false,
+                                   delay: 0,
+                                   triggers: [
+                                    Trigger(
+                                        type: .event,
+                                        eventType: .custom,
+                                        eventName: "testevent",
+                                        attributes: [
+                                            TriggerAttribute(name: "attributeone", value: "1100",
+                                                             type: .timeInMilliseconds, operator: .equals)
+                                        ]
+                                    )])
         }()
 
         static let timeTypeWithNotEqualsOperator: PingResponse = {
-            return withGeneratedCampaigns(count: 1,
-                                          test: false,
-                                          delay: 0,
-                                          triggers: [
-                                            Trigger(
-                                                type: .event,
-                                                eventType: .custom,
-                                                eventName: "testevent",
-                                                attributes: [
-                                                    TriggerAttribute(name: "attributeone", value: "1100",
-                                                                     type: .timeInMilliseconds, operator: .isNotEqual)
-                                                ]
-                                            )])
+            withGeneratedCampaigns(count: 1,
+                                   test: false,
+                                   delay: 0,
+                                   triggers: [
+                                    Trigger(
+                                        type: .event,
+                                        eventType: .custom,
+                                        eventName: "testevent",
+                                        attributes: [
+                                            TriggerAttribute(name: "attributeone", value: "1100",
+                                                             type: .timeInMilliseconds, operator: .isNotEqual)
+                                        ]
+                                    )])
         }()
 
         static let timeTypeWithGreaterThanOperator: PingResponse = {
-            return withGeneratedCampaigns(count: 1,
-                                          test: false,
-                                          delay: 0,
-                                          triggers: [
-                                            Trigger(
-                                                type: .event,
-                                                eventType: .custom,
-                                                eventName: "testevent",
-                                                attributes: [
-                                                    TriggerAttribute(name: "attributeone", value: "1100",
-                                                                     type: .timeInMilliseconds, operator: .greaterThan)
-                                                ]
-                                            )])
+            withGeneratedCampaigns(count: 1,
+                                   test: false,
+                                   delay: 0,
+                                   triggers: [
+                                    Trigger(
+                                        type: .event,
+                                        eventType: .custom,
+                                        eventName: "testevent",
+                                        attributes: [
+                                            TriggerAttribute(name: "attributeone", value: "1100",
+                                                             type: .timeInMilliseconds, operator: .greaterThan)
+                                        ]
+                                    )])
         }()
 
         static let timeTypeWithLessThanOperator: PingResponse = {
-            return withGeneratedCampaigns(count: 1,
-                                          test: false,
-                                          delay: 0,
-                                          triggers: [
-                                            Trigger(
-                                                type: .event,
-                                                eventType: .custom,
-                                                eventName: "testevent",
-                                                attributes: [
-                                                    TriggerAttribute(name: "attributeone", value: "1100",
-                                                                     type: .timeInMilliseconds, operator: .lessThan)
-                                                ]
-                                            )])
+            withGeneratedCampaigns(count: 1,
+                                   test: false,
+                                   delay: 0,
+                                   triggers: [
+                                    Trigger(
+                                        type: .event,
+                                        eventType: .custom,
+                                        eventName: "testevent",
+                                        attributes: [
+                                            TriggerAttribute(name: "attributeone", value: "1100",
+                                                             type: .timeInMilliseconds, operator: .lessThan)
+                                        ]
+                                    )])
         }()
 
         static let caseInsensitiveEventName: PingResponse = {
-            return withGeneratedCampaigns(count: 1,
-                                          test: false,
-                                          delay: 0,
-                                          triggers: [
-                                            Trigger(
-                                                type: .event,
-                                                eventType: .custom,
-                                                eventName: "testevent",
-                                                attributes: [
-                                                ]
-                                            )])
+            withGeneratedCampaigns(count: 1,
+                                   test: false,
+                                   delay: 0,
+                                   triggers: [
+                                    Trigger(
+                                        type: .event,
+                                        eventType: .custom,
+                                        eventName: "testevent",
+                                        attributes: [
+                                        ]
+                                    )])
         }()
 
         static let caseInsensitiveAttributeName: PingResponse = {
-            return withGeneratedCampaigns(count: 1,
-                                          test: false,
-                                          delay: 0,
-                                          triggers: [
-                                            Trigger(
-                                                type: .event,
-                                                eventType: .custom,
-                                                eventName: "testevent",
-                                                attributes: [
-                                                    TriggerAttribute(name: "attributeone", value: "hi",
-                                                                     type: .string, operator: .equals)
-                                                ]
-                                            )])
+            withGeneratedCampaigns(count: 1,
+                                   test: false,
+                                   delay: 0,
+                                   triggers: [
+                                    Trigger(
+                                        type: .event,
+                                        eventType: .custom,
+                                        eventName: "testevent",
+                                        attributes: [
+                                            TriggerAttribute(name: "attributeone", value: "hi",
+                                                             type: .string, operator: .equals)
+                                        ]
+                                    )])
         }()
 
         static let caseInsensitiveAttributeValue: PingResponse = {
-            return withGeneratedCampaigns(count: 1,
-                                          test: false,
-                                          delay: 0,
-                                          triggers: [
-                                            Trigger(
-                                                type: .event,
-                                                eventType: .custom,
-                                                eventName: "testevent",
-                                                attributes: [
-                                                    TriggerAttribute(name: "attributeone", value: "Hi",
-                                                                     type: .string, operator: .equals)
-                                                ]
-                                            )])
+            withGeneratedCampaigns(count: 1,
+                                   test: false,
+                                   delay: 0,
+                                   triggers: [
+                                    Trigger(
+                                        type: .event,
+                                        eventType: .custom,
+                                        eventName: "testevent",
+                                        attributes: [
+                                            TriggerAttribute(name: "attributeone", value: "Hi",
+                                                             type: .string, operator: .equals)
+                                        ]
+                                    )])
         }()
     }
 
     static func getJSONData(fileName: String) -> Data! {
         guard let bundle = Bundle.unitTests,
-            let jsonURL = bundle.url(forResource: fileName, withExtension: "json") else {
+              let jsonURL = bundle.url(forResource: fileName, withExtension: "json") else {
 
             assertionFailure()
             return nil
@@ -476,16 +479,16 @@ struct TestHelpers {
 
 extension NSError {
     static var emptyError: Error {
-        return NSError(domain: "", code: 0, userInfo: nil) as Error
+        NSError(domain: "", code: 0, userInfo: nil) as Error
     }
 }
 
 extension UIColor {
     static var blackRGB: UIColor {
-        return UIColor(red: 0, green: 0, blue: 0, alpha: 1)
+        UIColor(red: 0, green: 0, blue: 0, alpha: 1)
     }
     static var whiteRGB: UIColor {
-        return UIColor(red: 1, green: 1, blue: 1, alpha: 1)
+        UIColor(red: 1, green: 1, blue: 1, alpha: 1)
     }
 }
 

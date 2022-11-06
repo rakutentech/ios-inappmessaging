@@ -8,6 +8,9 @@
                 "maxImpressions": 999,
                 "type": 2,
                 "isTest": false,
+                "isCampaignDismissable": true,
+                "hasNoEndDate": true,
+                "infiniteImpressions": true,
                 "triggers": [
                     {
                         "type": 1,
@@ -52,6 +55,9 @@
                 "maxImpressions": 999,
                 "type": 2,
                 "isTest": false,
+                "isCampaignDismissable": true,
+                "hasNoEndDate": true,
+                "infiniteImpressions": true,
                 "triggers": [
                     {
                         "type": 1,
@@ -96,6 +102,9 @@
                 "maxImpressions": 999,
                 "type": 2,
                 "isTest": false,
+                "isCampaignDismissable": true,
+                "hasNoEndDate": true,
+                "infiniteImpressions": true,
                 "triggers": [
                     {
                         "type": 1,
@@ -140,6 +149,9 @@
                 "maxImpressions": 999,
                 "type": 2,
                 "isTest": false,
+                "isCampaignDismissable": true,
+                "hasNoEndDate": true,
+                "infiniteImpressions": true,
                 "triggers": [
                     {
                         "type": 1,
@@ -184,6 +196,9 @@
                 "maxImpressions": 999,
                 "type": 2,
                 "isTest": false,
+                "isCampaignDismissable": true,
+                "hasNoEndDate": true,
+                "infiniteImpressions": true,
                 "triggers": [
                     {
                         "type": 1,
@@ -228,6 +243,9 @@
                 "maxImpressions": 999,
                 "type": 2,
                 "isTest": false,
+                "isCampaignDismissable": true,
+                "hasNoEndDate": true,
+                "infiniteImpressions": true,
                 "triggers": [
                     {
                         "type": 1,
@@ -272,6 +290,9 @@
                 "maxImpressions": 999,
                 "type": 2,
                 "isTest": false,
+                "isCampaignDismissable": true,
+                "hasNoEndDate": true,
+                "infiniteImpressions": true,
                 "triggers": [
                     {
                         "type": 1,
@@ -316,6 +337,9 @@
                 "maxImpressions": 999,
                 "type": 2,
                 "isTest": false,
+                "isCampaignDismissable": true,
+                "hasNoEndDate": true,
+                "infiniteImpressions": true,
                 "triggers": [
                     {
                         "type": 1,

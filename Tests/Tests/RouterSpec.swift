@@ -8,7 +8,6 @@ import RSDKUtilsNimble
 import class RSDKUtilsMain.TypedDependencyManager
 #endif
 @testable import RInAppMessaging
-@testable import NIO
 
 @available(iOS 13.0, *) // because of UIImage(systemName:)
 class RouterSpec: QuickSpec {
@@ -82,13 +81,13 @@ class RouterSpec: QuickSpec {
                     it("will not show any view for invalid campaign type") {
                         let campaign = TestHelpers.generateCampaign(id: "test", type: .invalid)
                         router.displayCampaign(campaign, associatedImageData: nil, confirmation: true, completion: { _ in })
-                        expect(window.findIAMViewSubview()).toAfterTimeout(beNil())
+                        expect(window.findIAMView()).toAfterTimeout(beNil())
                     }
 
                     it("will not show any view for html campaign type") {
                         let campaign = TestHelpers.generateCampaign(id: "test", type: .html)
                         router.displayCampaign(campaign, associatedImageData: nil, confirmation: true, completion: { _ in })
-                        expect(window.findIAMViewSubview()).toAfterTimeout(beNil())
+                        expect(window.findIAMView()).toAfterTimeout(beNil())
                     }
 
                     it("will not show another view when one is already displayed") {
