@@ -55,7 +55,8 @@ internal class EventMatcher: EventMatcherType {
             guard let campaignTriggers = campaign.data.triggers else {
                 return
             }
-            guard isEventMatchingOneOfTriggers(event: event, triggers: campaignTriggers) else {
+            guard isEventMatchingOneOfTriggers(event, triggers: campaignTriggers) ||
+                isEventMatchingTooltipData(event, tooltip: campaign) else {
                 return
             }
 
@@ -76,7 +77,13 @@ internal class EventMatcher: EventMatcherType {
             return false
         }
         let events = matchedEvents.get()[campaign.id, default: []] + persistentEvents
-        return triggers.allSatisfy { isTriggerMatchingOneOfEvents(trigger: $0, events: events) }
+        let allTriggersSatisfied = triggers.allSatisfy { isTriggerMatchingOneOfEvents($0, events: events) }
+        
+        if campaign.isTooltip {
+            return allTriggersSatisfied && events.contains(where: { $0.type == .viewAppeared })
+        } else {
+            return allTriggersSatisfied
+        }
     }
 
     func removeSetOfMatchedEvents(_ eventsToRemove: Set<Event>, for campaign: Campaign) throws {
@@ -114,16 +121,27 @@ internal class EventMatcher: EventMatcherType {
         matchedEvents.set(value: [:])
     }
 
-    private func isEventMatchingOneOfTriggers(event: Event, triggers: [Trigger]) -> Bool {
+    private func isEventMatchingOneOfTriggers(_ event: Event, triggers: [Trigger]) -> Bool {
         return triggers.first { trigger -> Bool in
             event.name == trigger.matchingEventName
         } != nil
     }
 
-    private func isTriggerMatchingOneOfEvents(trigger: Trigger, events: [Event]) -> Bool {
+    private func isTriggerMatchingOneOfEvents(_ trigger: Trigger, events: [Event]) -> Bool {
         return events.first { event -> Bool in
             event.name == trigger.matchingEventName
         } != nil
+    }
+
+    private func isEventMatchingTooltipData(_ event: Event, tooltip: Campaign) -> Bool {
+        guard let viewEvent = event as? ViewAppearedEvent,
+              tooltip.isTooltip,
+              let tooltipData = tooltip.tooltipData
+        else {
+            return false
+        }
+
+        return viewEvent.viewIdentifier.contains(tooltipData.bodyData.uiElementIdentifier)
     }
 }
 

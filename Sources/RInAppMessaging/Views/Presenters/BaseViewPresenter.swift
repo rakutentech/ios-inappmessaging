@@ -7,7 +7,6 @@ import class RSDKUtilsMain.AnalyticsBroadcaster
 
 internal protocol BaseViewPresenterType: ImpressionTrackable {
     var campaign: Campaign! { get set }
-    var impressions: [Impression] { get set }
     var associatedImage: UIImage? { get set }
 
     func viewDidInitialize()

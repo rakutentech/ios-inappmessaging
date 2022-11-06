@@ -44,6 +44,21 @@ class EventMatcherSpec: QuickSpec {
                                                                                     attributes: [])
                 ]
             )
+            let testTooltip = TestHelpers.generateTooltip(
+                id: "test",
+                isTest: false,
+                maxImpressions: 1,
+                triggers: [
+                    Trigger(type: .event,
+                            eventType: .appStart,
+                            eventName: "appStartTest",
+                            attributes: []),
+                    Trigger(type: .event,
+                            eventType: .loginSuccessful,
+                            eventName: "loginSuccessfulTest",
+                            attributes: [])
+                ]
+            )
 
             var campaignRepository: CampaignRepositoryMock!
             var eventMatcher: EventMatcher!
@@ -204,6 +219,20 @@ class EventMatcherSpec: QuickSpec {
                 expect(events).to(contain(LoginSuccessfulEvent()))
             }
 
+            it("will not match ViewAppearedEvent to a campaign") {
+                campaignRepository.list = [testCampaign]
+                eventMatcher.matchAndStore(event: ViewAppearedEvent(viewIdentifier: TooltipViewIdentifierMock))
+                let events = eventMatcher.matchedEvents(for: testCampaign)
+                expect(events).to(beEmpty())
+            }
+
+            it("will match ViewAppearedEvent to a tooltip") {
+                campaignRepository.list = [testTooltip]
+                eventMatcher.matchAndStore(event: ViewAppearedEvent(viewIdentifier: TooltipViewIdentifierMock))
+                let events = eventMatcher.matchedEvents(for: testCampaign)
+                expect(events).to(contain(ViewAppearedEvent(viewIdentifier: TooltipViewIdentifierMock)))
+            }
+
             context("when calling containsAllMatchedEvents") {
                 beforeEach {
                     campaignRepository.list = [testCampaign]
@@ -239,6 +268,30 @@ class EventMatcherSpec: QuickSpec {
                     eventMatcher.matchAndStore(event: LoginSuccessfulEvent())
                     expect(eventMatcher.containsAllMatchedEvents(for: campaign)).to(beFalse())
                 }
+
+                context("with a tooltip") {
+                    beforeEach {
+                        campaignRepository.list = [testTooltip]
+                    }
+
+                    it("will return false if has all events matching triggers but without matching ViewAppearedEvent") {
+                        eventMatcher.matchAndStore(event: AppStartEvent())
+                        eventMatcher.matchAndStore(event: LoginSuccessfulEvent())
+                        expect(eventMatcher.containsAllMatchedEvents(for: testTooltip)).to(beFalse())
+                    }
+
+                    it("will return false if has matching ViewAppearedEvent but without events matching triggers") {
+                        eventMatcher.matchAndStore(event: ViewAppearedEvent(viewIdentifier: TooltipViewIdentifierMock))
+                        expect(eventMatcher.containsAllMatchedEvents(for: testTooltip)).to(beFalse())
+                    }
+
+                    it("will return true if all required events are stored") {
+                        eventMatcher.matchAndStore(event: AppStartEvent())
+                        eventMatcher.matchAndStore(event: ViewAppearedEvent(viewIdentifier: TooltipViewIdentifierMock))
+                        eventMatcher.matchAndStore(event: LoginSuccessfulEvent())
+                        expect(eventMatcher.containsAllMatchedEvents(for: testTooltip)).to(beTrue())
+                    }
+                }
             }
 
             context("when calling clearNonPersistentEvents") {
@@ -259,6 +312,27 @@ class EventMatcherSpec: QuickSpec {
 
                     eventMatcher.clearNonPersistentEvents()
                     expect(eventMatcher.matchedEvents(for: testCampaign)).toNot(beEmpty())
+                }
+
+                context("tooltip case") {
+                    it("will clear all matched non-persistent events") {
+                        campaignRepository.list = [testTooltip]
+                        eventMatcher.matchAndStore(event: LoginSuccessfulEvent())
+                        eventMatcher.matchAndStore(event: ViewAppearedEvent(viewIdentifier: TooltipViewIdentifierMock))
+                        expect(eventMatcher.matchedEvents(for: testTooltip)).toNot(beEmpty())
+
+                        eventMatcher.clearNonPersistentEvents()
+                        expect(eventMatcher.matchedEvents(for: testTooltip)).to(beEmpty())
+                    }
+
+                    it("will not clear persistent events") {
+                        campaignRepository.list = [testTooltip]
+                        eventMatcher.matchAndStore(event: AppStartEvent())
+                        expect(eventMatcher.matchedEvents(for: testTooltip)).toNot(beEmpty())
+
+                        eventMatcher.clearNonPersistentEvents()
+                        expect(eventMatcher.matchedEvents(for: testTooltip)).toNot(beEmpty())
+                    }
                 }
             }
         }

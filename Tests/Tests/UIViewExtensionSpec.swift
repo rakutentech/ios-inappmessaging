@@ -19,7 +19,7 @@ class UIViewExtensionsSpec: QuickSpec {
                     testView.addSubview(iamView)
                     testView.addSubview(UIView())
 
-                    expect(testView.findIAMViewSubview()).to(beIdenticalTo(iamView))
+                    expect(testView.findIAMView()).to(beIdenticalTo(iamView))
                 }
 
                 it("will find IAM view as a nested subview") {
@@ -30,7 +30,7 @@ class UIViewExtensionsSpec: QuickSpec {
                     testView.subviews[0].addSubview(UIView())
                     testView.subviews[0].subviews[1].addSubview(iamView)
 
-                    expect(testView.findIAMViewSubview()).to(beIdenticalTo(iamView))
+                    expect(testView.findIAMView()).to(beIdenticalTo(iamView))
                 }
 
                 it("will find an instance of FullScreenView") {
@@ -38,7 +38,7 @@ class UIViewExtensionsSpec: QuickSpec {
                     let fsView = FullScreenView(presenter: FullViewPresenterMock())
                     testView.addSubview(fsView)
 
-                    expect(testView.findIAMViewSubview()).to(beIdenticalTo(fsView))
+                    expect(testView.findIAMView()).to(beIdenticalTo(fsView))
                 }
 
                 it("will find an instance of SlideUpView") {
@@ -46,7 +46,7 @@ class UIViewExtensionsSpec: QuickSpec {
                     let suView = SlideUpView(presenter: SlideUpViewPresenterMock())
                     testView.addSubview(suView)
 
-                    expect(testView.findIAMViewSubview()).to(beIdenticalTo(suView))
+                    expect(testView.findIAMView()).to(beIdenticalTo(suView))
                 }
 
                 it("will find an instance of ModalView") {
@@ -54,7 +54,7 @@ class UIViewExtensionsSpec: QuickSpec {
                     let moView = ModalView(presenter: FullViewPresenterMock())
                     testView.addSubview(moView)
 
-                    expect(testView.findIAMViewSubview()).to(beIdenticalTo(moView))
+                    expect(testView.findIAMView()).to(beIdenticalTo(moView))
                 }
             }
         }

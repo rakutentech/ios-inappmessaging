@@ -4,6 +4,8 @@ import Shock
 // class is needed for `Bundle(for:)`
 final class MockServerHelper {
 
+    static var sampleAppMockServer: MockServer!
+
     static let standardRouting = MockHTTPRoute.collection(routes: [
         configRouteMock(jsonStub: "config"),
         displyPermissionRouteMock(jsonStub: "display-permission"),
@@ -14,6 +16,12 @@ final class MockServerHelper {
         urlPath: "/image.jpg",
         code: 200,
         filename: "istockphoto-1047234038.jpg")
+
+    static func setupForSampleApp() {
+        sampleAppMockServer = MockServerHelper.setupNewServer(route: standardRouting)
+        sampleAppMockServer.setup(route: MockServerHelper.pingRouteMock(jsonStub: "ping"))
+        sampleAppMockServer.start()
+    }
 
     static func setupNewServer(route: MockHTTPRoute) -> MockServer {
         let mockServer = MockServer(port: 6789, bundle: Bundle(for: self.self))

@@ -9,7 +9,7 @@ import RSDKUtils
 /// Class that contains the public methods for host application to call.
 /// Entry point for host application to communicate with InAppMessaging.
 /// Conforms to NSObject and exposed with objc tag to make it work with Obj-c projects.
-@objc public class RInAppMessaging: NSObject {
+@objc public final class RInAppMessaging: NSObject {
 
     internal private(set) static var initializedModule: InAppMessagingModule?
     private(set) static var dependencyManager: TypedDependencyManager?
@@ -88,7 +88,9 @@ import RSDKUtils
                 let campaignRepository = dependencyManager.resolve(type: CampaignRepositoryType.self),
                 let router = dependencyManager.resolve(type: RouterType.self),
                 let randomizer = dependencyManager.resolve(type: Randomizer.self),
-                let displayPermissionService = dependencyManager.resolve(type: DisplayPermissionServiceType.self) else {
+                let displayPermissionService = dependencyManager.resolve(type: DisplayPermissionServiceType.self),
+                let viewListener = dependencyManager.resolve(type: ViewListenerType.self),
+                let _ = dependencyManager.resolve(type: TooltipManagerType.self) else {
 
                     assertionFailure("In-App Messaging SDK module initialization failure: Dependencies could not be resolved")
                     return
@@ -108,10 +110,15 @@ import RSDKUtils
                                                      displayPermissionService: displayPermissionService)
             initializedModule?.aggregatedErrorHandler = errorCallback
             initializedModule?.onVerifyContext = onVerifyContext
-            initializedModule?.initialize(deinitHandler: {
-                self.initializedModule = nil
-                self.dependencyManager = nil
-            })
+            initializedModule?.initialize { shouldDeinit in
+                if shouldDeinit {
+                    self.initializedModule = nil
+                    self.dependencyManager = nil
+                    viewListener.stopListening()
+                } else {
+                    viewListener.startListening()
+                }
+            }
         }
     }
 
@@ -152,14 +159,6 @@ import RSDKUtils
         }
     }
 
-    /// For testing purposes
-    internal static func deinitializeModule() {
-        inAppQueue.sync {
-            initializedModule = nil
-            dependencyManager = nil
-        }
-    }
-
     private static func notifyIfModuleNotInitialized() {
         guard initializedModule == nil else {
             return
@@ -171,5 +170,18 @@ import RSDKUtils
                             userInfo: [NSLocalizedDescriptionKey: "InAppMessaging: " + description])
         Logger.debug(description)
         errorCallback?(error)
+    }
+
+    // MARK: - Unit tests
+    internal static func deinitializeModule() {
+        inAppQueue.sync {
+            dependencyManager?.resolve(type: ViewListenerType.self)?.stopListening()
+            initializedModule = nil
+            dependencyManager = nil
+        }
+    }
+
+    internal static func setModule(_ iamModule: InAppMessagingModule?) {
+        initializedModule = iamModule
     }
 }

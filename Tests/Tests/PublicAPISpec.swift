@@ -36,7 +36,7 @@ class PublicAPISpec: QuickSpec {
             ])
         }
 
-        func reinitializeSDK(onDependencyResolved: (() -> Void)? = nil) {
+        func reinitializeSDK(onDependenciesResolved: (() -> Void)? = nil) {
             let dependencyManager = TypedDependencyManager()
             dependencyManager.appendContainer(MainContainerFactory.create(dependencyManager: dependencyManager))
             dependencyManager.appendContainer(mockContainer())
@@ -49,7 +49,7 @@ class PublicAPISpec: QuickSpec {
             router = dependencyManager.resolve(type: RouterType.self)!
             campaignsListManager = dependencyManager.resolve(type: CampaignsListManagerType.self)
             campaignRepository = dependencyManager.resolve(type: CampaignRepositoryType.self)
-            onDependencyResolved?()
+            onDependenciesResolved?()
             RInAppMessaging.configure(dependencyManager: dependencyManager)
         }
 
@@ -91,9 +91,7 @@ class PublicAPISpec: QuickSpec {
             RInAppMessaging.onVerifyContext = nil
             RInAppMessaging.errorCallback = nil
             UserDefaults.standard.removePersistentDomain(forName: "PublicAPISpec")
-            UIApplication.shared.getKeyWindow()?.subviews
-                .filter { $0 is BaseView }
-                .forEach { $0.removeFromSuperview() }
+            UIApplication.shared.getKeyWindow()?.findIAMView()?.removeFromSuperview()
         }
 
         describe("RInAppMessaging") {
@@ -120,12 +118,6 @@ class PublicAPISpec: QuickSpec {
                 RInAppMessaging.logEvent(LoginSuccessfulEvent()) // 2nd error sent
                 RInAppMessaging.registerPreference(UserInfoProviderMock()) // 3rd error sent
                 expect(errorReceiver.totalErrorNumber).toEventually(equal(3))
-            }
-
-            it("won't reinitialize module if config was called more than once") {
-                let expectedModule = RInAppMessaging.initializedModule
-                RInAppMessaging.configure()
-                expect(RInAppMessaging.initializedModule).toAfterTimeout(beIdenticalTo(expectedModule))
             }
 
             it("will register userInfoProvider when registerPreference() is called") {
@@ -164,7 +156,7 @@ class PublicAPISpec: QuickSpec {
             it("won't send any events until configuration has finished") {
                 RInAppMessaging.deinitializeModule()
                 var resume: (() -> Void)!
-                reinitializeSDK(onDependencyResolved: {
+                reinitializeSDK(onDependenciesResolved: {
                     resume = messageMixerService.suspendNextPingAndWaitForSignal()
                 })
                 RInAppMessaging.logEvent(LoginSuccessfulEvent())
@@ -183,7 +175,7 @@ class PublicAPISpec: QuickSpec {
                 RInAppMessaging.deinitializeModule()
                 var resumeConfig: (() -> Void)!
                 var configCalled = false
-                reinitializeSDK(onDependencyResolved: {
+                reinitializeSDK(onDependenciesResolved: {
                     resumeConfig = configurationManager.prepareRetryDelayAndWaitForSignal()
                     configurationManager.fetchCalledClosure = {
                         configCalled = true
@@ -222,6 +214,42 @@ class PublicAPISpec: QuickSpec {
                 expect(UIApplication.shared.getKeyWindow()?.findIAMViewSubview()).toAfterTimeout(beNil())
             }
 
+            context("when calling configure()") {
+
+                it("won't reinitialize module if configure() was called more than once") {
+                    let expectedModule = RInAppMessaging.initializedModule
+                    RInAppMessaging.configure()
+                    expect(RInAppMessaging.initializedModule).toAfterTimeout(beIdenticalTo(expectedModule))
+                }
+
+                it("will deinitialize module when completion was called with shouldDeinit = true") {
+                    RInAppMessaging.deinitializeModule()
+                    expect(RInAppMessaging.initializedModule).to(beNil())
+
+                    reinitializeSDK {
+                        configurationManager.simulateRetryDelay = 1 // added delay to capture initialized object
+                        configurationManager.rolloutPercentage = 0 // triggers deinit
+                    }
+                    expect(RInAppMessaging.initializedModule).toEventuallyNot(beNil())
+                    weak var initializedModule = RInAppMessaging.initializedModule
+                    expect(RInAppMessaging.initializedModule).toEventually(beNil())
+                    expect(initializedModule).to(beNil())
+                }
+
+                it("will start ViewListener when completion was called with shouldDeinit = false") {
+                    // init called in `beforeEach`
+                    expect(ViewListener.instance.isListening).to(beTrue())
+                }
+
+                it("will stop ViewListener when completion was called with shouldDeinit = true") {
+                    RInAppMessaging.deinitializeModule()
+                    reinitializeSDK {
+                        configurationManager.rolloutPercentage = 0 // triggers deinit
+                    }
+                    expect(ViewListener.instance.isListening).toAfterTimeout(beFalse())
+                }
+            }
+
             it("will not count an impression if message wasn't closed") {
                 generateAndDisplayLoginCampaigns(count: 1, addContexts: false)
                 let campaign = campaignRepository.list[0]
@@ -242,15 +270,15 @@ class PublicAPISpec: QuickSpec {
                 it("will remove displayed campaign's view from hierarchy") {
                     generateAndDisplayLoginCampaigns(count: 1, addContexts: false)
 
-                    expect(UIApplication.shared.getKeyWindow()?.findIAMViewSubview()).toEventuallyNot(beNil())
+                    expect(UIApplication.shared.getKeyWindow()?.findIAMView()).toEventuallyNot(beNil())
                     RInAppMessaging.closeMessage()
-                    expect(UIApplication.shared.getKeyWindow()?.findIAMViewSubview()).toEventually(beNil())
+                    expect(UIApplication.shared.getKeyWindow()?.findIAMView()).toEventually(beNil())
                 }
 
                 it("will not decrement impressionsLeft in closed campaign") {
                     generateAndDisplayLoginCampaigns(count: 1, addContexts: false)
 
-                    expect(UIApplication.shared.getKeyWindow()?.findIAMViewSubview()).toEventuallyNot(beNil())
+                    expect(UIApplication.shared.getKeyWindow()?.findIAMView()).toEventuallyNot(beNil())
                     expect(campaignRepository.list.first?.impressionsLeft).to(equal(2))
                     RInAppMessaging.closeMessage()
                     expect(campaignRepository.list.first?.impressionsLeft).toAfterTimeout(equal(2))
@@ -284,7 +312,7 @@ class PublicAPISpec: QuickSpec {
                     contextVerifier.shouldShowCampaign = false
                     generateAndDisplayLoginCampaigns(count: 2, addContexts: true)
 
-                    expect(UIApplication.shared.getKeyWindow()?.findIAMViewSubview()).toAfterTimeout(beNil())
+                    expect(UIApplication.shared.getKeyWindow()?.findIAMView()).toAfterTimeout(beNil())
                     expect(contextVerifier.onVerifyContextCallCount).to(equal(2))
                 }
 
@@ -325,7 +353,7 @@ class PublicAPISpec: QuickSpec {
                     expect(campaignRepository.list.first?.impressionsLeft).to(equal(1))
                     generateAndDisplayLoginCampaigns(count: 1, addContexts: false)
 
-                    expect(UIApplication.shared.getKeyWindow()?.findIAMViewSubview()).toEventuallyNot(beNil())
+                    expect(UIApplication.shared.getKeyWindow()?.findIAMView()).toEventuallyNot(beNil())
                 }
 
                 it("will not show a message if impressionsLeft was 0 in the last session") {
@@ -350,7 +378,7 @@ class PublicAPISpec: QuickSpec {
                     expect(campaignRepository.list.first?.impressionsLeft).to(equal(0))
                     RInAppMessaging.logEvent(LoginSuccessfulEvent())
 
-                    expect(UIApplication.shared.getKeyWindow()?.findIAMViewSubview()).toAfterTimeout(beNil())
+                    expect(UIApplication.shared.getKeyWindow()?.findIAMView()).toAfterTimeout(beNil())
                 }
 
                 it("will not show a message if user opted out from it in the last session") {
@@ -370,7 +398,7 @@ class PublicAPISpec: QuickSpec {
                     expect(campaignRepository.list).to(haveCount(1))
                     generateAndDisplayLoginCampaigns(count: 1, addContexts: false)
 
-                    expect(UIApplication.shared.getKeyWindow()?.findIAMViewSubview()).toAfterTimeout(beNil())
+                    expect(UIApplication.shared.getKeyWindow()?.findIAMView()).toAfterTimeout(beNil())
                 }
 
                 // As it may contain outdated information (especially after logout)
@@ -384,8 +412,8 @@ class PublicAPISpec: QuickSpec {
                     RInAppMessaging.registerPreference(UserInfoProviderMock()) // anonymous user
                     RInAppMessaging.logEvent(LoginSuccessfulEvent())
 
-                    expect(UIApplication.shared.getKeyWindow()?.findIAMViewSubview()).toEventuallyNot(beNil())
-                    UIApplication.shared.getKeyWindow()?.findIAMViewSubview()?.dismiss()
+                    expect(UIApplication.shared.getKeyWindow()?.findIAMView()).toEventuallyNot(beNil())
+                    UIApplication.shared.getKeyWindow()?.findIAMView()?.dismiss()
                     expect(dataCache.getUserData(identifiers: [])?.campaignData?.first?.impressionsLeft)
                         .toEventually(equal(1))
 
@@ -410,8 +438,8 @@ class PublicAPISpec: QuickSpec {
                     RInAppMessaging.registerPreference(emptyUser)
                     RInAppMessaging.logEvent(LoginSuccessfulEvent())
 
-                    expect(UIApplication.shared.getKeyWindow()?.findIAMViewSubview()).toEventuallyNot(beNil())
-                    UIApplication.shared.getKeyWindow()?.findIAMViewSubview()?.dismiss()
+                    expect(UIApplication.shared.getKeyWindow()?.findIAMView()).toEventuallyNot(beNil())
+                    UIApplication.shared.getKeyWindow()?.findIAMView()?.dismiss()
                     expect(dataCache.getUserData(identifiers: [UserIdentifier(type: .userId, identifier: "")])?.campaignData?.first?.impressionsLeft)
                         .toEventually(equal(1))
 

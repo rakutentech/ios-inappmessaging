@@ -122,6 +122,111 @@ class SerializationSpec: QuickSpec {
                 }
             }
         }
+
+        describe("Tooltip") {
+            context("isTooltip") {
+
+                it("will return true if body contains valid JSON data") {
+                    let tooltip = generateTooltip(title: "[Tooltip] t1",
+                                                  imageURL: "image.url",
+                                                  body: """
+                        {\"UIElement\" : \"view\", \"position\": \"top-center\", \"auto-disappear\": 2, \"redirectURL\": \"url\"}
+                        """)
+                    expect(tooltip.isTooltip).to(beTrue())
+                }
+
+                it("will return true if body contains only required JSON data") {
+                    let tooltip = generateTooltip(title: "[Tooltip] t1",
+                                                  imageURL: "image.url",
+                                                  body: """
+                        {\"UIElement\" : \"view\", \"position\": \"top-center\"}
+                        """)
+                    expect(tooltip.isTooltip).to(beTrue())
+                }
+
+                it("will return false if there's no imageUrl") {
+                    let tooltip = generateTooltip(title: "[Tooltip] t1",
+                                                  imageURL: nil,
+                                                  body: """
+                        {\"UIElement\" : \"view\", \"position\": \"top-center\"}
+                        """)
+                    expect(tooltip.isTooltip).to(beFalse())
+                }
+
+                it("will return false if title doesn't start with '[Tooltip]'") {
+                    let tooltip = generateTooltip(title: "[ctx] t1",
+                                                  imageURL: "image.url",
+                                                  body: """
+                        {\"UIElement\" : \"view\", \"position\": \"top-center\"}
+                        """)
+                    expect(tooltip.isTooltip).to(beFalse())
+                }
+
+                it("will accept '[Tooltip]' prefix in any form (case insensitive)") {
+                    ["[ToolTip]", "[tooltip]", "[tOOltip]"].forEach { titlePrefix in
+                        let tooltip = generateTooltip(title: "\(titlePrefix) t1",
+                                                      imageURL: "image.url",
+                                                      body: """
+                            {\"UIElement\" : \"view\", \"position\": \"top-center\"}
+                            """)
+                        expect(tooltip.isTooltip).to(beTrue())
+                    }
+                }
+
+                it("will return false if body doesn't contain valid JSON data") {
+                    let tooltip = generateTooltip(title: "[Tooltip] t1",
+                                                  imageURL: "image.url",
+                                                  body: "\"UIElement\" : \"view\"")
+                    expect(tooltip.isTooltip).to(beFalse())
+                }
+
+                it("will return false if body doesn't contain required JSON fields") {
+                    let tooltip = generateTooltip(title: "[Tooltip] t1",
+                                                  imageURL: "image.url",
+                                                  body: "{\"UIElement\" : \"view\"}")
+                    expect(tooltip.isTooltip).to(beFalse())
+                }
+            }
+        }
+
+        func generateTooltip(title: String,
+                             imageURL: String?,
+                             body: String) -> Campaign {
+            return Campaign(
+                data: CampaignData(
+                    campaignId: "id",
+                    maxImpressions: 1,
+                    type: .modal,
+                    triggers: [],
+                    isTest: false,
+                    messagePayload: MessagePayload(
+                        title: title,
+                        messageBody: body,
+                        header: "testHeader",
+                        titleColor: "color",
+                        headerColor: "color2",
+                        messageBodyColor: "color3",
+                        backgroundColor: "#ffffff",
+                        frameColor: "color5",
+                        resource: Resource(
+                            imageUrl: imageURL,
+                            cropType: .fill),
+                        messageSettings: MessageSettings(
+                            displaySettings: DisplaySettings(
+                                orientation: .portrait,
+                                slideFrom: .bottom,
+                                endTimeMilliseconds: Int64.max,
+                                textAlign: .fill,
+                                optOut: false,
+                                html: false,
+                                delay: 0),
+                            controlSettings: ControlSettings(
+                                buttons: [],
+                                content: nil))
+                    )
+                )
+            )
+        }
     }
 }
 

@@ -6,6 +6,8 @@ import RSDKUtils
 #endif
 @testable import RInAppMessaging
 
+let TooltipViewIdentifierMock = "view.id"
+
 class CampaignsValidatorMock: CampaignsValidatorType {
     private(set) var wasValidateCalled = false
     var campaignsToTrigger = [Campaign]()
@@ -20,8 +22,12 @@ class CampaignsValidatorMock: CampaignsValidatorType {
 
 class CampaignRepositoryMock: CampaignRepositoryType {
     var list: [Campaign] = []
+    var tooltipsList: [Campaign] {
+        list.filter { $0.isTooltip }
+    }
     var lastSyncInMilliseconds: Int64?
     var resourcesToLock: [LockableResource] = []
+    weak var delegate: CampaignRepositoryDelegate?
 
     private(set) var decrementImpressionsCalls = 0
     private(set) var incrementImpressionsCalls = 0
@@ -327,10 +333,15 @@ class CampaignsListManagerMock: CampaignsListManagerType {
 class RouterMock: RouterType {
     var accessibilityCompatibleDisplay = false
     var lastDisplayedCampaign: Campaign?
+    var lastDisplayedTooltip: Campaign?
     var displayedCampaignsCount = 0
     var wasDiscardCampaignCalled = false
     var wasDisplayCampaignCalled = false
     var displayTime = TimeInterval(0.1)
+    weak var errorDelegate: ErrorDelegate?
+
+    private var tooltipCompletion: (() -> Void)?
+    private var tooltipBecameVisibleHandler: ((TooltipView) -> Void)?
 
     private let displayQueue = DispatchQueue(label: "RouterMock.displayQueue")
 
@@ -355,8 +366,29 @@ class RouterMock: RouterType {
         }
     }
 
+    func displayTooltip(_ tooltip: Campaign,
+                        targetView: UIView,
+                        identifier: String,
+                        imageBlob: Data,
+                        becameVisibleHandler: @escaping (TooltipView) -> Void,
+                        completion: @escaping () -> Void) {
+        lastDisplayedTooltip = tooltip
+        tooltipBecameVisibleHandler = becameVisibleHandler
+        tooltipCompletion = completion
+    }
+
     func discardDisplayedCampaign() {
         wasDiscardCampaignCalled = true
+    }
+
+    func completeDisplayingTooltip() {
+        tooltipCompletion?()
+        tooltipCompletion = nil
+        tooltipBecameVisibleHandler = nil
+    }
+
+    func callTooltipBecameVisibleHandler(tooltipView: TooltipView) {
+        tooltipBecameVisibleHandler?(tooltipView)
     }
 }
 
@@ -433,15 +465,6 @@ class AccountRepositorySpy: AccountRepositoryType {
     }
 }
 
-extension EndpointURL {
-    static var empty: Self {
-        let emptyURL = URL(string: "about:blank")!
-        return EndpointURL(ping: emptyURL,
-                           displayPermission: emptyURL,
-                           impression: emptyURL)
-    }
-}
-
 final class RandomizerMock: RandomizerType {
     var returnedValue: UInt = 0
     var dice: UInt {
@@ -494,5 +517,119 @@ final class UNUserNotificationCenterMock: RemoteNotificationRequestable {
 
     func registerForRemoteNotifications() {
         didCallRegisterForRemoteNotifications = true
+    }
+}
+
+final class TooltipDispatcherMock: TooltipDispatcherType {
+    private(set) var needsDisplayTooltips = [Campaign]()
+
+    func setNeedsDisplay(tooltip: Campaign) {
+        needsDisplayTooltips.append(tooltip)
+    }
+}
+
+final class ViewListenerMock: ViewListenerType {
+
+    private(set) var wasIterateOverDisplayedViewsCalled = false
+    private(set) var observers = [WeakWrapper<ViewListenerObserver>]()
+    var displayedViews = [UIView]()
+
+    func addObserver(_ observer: ViewListenerObserver) {
+        observers.append(WeakWrapper(value: observer))
+    }
+
+    func startListening() { }
+
+    func stopListening() { }
+
+    func iterateOverDisplayedViews(_ handler: @escaping (UIView, String, inout Bool) -> Void) {
+        wasIterateOverDisplayedViewsCalled = true
+
+        DispatchQueue.main.async {
+            var stop = false
+            for existingView in self.displayedViews {
+                guard !stop else {
+                    return
+                }
+                guard let identifier = existingView.accessibilityIdentifier, !identifier.isEmpty else {
+                    continue
+                }
+                handler(existingView, identifier, &stop)
+            }
+        }
+    }
+}
+
+final class TooltipPresenterMock: TooltipPresenterType {
+    var tooltip: Campaign?
+    var onClose: () -> Void = {}
+    var impressions: [Impression] = []
+    var impressionService: ImpressionServiceType = ImpressionServiceMock()
+
+    private(set) var wasDidTapImageCalled = false
+    private(set) var wasDidTapExitButtonCalled = false
+
+    func set(view: TooltipView, dataModel data: Campaign, image: UIImage) {
+
+    }
+
+    func didTapExitButton() {
+        wasDidTapExitButtonCalled = true
+    }
+
+    func didTapImage() {
+        wasDidTapImageCalled = true
+    }
+}
+
+final class TooltipViewMock: TooltipView {
+    private(set) var startedAutoDisappearing = false
+    private(set) var setupModel: TooltipViewModel?
+
+    convenience init() {
+        self.init(presenter: TooltipPresenterMock())
+    }
+
+    override func setup(model: TooltipViewModel) {
+        setupModel = model
+    }
+
+    override func startAutoDisappearIfNeeded(seconds: UInt) {
+        startedAutoDisappearing = true
+    }
+}
+
+final class InAppMessagingModuleMock: InAppMessagingModule {
+    private(set) var loggedEvent: Event?
+
+    init() {
+        super.init(configurationManager: ConfigurationManagerMock(),
+                   campaignsListManager: CampaignsListManagerMock(),
+                   impressionService: ImpressionServiceMock(),
+                   accountRepository: AccountRepository(userDataCache: UserDataCacheMock()),
+                   eventMatcher: EventMatcherMock(),
+                   readyCampaignDispatcher: CampaignDispatcherMock(),
+                   campaignTriggerAgent: CampaignTriggerAgentMock(),
+                   campaignRepository: CampaignRepositoryMock(),
+                   router: RouterMock(),
+                   randomizer: RandomizerMock(),
+                   displayPermissionService: DisplayPermissionServiceMock())
+    }
+
+    override func initialize(completion: @escaping (Bool) -> Void) {
+        completion(false)
+    }
+
+    override func logEvent(_ event: Event) {
+        loggedEvent = event
+    }
+}
+
+extension EndpointURL {
+    static var empty: Self {
+        let emptyURL = URL(string: "about:blank")!
+        return EndpointURL(ping: emptyURL,
+                           displayPermission: emptyURL,
+                           impression: emptyURL)
     }
 }

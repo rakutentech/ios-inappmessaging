@@ -74,6 +74,51 @@ struct TestHelpers {
         )
     }
 
+    static func generateTooltip(id: String,
+                                isTest: Bool = false,
+                                targetViewID: String? = nil,
+                                maxImpressions: Int = 1,
+                                autoCloseSeconds: Int = 0,
+                                redirectURL: String = "",
+                                triggers: [Trigger] = []) -> Campaign {
+        return Campaign(
+            data: CampaignData(
+                campaignId: id,
+                maxImpressions: maxImpressions,
+                type: .modal,
+                triggers: triggers,
+                isTest: isTest,
+                messagePayload: MessagePayload(
+                    title: "[Tooltip] title",
+                    messageBody: """
+                    {\"UIElement\" : \"\(targetViewID ?? TooltipViewIdentifierMock)\", \"position\": \"top-center\", \"auto-disappear\": \(autoCloseSeconds), \"redirectURL\": \"\(redirectURL)\"}
+                    """, // swiftlint:disable:previous line_length
+                    header: "testHeader",
+                    titleColor: "color",
+                    headerColor: "color2",
+                    messageBodyColor: "color3",
+                    backgroundColor: "#ffffff",
+                    frameColor: "color5",
+                    resource: Resource(
+                        imageUrl: "https://example.com/cat.jpg", // "https://picsum.photos/100"
+                        cropType: .fill),
+                    messageSettings: MessageSettings(
+                        displaySettings: DisplaySettings(
+                            orientation: .portrait,
+                            slideFrom: .bottom,
+                            endTimeMilliseconds: Int64.max,
+                            textAlign: .fill,
+                            optOut: false,
+                            html: false,
+                            delay: 0),
+                        controlSettings: ControlSettings(
+                            buttons: [],
+                            content: nil))
+                )
+            )
+        )
+    }
+
     enum MockResponse {
         static func withGeneratedCampaigns(count: Int,
                                            test: Bool,

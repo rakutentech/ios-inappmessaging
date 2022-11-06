@@ -40,7 +40,12 @@ class MainContainerSpec: QuickSpec {
                     dependencyManager.resolve(type: CampaignsValidatorType.self),
                     dependencyManager.resolve(type: FullViewPresenterType.self),
                     dependencyManager.resolve(type: SlideUpViewPresenterType.self),
-                    dependencyManager.resolve(type: CampaignTriggerAgentType.self)
+                    dependencyManager.resolve(type: CampaignTriggerAgentType.self),
+                    dependencyManager.resolve(type: UserDataCacheable.self),
+                    dependencyManager.resolve(type: ViewListenerType.self),
+                    dependencyManager.resolve(type: TooltipDispatcherType.self),
+                    dependencyManager.resolve(type: TooltipManagerType.self),
+                    dependencyManager.resolve(type: TooltipPresenterType.self)
                 ]
                 expect(instances).to(allPass({ $0 != nil }))
                 // this test will fail if there are any cycle references

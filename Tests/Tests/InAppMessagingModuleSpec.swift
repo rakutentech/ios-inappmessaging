@@ -39,6 +39,7 @@ class InAppMessagingModuleSpec: QuickSpec {
                 readyCampaignDispatcher = CampaignDispatcherMock()
                 campaignTriggerAgent = CampaignTriggerAgent(eventMatcher: eventMatcher,
                                                             readyCampaignDispatcher: readyCampaignDispatcher,
+                                                            tooltipDispatcher: TooltipDispatcherMock(),
                                                             campaignsValidator: campaignsValidator)
                 campaignRepository = CampaignRepositoryMock()
                 router = RouterMock()
@@ -83,18 +84,18 @@ class InAppMessagingModuleSpec: QuickSpec {
                     configurationManager.fetchCalledClosure = {
                         fetchCalled = true
                     }
-                    iamModule.initialize { }
+                    iamModule.initialize { _ in }
 
                     expect(fetchCalled).to(beTrue())
                 }
 
                 it("will not call fetchAndSaveConfigData in ConfigurationManager when initilized for the second time") {
-                    iamModule.initialize { }
+                    iamModule.initialize { _ in }
                     var fetchCalled = false
                     configurationManager.fetchCalledClosure = {
                         fetchCalled = true
                     }
-                    iamModule.initialize { }
+                    iamModule.initialize { _ in }
 
                     expect(fetchCalled).to(beFalse())
                 }
@@ -106,18 +107,18 @@ class InAppMessagingModuleSpec: QuickSpec {
 
                     it("will call refreshList in CampaignsListManager") {
                         configurationManager.rolloutPercentage = 100
-                        iamModule.initialize { }
+                        iamModule.initialize { _ in }
 
                         expect(campaignsListManager.wasRefreshListCalled).to(beTrue())
                     }
 
                     it("will not call deinit handler") {
-                        var deinitCalled = false
-                        iamModule.initialize {
-                            deinitCalled = true
+                        waitUntil { done in
+                            iamModule.initialize { shouldDeinit in
+                                expect(shouldDeinit).to(beFalse())
+                                done()
+                            }
                         }
-
-                        expect(deinitCalled).toAfterTimeout(beFalse())
                     }
                 }
 
@@ -126,7 +127,7 @@ class InAppMessagingModuleSpec: QuickSpec {
                         it("will not call refreshList in CampaignsListManager") {
                              configurationManager.rolloutPercentage = rolloutPercentage
                              randomizer.returnedValue = UInt(returnedValue)
-                             iamModule.initialize { }
+                             iamModule.initialize { _ in }
 
                              expect(campaignsListManager.wasRefreshListCalled).to(beFalse())
                         }
@@ -136,7 +137,7 @@ class InAppMessagingModuleSpec: QuickSpec {
                         it("will call refreshList in CampaignsListManager") {
                              configurationManager.rolloutPercentage = rolloutPercentage
                              randomizer.returnedValue = UInt(returnedValue)
-                             iamModule.initialize { }
+                             iamModule.initialize { _ in }
 
                              expect(campaignsListManager.wasRefreshListCalled).to(beTrue())
                         }
@@ -153,18 +154,18 @@ class InAppMessagingModuleSpec: QuickSpec {
                     }
 
                     it("will not call refreshList in CampaignsListManager") {
-                        iamModule.initialize { }
+                        iamModule.initialize { _ in }
 
                         expect(campaignsListManager.wasRefreshListCalled).to(beFalse())
                     }
 
                     it("will call deinit handler") {
-                        var deinitCalled = false
-                        iamModule.initialize {
-                            deinitCalled = true
+                        waitUntil { done in
+                            iamModule.initialize { shouldDeinit in
+                                expect(shouldDeinit).to(beTrue())
+                                done()
+                            }
                         }
-
-                        expect(deinitCalled).to(beTrue())
                     }
                 }
 
@@ -178,7 +179,7 @@ class InAppMessagingModuleSpec: QuickSpec {
                         }
                         configSemaphore.enter()
                         queue.async {
-                            iamModule.initialize { }
+                            iamModule.initialize { _ in }
                         }
                     }
 
@@ -208,7 +209,7 @@ class InAppMessagingModuleSpec: QuickSpec {
 
                     beforeEach {
                         resume = configurationManager.prepareRetryDelayAndWaitForSignal()
-                        iamModule.initialize { }
+                        iamModule.initialize { _ in }
                     }
 
                     it("will log all buferred events when module is enabled") {
@@ -241,7 +242,7 @@ class InAppMessagingModuleSpec: QuickSpec {
 
                         context("and module is initialized") {
                             beforeEach {
-                                iamModule.initialize { }
+                                iamModule.initialize { _ in }
                             }
 
                             it("will call EventMatcher") {
@@ -304,7 +305,7 @@ class InAppMessagingModuleSpec: QuickSpec {
                     context("and module is disabled") {
                         beforeEach {
                             configurationManager.rolloutPercentage = 0
-                            iamModule.initialize { }
+                            iamModule.initialize { _ in }
                         }
 
                         it("will not call EventMatcher") {
@@ -344,7 +345,7 @@ class InAppMessagingModuleSpec: QuickSpec {
 
                         context("and module is initialized") {
                             beforeEach {
-                                iamModule.initialize { }
+                                iamModule.initialize { _ in }
                             }
 
                             it("will register preference data") {
@@ -379,7 +380,7 @@ class InAppMessagingModuleSpec: QuickSpec {
                     context("and module is disabled") {
                         beforeEach {
                             configurationManager.rolloutPercentage = 0
-                            iamModule.initialize { }
+                            iamModule.initialize { _ in }
                         }
 
                         it("will not register preference data") {

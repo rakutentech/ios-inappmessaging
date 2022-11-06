@@ -48,12 +48,13 @@ internal class InAppMessagingModule: ErrorDelegate, CampaignDispatcherDelegate, 
         self.campaignsListManager.errorDelegate = self
         self.impressionService.errorDelegate = self
         displayPermissionService.errorDelegate = self
+        self.router.errorDelegate = self
         self.readyCampaignDispatcher.delegate = self
         self.accountRepository.registerAccountUpdateObserver(self)
     }
 
     // should be called once
-    func initialize(deinitHandler: @escaping () -> Void) {
+    func initialize(completion: @escaping (_ shouldDeinit: Bool) -> Void) {
         guard !isInitialized else {
             return
         }
@@ -69,9 +70,10 @@ internal class InAppMessagingModule: ErrorDelegate, CampaignDispatcherDelegate, 
             if enabled {
                 self.campaignsListManager.refreshList()
                 self.flushEventBuffer(discardEvents: false)
+                completion(false)
             } else {
                 self.flushEventBuffer(discardEvents: true)
-                deinitHandler()
+                completion(true)
             }
         }
     }

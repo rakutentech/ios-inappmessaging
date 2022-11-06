@@ -7,7 +7,9 @@ import RSDKUtils
 
 internal protocol CampaignRepositoryType: AnyObject, Lockable {
     var list: [Campaign] { get }
+    var tooltipsList: [Campaign] { get }
     var lastSyncInMilliseconds: Int64? { get }
+    var delegate: CampaignRepositoryDelegate? { get set }
 
     /// Used to sync with list from the server. Server list is considered as source of truth.
     /// Order must be preserved.
@@ -42,6 +44,10 @@ internal protocol CampaignRepositoryType: AnyObject, Lockable {
     func clearLastUserData()
 }
 
+internal protocol CampaignRepositoryDelegate: AnyObject {
+    func didUpdateCampaignList()
+}
+
 /// Repository to store campaigns retrieved from ping request.
 internal class CampaignRepository: CampaignRepositoryType {
 
@@ -49,14 +55,21 @@ internal class CampaignRepository: CampaignRepositoryType {
 
     private let userDataCache: UserDataCacheable
     private let accountRepository: AccountRepositoryType
-    private let campaigns = LockableObject([Campaign]())
+    private let campaignsAndTooltips = LockableObject([Campaign]())
+    private let tooltips = LockableObject([Campaign]())
     private(set) var lastSyncInMilliseconds: Int64?
 
+    weak var delegate: CampaignRepositoryDelegate?
+
     var list: [Campaign] {
-        campaigns.get()
+        campaignsAndTooltips.get()
+    }
+    /// A subset of `list`
+    var tooltipsList: [Campaign] {
+        tooltips.get()
     }
     var resourcesToLock: [LockableResource] {
-        [campaigns]
+        [campaignsAndTooltips, tooltips]
     }
 
     init(userDataCache: UserDataCacheable, accountRepository: AccountRepositoryType) {
@@ -68,7 +81,7 @@ internal class CampaignRepository: CampaignRepositoryType {
 
     func syncWith(list: [Campaign], timestampMilliseconds: Int64) {
         lastSyncInMilliseconds = timestampMilliseconds
-        let oldList = campaigns.get()
+        let oldList = campaignsAndTooltips.get()
 
         let retainImpressionsLeftValue = true // Left for feature flag functionality
         let updatedList: [Campaign] = list.map { newCampaign in
@@ -77,6 +90,8 @@ internal class CampaignRepository: CampaignRepositoryType {
                 updatedCampaign = Campaign.updatedCampaign(updatedCampaign, asOptedOut: oldCampaign.isOptedOut)
 
                 if retainImpressionsLeftValue {
+                    updatedCampaign = Campaign.updatedCampaign(updatedCampaign, withImpressionLeft: oldCampaign.impressionsLeft)
+                } else {
                     var newImpressionsLeft = oldCampaign.impressionsLeft
                     let wasMaxImpressionsEdited = oldCampaign.data.maxImpressions != newCampaign.data.maxImpressions
                     if wasMaxImpressionsEdited {
@@ -87,13 +102,16 @@ internal class CampaignRepository: CampaignRepositoryType {
             }
             return updatedCampaign
         }
-        campaigns.set(value: updatedList)
+        campaignsAndTooltips.set(value: updatedList)
+        tooltips.set(value: updatedList.filter({ $0.isTooltip }))
         saveDataToCache(updatedList)
+
+        delegate?.didUpdateCampaignList()
     }
 
     @discardableResult
     func optOutCampaign(_ campaign: Campaign) -> Campaign? {
-        var newList = campaigns.get()
+        var newList = campaignsAndTooltips.get()
         guard let index = newList.firstIndex(where: { $0.id == campaign.id }) else {
             Logger.debug("Campaign \(campaign.id) cannot be updated - not found in repository")
             return nil
@@ -101,7 +119,7 @@ internal class CampaignRepository: CampaignRepositoryType {
 
         let updatedCampaign = Campaign.updatedCampaign(campaign, asOptedOut: true)
         newList[index] = updatedCampaign
-        campaigns.set(value: newList)
+        campaignsAndTooltips.set(value: newList)
 
         if !campaign.data.isTest {
             saveDataToCache(newList)
@@ -137,7 +155,7 @@ internal class CampaignRepository: CampaignRepositoryType {
                 }
             })
         }
-        campaigns.set(value: cachedData)
+        campaignsAndTooltips.set(value: cachedData)
     }
 
     func clearLastUserData() {
@@ -147,11 +165,11 @@ internal class CampaignRepository: CampaignRepositoryType {
     // MARK: - Helpers
 
     private func findCampaign(withID id: String) -> Campaign? {
-        campaigns.get().first(where: { $0.id == id })
+        (campaignsAndTooltips.get() + tooltips.get()).first(where: { $0.id == id })
     }
 
     private func updateImpressionsLeftInCampaign(_ campaign: Campaign, newValue: Int) -> Campaign? {
-        var newList = campaigns.get()
+        var newList = campaignsAndTooltips.get()
         guard let index = newList.firstIndex(where: { $0.id == campaign.id }) else {
             Logger.debug("Campaign \(campaign.id) could not be updated - not found in the repository")
             assertionFailure()
@@ -160,7 +178,7 @@ internal class CampaignRepository: CampaignRepositoryType {
 
         let updatedCampaign = Campaign.updatedCampaign(campaign, withImpressionLeft: newValue)
         newList[index] = updatedCampaign
-        campaigns.set(value: newList)
+        campaignsAndTooltips.set(value: newList)
 
         saveDataToCache(newList)
         return updatedCampaign

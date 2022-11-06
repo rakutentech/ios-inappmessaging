@@ -69,7 +69,7 @@ internal enum MainContainerFactory {
                     configurationRepository: manager.resolve(type: ConfigurationRepositoryType.self)!)
             }),
             ContainerElement(type: RouterType.self, factory: {
-                Router(dependencyManager: manager)
+                Router(dependencyManager: manager, viewListener: manager.resolve(type: ViewListenerType.self)!)
             }),
             ContainerElement(type: Randomizer.self, factory: {
                 Randomizer()
@@ -91,6 +91,18 @@ internal enum MainContainerFactory {
                 CampaignsListManager(campaignRepository: manager.resolve(type: CampaignRepositoryType.self)!,
                                      campaignTriggerAgent: manager.resolve(type: CampaignTriggerAgentType.self)!,
                                      messageMixerService: manager.resolve(type: MessageMixerServiceType.self)!)
+            }),
+            ContainerElement(type: TooltipDispatcherType.self, factory: {
+                TooltipDispatcher(router: manager.resolve(type: RouterType.self)!,
+                                  campaignRepository: manager.resolve(type: CampaignRepositoryType.self)!,
+                                  viewListener: manager.resolve(type: ViewListenerType.self)!)
+            }),
+            ContainerElement(type: TooltipManagerType.self, factory: {
+                TooltipManager(viewListener: manager.resolve(type: ViewListenerType.self)!,
+                               campaignRepository: manager.resolve(type: CampaignRepositoryType.self)!)
+            }),
+            ContainerElement(type: ViewListenerType.self, factory: {
+                ViewListener.instance
             })]
 
         // transient containers
@@ -115,7 +127,11 @@ internal enum MainContainerFactory {
             ContainerElement(type: CampaignTriggerAgentType.self, factory: {
                 CampaignTriggerAgent(eventMatcher: manager.resolve(type: EventMatcherType.self)!,
                                      readyCampaignDispatcher: manager.resolve(type: CampaignDispatcherType.self)!,
+                                     tooltipDispatcher: manager.resolve(type: TooltipDispatcherType.self)!,
                                      campaignsValidator: manager.resolve(type: CampaignsValidatorType.self)!)
+            }, transient: true),
+            ContainerElement(type: TooltipPresenterType.self, factory: {
+                TooltipPresenter(impressionService: manager.resolve(type: ImpressionServiceType.self)!)
             }, transient: true)
         ])
 
