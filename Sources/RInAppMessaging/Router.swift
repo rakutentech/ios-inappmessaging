@@ -325,7 +325,6 @@ extension Router {
 
     func viewDidUpdateIdentifier(from: String?, to: String?, view: UIView) {
         if let oldIdentifier = from, displayedTooltips[oldIdentifier] != nil {
-            // update or remove (TBC)
             if let newIdentifier = to {
                 displayedTooltips[newIdentifier] = displayedTooltips[oldIdentifier]
                 displayedTooltips[oldIdentifier] = nil

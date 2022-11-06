@@ -1,4 +1,4 @@
-import struct Foundation.Date
+import Foundation
 
 internal struct Campaign: Codable, Hashable {
 
@@ -9,11 +9,15 @@ internal struct Campaign: Codable, Hashable {
     }
 
     let data: CampaignData
+    let tooltipData: TooltipData?
     private(set) var impressionsLeft: Int
     private(set) var isOptedOut = false
 
     var id: String {
-        return data.campaignId
+        data.campaignId
+    }
+    var isTooltip: Bool {
+        data.messagePayload.title.lowercased().hasPrefix("[tooltip]") && tooltipData != nil
     }
     var isOutdated: Bool {
         guard !data.hasNoEndDate else {
@@ -37,7 +41,8 @@ internal struct Campaign: Codable, Hashable {
         }
         impressionsLeft = (try? container.decode(Int.self, forKey: .impressionsLeft)) ?? maxImpressions
         isOptedOut = (try? container.decode(Bool.self, forKey: .isOptedOut)) ?? false
-        self.data = decodedData
+        data = decodedData
+        tooltipData = Campaign.parseTooltipData(messagePayload: decodedData.messagePayload)
     }
 
     func encode(to encoder: Encoder) throws {
@@ -50,6 +55,7 @@ internal struct Campaign: Codable, Hashable {
     init(data: CampaignData) {
         self.data = data
         impressionsLeft = data.maxImpressions
+        tooltipData = Campaign.parseTooltipData(messagePayload: data.messagePayload)
     }
 
     static func == (lhs: Campaign, rhs: Campaign) -> Bool {
@@ -66,5 +72,17 @@ internal struct Campaign: Codable, Hashable {
         var updatedCampaign = campaign
         updatedCampaign.isOptedOut = isOptedOut
         return updatedCampaign
+    }
+
+    private static func parseTooltipData(messagePayload: MessagePayload) -> TooltipData? {
+        if let tooltipJsonData = messagePayload.messageBody?.data(using: .utf8),
+           let tooltipBodyData = try? JSONDecoder().decode(TooltipBodyData.self, from: tooltipJsonData),
+           let imageUrl = messagePayload.resource.imageUrl {
+            return TooltipData(bodyData: tooltipBodyData,
+                               backgroundColor: messagePayload.backgroundColor,
+                               imageUrl: imageUrl)
+        } else {
+            return nil
+        }
     }
 }

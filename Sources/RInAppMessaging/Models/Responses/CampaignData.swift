@@ -10,7 +10,7 @@ internal struct CampaignData: Codable, Hashable {
     let messagePayload: MessagePayload
 
     var intervalBetweenDisplaysInMS: Int? {
-        return messagePayload.messageSettings.displaySettings.delay
+        messagePayload.messageSettings.displaySettings.delay
     }
 
     init(campaignId: String,

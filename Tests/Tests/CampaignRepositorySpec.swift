@@ -25,9 +25,8 @@ class CampaignRepositorySpec: QuickSpec {
             let campaign = TestHelpers.generateCampaign(id: "campaign-id",
                                                         maxImpressions: 3)
             let testCampaign = TestHelpers.generateCampaign(id: "test-campaign-id",
-                                                            test: true,
-                                                            delay: 0,
-                                                            maxImpressions: 3)
+                                                            maxImpressions: 3,
+                                                            test: true)
             let tooltip = TestHelpers.generateTooltip(id: "tooltip-id",
                                                       maxImpressions: 3)
             let testTooltip = TestHelpers.generateTooltip(id: "tooltip-id-test",
@@ -118,9 +117,8 @@ class CampaignRepositorySpec: QuickSpec {
                         expect(firstPersistedCampaign?.impressionsLeft).to(equal(1))
 
                         let updatedCampaign = TestHelpers.generateCampaign(id: campaign.id,
-                                                                           test: false,
-                                                                           delay: 0,
-                                                                           maxImpressions: 6)
+                                                                           maxImpressions: 6,
+                                                                           test: false)
                         campaignRepository.syncWith(list: [updatedCampaign], timestampMilliseconds: 0)
                         expect(firstPersistedCampaign?.impressionsLeft).to(equal(4))
                     }
@@ -175,13 +173,13 @@ class CampaignRepositorySpec: QuickSpec {
                         expect(firstPersistedCampaign?.impressionsLeft).to(equal(2))
                     }
 
-                    it("will not persist impressionsLeft value for test campaigns") {
+                    it("will persist impressionsLeft value for test campaigns") {
                         campaignRepository.syncWith(list: [testTooltip], timestampMilliseconds: 0)
                         campaignRepository.decrementImpressionsLeftInCampaign(id: testTooltip.id)
                         expect(firstPersistedCampaign?.impressionsLeft).to(equal(2))
 
                         campaignRepository.syncWith(list: [testTooltip], timestampMilliseconds: 0)
-                        expect(firstPersistedCampaign?.impressionsLeft).to(equal(3))
+                        expect(firstPersistedCampaign?.impressionsLeft).to(equal(2))
                     }
 
                     it("will not override impressionsLeft value even if maxImpressions number is smaller") {
@@ -200,9 +198,8 @@ class CampaignRepositorySpec: QuickSpec {
                         expect(firstPersistedCampaign?.impressionsLeft).to(equal(1))
 
                         let updatedTooltip = TestHelpers.generateCampaign(id: tooltip.id,
-                                                                           test: false,
-                                                                           delay: 0,
-                                                                           maxImpressions: 6)
+                                                                          maxImpressions: 6,
+                                                                          test: false)
                         campaignRepository.syncWith(list: [updatedTooltip], timestampMilliseconds: 0)
                         expect(firstPersistedCampaign?.impressionsLeft).to(equal(4))
                     }
@@ -220,10 +217,10 @@ class CampaignRepositorySpec: QuickSpec {
                         expect(lastUserCache?.campaignData).to(equal(userCache?.campaignData))
                     }
 
-                    it("will not save test campaigns to the cache") {
+                    it("will save test campaigns to the cache") {
                         userInfoProvider.userID = "user"
                         campaignRepository.syncWith(list: [testTooltip], timestampMilliseconds: 0)
-                        expect(userCache?.campaignData).toNot(equal([testTooltip]))
+                        expect(userCache?.campaignData).to(equal([testTooltip]))
                         expect(lastUserCache?.campaignData).to(equal(userCache?.campaignData))
                     }
                 }
@@ -296,9 +293,8 @@ class CampaignRepositorySpec: QuickSpec {
 
                     it("will not decrement campaign's impressionsLeft value if it's already 0") {
                         let testCampaign = TestHelpers.generateCampaign(id: "testImpressions",
-                                                                        test: false,
-                                                                        delay: 0,
-                                                                        maxImpressions: 0)
+                                                                        maxImpressions: 0,
+                                                                        test: false)
                         campaignRepository.syncWith(list: [testCampaign], timestampMilliseconds: 0)
                         campaignRepository.decrementImpressionsLeftInCampaign(id: testCampaign.id)
 
@@ -324,8 +320,8 @@ class CampaignRepositorySpec: QuickSpec {
                         userInfoProvider.userID = "user"
                         campaignRepository.syncWith(list: [testCampaign], timestampMilliseconds: 0)
                         campaignRepository.decrementImpressionsLeftInCampaign(id: testCampaign.id)
-                        expect(userCache?.campaignData).to(equal(2))
-                        expect(lastUserCache?.campaignData).to(equal(2))
+                        expect(userCache?.campaignData?.first?.impressionsLeft).to(equal(2))
+                        expect(lastUserCache?.campaignData?.first?.impressionsLeft).to(equal(2))
                     }
                 }
 
@@ -374,12 +370,12 @@ class CampaignRepositorySpec: QuickSpec {
                         expect(lastUserCache?.campaignData).to(equal(userCache?.campaignData))
                     }
 
-                    it("will NOT save updated list to the cache if campaign is marked as `isTest`") {
+                    it("will save updated campaign even if it's marked as `isTest`") {
                         userInfoProvider.userID = "user"
                         campaignRepository.syncWith(list: [testTooltip], timestampMilliseconds: 0)
                         campaignRepository.decrementImpressionsLeftInCampaign(id: testTooltip.id)
-                        expect(userCache?.campaignData).to(beEmpty())
-                        expect(lastUserCache?.campaignData).to(beEmpty())
+                        expect(userCache?.campaignData?.first?.impressionsLeft).to(equal(2))
+                        expect(lastUserCache?.campaignData?.first?.impressionsLeft).to(equal(2))
                     }
                 }
             }

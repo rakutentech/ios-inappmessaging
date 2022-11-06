@@ -6,6 +6,12 @@ internal struct TooltipViewModel {
     let backgroundColor: UIColor
 }
 
+/// TooltipView class draws the shape of tooltip and displays its image.
+/// The view is supposed to be presented on top of view hierarchy or in the first parent scroll view.
+/// The exit button is addeded as a sibling view - not a subview (to aviod drawing and interaction issues).
+/// Tooltip can be presented in 8 different positions around the target view.
+/// TooltipView's frame and visiblity must be updated along with target view's updates.
+/// Tooltips can be dismissed by tapping the exit button or the image, or it can disappear automatically if timeout is specified.
 internal class TooltipView: UIView {
 
     private enum UIConstants {

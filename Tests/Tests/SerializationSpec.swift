@@ -192,13 +192,16 @@ class SerializationSpec: QuickSpec {
         func generateTooltip(title: String,
                              imageURL: String?,
                              body: String) -> Campaign {
-            return Campaign(
+            Campaign(
                 data: CampaignData(
                     campaignId: "id",
                     maxImpressions: 1,
                     type: .modal,
                     triggers: [],
                     isTest: false,
+                    infiniteImpressions: false,
+                    hasNoEndDate: true,
+                    isCampaignDismissable: true,
                     messagePayload: MessagePayload(
                         title: title,
                         messageBody: body,
