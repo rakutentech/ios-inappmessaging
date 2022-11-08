@@ -75,9 +75,10 @@ struct TestHelpers {
     }
 
     static func generateTooltip(id: String,
+                                title: String = "[Tooltip] title",
                                 isTest: Bool = false,
                                 targetViewID: String? = nil,
-                                maxImpressions: Int = 1,
+                                maxImpressions: Int = 2,
                                 autoCloseSeconds: Int = 0,
                                 redirectURL: String = "",
                                 triggers: [Trigger] = []) -> Campaign {
@@ -92,7 +93,7 @@ struct TestHelpers {
                 hasNoEndDate: true,
                 isCampaignDismissable: true,
                 messagePayload: MessagePayload(
-                    title: "[Tooltip] title",
+                    title: title,
                     messageBody: """
                     {\"UIElement\" : \"\(targetViewID ?? TooltipViewIdentifierMock)\", \"position\": \"top-center\", \"auto-disappear\": \(autoCloseSeconds), \"redirectURL\": \"\(redirectURL)\"}
                     """, // swiftlint:disable:previous line_length
@@ -103,7 +104,7 @@ struct TestHelpers {
                     backgroundColor: "#ffffff",
                     frameColor: "color5",
                     resource: Resource(
-                        imageUrl: "https://example.com/cat.jpg", // "https://picsum.photos/100"
+                        imageUrl: Bundle.unitTests?.url(forResource: "test-image", withExtension: "png")!.absoluteString,
                         cropType: .fill),
                     messageSettings: MessageSettings(
                         displaySettings: DisplaySettings(
@@ -148,6 +149,22 @@ struct TestHelpers {
                 nextPingMilliseconds: Int.max,
                 currentPingMilliseconds: 0,
                 data: campaigns)
+        }
+
+        static func withGeneratedTooltip(uiElementIdentifier: String,
+                                         maxImpressions: Int = 2,
+                                         addContexts: Bool = false,
+                                         triggers: [Trigger] = []) -> PingResponse {
+            let title = addContexts ? "[Tooltip][ctx] testTitle" : "[Tooltip] testTitle"
+            let tooltip = generateTooltip(id: "tooltip-id",
+                                          title: title,
+                                          targetViewID: uiElementIdentifier,
+                                          triggers: triggers)
+
+            return PingResponse(
+                nextPingMilliseconds: Int.max,
+                currentPingMilliseconds: 0,
+                data: [tooltip])
         }
 
         static let stringTypeWithEqualsOperator: PingResponse = {

@@ -338,10 +338,11 @@ class RouterMock: RouterType {
     var displayedCampaignsCount = 0
     var wasDiscardCampaignCalled = false
     var wasDisplayCampaignCalled = false
+    var lastIdentifierOfDiscardedTooltip: String?
     var displayTime = TimeInterval(0.1)
     weak var errorDelegate: ErrorDelegate?
 
-    private var tooltipCompletion: (() -> Void)?
+    private var tooltipCompletion: ((_ cancelled: Bool) -> Void)?
     private var tooltipBecameVisibleHandler: ((TooltipView) -> Void)?
 
     private let displayQueue = DispatchQueue(label: "RouterMock.displayQueue")
@@ -372,7 +373,7 @@ class RouterMock: RouterType {
                         identifier: String,
                         imageBlob: Data,
                         becameVisibleHandler: @escaping (TooltipView) -> Void,
-                        completion: @escaping () -> Void) {
+                        completion: @escaping (Bool) -> Void) {
         lastDisplayedTooltip = tooltip
         tooltipBecameVisibleHandler = becameVisibleHandler
         tooltipCompletion = completion
@@ -382,14 +383,22 @@ class RouterMock: RouterType {
         wasDiscardCampaignCalled = true
     }
 
-    func completeDisplayingTooltip() {
-        tooltipCompletion?()
+    func completeDisplayingTooltip(cancelled: Bool) {
+        tooltipCompletion?(cancelled)
         tooltipCompletion = nil
         tooltipBecameVisibleHandler = nil
     }
 
     func callTooltipBecameVisibleHandler(tooltipView: TooltipView) {
         tooltipBecameVisibleHandler?(tooltipView)
+    }
+
+    func discardDisplayedTooltip(with uiElementIdentifier: String) {
+        lastIdentifierOfDiscardedTooltip = uiElementIdentifier
+    }
+
+    func isDisplayingTooltip(with uiElementIdentifier: String) -> Bool {
+        return false
     }
 }
 
@@ -563,12 +572,13 @@ final class ViewListenerMock: ViewListenerType {
 
 final class TooltipPresenterMock: TooltipPresenterType {
     var tooltip: Campaign?
-    var onClose: () -> Void = {}
+    var onDismiss: (Bool) -> Void = { _ in }
     var impressions: [Impression] = []
     var impressionService: ImpressionServiceType = ImpressionServiceMock()
 
     private(set) var wasDidTapImageCalled = false
     private(set) var wasDidTapExitButtonCalled = false
+    private(set) var wasDismissCalled = false
 
     func set(view: TooltipView, dataModel data: Campaign, image: UIImage) {
 
@@ -581,11 +591,16 @@ final class TooltipPresenterMock: TooltipPresenterType {
     func didTapImage() {
         wasDidTapImageCalled = true
     }
+
+    func dismiss() {
+        wasDismissCalled = true
+    }
 }
 
 final class TooltipViewMock: TooltipView {
     private(set) var startedAutoDisappearing = false
     private(set) var setupModel: TooltipViewModel?
+    private(set) var didCallRemoveFromSuperview = false
 
     convenience init() {
         self.init(presenter: TooltipPresenterMock())
@@ -597,6 +612,10 @@ final class TooltipViewMock: TooltipView {
 
     override func startAutoDisappearIfNeeded(seconds: UInt) {
         startedAutoDisappearing = true
+    }
+
+    override func removeFromSuperview() {
+        didCallRemoveFromSuperview = true
     }
 }
 

@@ -159,6 +159,19 @@ import RSDKUtils
         }
     }
 
+    /// Close currently displayed tooltip that's bound to a UI element with given identifier.
+    ///
+    /// This method should be called when app needs to force-close displayed tooltip without user action.
+    /// Tooltip's impressions won't be sent (i.e. the message won't be counted as displayed)
+    /// - Parameter uiElementIdentifier: accessibilityIdentifier of UI element that displayed tooltip is attached to.
+    ///                                  (a.k.a. `UIElement` parameter in tooltip JSON payload)
+    @objc public static func closeTooltip(with uiElementIdentifier: String) {
+        inAppQueue.async {
+            notifyIfModuleNotInitialized()
+            initializedModule?.closeTooltip(with: uiElementIdentifier)
+        }
+    }
+
     private static func notifyIfModuleNotInitialized() {
         guard initializedModule == nil else {
             return

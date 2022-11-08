@@ -111,11 +111,6 @@ class TooltipDispatcherSpec: QuickSpec {
                     expect(router.lastDisplayedTooltip).toEventuallyNot(beNil())
                 }
 
-                it("will decrement impressionsLeft when tooltip was closed") {
-                    router.completeDisplayingTooltip()
-                    expect(campaignRepository.decrementImpressionsCalls).toEventually(equal(1))
-                }
-
                 it("will not decrement impressionsLeft when before tooltip is closed") {
                     expect(campaignRepository.decrementImpressionsCalls).toAfterTimeout(equal(0))
                 }
@@ -140,6 +135,30 @@ class TooltipDispatcherSpec: QuickSpec {
                     expect(tooltipView.startedAutoDisappearing).toAfterTimeout(beFalse())
 
                     anotherTargetView.removeFromSuperview()
+                }
+            }
+
+            context("after dispatching") {
+                beforeEach {
+                    let tooltip = TestHelpers.generateTooltip(id: "test", autoCloseSeconds: 10)
+                    dispatcher.setNeedsDisplay(tooltip: tooltip)
+                    dispatcher.viewDidMoveToWindow(targetView, identifier: TooltipViewIdentifierMock)
+                    expect(router.lastDisplayedTooltip).toEventuallyNot(beNil())
+                }
+
+                it("will decrement impressionsLeft") {
+                    router.completeDisplayingTooltip(cancelled: false)
+                    expect(campaignRepository.decrementImpressionsCalls).to(equal(1))
+                }
+
+                it("will not decrement impressionsLeft when display was cancelled") {
+                    router.completeDisplayingTooltip(cancelled: true)
+                    expect(campaignRepository.decrementImpressionsCalls).toAfterTimeout(equal(0))
+                }
+
+                it("will remove the tooltip from queue") {
+                    router.completeDisplayingTooltip(cancelled: false)
+                    expect(dispatcher.queuedTooltips).toNot(contain(tooltip))
                 }
             }
         }

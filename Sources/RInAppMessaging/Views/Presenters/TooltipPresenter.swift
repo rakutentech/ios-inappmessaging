@@ -2,20 +2,21 @@ import UIKit
 
 internal protocol TooltipPresenterType: ImpressionTrackable {
     var tooltip: Campaign? { get }
-    var onClose: () -> Void { get set }
+    var onDismiss: (_ cancelled: Bool) -> Void { get set }
 
     func set(view: TooltipView, dataModel: Campaign, image: UIImage)
     func didTapExitButton()
     func didTapImage()
+    func dismiss()
 }
 
 internal class TooltipPresenter: TooltipPresenterType {
 
-    private(set) var impressionService: ImpressionServiceType
-
-    private(set) var tooltip: Campaign?
     var impressions: [Impression] = []
-    var onClose: () -> Void = { }
+    var onDismiss: (_ cancelled: Bool) -> Void = { _ in }
+    private(set) var impressionService: ImpressionServiceType
+    private(set) var tooltip: Campaign?
+    private weak var view: TooltipView?
 
     init(impressionService: ImpressionServiceType) {
         self.impressionService = impressionService
@@ -26,6 +27,7 @@ internal class TooltipPresenter: TooltipPresenterType {
             return
         }
         tooltip = dataModel
+        self.view = view
         view.setup(model: TooltipViewModel(position: tooltipData.bodyData.position,
                                            image: image,
                                            backgroundColor: UIColor(hexString: tooltipData.backgroundColor) ?? .white))
@@ -41,13 +43,18 @@ internal class TooltipPresenter: TooltipPresenterType {
         logImpression(type: .clickContent)
         sendImpressions()
         UIApplication.shared.open(uriToOpen)
-        onClose()
+        dismiss()
     }
 
     func didTapExitButton() {
         logImpression(type: .exit)
         sendImpressions()
-        onClose()
+        dismiss()
+    }
+
+    func dismiss() {
+        onDismiss(false)
+        view?.removeFromSuperview()
     }
 
     private func sendImpressions() {
