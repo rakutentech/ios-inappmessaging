@@ -5,7 +5,7 @@ secrets = ["RIAM_CONFIG_URL", "RIAM_APP_SUBSCRIPTION_KEY"]
 
 target 'RInAppMessaging_Example' do
   pod 'RInAppMessaging', :path => '.'
-  pod 'SwiftLint', '~> 0.42'
+  pod 'SwiftLint', '~> 0.48.0' # Version 0.49+ requires macOS 12 and Swift 5.6
   pod 'RSDKUtils', '~> 3.0.0', :testspecs => ['Nimble', 'TestHelpers']
   pod 'Shock', '~> 6.1.2'
 
