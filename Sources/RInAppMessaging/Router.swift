@@ -25,6 +25,7 @@ internal protocol RouterType: ErrorReportable {
                         identifier: String,
                         imageBlob: Data,
                         becameVisibleHandler: @escaping (_ tooltipView: TooltipView) -> Void,
+                        confirmation: @escaping @autoclosure () -> Bool,
                         completion: @escaping (_ cancelled: Bool) -> Void)
     
     /// Removes displayed campaign view from the stack
@@ -172,11 +173,13 @@ internal class Router: RouterType, ViewListenerObserver {
         return nil
     }
 
+    // swiftlint:disable:next function_parameter_count
     func displayTooltip(_ tooltip: Campaign,
                         targetView: UIView,
                         identifier: String,
                         imageBlob: Data,
                         becameVisibleHandler: @escaping (_ tooltipView: TooltipView) -> Void,
+                        confirmation: @escaping @autoclosure () -> Bool,
                         completion: @escaping (_ cancelled: Bool) -> Void) {
 
         guard let presenter = self.dependencyManager.resolve(type: TooltipPresenterType.self) else {
@@ -216,12 +219,18 @@ internal class Router: RouterType, ViewListenerObserver {
                 return
             }
 
+            guard confirmation() else {
+                completion(true)
+                return
+            }
+
             superview.addSubview(tooltipView)
             superview.layoutIfNeeded()
             if let displayedCampaign = superview.findIAMView() {
                 superview.bringSubviewToFront(displayedCampaign)
             }
 
+            self.displayedTooltips[identifier] = tooltipView
             self.updateFrame(targetView: targetView, tooltipView: tooltipView, superview: superview, position: position)
 
             var didBecomeVisible = false
@@ -254,8 +263,6 @@ internal class Router: RouterType, ViewListenerObserver {
                 }
                 self.observers.append(observer)
             }
-
-            self.displayedTooltips[identifier] = tooltipView
         }
     }
 

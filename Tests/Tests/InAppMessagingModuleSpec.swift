@@ -54,27 +54,12 @@ class InAppMessagingModuleSpec: QuickSpec {
                                                  campaignRepository: campaignRepository,
                                                  router: router,
                                                  randomizer: randomizer,
-                                                 displayPermissionService: DisplayPermissionServiceMock())
+                                                 displayPermissionService: DisplayPermissionServiceMock(),
+                                                 tooltipDispatcher: TooltipDispatcherMock())
             }
 
             it("is enabled by deafult") {
                 expect(iamModule.isEnabled).to(beTrue())
-            }
-
-            it("will return true for shouldShowCampaignMessage if onVerifyContext is nil") {
-                iamModule.onVerifyContext = nil
-                expect(iamModule.shouldShowCampaignMessage(title: "", contexts: [])).to(beTrue())
-            }
-
-            it("will call onVerifyContext if shouldShowCampaignMessage was called") {
-                var onVerifyContextCalled = false
-                iamModule.onVerifyContext = { _, _ in
-                    onVerifyContextCalled = true
-                    return true
-                }
-                _ = iamModule.shouldShowCampaignMessage(title: "", contexts: [])
-
-                expect(onVerifyContextCalled).to(beTrue())
             }
 
             context("when calling initialize") {
@@ -602,9 +587,44 @@ class InAppMessagingModuleSpec: QuickSpec {
 
                 context("as CampaignDispatcherDelegate") {
 
+                    it("will return true for shouldShowCampaignMessage if onVerifyContext is nil") {
+                        iamModule.onVerifyContext = nil
+                        expect(iamModule.shouldShowCampaignMessage(title: "", contexts: [])).to(beTrue())
+                    }
+
+                    it("will call onVerifyContext if shouldShowCampaignMessage was called") {
+                        var onVerifyContextCalled = false
+                        iamModule.onVerifyContext = { _, _ in
+                            onVerifyContextCalled = true
+                            return true
+                        }
+                        _ = iamModule.shouldShowCampaignMessage(title: "", contexts: [])
+
+                        expect(onVerifyContextCalled).to(beTrue())
+                    }
+
                     it("will refresh list of campaigns when performPing was called") {
                         iamModule.performPing()
                         expect(campaignsListManager.wasRefreshListCalled).to(beTrue())
+                    }
+                }
+
+                context("as TooltipDispatcherDelegate") {
+
+                    it("will return true for shouldShowTooltip if onVerifyContext is nil") {
+                        iamModule.onVerifyContext = nil
+                        expect(iamModule.shouldShowTooltip(title: "", contexts: [])).to(beTrue())
+                    }
+
+                    it("will call onVerifyContext if shouldShowTooltip was called") {
+                        var onVerifyContextCalled = false
+                        iamModule.onVerifyContext = { _, _ in
+                            onVerifyContextCalled = true
+                            return true
+                        }
+                        _ = iamModule.shouldShowTooltip(title: "", contexts: [])
+
+                        expect(onVerifyContextCalled).to(beTrue())
                     }
                 }
 

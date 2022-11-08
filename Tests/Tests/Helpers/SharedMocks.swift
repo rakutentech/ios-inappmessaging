@@ -334,7 +334,7 @@ class CampaignsListManagerMock: CampaignsListManagerType {
 class RouterMock: RouterType {
     var accessibilityCompatibleDisplay = false
     var lastDisplayedCampaign: Campaign?
-    var lastDisplayedTooltip: Campaign?
+    var displayedTooltips = [Campaign]()
     var displayedCampaignsCount = 0
     var wasDiscardCampaignCalled = false
     var wasDisplayCampaignCalled = false
@@ -368,15 +368,25 @@ class RouterMock: RouterType {
         }
     }
 
+    // swiftlint:disable:next function_parameter_count
     func displayTooltip(_ tooltip: Campaign,
                         targetView: UIView,
                         identifier: String,
                         imageBlob: Data,
                         becameVisibleHandler: @escaping (TooltipView) -> Void,
+                        confirmation: @autoclosure @escaping () -> Bool,
                         completion: @escaping (Bool) -> Void) {
-        lastDisplayedTooltip = tooltip
         tooltipBecameVisibleHandler = becameVisibleHandler
         tooltipCompletion = completion
+
+        let delay = DispatchTimeInterval.milliseconds(100)
+        displayQueue.asyncAfter(deadline: .now() + delay) { [weak self] in
+            guard let self = self,
+                  confirmation() else {
+                return
+            }
+            self.displayedTooltips.append(tooltip)
+        }
     }
 
     func discardDisplayedCampaign() {
@@ -532,6 +542,7 @@ final class UNUserNotificationCenterMock: RemoteNotificationRequestable {
 
 final class TooltipDispatcherMock: TooltipDispatcherType {
     private(set) var needsDisplayTooltips = [Campaign]()
+    weak var delegate: TooltipDispatcherDelegate?
 
     func setNeedsDisplay(tooltip: Campaign) {
         needsDisplayTooltips.append(tooltip)
@@ -633,7 +644,8 @@ final class InAppMessagingModuleMock: InAppMessagingModule {
                    campaignRepository: CampaignRepositoryMock(),
                    router: RouterMock(),
                    randomizer: RandomizerMock(),
-                   displayPermissionService: DisplayPermissionServiceMock())
+                   displayPermissionService: DisplayPermissionServiceMock(),
+                   tooltipDispatcher: TooltipDispatcherMock())
     }
 
     override func initialize(completion: @escaping (Bool) -> Void) {

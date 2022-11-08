@@ -42,12 +42,7 @@ class CampaignsValidatorSpec: QuickSpec {
             it("will accept non-test campaigns with matching criteria") {
                 let campaign = TestHelpers.generateCampaign(
                     id: "test", maxImpressions: 2,
-                    triggers: [Trigger(
-                        type: .event,
-                        eventType: .loginSuccessful,
-                        eventName: "testevent",
-                        attributes: []
-                        )])
+                    triggers: [Trigger.loginEventTrigger])
                 campaignRepository.syncWith(list: [campaign, MockedCampaigns.outdatedCampaign],
                                             timestampMilliseconds: 0)
                 let event = LoginSuccessfulEvent()
@@ -70,12 +65,7 @@ class CampaignsValidatorSpec: QuickSpec {
             it("won't accept campaigns with no impressions left") {
                 let campaign = TestHelpers.generateCampaign(
                     id: "test", maxImpressions: 0,
-                    triggers: [Trigger(
-                        type: .event,
-                        eventType: .loginSuccessful,
-                        eventName: "testevent",
-                        attributes: []
-                        )])
+                    triggers: [Trigger.loginEventTrigger])
                 campaignRepository.syncWith(list: [campaign], timestampMilliseconds: 0)
                 eventMatcher.matchAndStore(event: LoginSuccessfulEvent())
                 campaignsValidator.validate(validatedCampaignHandler: validatorHandler.closure)
@@ -92,12 +82,7 @@ class CampaignsValidatorSpec: QuickSpec {
             it("won't accept opted out campaigns") {
                 let campaign = TestHelpers.generateCampaign(
                     id: "test", maxImpressions: 2,
-                    triggers: [Trigger(
-                        type: .event,
-                        eventType: .loginSuccessful,
-                        eventName: "testevent",
-                        attributes: []
-                        )])
+                    triggers: [Trigger.loginEventTrigger])
                 campaignRepository.syncWith(list: [campaign], timestampMilliseconds: 0)
                 eventMatcher.matchAndStore(event: LoginSuccessfulEvent())
                 _ = campaignRepository.optOutCampaign(campaign)
@@ -223,26 +208,14 @@ private enum MockedCampaigns {
 
     static let testCampaign = TestHelpers.generateCampaign(
         id: "test", maxImpressions: 2, test: true,
-        triggers: [Trigger(
-            type: .event,
-            eventType: .loginSuccessful,
-            eventName: "testevent",
-            attributes: []
-        )])
+        triggers: [Trigger.loginEventTrigger])
 
     static let outdatedTestCampaign = Campaign(
         data: CampaignData(
             campaignId: "test",
             maxImpressions: 1,
             type: .modal,
-            triggers: [
-                Trigger(
-                    type: .event,
-                    eventType: .loginSuccessful,
-                    eventName: "testevent",
-                    attributes: []
-                )
-            ],
+            triggers: [Trigger.loginEventTrigger],
             isTest: true,
             infiniteImpressions: false,
             hasNoEndDate: false,
@@ -256,14 +229,7 @@ private enum MockedCampaigns {
             campaignId: "test",
             maxImpressions: 2,
             type: .modal,
-            triggers: [
-                Trigger(
-                    type: .event,
-                    eventType: .loginSuccessful,
-                    eventName: "testevent",
-                    attributes: []
-                )
-            ],
+            triggers: [Trigger.loginEventTrigger],
             isTest: false,
             infiniteImpressions: false,
             hasNoEndDate: false,
