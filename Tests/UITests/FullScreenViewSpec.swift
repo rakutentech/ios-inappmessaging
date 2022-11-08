@@ -66,7 +66,7 @@ class FullScreenViewSpec: QuickSpec {
                     expect(iamView.exists).to(beFalse())
 
                     app.buttons["login_successful"].tap() // show the message again
-                    expect(iamView.exists).toEventually(beTrue(), timeout: .seconds(2))
+                    expect(iamView.exists).toEventually(beTrue(), timeout: .seconds(3))
                     let bottomRightCorner = exitButtonCenter.withOffset(CGVector(dx: 21, dy: 21)) // points on max edges are not counted
                     bottomRightCorner.tap()
                     expect(iamView.exists).to(beFalse())
@@ -79,7 +79,7 @@ class FullScreenViewSpec: QuickSpec {
                     launchAppIfNecessary(context: "full-text-only")
                     if !iamView.exists {
                         app.buttons["login_successful"].tap()
-                        expect(iamView.exists).toEventually(beTrue(), timeout: .seconds(2))
+                        expect(iamView.exists).toEventually(beTrue(), timeout: .seconds(3))
                     }
                 }
 
@@ -93,13 +93,13 @@ class FullScreenViewSpec: QuickSpec {
                 }
             }
 
-            context("with action butttons") {
+            context("with action buttons") {
 
                 beforeEach {
                     launchAppIfNecessary(context: "full-controls")
                     if !iamView.exists {
                         app.buttons["custom_test"].tap()
-                        expect(iamView.exists).toEventually(beTrue(), timeout: .seconds(2))
+                        expect(iamView.exists).toEventually(beTrue(), timeout: .seconds(3))
                     }
                 }
 
@@ -122,7 +122,7 @@ class FullScreenViewSpec: QuickSpec {
                 it("should trigger another campaign after tapping button 2") {
                     iamView.buttons["Button1"].tap()
                     expect(iamView.exists).to(beFalse())
-                    expect(iamView.exists).toEventually(beTrue(), timeout: .seconds(2))
+                    expect(iamView.exists).toEventually(beTrue(), timeout: .seconds(3))
                 }
             }
 
@@ -133,7 +133,7 @@ class FullScreenViewSpec: QuickSpec {
                     if !iamView.exists {
                         expect(app.buttons["custom_test"].exists).to(beTrue())
                         app.buttons["custom_test"].tap()
-                        expect(iamView.exists).toEventually(beTrue(), timeout: .seconds(2))
+                        expect(iamView.exists).toEventually(beTrue(), timeout: .seconds(3))
                     }
                 }
 
@@ -159,7 +159,7 @@ class FullScreenViewSpec: QuickSpec {
                     launchAppIfNecessary(context: "full-text-only")
                     if !iamView.exists {
                         app.buttons["login_successful"].tap()
-                        expect(iamView.exists).toEventually(beTrue(), timeout: .seconds(2))
+                        expect(iamView.exists).toEventually(beTrue(), timeout: .seconds(3))
                     }
                 }
 
@@ -182,7 +182,7 @@ class FullScreenViewSpec: QuickSpec {
                     launchAppIfNecessary(context: "full-text-image")
                     if !iamView.exists {
                         app.buttons["login_successful"].tap()
-                        expect(iamView.exists).toEventually(beTrue(), timeout: .seconds(2))
+                        expect(iamView.exists).toEventually(beTrue(), timeout: .seconds(3))
                     }
                 }
 
@@ -205,7 +205,7 @@ class FullScreenViewSpec: QuickSpec {
                     launchAppIfNecessary(context: "full-image-only")
                     if !iamView.exists {
                         app.buttons["login_successful"].tap()
-                        expect(iamView.exists).toEventually(beTrue(), timeout: .seconds(2))
+                        expect(iamView.exists).toEventually(beTrue(), timeout: .seconds(3))
                     }
                 }
 

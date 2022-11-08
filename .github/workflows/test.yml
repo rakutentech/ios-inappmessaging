@@ -16,21 +16,22 @@ jobs:
     - run: |
         bundle install
         bundle exec pod install
+      env:
+        RIAM_CONFIG_URL: https://example.com
+        RIAM_APP_SUBSCRIPTION_KEY: xxxx-xxxx-xxxx-xxxx
+    - run: |
         xcodebuild \
         -workspace RInAppMessaging.xcworkspace \
         -scheme UITests \
         -resultBundlePath artifacts/ui-tests/UITests \
-        -destination "platform=iOS Simulator,name=iPhone 11" \
-        test
+        -destination "platform=iOS Simulator,name=iPhone 12" \
+        test | xcpretty
         xcodebuild \
         -workspace RInAppMessaging.xcworkspace \
         -scheme RInAppMessaging-Example \
         -resultBundlePath artifacts/unit-tests/RInAppMessaging-Example \
-        -destination "platform=iOS Simulator,name=iPhone 11" \
-        test
-      env:
-        RIAM_CONFIG_URL: https://example.com
-        RIAM_APP_SUBSCRIPTION_KEY: xxxx-xxxx-xxxx-xxxx
+        -destination "platform=iOS Simulator,name=iPhone 12" \
+        test | xcpretty
     - uses: kishikawakatsumi/xcresulttool@v1
       with:
         path: |
