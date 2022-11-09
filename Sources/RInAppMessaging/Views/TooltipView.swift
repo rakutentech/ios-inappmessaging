@@ -16,8 +16,8 @@ internal class TooltipView: UIView {
 
     private enum UIConstants {
         static let tipSize = CGSize(width: 8.0, height: 8.0)
-        static let cornerRadius = 6.0
-        static let imagePadding = 4.0
+        static let cornerRadius: CGFloat = 6.0
+        static let imagePadding: CGFloat = 4.0
         static let exitButtonSize: CGFloat = 20
         static let exitButtonTopMargin: CGFloat = -4.0
         static let exitButtonRightMargin: CGFloat = 4.0

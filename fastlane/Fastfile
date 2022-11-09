@@ -83,7 +83,7 @@ platform :ios do
       archive_path: "./artifacts/RInAppMessaging.xcarchive",
       scheme: ENV['REM_FL_SAMPLE_SCHEME'],
       workspace: ENV['REM_FL_SAMPLE_WORKSPACE'],
-      xcargs: "CODE_SIGN_IDENTITY='' CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO RIAM_CONFIG_URL=#{config_url}",
+      xcargs: "CODE_SIGN_IDENTITY='' CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO ENABLE_BITCODE=NO RIAM_CONFIG_URL=#{config_url}",
     )
   end
 end

@@ -36,8 +36,8 @@ internal class Router: RouterType, ViewListenerObserver {
 
     private enum UIConstants {
         enum Tooltip {
-            static let minDistFromEdge = 20.0
-            static let targetViewSpacing = 0.0
+            static let minDistFromEdge: CGFloat = 20.0
+            static let targetViewSpacing: CGFloat = 0.0
         }
     }
 
