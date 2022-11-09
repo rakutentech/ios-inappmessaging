@@ -1,5 +1,6 @@
 import Quick
 import Nimble
+import UIKit
 @testable import RInAppMessaging
 
 class TooltipPresenterSpec: QuickSpec {

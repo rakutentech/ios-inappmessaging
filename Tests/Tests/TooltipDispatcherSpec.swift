@@ -1,6 +1,7 @@
 import Foundation
 import Quick
 import Nimble
+import UIKit
 #if canImport(RSDKUtilsTestHelpers)
 import class RSDKUtilsTestHelpers.URLSessionMock // SPM version
 #else

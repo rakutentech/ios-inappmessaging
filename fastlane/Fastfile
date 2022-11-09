@@ -43,10 +43,16 @@ platform :ios do
   end
 
   lane :build_swift_package do
-    Dir.chdir("..") do
-      ios_version = sh 'xcodebuild -showBuildSettings 2>/dev/null | grep "IPHONEOS_DEPLOYMENT_TARGET =" | tr -d "IPHONEOS_DEPLOYMENT_TARGET ="'
-      sh "swift build -Xswiftc '-sdk' -Xswiftc `xcrun --sdk iphonesimulator --show-sdk-path` -Xswiftc '-target' -Xswiftc 'x86_64-apple-ios#{ios_version}-simulator'"
-    end
+    # A fix for incorrect Shock dependencies
+    sh 'git config --global url."https://github.com/".insteadOf "git@github.com:"'
+    scan(
+      clean: true,
+      build_for_testing: true,
+      scheme: ENV['REM_FL_TESTS_SCHEME'] || 'Tests',
+      device: ENV['REM_FL_TESTS_DEVICE'] || 'iPhone 11',
+      project: 'SampleSPM/SampleSPM.xcodeproj',
+    )
+    sh 'git config --global --unset url."https://github.com/".insteadOf'
   end
 
   lane :coverage do
