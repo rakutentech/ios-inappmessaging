@@ -79,7 +79,7 @@ internal class Router: RouterType, ViewListenerObserver {
         displayQueue.sync {
             DispatchQueue.main.async {
                 let displayedToolip = self.displayedTooltips[uiElementIdentifier]
-                displayedToolip?.presenter.onDismiss(true)
+                displayedToolip?.presenter.onDismiss?(true)
                 displayedToolip?.removeFromSuperview()
             }
         }

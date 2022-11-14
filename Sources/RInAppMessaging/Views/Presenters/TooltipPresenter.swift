@@ -2,7 +2,7 @@ import UIKit
 
 internal protocol TooltipPresenterType: ImpressionTrackable {
     var tooltip: Campaign? { get }
-    var onDismiss: (_ cancelled: Bool) -> Void { get set }
+    var onDismiss: ((_ cancelled: Bool) -> Void)? { get set }
 
     func set(view: TooltipView, dataModel: Campaign, image: UIImage)
     func didTapExitButton()
@@ -13,7 +13,7 @@ internal protocol TooltipPresenterType: ImpressionTrackable {
 internal class TooltipPresenter: TooltipPresenterType {
 
     var impressions: [Impression] = []
-    var onDismiss: (_ cancelled: Bool) -> Void = { _ in }
+    var onDismiss: ((_ cancelled: Bool) -> Void)?
     private(set) var impressionService: ImpressionServiceType
     private(set) var tooltip: Campaign?
     private weak var view: TooltipView?
@@ -53,7 +53,7 @@ internal class TooltipPresenter: TooltipPresenterType {
     }
 
     func dismiss() {
-        onDismiss(false)
+        onDismiss?(false)
         view?.removeFromSuperview()
     }
 

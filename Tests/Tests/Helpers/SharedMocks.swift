@@ -572,7 +572,7 @@ final class ViewListenerMock: ViewListenerType {
 
 final class TooltipPresenterMock: TooltipPresenterType {
     var tooltip: Campaign?
-    var onDismiss: (Bool) -> Void = { _ in }
+    var onDismiss: ((Bool) -> Void)?
     var impressions: [Impression] = []
     var impressionService: ImpressionServiceType = ImpressionServiceMock()
 
