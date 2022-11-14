@@ -148,7 +148,7 @@ class TooltipDispatcherSpec: QuickSpec {
 
                 it("will decrement impressionsLeft") {
                     router.completeDisplayingTooltip(cancelled: false)
-                    expect(campaignRepository.decrementImpressionsCalls).to(equal(1))
+                    expect(campaignRepository.decrementImpressionsCalls).toEventually(equal(1))
                 }
 
                 it("will not decrement impressionsLeft when display was cancelled") {
@@ -158,7 +158,7 @@ class TooltipDispatcherSpec: QuickSpec {
 
                 it("will remove the tooltip from queue") {
                     router.completeDisplayingTooltip(cancelled: false)
-                    expect(dispatcher.queuedTooltips).toNot(contain(tooltip))
+                    expect(dispatcher.queuedTooltips).toEventuallyNot(contain(tooltip))
                 }
             }
         }
