@@ -37,7 +37,11 @@ internal class TooltipDispatcher: TooltipDispatcherType, ViewListenerObserver {
     }
 
     func setNeedsDisplay(tooltip: Campaign) {
-        dispatchQueue.async {
+        dispatchQueue.async { [weak self] in
+            guard let self = self,
+                  !self.queuedTooltips.contains(tooltip) else {
+                return
+            }
             self.queuedTooltips.insert(tooltip)
             self.findViewAndDisplay(tooltip: tooltip)
         }
@@ -58,6 +62,10 @@ internal class TooltipDispatcher: TooltipDispatcherType, ViewListenerObserver {
     private func displayTooltip(_ tooltip: Campaign,
                                 targetView: UIView,
                                 identifier: String) {
+        
+        guard !router.isDisplayingTooltip(with: identifier) else {
+            return
+        }
         guard let resImgUrlString = tooltip.tooltipData?.imageUrl,
               let resImgUrl = URL(string: resImgUrlString)
         else {
@@ -80,12 +88,16 @@ internal class TooltipDispatcher: TooltipDispatcherType, ViewListenerObserver {
                         return
                     }
                     tooltipView.startAutoDisappearIfNeeded(seconds: autoCloseSeconds)
-                }, completion: {
+                },
+                completion: { cancelled in
                     self.dispatchQueue.async {
-                        self.campaignRepository.decrementImpressionsLeftInCampaign(id: tooltip.id)
+                        if !cancelled {
+                            self.campaignRepository.decrementImpressionsLeftInCampaign(id: tooltip.id)
+                        }
                         self.queuedTooltips.remove(tooltip)
                     }
-                })
+                }
+            )
         }
     }
 
@@ -110,14 +122,14 @@ extension TooltipDispatcher {
 
         // refresh currently displayed tooltip or
         // restore tooltip if view appeared again
-        dispatchQueue.async {
-            if let tooltip = self.queuedTooltips.first(where: {
+        dispatchQueue.async { [weak self] in
+            if let tooltip = self?.queuedTooltips.first(where: {
                 guard let tooltipData = $0.tooltipData else {
                     return false
                 }
                 return identifier.contains(tooltipData.bodyData.uiElementIdentifier)
             }) {
-                self.displayTooltip(tooltip, targetView: view, identifier: identifier)
+                self?.displayTooltip(tooltip, targetView: view, identifier: identifier)
             }
         }
     }

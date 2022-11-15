@@ -49,13 +49,13 @@ class TooltipPresenterSpec: QuickSpec {
                     presenter.set(view: TooltipViewMock(), dataModel: tooltip, image: UIImage())
                 }
 
-                it("will call onClose") {
-                    var wasOnCloseCalled = false
-                    presenter.onClose = {
-                        wasOnCloseCalled = true
+                it("will call onDismiss") {
+                    var wasOnDismissCalled = false
+                    presenter.onDismiss = { _ in
+                        wasOnDismissCalled = true
                     }
                     presenter.didTapExitButton()
-                    expect(wasOnCloseCalled).to(beTrue())
+                    expect(wasOnDismissCalled).to(beTrue())
                 }
 
                 it("will log exit impression") {
@@ -76,13 +76,13 @@ class TooltipPresenterSpec: QuickSpec {
                     presenter.set(view: TooltipViewMock(), dataModel: tooltip, image: UIImage())
                 }
 
-                it("will call onClose") {
-                    var wasOnCloseCalled = false
-                    presenter.onClose = {
-                        wasOnCloseCalled = true
+                it("will call onDismiss") {
+                    var wasOnDismissCalled = false
+                    presenter.onDismiss = { _ in
+                        wasOnDismissCalled = true
                     }
                     presenter.didTapImage()
-                    expect(wasOnCloseCalled).to(beTrue())
+                    expect(wasOnDismissCalled).to(beTrue())
                 }
 
                 it("will log clickContent impression") {
@@ -101,13 +101,13 @@ class TooltipPresenterSpec: QuickSpec {
                         presenter.set(view: TooltipViewMock(), dataModel: tooltip, image: UIImage())
                     }
 
-                    it("will not call onClose") {
-                        var wasOnCloseCalled = false
-                        presenter.onClose = {
-                            wasOnCloseCalled = true
+                    it("will not call onDismiss") {
+                        var wasOnDismissCalled = false
+                        presenter.onDismiss = { _ in
+                            wasOnDismissCalled = true
                         }
                         presenter.didTapImage()
-                        expect(wasOnCloseCalled).to(beFalse())
+                        expect(wasOnDismissCalled).to(beFalse())
                     }
 
                     it("will not log clickContent impression") {
@@ -119,6 +119,30 @@ class TooltipPresenterSpec: QuickSpec {
                         presenter.didTapImage()
                         expect(impressionService.sentImpressions).to(beNil())
                     }
+                }
+            }
+
+            context("when calling dismiss()") {
+
+                var view: TooltipViewMock!
+
+                beforeEach {
+                    view = TooltipViewMock()
+                    presenter.set(view: view, dataModel: tooltip, image: UIImage())
+                }
+
+                it("will call onDismiss") {
+                    var wasOnDismissCalled = false
+                    presenter.onDismiss = { _ in
+                        wasOnDismissCalled = true
+                    }
+                    presenter.dismiss()
+                    expect(wasOnDismissCalled).to(beTrue())
+                }
+
+                it("will remove view from superview") {
+                    presenter.dismiss()
+                    expect(view.didCallRemoveFromSuperview).to(beTrue())
                 }
             }
         }

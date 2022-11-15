@@ -14,6 +14,7 @@ class PublicAPISpec: QuickSpec {
 
     override func spec() {
 
+        let tooltipTargetView = UIView(frame: CGRect(x: 100, y: 100, width: 10, height: 10))
         let userDefaults = UserDefaults(suiteName: "PublicAPISpec")!
         var eventMatcher: EventMatcherSpy!
         var accountRepository: AccountRepositoryType!
@@ -64,6 +65,19 @@ class PublicAPISpec: QuickSpec {
             RInAppMessaging.logEvent(LoginSuccessfulEvent())
         }
 
+        func generateAndDisplayLoginTooltip(uiElementIdentifier: String, addContexts: Bool) {
+            messageMixerService.mockedResponse = TestHelpers.MockResponse.withGeneratedTooltip(
+                uiElementIdentifier: uiElementIdentifier, addContexts: addContexts,
+                triggers: [Trigger(type: .event,
+                                   eventType: .loginSuccessful,
+                                   eventName: "e1",
+                                   attributes: [])])
+            campaignsListManager.refreshList()
+            tooltipTargetView.accessibilityIdentifier = uiElementIdentifier
+            UIApplication.shared.getKeyWindow()?.addSubview(tooltipTargetView)
+            RInAppMessaging.logEvent(LoginSuccessfulEvent())
+        }
+
         func waitForCache() {
             waitUntil { cacheSaved in
                 DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500)) {
@@ -92,6 +106,8 @@ class PublicAPISpec: QuickSpec {
             RInAppMessaging.errorCallback = nil
             UserDefaults.standard.removePersistentDomain(forName: "PublicAPISpec")
             UIApplication.shared.getKeyWindow()?.findIAMView()?.removeFromSuperview()
+            UIApplication.shared.getKeyWindow()?.findTooltipView()?.removeFromSuperview()
+            tooltipTargetView.removeFromSuperview()
         }
 
         describe("RInAppMessaging") {
@@ -478,6 +494,46 @@ class PublicAPISpec: QuickSpec {
                     RInAppMessaging.pushPrimerAuthorizationOptions = [.criticalAlert]
                     reinitializeSDK()
                     expect(RInAppMessaging.pushPrimerAuthorizationOptions).to(equal([.criticalAlert]))
+                }
+            }
+
+            context("when calling closeTooltip") {
+                let tooltipTargetViewID = "view-id"
+
+                beforeEach {
+                    // ensure no tooltip is displayed
+                    expect(UIApplication.shared.getKeyWindow()?.findTooltipView()).to(beNil())
+                }
+
+                context("and identifier matches") {
+
+                    it("will remove displayed tooltip view from hierarchy") {
+                        generateAndDisplayLoginTooltip(uiElementIdentifier: tooltipTargetViewID, addContexts: false)
+
+                        expect(UIApplication.shared.getKeyWindow()?.findTooltipView()).toEventuallyNot(beNil())
+                        RInAppMessaging.closeTooltip(with: tooltipTargetViewID)
+                        expect(UIApplication.shared.getKeyWindow()?.findTooltipView()).toEventually(beNil())
+                    }
+
+                    it("will not decrement impressionsLeft in closed tooltip") {
+                        generateAndDisplayLoginTooltip(uiElementIdentifier: tooltipTargetViewID, addContexts: false)
+
+                        expect(UIApplication.shared.getKeyWindow()?.findTooltipView()).toEventuallyNot(beNil())
+                        expect(campaignRepository.tooltipsList.first?.impressionsLeft).to(equal(2))
+                        RInAppMessaging.closeTooltip(with: tooltipTargetViewID)
+                        expect(campaignRepository.tooltipsList.first?.impressionsLeft).toAfterTimeout(equal(2))
+                    }
+                }
+
+                context("and identifier does not match") {
+
+                    it("will not remove displayed tooltip view from hierarchy") {
+                        generateAndDisplayLoginTooltip(uiElementIdentifier: tooltipTargetViewID, addContexts: false)
+
+                        expect(UIApplication.shared.getKeyWindow()?.findTooltipView()).toEventuallyNot(beNil())
+                        RInAppMessaging.closeTooltip(with: "other-id")
+                        expect(UIApplication.shared.getKeyWindow()?.findTooltipView()).toAfterTimeoutNot(beNil())
+                    }
                 }
             }
         }

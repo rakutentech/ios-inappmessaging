@@ -242,6 +242,7 @@ internal class TooltipView: UIView {
 
     override func removeFromSuperview() {
         super.removeFromSuperview()
+        autoCloseTimer?.invalidate()
         exitButton.removeFromSuperview()
     }
 

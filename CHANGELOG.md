@@ -1,6 +1,8 @@
 ## Changelog
 
 ### 7.3.0 (in-progress)
+- Features:
+	- Added new API method to close displayed tooltips [SDKCF-6027]
 - Bug fixes:
 	- Fixed an edge case of not readable status bar when campaign message is displayed [SDKCF-5134]
 

@@ -650,6 +650,14 @@ class InAppMessagingModuleSpec: QuickSpec {
                     }
                 }
             }
+
+            context("when calling closeTooltip()") {
+                it("will tell router to discard displayed tooltip with matching identifier") {
+                    let tooltipID = "tooltip-target-id"
+                    iamModule.closeTooltip(with: tooltipID)
+                    expect(router.lastIdentifierOfDiscardedTooltip).to(equal(tooltipID))
+                }
+            }
         }
     }
 }

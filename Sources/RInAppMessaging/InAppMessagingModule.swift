@@ -116,6 +116,10 @@ internal class InAppMessagingModule: ErrorDelegate, CampaignDispatcherDelegate, 
         router.discardDisplayedCampaign()
     }
 
+    func closeTooltip(with uiElementIdentifier: String) {
+        router.discardDisplayedTooltip(with: uiElementIdentifier)
+    }
+
     // visible for testing
     func checkUserChanges() {
         if accountRepository.updateUserInfo() {

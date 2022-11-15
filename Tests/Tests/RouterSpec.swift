@@ -9,7 +9,7 @@ import class RSDKUtilsMain.TypedDependencyManager
 #endif
 @testable import RInAppMessaging
 
-@available(iOS 13.0, *) // because of UIImage(systemName:)
+@available(iOS 13.0, *) // Because of UIImage(named:in:with:)
 class RouterSpec: QuickSpec {
 
     override func spec() {
@@ -107,7 +107,7 @@ class RouterSpec: QuickSpec {
                         router.accessibilityCompatibleDisplay = false
                         let campaign = TestHelpers.generateCampaign(id: "test", type: .modal)
                         router.displayCampaign(campaign, associatedImageData: nil, confirmation: true, completion: { _ in })
-                        expect(window.subviews).toEventually(containElementSatisfying({ $0 is BaseView }))
+                        expect(window.findIAMView()).toEventuallyNot(beNil())
                     }
 
                     it("will add a view to the UIWindow's view main subview when `accessibilityCompatible` is true") {
@@ -117,7 +117,7 @@ class RouterSpec: QuickSpec {
 
                         let campaign = TestHelpers.generateCampaign(id: "test", type: .modal)
                         router.displayCampaign(campaign, associatedImageData: nil, confirmation: true, completion: { _ in })
-                        expect(rootView.subviews).toEventually(containElementSatisfying({ $0 is BaseView }))
+                        expect(rootView.findIAMView()).toEventuallyNot(beNil())
                         rootView.removeFromSuperview()
                     }
                 }
@@ -128,11 +128,10 @@ class RouterSpec: QuickSpec {
                 it("will remove displayed campaign view") {
                     let campaign = TestHelpers.generateCampaign(id: "test", type: .modal)
                     router.displayCampaign(campaign, associatedImageData: nil, confirmation: true, completion: { _ in })
-                    expect(window.subviews)
-                        .toEventually(containElementSatisfying({ $0 is BaseView }))
+
+                    expect(window.findIAMView()).toEventuallyNot(beNil())
                     router.discardDisplayedCampaign()
-                    expect(window.subviews)
-                        .toEventuallyNot(containElementSatisfying({ $0 is BaseView }))
+                    expect(window.findIAMView()).toEventually(beNil())
                 }
 
                 it("will call onDismiss/completion callback with cancelled flag") {
@@ -142,10 +141,71 @@ class RouterSpec: QuickSpec {
                         completionCalled = true
                         expect(cancelled).to(beTrue())
                     })
-                    expect(window.subviews)
-                        .toEventually(containElementSatisfying({ $0 is BaseView }))
+
+                    expect(window.findIAMView()).toEventuallyNot(beNil())
                     router.discardDisplayedCampaign()
                     expect(completionCalled).toEventually(beTrue())
+                }
+            }
+
+            context("when calling discardDisplayedTooltip") {
+
+                let tooltipTargetView = UIView(frame: CGRect(x: 100, y: 100, width: 10, height: 10))
+                let tooltip = TestHelpers.generateTooltip(id: "test")
+                let imageBlob: Data! = UIImage(named: "test-image", in: .unitTests, with: nil)?.pngData()
+
+                beforeEach {
+                    tooltipTargetView.accessibilityIdentifier = TooltipViewIdentifierMock
+                    window.addSubview(tooltipTargetView)
+                }
+
+                afterEach {
+                    tooltipTargetView.removeFromSuperview()
+                    window.findTooltipView()?.removeFromSuperview()
+                }
+
+                context("with matching identifier") {
+                    it("will remove displayed tooltp") {
+                        router.displayTooltip(tooltip, targetView: tooltipTargetView,
+                                              identifier: TooltipViewIdentifierMock,
+                                              imageBlob: imageBlob,
+                                              becameVisibleHandler: { _ in },
+                                              completion: { _ in })
+
+                        expect(window.findTooltipView()).toEventuallyNot(beNil())
+                        router.discardDisplayedTooltip(with: TooltipViewIdentifierMock)
+                        expect(window.findTooltipView()).toEventually(beNil())
+                    }
+
+                    it("will call onDismiss/completion callback with cancelled flag") {
+                        var completionCalled = false
+                        router.displayTooltip(tooltip, targetView: tooltipTargetView,
+                                              identifier: TooltipViewIdentifierMock,
+                                              imageBlob: imageBlob,
+                                              becameVisibleHandler: { _ in },
+                                              completion: { cancelled in
+                            expect(cancelled).to(beTrue())
+                            completionCalled = true
+                        })
+
+                        expect(window.findTooltipView()).toEventuallyNot(beNil())
+                        router.discardDisplayedTooltip(with: TooltipViewIdentifierMock)
+                        expect(completionCalled).toEventually(beTrue())
+                    }
+                }
+
+                context("and identifier does not match") {
+                    it("will not remove displayed tooltip") {
+                        router.displayTooltip(tooltip, targetView: tooltipTargetView,
+                                              identifier: TooltipViewIdentifierMock,
+                                              imageBlob: imageBlob,
+                                              becameVisibleHandler: { _ in },
+                                              completion: { _ in })
+
+                        expect(window.findTooltipView()).toEventuallyNot(beNil())
+                        router.discardDisplayedTooltip(with: "other-id")
+                        expect(window.findTooltipView()).toAfterTimeoutNot(beNil())
+                    }
                 }
             }
 
@@ -157,7 +217,7 @@ class RouterSpec: QuickSpec {
                     return view
                 }()
                 let tooltip = TestHelpers.generateTooltip(id: "test")
-                let imageData = UIImage(systemName: "heart.circle")!.pngData()!
+                let imageBlob: Data! = UIImage(named: "test-image", in: .unitTests, with: nil)?.pngData()
 
                 beforeEach {
                     window.addSubview(targetView)
@@ -172,9 +232,9 @@ class RouterSpec: QuickSpec {
                     router.displayTooltip(tooltip,
                                           targetView: targetView,
                                           identifier: TooltipViewIdentifierMock,
-                                          imageBlob: imageData,
+                                          imageBlob: imageBlob,
                                           becameVisibleHandler: { _ in },
-                                          completion: { })
+                                          completion: { _ in })
                     expect(window.findTooltipView()).toEventuallyNot(beNil())
                 }
 
@@ -183,9 +243,9 @@ class RouterSpec: QuickSpec {
                     router.displayTooltip(tooltip,
                                           targetView: targetView,
                                           identifier: TooltipViewIdentifierMock,
-                                          imageBlob: imageData,
+                                          imageBlob: imageBlob,
                                           becameVisibleHandler: { _ in },
-                                          completion: {
+                                          completion: { _ in
                         completionCalled = true
                     })
                     expect(window.findTooltipView()).toEventuallyNot(beNil())
@@ -199,9 +259,9 @@ class RouterSpec: QuickSpec {
                     router.displayTooltip(tooltip,
                                           targetView: targetView,
                                           identifier: TooltipViewIdentifierMock,
-                                          imageBlob: imageData,
+                                          imageBlob: imageBlob,
                                           becameVisibleHandler: { _ in },
-                                          completion: {
+                                          completion: { _ in
                         completionCalled = true
                     })
                     expect(window.findTooltipView()).toEventuallyNot(beNil())
@@ -214,9 +274,9 @@ class RouterSpec: QuickSpec {
                     router.displayTooltip(tooltip,
                                           targetView: targetView,
                                           identifier: TooltipViewIdentifierMock,
-                                          imageBlob: imageData,
+                                          imageBlob: imageBlob,
                                           becameVisibleHandler: { _ in },
-                                          completion: { })
+                                          completion: { _ in })
                     expect(window.findTooltipView()).toEventuallyNot(beNil())
                     let displayedTooltip = window.findTooltipView()
                     expect(displayedTooltip?.superview).toNot(beNil())
@@ -224,9 +284,9 @@ class RouterSpec: QuickSpec {
                     router.displayTooltip(tooltip,
                                           targetView: targetView,
                                           identifier: TooltipViewIdentifierMock,
-                                          imageBlob: imageData,
+                                          imageBlob: imageBlob,
                                           becameVisibleHandler: { _ in },
-                                          completion: { })
+                                          completion: { _ in })
                     expect(displayedTooltip?.superview).toEventually(beNil())
                 }
 
@@ -236,7 +296,7 @@ class RouterSpec: QuickSpec {
                                           identifier: "invalid.id",
                                           imageBlob: "image".data(using: .ascii)!,
                                           becameVisibleHandler: { _ in },
-                                          completion: { })
+                                          completion: { _ in })
                     expect(window.findTooltipView()).toAfterTimeout(beNil())
                 }
 
@@ -246,7 +306,7 @@ class RouterSpec: QuickSpec {
                                           identifier: TooltipViewIdentifierMock,
                                           imageBlob: "image".data(using: .ascii)!,
                                           becameVisibleHandler: { _ in },
-                                          completion: { })
+                                          completion: { _ in })
                     expect(errorDelegate.wasErrorReceived).toEventually(beTrue())
                 }
 
@@ -256,7 +316,7 @@ class RouterSpec: QuickSpec {
                                           identifier: TooltipViewIdentifierMock,
                                           imageBlob: "image".data(using: .ascii)!,
                                           becameVisibleHandler: { _ in },
-                                          completion: { })
+                                          completion: { _ in })
                     expect(window.findTooltipView()).toAfterTimeout(beNil())
                 }
 
@@ -265,9 +325,9 @@ class RouterSpec: QuickSpec {
                     router.displayTooltip(tooltip,
                                           targetView: targetView,
                                           identifier: TooltipViewIdentifierMock,
-                                          imageBlob: imageData,
+                                          imageBlob: imageBlob,
                                           becameVisibleHandler: { _ in },
-                                          completion: { })
+                                          completion: { _ in })
                     expect(errorDelegate.wasErrorReceived).toEventually(beTrue())
                 }
 
@@ -276,9 +336,9 @@ class RouterSpec: QuickSpec {
                     router.displayTooltip(tooltip,
                                           targetView: targetView,
                                           identifier: TooltipViewIdentifierMock,
-                                          imageBlob: imageData,
+                                          imageBlob: imageBlob,
                                           becameVisibleHandler: { _ in },
-                                          completion: { })
+                                          completion: { _ in })
                     expect(window.findTooltipView()).toAfterTimeout(beNil())
                 }
 
@@ -289,9 +349,9 @@ class RouterSpec: QuickSpec {
                     router.displayTooltip(tooltip,
                                           targetView: targetView,
                                           identifier: TooltipViewIdentifierMock,
-                                          imageBlob: imageData,
+                                          imageBlob: imageBlob,
                                           becameVisibleHandler: { _ in },
-                                          completion: { })
+                                          completion: { _ in })
                     expect(window.findTooltipView()).toEventuallyNot(beNil())
                     let displayedTooltip = window.findTooltipView()
                     expect(displayedTooltip?.superview).to(beIdenticalTo(scrollView))
@@ -306,9 +366,9 @@ class RouterSpec: QuickSpec {
                     router.displayTooltip(tooltip,
                                           targetView: targetView,
                                           identifier: TooltipViewIdentifierMock,
-                                          imageBlob: imageData,
+                                          imageBlob: imageBlob,
                                           becameVisibleHandler: { _ in },
-                                          completion: { })
+                                          completion: { _ in })
                     expect(window.findTooltipView()).toEventuallyNot(beNil())
                     expect(window.findIAMView()).toEventuallyNot(beNil())
                     let displayedTooltip = window.findTooltipView()!
@@ -324,9 +384,9 @@ class RouterSpec: QuickSpec {
                     router.displayTooltip(tooltip,
                                           targetView: targetView,
                                           identifier: TooltipViewIdentifierMock,
-                                          imageBlob: imageData,
+                                          imageBlob: imageBlob,
                                           becameVisibleHandler: { _ in },
-                                          completion: { })
+                                          completion: { _ in })
                     expect(window.findTooltipView()).toEventuallyNot(beNil())
                     let displayedTooltip = window.findTooltipView()!
                     let lastTooltipPosition = displayedTooltip.frame.origin
@@ -367,9 +427,9 @@ class RouterSpec: QuickSpec {
                     router.displayTooltip(tooltip,
                                           targetView: targetView,
                                           identifier: TooltipViewIdentifierMock,
-                                          imageBlob: imageData,
+                                          imageBlob: imageBlob,
                                           becameVisibleHandler: { _ in },
-                                          completion: { })
+                                          completion: { _ in })
                     expect(window.findTooltipView()).toEventuallyNot(beNil())
                     let displayedTooltip = window.findTooltipView()!
                     router.viewDidGetRemovedFromSuperview(targetView, identifier: TooltipViewIdentifierMock)

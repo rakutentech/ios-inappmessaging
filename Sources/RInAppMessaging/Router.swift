@@ -25,10 +25,17 @@ internal protocol RouterType: ErrorReportable {
                         identifier: String,
                         imageBlob: Data,
                         becameVisibleHandler: @escaping (_ tooltipView: TooltipView) -> Void,
-                        completion: @escaping () -> Void)
-
+                        completion: @escaping (_ cancelled: Bool) -> Void)
+    
     /// Removes displayed campaign view from the stack
     func discardDisplayedCampaign()
+
+    /// Removes all tooltips attached to a view with matching uiElementIdentifier
+    func discardDisplayedTooltip(with uiElementIdentifier: String)
+
+    /// Checks if given tooltip is already displayed.
+    /// - Returns: true if the tooltip is currently displayed. `displayTooltip()` shouldn't be called in this case.
+    func isDisplayingTooltip(with uiElementIdentifier: String) -> Bool
 }
 
 /// Handles all the displaying logic of the SDK.
@@ -65,6 +72,27 @@ internal class Router: RouterType, ViewListenerObserver {
                 presentedView.onDismiss?(true)
                 presentedView.removeFromSuperview()
             }
+        }
+    }
+
+    func discardDisplayedTooltip(with uiElementIdentifier: String) {
+        displayQueue.sync {
+            DispatchQueue.main.async {
+                let displayedToolip = self.displayedTooltips[uiElementIdentifier]
+                displayedToolip?.presenter.onDismiss?(true)
+                displayedToolip?.removeFromSuperview()
+            }
+        }
+    }
+
+    func isDisplayingTooltip(with uiElementIdentifier: String) -> Bool {
+        let result = {
+            return self.displayedTooltips[uiElementIdentifier] != nil
+        }
+        if Thread.current == .main {
+            return result()
+        } else {
+            return DispatchQueue.main.sync(execute: result)
         }
     }
 
@@ -149,7 +177,7 @@ internal class Router: RouterType, ViewListenerObserver {
                         identifier: String,
                         imageBlob: Data,
                         becameVisibleHandler: @escaping (_ tooltipView: TooltipView) -> Void,
-                        completion: @escaping () -> Void) {
+                        completion: @escaping (_ cancelled: Bool) -> Void) {
 
         guard let presenter = self.dependencyManager.resolve(type: TooltipPresenterType.self) else {
             Logger.debug("Error: TooltipPresenterType couldn't be resolved")
@@ -157,6 +185,7 @@ internal class Router: RouterType, ViewListenerObserver {
             return
         }
         guard let tooltipData = tooltip.tooltipData else {
+            completion(true)
             return
         }
 
@@ -166,6 +195,7 @@ internal class Router: RouterType, ViewListenerObserver {
 
             guard let image = UIImage(data: imageBlob) else {
                 self.reportError(description: "Invalid image data for tooltip targeting \(tooltipData.bodyData.uiElementIdentifier)", data: nil)
+                completion(true)
                 return
             }
 
@@ -173,15 +203,16 @@ internal class Router: RouterType, ViewListenerObserver {
             let tooltipView = TooltipView(presenter: presenter)
 
             presenter.set(view: tooltipView, dataModel: tooltip, image: image)
-            presenter.onClose = { [weak self] in
+            presenter.onDismiss = { [weak self] cancelled in
                 self?.displayedTooltips[identifier]?.removeFromSuperview()
                 self?.displayedTooltips[identifier] = nil
-                completion()
+                completion(cancelled)
             }
 
             let superview = self.findParentViewForTooltip(targetView)
             guard superview != targetView else {
                 self.reportError(description: "Cannot find suitable view for tooltip targeting \(tooltipData.bodyData.uiElementIdentifier)", data: targetView)
+                completion(true)
                 return
             }
 
