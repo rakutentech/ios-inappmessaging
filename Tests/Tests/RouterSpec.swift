@@ -11,7 +11,9 @@ import class RSDKUtilsMain.TypedDependencyManager
 
 @available(iOS 13.0, *) // Because of UIImage(named:in:with:)
 class RouterSpec: QuickSpec {
+// swiftlint:disable:previous type_body_length
 
+    // swiftlint:disable:next function_body_length
     override func spec() {
 
         describe("Router") {
@@ -170,6 +172,7 @@ class RouterSpec: QuickSpec {
                                               identifier: TooltipViewIdentifierMock,
                                               imageBlob: imageBlob,
                                               becameVisibleHandler: { _ in },
+                                              confirmation: true,
                                               completion: { _ in })
 
                         expect(window.findTooltipView()).toEventuallyNot(beNil())
@@ -183,6 +186,7 @@ class RouterSpec: QuickSpec {
                                               identifier: TooltipViewIdentifierMock,
                                               imageBlob: imageBlob,
                                               becameVisibleHandler: { _ in },
+                                              confirmation: true,
                                               completion: { cancelled in
                             expect(cancelled).to(beTrue())
                             completionCalled = true
@@ -200,6 +204,7 @@ class RouterSpec: QuickSpec {
                                               identifier: TooltipViewIdentifierMock,
                                               imageBlob: imageBlob,
                                               becameVisibleHandler: { _ in },
+                                              confirmation: true,
                                               completion: { _ in })
 
                         expect(window.findTooltipView()).toEventuallyNot(beNil())
@@ -228,212 +233,260 @@ class RouterSpec: QuickSpec {
                     targetView.removeFromSuperview()
                 }
 
-                it("will display a tooltip if all data is valid") {
-                    router.displayTooltip(tooltip,
-                                          targetView: targetView,
-                                          identifier: TooltipViewIdentifierMock,
-                                          imageBlob: imageBlob,
-                                          becameVisibleHandler: { _ in },
-                                          completion: { _ in })
-                    expect(window.findTooltipView()).toEventuallyNot(beNil())
+                context("and display is not confirmed") {
+
+                    it("will not display a tooltip") {
+                        router.displayTooltip(tooltip,
+                                              targetView: targetView,
+                                              identifier: TooltipViewIdentifierMock,
+                                              imageBlob: imageBlob,
+                                              becameVisibleHandler: { _ in },
+                                              confirmation: false,
+                                              completion: { _ in })
+                        expect(window.findTooltipView()).toAfterTimeout(beNil())
+                    }
+
+                    it("will call completion with true flag when tooltip was closed") {
+                        waitUntil { done in
+                            router.displayTooltip(tooltip,
+                                                  targetView: targetView,
+                                                  identifier: TooltipViewIdentifierMock,
+                                                  imageBlob: imageBlob,
+                                                  becameVisibleHandler: { _ in },
+                                                  confirmation: false,
+                                                  completion: { cancelled in
+
+                                expect(cancelled).to(beTrue())
+                                done()
+                            })
+                        }
+                    }
                 }
 
-                it("will call completion when tooltip was closed") {
-                    var completionCalled = false
-                    router.displayTooltip(tooltip,
-                                          targetView: targetView,
-                                          identifier: TooltipViewIdentifierMock,
-                                          imageBlob: imageBlob,
-                                          becameVisibleHandler: { _ in },
-                                          completion: { _ in
-                        completionCalled = true
-                    })
-                    expect(window.findTooltipView()).toEventuallyNot(beNil())
-                    let displayedTooltip = window.findTooltipView()
-                    displayedTooltip?.presenter.didTapExitButton()
-                    expect(completionCalled).toEventually(beTrue())
-                }
+                context("and display is confirmed") {
 
-                it("will not call completion if the tooltip was removed") {
-                    var completionCalled = false
-                    router.displayTooltip(tooltip,
-                                          targetView: targetView,
-                                          identifier: TooltipViewIdentifierMock,
-                                          imageBlob: imageBlob,
-                                          becameVisibleHandler: { _ in },
-                                          completion: { _ in
-                        completionCalled = true
-                    })
-                    expect(window.findTooltipView()).toEventuallyNot(beNil())
-                    let displayedTooltip = window.findTooltipView()!
-                    displayedTooltip.removeFromSuperview()
-                    expect(completionCalled).toAfterTimeout(beFalse())
-                }
+                    it("will display a tooltip if all data is valid") {
+                        router.displayTooltip(tooltip,
+                                              targetView: targetView,
+                                              identifier: TooltipViewIdentifierMock,
+                                              imageBlob: imageBlob,
+                                              becameVisibleHandler: { _ in },
+                                              confirmation: true,
+                                              completion: { _ in })
+                        expect(window.findTooltipView()).toEventuallyNot(beNil())
+                    }
 
-                it("will remove existing tooltip with the same target view") {
-                    router.displayTooltip(tooltip,
-                                          targetView: targetView,
-                                          identifier: TooltipViewIdentifierMock,
-                                          imageBlob: imageBlob,
-                                          becameVisibleHandler: { _ in },
-                                          completion: { _ in })
-                    expect(window.findTooltipView()).toEventuallyNot(beNil())
-                    let displayedTooltip = window.findTooltipView()
-                    expect(displayedTooltip?.superview).toNot(beNil())
+                    it("will call completion with false flag when tooltip was closed") {
+                        var completionCalled = false
+                        router.displayTooltip(tooltip,
+                                              targetView: targetView,
+                                              identifier: TooltipViewIdentifierMock,
+                                              imageBlob: imageBlob,
+                                              becameVisibleHandler: { _ in },
+                                              confirmation: true,
+                                              completion: { cancelled in
+                            expect(cancelled).to(beFalse())
+                            completionCalled = true
+                        })
+                        expect(window.findTooltipView()).toEventuallyNot(beNil())
+                        let displayedTooltip = window.findTooltipView()
+                        displayedTooltip?.presenter.didTapExitButton()
+                        expect(completionCalled).toEventually(beTrue())
+                    }
 
-                    router.displayTooltip(tooltip,
-                                          targetView: targetView,
-                                          identifier: TooltipViewIdentifierMock,
-                                          imageBlob: imageBlob,
-                                          becameVisibleHandler: { _ in },
-                                          completion: { _ in })
-                    expect(displayedTooltip?.superview).toEventually(beNil())
-                }
+                    it("will not call completion if the tooltip was removed") {
+                        var completionCalled = false
+                        router.displayTooltip(tooltip,
+                                              targetView: targetView,
+                                              identifier: TooltipViewIdentifierMock,
+                                              imageBlob: imageBlob,
+                                              becameVisibleHandler: { _ in },
+                                              confirmation: true,
+                                              completion: { _ in
+                            completionCalled = true
+                        })
+                        expect(window.findTooltipView()).toEventuallyNot(beNil())
+                        let displayedTooltip = window.findTooltipView()!
+                        displayedTooltip.removeFromSuperview()
+                        expect(completionCalled).toAfterTimeout(beFalse())
+                    }
 
-                it("will not display a tooltip if identifier does not match") {
-                    router.displayTooltip(tooltip,
-                                          targetView: targetView,
-                                          identifier: "invalid.id",
-                                          imageBlob: "image".data(using: .ascii)!,
-                                          becameVisibleHandler: { _ in },
-                                          completion: { _ in })
-                    expect(window.findTooltipView()).toAfterTimeout(beNil())
-                }
+                    it("will remove existing tooltip with the same target view") {
+                        router.displayTooltip(tooltip,
+                                              targetView: targetView,
+                                              identifier: TooltipViewIdentifierMock,
+                                              imageBlob: imageBlob,
+                                              becameVisibleHandler: { _ in },
+                                              confirmation: true,
+                                              completion: { _ in })
+                        expect(window.findTooltipView()).toEventuallyNot(beNil())
+                        let displayedTooltip = window.findTooltipView()
+                        expect(displayedTooltip?.superview).toNot(beNil())
 
-                it("will report an error if image data is invalid") {
-                    router.displayTooltip(tooltip,
-                                          targetView: targetView,
-                                          identifier: TooltipViewIdentifierMock,
-                                          imageBlob: "image".data(using: .ascii)!,
-                                          becameVisibleHandler: { _ in },
-                                          completion: { _ in })
-                    expect(errorDelegate.wasErrorReceived).toEventually(beTrue())
-                }
+                        router.displayTooltip(tooltip,
+                                              targetView: targetView,
+                                              identifier: TooltipViewIdentifierMock,
+                                              imageBlob: imageBlob,
+                                              becameVisibleHandler: { _ in },
+                                              confirmation: true,
+                                              completion: { _ in })
+                        expect(displayedTooltip?.superview).toEventually(beNil())
+                    }
 
-                it("will not display a tooltip if image data is invalid") {
-                    router.displayTooltip(tooltip,
-                                          targetView: targetView,
-                                          identifier: TooltipViewIdentifierMock,
-                                          imageBlob: "image".data(using: .ascii)!,
-                                          becameVisibleHandler: { _ in },
-                                          completion: { _ in })
-                    expect(window.findTooltipView()).toAfterTimeout(beNil())
-                }
+                    it("will not display a tooltip if identifier does not match") {
+                        router.displayTooltip(tooltip,
+                                              targetView: targetView,
+                                              identifier: "invalid.id",
+                                              imageBlob: "image".data(using: .ascii)!,
+                                              becameVisibleHandler: { _ in },
+                                              confirmation: true,
+                                              completion: { _ in })
+                        expect(window.findTooltipView()).toAfterTimeout(beNil())
+                    }
 
-                it("will report an error if targetView has no superview") {
-                    targetView.removeFromSuperview()
-                    router.displayTooltip(tooltip,
-                                          targetView: targetView,
-                                          identifier: TooltipViewIdentifierMock,
-                                          imageBlob: imageBlob,
-                                          becameVisibleHandler: { _ in },
-                                          completion: { _ in })
-                    expect(errorDelegate.wasErrorReceived).toEventually(beTrue())
-                }
+                    it("will report an error if image data is invalid") {
+                        router.displayTooltip(tooltip,
+                                              targetView: targetView,
+                                              identifier: TooltipViewIdentifierMock,
+                                              imageBlob: "image".data(using: .ascii)!,
+                                              becameVisibleHandler: { _ in },
+                                              confirmation: true,
+                                              completion: { _ in })
+                        expect(errorDelegate.wasErrorReceived).toEventually(beTrue())
+                    }
 
-                it("will not display a toolti if targetView has no superview") {
-                    targetView.removeFromSuperview()
-                    router.displayTooltip(tooltip,
-                                          targetView: targetView,
-                                          identifier: TooltipViewIdentifierMock,
-                                          imageBlob: imageBlob,
-                                          becameVisibleHandler: { _ in },
-                                          completion: { _ in })
-                    expect(window.findTooltipView()).toAfterTimeout(beNil())
-                }
+                    it("will not display a tooltip if image data is invalid") {
+                        router.displayTooltip(tooltip,
+                                              targetView: targetView,
+                                              identifier: TooltipViewIdentifierMock,
+                                              imageBlob: "image".data(using: .ascii)!,
+                                              becameVisibleHandler: { _ in },
+                                              confirmation: true,
+                                              completion: { _ in })
+                        expect(window.findTooltipView()).toAfterTimeout(beNil())
+                    }
 
-                it("will insert a tooltip in the same UIScrollView type view as the targetView") {
-                    let scrollView = UIScrollViewSubclass()
-                    scrollView.addSubview(targetView)
-                    window.addSubview(scrollView)
-                    router.displayTooltip(tooltip,
-                                          targetView: targetView,
-                                          identifier: TooltipViewIdentifierMock,
-                                          imageBlob: imageBlob,
-                                          becameVisibleHandler: { _ in },
-                                          completion: { _ in })
-                    expect(window.findTooltipView()).toEventuallyNot(beNil())
-                    let displayedTooltip = window.findTooltipView()
-                    expect(displayedTooltip?.superview).to(beIdenticalTo(scrollView))
+                    it("will report an error if targetView has no superview") {
+                        targetView.removeFromSuperview()
+                        router.displayTooltip(tooltip,
+                                              targetView: targetView,
+                                              identifier: TooltipViewIdentifierMock,
+                                              imageBlob: imageBlob,
+                                              becameVisibleHandler: { _ in },
+                                              confirmation: true,
+                                              completion: { _ in })
+                        expect(errorDelegate.wasErrorReceived).toEventually(beTrue())
+                    }
 
-                    scrollView.removeFromSuperview()
-                }
+                    it("will not display a tooltip if targetView has no superview") {
+                        targetView.removeFromSuperview()
+                        router.displayTooltip(tooltip,
+                                              targetView: targetView,
+                                              identifier: TooltipViewIdentifierMock,
+                                              imageBlob: imageBlob,
+                                              becameVisibleHandler: { _ in },
+                                              confirmation: true,
+                                              completion: { _ in })
+                        expect(window.findTooltipView()).toAfterTimeout(beNil())
+                    }
 
-                it("will insert a tooltip below existing campaign view") {
-                    let campaign = TestHelpers.generateCampaign(id: "test", type: .modal)
-                    router.displayCampaign(campaign, associatedImageData: nil, confirmation: true, completion: { _ in })
+                    it("will insert a tooltip in the same UIScrollView type view as the targetView") {
+                        let scrollView = UIScrollViewSubclass()
+                        scrollView.addSubview(targetView)
+                        window.addSubview(scrollView)
+                        router.displayTooltip(tooltip,
+                                              targetView: targetView,
+                                              identifier: TooltipViewIdentifierMock,
+                                              imageBlob: imageBlob,
+                                              becameVisibleHandler: { _ in },
+                                              confirmation: true,
+                                              completion: { _ in })
+                        expect(window.findTooltipView()).toEventuallyNot(beNil())
+                        let displayedTooltip = window.findTooltipView()
+                        expect(displayedTooltip?.superview).to(beIdenticalTo(scrollView))
 
-                    router.displayTooltip(tooltip,
-                                          targetView: targetView,
-                                          identifier: TooltipViewIdentifierMock,
-                                          imageBlob: imageBlob,
-                                          becameVisibleHandler: { _ in },
-                                          completion: { _ in })
-                    expect(window.findTooltipView()).toEventuallyNot(beNil())
-                    expect(window.findIAMView()).toEventuallyNot(beNil())
-                    let displayedTooltip = window.findTooltipView()!
-                    let displayedCampaign = window.findIAMView()!
+                        scrollView.removeFromSuperview()
+                    }
 
-                    expect(displayedTooltip.superview).to(beIdenticalTo(displayedCampaign.superview))
-                    let tooltipIndex = displayedTooltip.superview?.subviews.firstIndex(of: displayedTooltip)
-                    let campaignIndex = displayedTooltip.superview?.subviews.firstIndex(of: displayedCampaign)
-                    expect(campaignIndex).to(beGreaterThan(tooltipIndex))
-                }
+                    it("will insert a tooltip below existing campaign view") {
+                        let campaign = TestHelpers.generateCampaign(id: "test", type: .modal)
+                        router.displayCampaign(campaign, associatedImageData: nil, confirmation: true, completion: { _ in })
 
-                it("will update tooltip's position if target view's frame has changed") {
-                    router.displayTooltip(tooltip,
-                                          targetView: targetView,
-                                          identifier: TooltipViewIdentifierMock,
-                                          imageBlob: imageBlob,
-                                          becameVisibleHandler: { _ in },
-                                          completion: { _ in })
-                    expect(window.findTooltipView()).toEventuallyNot(beNil())
-                    let displayedTooltip = window.findTooltipView()!
-                    let lastTooltipPosition = displayedTooltip.frame.origin
-                    let translation = CGAffineTransform(translationX: 40, y: 40)
-                    targetView.frame.origin = targetView.frame.origin.applying(translation)
+                        router.displayTooltip(tooltip,
+                                              targetView: targetView,
+                                              identifier: TooltipViewIdentifierMock,
+                                              imageBlob: imageBlob,
+                                              becameVisibleHandler: { _ in },
+                                              confirmation: true,
+                                              completion: { _ in })
+                        expect(window.findTooltipView()).toEventuallyNot(beNil())
+                        expect(window.findIAMView()).toEventuallyNot(beNil())
+                        let displayedTooltip = window.findTooltipView()!
+                        let displayedCampaign = window.findIAMView()!
 
-                    expect(displayedTooltip.frame.origin).toEventually(equal(lastTooltipPosition.applying(translation)))
-                }
+                        expect(displayedTooltip.superview).to(beIdenticalTo(displayedCampaign.superview))
+                        let tooltipIndex = displayedTooltip.superview?.subviews.firstIndex(of: displayedTooltip)
+                        let campaignIndex = displayedTooltip.superview?.subviews.firstIndex(of: displayedCampaign)
+                        expect(campaignIndex).to(beGreaterThan(tooltipIndex))
+                    }
 
-                // To be confirmed
-//                it("will remove the tooltip if targeted view changes its identifier") {
-//                    router.displayTooltip(tooltip,
-//                                          targetView: targetView,
-//                                          identifier: TooltipViewIdentifierMock,
-//                                          imageBlob: imageData,
-//                                          becameVisibleHandler: { _ in },
-//                                          completion: { })
-//                    expect(window.findTooltipView()).toEventuallyNot(beNil())
-//                    let displayedTooltip = window.findTooltipView()!
-//                    router.viewDidUpdateIdentifier(from: TooltipViewIdentifierMock, to: "another.identifier", view: targetView)
-//                    expect(displayedTooltip.superview).toEventually(beNil())
-//                }
-//
-//                it("will remove the tooltip if targeted view changes its identifier to nil") {
-//                    router.displayTooltip(tooltip,
-//                                          targetView: targetView,
-//                                          identifier: TooltipViewIdentifierMock,
-//                                          imageBlob: imageData,
-//                                          becameVisibleHandler: { _ in },
-//                                          completion: { })
-//                    expect(window.findTooltipView()).toEventuallyNot(beNil())
-//                    let displayedTooltip = window.findTooltipView()!
-//                    router.viewDidUpdateIdentifier(from: TooltipViewIdentifierMock, to: nil, view: targetView)
-//                    expect(displayedTooltip.superview).toEventually(beNil())
-//                }
+                    it("will update tooltip's position if target view's frame has changed") {
+                        router.displayTooltip(tooltip,
+                                              targetView: targetView,
+                                              identifier: TooltipViewIdentifierMock,
+                                              imageBlob: imageBlob,
+                                              becameVisibleHandler: { _ in },
+                                              confirmation: true,
+                                              completion: { _ in })
+                        expect(window.findTooltipView()).toEventuallyNot(beNil())
+                        let displayedTooltip = window.findTooltipView()!
+                        let lastTooltipPosition = displayedTooltip.frame.origin
+                        let translation = CGAffineTransform(translationX: 40, y: 40)
+                        targetView.frame.origin = targetView.frame.origin.applying(translation)
 
-                it("will remove the tooltip if targeted view gets removed from superview") {
-                    router.displayTooltip(tooltip,
-                                          targetView: targetView,
-                                          identifier: TooltipViewIdentifierMock,
-                                          imageBlob: imageBlob,
-                                          becameVisibleHandler: { _ in },
-                                          completion: { _ in })
-                    expect(window.findTooltipView()).toEventuallyNot(beNil())
-                    let displayedTooltip = window.findTooltipView()!
-                    router.viewDidGetRemovedFromSuperview(targetView, identifier: TooltipViewIdentifierMock)
-                    expect(displayedTooltip.superview).toEventually(beNil())
+                        expect(displayedTooltip.frame.origin).toEventually(equal(lastTooltipPosition.applying(translation)))
+                    }
+
+                    // To be confirmed
+    //                it("will remove the tooltip if targeted view changes its identifier") {
+    //                    router.displayTooltip(tooltip,
+    //                                          targetView: targetView,
+    //                                          identifier: TooltipViewIdentifierMock,
+    //                                          imageBlob: imageData,
+    //                                          becameVisibleHandler: { _ in },
+    //                                          completion: { })
+    //                    expect(window.findTooltipView()).toEventuallyNot(beNil())
+    //                    let displayedTooltip = window.findTooltipView()!
+    //                    router.viewDidUpdateIdentifier(from: TooltipViewIdentifierMock, to: "another.identifier", view: targetView)
+    //                    expect(displayedTooltip.superview).toEventually(beNil())
+    //                }
+    //
+    //                it("will remove the tooltip if targeted view changes its identifier to nil") {
+    //                    router.displayTooltip(tooltip,
+    //                                          targetView: targetView,
+    //                                          identifier: TooltipViewIdentifierMock,
+    //                                          imageBlob: imageData,
+    //                                          becameVisibleHandler: { _ in },
+    //                                          completion: { })
+    //                    expect(window.findTooltipView()).toEventuallyNot(beNil())
+    //                    let displayedTooltip = window.findTooltipView()!
+    //                    router.viewDidUpdateIdentifier(from: TooltipViewIdentifierMock, to: nil, view: targetView)
+    //                    expect(displayedTooltip.superview).toEventually(beNil())
+    //                }
+
+                    it("will remove the tooltip if targeted view gets removed from superview") {
+                        router.displayTooltip(tooltip,
+                                              targetView: targetView,
+                                              identifier: TooltipViewIdentifierMock,
+                                              imageBlob: imageBlob,
+                                              becameVisibleHandler: { _ in },
+                                              confirmation: true,
+                                              completion: { _ in })
+                        expect(window.findTooltipView()).toEventuallyNot(beNil())
+                        let displayedTooltip = window.findTooltipView()!
+                        router.viewDidGetRemovedFromSuperview(targetView, identifier: TooltipViewIdentifierMock)
+                        expect(displayedTooltip.superview).toEventually(beNil())
+                    }
                 }
             }
         }

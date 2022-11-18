@@ -20,14 +20,26 @@ internal protocol ViewListenerObserver: AnyObject {
     func viewDidUpdateIdentifier(from: String?, to: String?, view: UIView)
 }
 
+/// A class responsible for tracking UIView changes in the hierarchy.
+/// All changes are reported to registered ViewListenerObserver objects.
+/// This class is based on swizzling and MUST be used as a singleton to aviod unexpected behaviour.
 internal final class ViewListener: ViewListenerType {
 
-    static let instance = ViewListener()
+    // A static singleton-like value is necessary for UIView methods to access this class
+    static private(set) var currentInstance = ViewListener()
 
     @AtomicGetSet private(set) var isListening = false
     fileprivate var observers = [WeakWrapper<ViewListenerObserver>]()
+    private let windowGetter: () -> UIWindow?
 
-    private init() { /* unavailable */ }
+    private init(windowGetter: @escaping () -> UIWindow? = UIApplication.shared.getKeyWindow) {
+        self.windowGetter = windowGetter
+    }
+
+    static func reinitialize(windowGetter: @escaping () -> UIWindow?) {
+        currentInstance.stopListening()
+        currentInstance = ViewListener(windowGetter: windowGetter)
+    }
 
     func startListening() {
         guard !isListening else {
@@ -43,9 +55,11 @@ internal final class ViewListener: ViewListenerType {
         }
 
         iterateOverDisplayedViews { existingView, identifier, _ in
-            self.observers.forEach {
-                $0.value?.viewDidMoveToWindow(existingView, identifier: identifier)
+            guard !identifier.isEmpty else {
+                return
             }
+
+            existingView.didMoveToWindowNotifyObservers()
         }
     }
 
@@ -71,7 +85,7 @@ internal final class ViewListener: ViewListenerType {
             return
         }
         DispatchQueue.main.async {
-            guard let allWindowSubviews = UIApplication.shared.getKeyWindow()?.getAllSubviews() else {
+            guard let allWindowSubviews = self.windowGetter()?.getAllSubviewsExceptTooltipView() else {
                 return
             }
             var stop = false
@@ -117,7 +131,7 @@ private extension NSObject {
         guard let self = self as? UIView, oldIdentifier != identifier else {
             return
         }
-        ViewListener.instance.observers.forEach {
+        ViewListener.currentInstance.observers.forEach {
             $0.value?.viewDidUpdateIdentifier(from: oldIdentifier, to: identifier, view: self)
         }
     }
@@ -137,7 +151,7 @@ private extension UIView {
         guard !identifier.isEmpty else {
             return
         }
-        ViewListener.instance.observers.forEach {
+        ViewListener.currentInstance.observers.forEach {
             $0.value?.viewDidChangeSuperview(self, identifier: identifier)
         }
     }
@@ -148,7 +162,7 @@ private extension UIView {
         guard !identifier.isEmpty else {
             return
         }
-        ViewListener.instance.observers.forEach {
+        ViewListener.currentInstance.observers.forEach {
             $0.value?.viewDidGetRemovedFromSuperview(self, identifier: identifier)
         }
     }
@@ -159,26 +173,33 @@ private extension UIView {
         guard !identifier.isEmpty else {
             return
         }
+        didMoveToWindowNotifyObservers()
+    }
+
+    func didMoveToWindowNotifyObservers() {
         if window == nil {
-            ViewListener.instance.observers.forEach {
+            ViewListener.currentInstance.observers.forEach {
                 $0.value?.viewDidGetRemovedFromSuperview(self, identifier: identifier)
             }
         } else {
-            ViewListener.instance.observers.forEach {
+            ViewListener.currentInstance.observers.forEach {
                 $0.value?.viewDidMoveToWindow(self, identifier: identifier)
             }
         }
     }
 
-    class func getAllSubviews(from parentView: UIView) -> [UIView] {
+    class func getAllSubviewsExceptTooltipView(from parentView: UIView) -> [UIView] {
         return parentView.subviews.flatMap { subView -> [UIView] in
-            var result = getAllSubviews(from: subView)
+            guard !(subView is TooltipView) else {
+                return []
+            }
+            var result = getAllSubviewsExceptTooltipView(from: subView)
             result.append(subView)
             return result
         }
     }
 
-    func getAllSubviews() -> [UIView] {
-        UIView.getAllSubviews(from: self)
+    func getAllSubviewsExceptTooltipView() -> [UIView] {
+        UIView.getAllSubviewsExceptTooltipView(from: self)
     }
 }

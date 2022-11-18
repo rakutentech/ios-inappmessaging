@@ -79,21 +79,22 @@ import RSDKUtils
             }
 
             guard let configurationManager = dependencyManager.resolve(type: ConfigurationManagerType.self),
-                let campaignsListManager = dependencyManager.resolve(type: CampaignsListManagerType.self),
-                let impressionService = dependencyManager.resolve(type: ImpressionServiceType.self),
-                let eventMatcher = dependencyManager.resolve(type: EventMatcherType.self),
-                let accountRepository = dependencyManager.resolve(type: AccountRepositoryType.self),
-                let readyCampaignDispatcher = dependencyManager.resolve(type: CampaignDispatcherType.self),
-                let campaignTriggerAgent = dependencyManager.resolve(type: CampaignTriggerAgentType.self),
-                let campaignRepository = dependencyManager.resolve(type: CampaignRepositoryType.self),
-                let router = dependencyManager.resolve(type: RouterType.self),
-                let randomizer = dependencyManager.resolve(type: Randomizer.self),
-                let displayPermissionService = dependencyManager.resolve(type: DisplayPermissionServiceType.self),
-                let viewListener = dependencyManager.resolve(type: ViewListenerType.self),
-                let _ = dependencyManager.resolve(type: TooltipManagerType.self) else {
+                  let campaignsListManager = dependencyManager.resolve(type: CampaignsListManagerType.self),
+                  let impressionService = dependencyManager.resolve(type: ImpressionServiceType.self),
+                  let eventMatcher = dependencyManager.resolve(type: EventMatcherType.self),
+                  let accountRepository = dependencyManager.resolve(type: AccountRepositoryType.self),
+                  let readyCampaignDispatcher = dependencyManager.resolve(type: CampaignDispatcherType.self),
+                  let campaignTriggerAgent = dependencyManager.resolve(type: CampaignTriggerAgentType.self),
+                  let campaignRepository = dependencyManager.resolve(type: CampaignRepositoryType.self),
+                  let router = dependencyManager.resolve(type: RouterType.self),
+                  let randomizer = dependencyManager.resolve(type: Randomizer.self),
+                  let displayPermissionService = dependencyManager.resolve(type: DisplayPermissionServiceType.self),
+                  let viewListener = dependencyManager.resolve(type: ViewListenerType.self),
+                  let _ = dependencyManager.resolve(type: TooltipManagerType.self),
+                  let tooltipDispatcher = dependencyManager.resolve(type: TooltipDispatcherType.self) else {
 
-                    assertionFailure("In-App Messaging SDK module initialization failure: Dependencies could not be resolved")
-                    return
+                assertionFailure("In-App Messaging SDK module initialization failure: Dependencies could not be resolved")
+                return
             }
             router.accessibilityCompatibleDisplay = accessibilityCompatibleDisplay
 
@@ -107,7 +108,8 @@ import RSDKUtils
                                                      campaignRepository: campaignRepository,
                                                      router: router,
                                                      randomizer: randomizer,
-                                                     displayPermissionService: displayPermissionService)
+                                                     displayPermissionService: displayPermissionService,
+                                                     tooltipDispatcher: tooltipDispatcher)
             initializedModule?.aggregatedErrorHandler = errorCallback
             initializedModule?.onVerifyContext = onVerifyContext
             initializedModule?.initialize { shouldDeinit in

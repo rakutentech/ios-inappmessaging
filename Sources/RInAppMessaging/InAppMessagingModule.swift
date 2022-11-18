@@ -1,7 +1,7 @@
 import Foundation
 
 /// Class represents bootstrap behaviour and main functionality of InAppMessaging.
-internal class InAppMessagingModule: ErrorDelegate, CampaignDispatcherDelegate, UserChangeObserver {
+internal class InAppMessagingModule: ErrorDelegate, CampaignDispatcherDelegate, UserChangeObserver, TooltipDispatcherDelegate {
 
     private let configurationManager: ConfigurationManagerType
     private let campaignsListManager: CampaignsListManagerType
@@ -31,7 +31,8 @@ internal class InAppMessagingModule: ErrorDelegate, CampaignDispatcherDelegate, 
          campaignRepository: CampaignRepositoryType,
          router: RouterType,
          randomizer: RandomizerType,
-         displayPermissionService: DisplayPermissionServiceType) {
+         displayPermissionService: DisplayPermissionServiceType,
+         tooltipDispatcher: TooltipDispatcherType) {
 
         self.configurationManager = configurationManager
         self.campaignsListManager = campaignsListManager
@@ -51,6 +52,7 @@ internal class InAppMessagingModule: ErrorDelegate, CampaignDispatcherDelegate, 
         self.router.errorDelegate = self
         self.readyCampaignDispatcher.delegate = self
         self.accountRepository.registerAccountUpdateObserver(self)
+        tooltipDispatcher.delegate = self
     }
 
     // should be called once
@@ -149,6 +151,14 @@ extension InAppMessagingModule {
     }
 
     func shouldShowCampaignMessage(title: String, contexts: [String]) -> Bool {
+        onVerifyContext?(contexts, title) ?? true
+    }
+}
+
+// MARK: - TooltipDispatcherDelegate methods
+extension InAppMessagingModule {
+    
+    func shouldShowTooltip(title: String, contexts: [String]) -> Bool {
         onVerifyContext?(contexts, title) ?? true
     }
 }

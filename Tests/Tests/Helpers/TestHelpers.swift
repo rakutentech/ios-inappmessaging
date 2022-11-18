@@ -519,3 +519,10 @@ extension Result {
         }
     }
 }
+
+extension Trigger {
+    static let loginEventTrigger = Trigger(type: .event,
+                                           eventType: .loginSuccessful,
+                                           eventName: "login",
+                                           attributes: [])
+}

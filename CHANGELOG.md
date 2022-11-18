@@ -3,6 +3,7 @@
 ### 7.3.0 (in-progress)
 - Features:
 	- Added new API method to close displayed tooltips [SDKCF-6027]
+	- Added contexts validation for tooltip campaigns [SDKCF-6028]
 - Bug fixes:
 	- Fixed an edge case of not readable status bar when campaign message is displayed [SDKCF-5134]
 

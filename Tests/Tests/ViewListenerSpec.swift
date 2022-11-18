@@ -14,11 +14,19 @@ class ViewListenerSpec: QuickSpec {
     override func spec() {
         describe("ViewListener") {
 
-            let viewListener = ViewListener.instance
-            let window = UIApplication.shared.getKeyWindow()!
+            var viewListener: ViewListener {
+                ViewListener.currentInstance
+            }
+            var window: UIWindow!
+
+            beforeEach {
+                window = UIWindow()
+                ViewListener.reinitialize(windowGetter: { return window })
+            }
 
             afterEach {
-                viewListener.stopListening()
+                // restore default implementation
+                ViewListener.reinitialize(windowGetter: UIApplication.shared.getKeyWindow)
             }
 
             it("will not crash when startListening is called multiple times") {
@@ -124,6 +132,8 @@ class ViewListenerSpec: QuickSpec {
                     viewListener.startListening()
                     // wait for iterateOverDisplayedViews to finish
                     expect(observer.wasViewDidMoveToWindowCalled).toEventually(beTrue())
+                    observer = ViewListenerObserverObject() // reset
+                    viewListener.addObserver(observer)
                 }
 
                 afterEach {
@@ -140,60 +150,51 @@ class ViewListenerSpec: QuickSpec {
                 }
 
                 it("will get notified when view moved to window") {
-                    observer.wasViewDidMoveToWindowCalled = false
                     view.didMoveToWindow()
                     expect(observer.wasViewDidMoveToWindowCalled).toEventually(beTrue())
                 }
 
                 it("will not get notified when view without identifier moved to window") {
-                    observer.wasViewDidMoveToWindowCalled = false
                     view.accessibilityIdentifier = nil
                     view.didMoveToWindow()
                     expect(observer.wasViewDidMoveToWindowCalled).toAfterTimeout(beFalse())
                 }
 
                 it("will not get notified when view with empty identifier moved to window") {
-                    observer.wasViewDidMoveToWindowCalled = false
                     view.accessibilityIdentifier = ""
                     view.didMoveToWindow()
                     expect(observer.wasViewDidMoveToWindowCalled).toAfterTimeout(beFalse())
                 }
 
                 it("will get notified when view moved to superview") {
-                    observer.wasViewDidChangeSuperviewCalled = false
                     view.didMoveToSuperview()
                     expect(observer.wasViewDidChangeSuperviewCalled).toEventually(beTrue())
                 }
 
                 it("will not get notified when view without identifier moved to superview") {
-                    observer.wasViewDidChangeSuperviewCalled = false
                     view.accessibilityIdentifier = nil
                     view.didMoveToSuperview()
                     expect(observer.wasViewDidChangeSuperviewCalled).toAfterTimeout(beFalse())
                 }
 
                 it("will not get notified when view with empty identifier moved to superview") {
-                    observer.wasViewDidChangeSuperviewCalled = false
                     view.accessibilityIdentifier = ""
                     view.didMoveToSuperview()
                     expect(observer.wasViewDidChangeSuperviewCalled).toAfterTimeout(beFalse())
                 }
 
                 it("will get notified when view got removed from superview") {
-                    observer.wasViewDidGetRemovedFromSuperview = false
                     view.removeFromSuperview()
                     expect(observer.wasViewDidGetRemovedFromSuperview).toEventually(beTrue())
                 }
 
                 it("will not get notified when view without identifier got removed from superview") {
-                    observer.wasViewDidGetRemovedFromSuperview = false
                     view.accessibilityIdentifier = nil
                     view.removeFromSuperview()
                     expect(observer.wasViewDidGetRemovedFromSuperview).toAfterTimeout(beFalse())
                 }
 
                 it("will not get notified when view with empty identifier got removed from superview") {
-                    observer.wasViewDidGetRemovedFromSuperview = false
                     view.accessibilityIdentifier = ""
                     view.removeFromSuperview()
                     expect(observer.wasViewDidGetRemovedFromSuperview).toAfterTimeout(beFalse())

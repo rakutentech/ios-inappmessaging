@@ -1,7 +1,13 @@
 import Foundation
 import UIKit
 
-internal protocol TooltipDispatcherType {
+internal protocol TooltipDispatcherDelegate: AnyObject {
+    func shouldShowTooltip(title: String, contexts: [String]) -> Bool
+}
+
+internal protocol TooltipDispatcherType: AnyObject {
+    var delegate: TooltipDispatcherDelegate? { get set }
+
     func setNeedsDisplay(tooltip: Campaign)
 }
 
@@ -13,6 +19,8 @@ internal class TooltipDispatcher: TooltipDispatcherType, ViewListenerObserver {
     private let dispatchQueue = DispatchQueue(label: "IAM.TooltipDisplay", qos: .userInteractive)
     private(set) var httpSession: URLSession
     private(set) var queuedTooltips = Set<Campaign>() // ensure to access only in dispatchQueue
+
+    weak var delegate: TooltipDispatcherDelegate?
 
     init(router: RouterType,
          campaignRepository: CampaignRepositoryType,
@@ -54,7 +62,9 @@ internal class TooltipDispatcher: TooltipDispatcherType, ViewListenerObserver {
         viewListener.iterateOverDisplayedViews { view, identifier, stop in
             if identifier.contains(tooltipData.bodyData.uiElementIdentifier) {
                 stop = true
-                self.displayTooltip(tooltip, targetView: view, identifier: identifier)
+                self.dispatchQueue.async {
+                    self.displayTooltip(tooltip, targetView: view, identifier: identifier)
+                }
             }
         }
     }
@@ -73,6 +83,9 @@ internal class TooltipDispatcher: TooltipDispatcherType, ViewListenerObserver {
             return
         }
 
+        let waitForImageDispatchGroup = DispatchGroup()
+        waitForImageDispatchGroup.enter()
+
         data(from: resImgUrl) { imageBlob in
             guard let imageBlob = imageBlob else {
                 // TOOLTIP: add retry?
@@ -89,6 +102,16 @@ internal class TooltipDispatcher: TooltipDispatcherType, ViewListenerObserver {
                     }
                     tooltipView.startAutoDisappearIfNeeded(seconds: autoCloseSeconds)
                 },
+                confirmation: {
+                    let contexts = tooltip.contexts // first context will always be "Tooltip"
+                    let tooltipTitle = tooltip.data.messagePayload.title
+                    guard let delegate = self.delegate, contexts.count > 1, !tooltip.data.isTest else {
+                        return true
+                    }
+                    let shouldShow = delegate.shouldShowTooltip(title: tooltipTitle,
+                                                                contexts: contexts)
+                    return shouldShow
+                }(),
                 completion: { cancelled in
                     self.dispatchQueue.async {
                         if !cancelled {
@@ -98,6 +121,7 @@ internal class TooltipDispatcher: TooltipDispatcherType, ViewListenerObserver {
                     }
                 }
             )
+            waitForImageDispatchGroup.leave()
         }
     }
 

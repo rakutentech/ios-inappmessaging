@@ -102,7 +102,7 @@ internal enum MainContainerFactory {
                                campaignRepository: manager.resolve(type: CampaignRepositoryType.self)!)
             }),
             ContainerElement(type: ViewListenerType.self, factory: {
-                ViewListener.instance
+                ViewListener.currentInstance
             })]
 
         // transient containers

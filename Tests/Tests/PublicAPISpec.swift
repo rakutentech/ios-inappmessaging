@@ -57,10 +57,7 @@ class PublicAPISpec: QuickSpec {
         func generateAndDisplayLoginCampaigns(count: Int, addContexts: Bool) {
             messageMixerService.mockedResponse = TestHelpers.MockResponse.withGeneratedCampaigns(
                 count: count, test: false, delay: 100, addContexts: addContexts,
-                triggers: [Trigger(type: .event,
-                                   eventType: .loginSuccessful,
-                                   eventName: "e1",
-                                   attributes: [])])
+                triggers: [Trigger.loginEventTrigger])
             campaignsListManager.refreshList()
             RInAppMessaging.logEvent(LoginSuccessfulEvent())
         }
@@ -68,10 +65,7 @@ class PublicAPISpec: QuickSpec {
         func generateAndDisplayLoginTooltip(uiElementIdentifier: String, addContexts: Bool) {
             messageMixerService.mockedResponse = TestHelpers.MockResponse.withGeneratedTooltip(
                 uiElementIdentifier: uiElementIdentifier, addContexts: addContexts,
-                triggers: [Trigger(type: .event,
-                                   eventType: .loginSuccessful,
-                                   eventName: "e1",
-                                   attributes: [])])
+                triggers: [Trigger.loginEventTrigger])
             campaignsListManager.refreshList()
             tooltipTargetView.accessibilityIdentifier = uiElementIdentifier
             UIApplication.shared.getKeyWindow()?.addSubview(tooltipTargetView)
@@ -198,10 +192,7 @@ class PublicAPISpec: QuickSpec {
                     }
                     messageMixerService.mockedResponse = TestHelpers.MockResponse.withGeneratedCampaigns(
                         count: 1, test: false, delay: 100, maxImpressions: 2, addContexts: false,
-                        triggers: [Trigger(type: .event,
-                                           eventType: .loginSuccessful,
-                                           eventName: "e1",
-                                           attributes: [])])
+                        triggers: [Trigger.loginEventTrigger])
                 })
                 RInAppMessaging.logEvent(LoginSuccessfulEvent())
                 RInAppMessaging.logEvent(LoginSuccessfulEvent())
@@ -256,7 +247,7 @@ class PublicAPISpec: QuickSpec {
 
                 it("will start ViewListener when completion was called with shouldDeinit = false") {
                     // init called in `beforeEach`
-                    expect(ViewListener.instance.isListening).to(beTrue())
+                    expect(ViewListener.currentInstance.isListening).to(beTrue())
                 }
 
                 it("will stop ViewListener when completion was called with shouldDeinit = true") {
@@ -264,7 +255,7 @@ class PublicAPISpec: QuickSpec {
                     reinitializeSDK {
                         configurationManager.rolloutPercentage = 0 // triggers deinit
                     }
-                    expect(ViewListener.instance.isListening).toAfterTimeout(beFalse())
+                    expect(ViewListener.currentInstance.isListening).toAfterTimeout(beFalse())
                 }
             }
 
@@ -334,7 +325,46 @@ class PublicAPISpec: QuickSpec {
                     expect(contextVerifier.onVerifyContextCallCount).to(equal(2))
                 }
 
-                it("will call the method before showing a message with proper parameters") {
+                it("will show a tooltip if the method returned true") {
+                    contextVerifier.shouldShowCampaign = true
+                    generateAndDisplayLoginTooltip(uiElementIdentifier: "view-id", addContexts: true)
+
+                    expect(UIApplication.shared.getKeyWindow()?.findTooltipView()).toEventuallyNot(beNil())
+                    expect(contextVerifier.onVerifyContextCallCount).to(beGreaterThan(0))
+                    // multiple onVerifyContext calls are possible due to target view tracking logic updates
+                }
+
+                it("will not show a tooltip if the method returned false") {
+                    contextVerifier.shouldShowCampaign = false
+                    generateAndDisplayLoginTooltip(uiElementIdentifier: "view-id", addContexts: true)
+
+                    expect(UIApplication.shared.getKeyWindow()?.findTooltipView()).toAfterTimeout(beNil())
+                    expect(contextVerifier.onVerifyContextCallCount).to(beGreaterThan(0))
+                    // multiple onVerifyContext calls are possible due to target view tracking logic updates
+                }
+
+                it("will call the method before showing a tooltip with expected parameters") {
+                    contextVerifier.shouldShowCampaign = true
+                    tooltipTargetView.accessibilityIdentifier = TooltipViewIdentifierMock
+                    messageMixerService.mockedResponse = PingResponse(
+                        nextPingMilliseconds: Int.max,
+                        currentPingMilliseconds: 0,
+                        data: [
+                            TestHelpers.generateTooltip(id: "1",
+                                                        title: "[Tooltip][ctx1][ctx2] title",
+                                                        targetViewID: tooltipTargetView.accessibilityIdentifier,
+                                                        triggers: [Trigger.loginEventTrigger])
+                        ])
+                    UIApplication.shared.getKeyWindow()?.addSubview(tooltipTargetView)
+                    campaignsListManager.refreshList()
+                    RInAppMessaging.logEvent(LoginSuccessfulEvent())
+
+                    expect(contextVerifier.onVerifyContextCallParameters?.title)
+                        .toEventually(equal("[Tooltip][ctx1][ctx2] title"), timeout: .seconds(2))
+                    expect(contextVerifier.onVerifyContextCallParameters?.contexts).to(contain(["Tooltip", "ctx1", "ctx2"]))
+                }
+
+                it("will call the method before showing a message with expected parameters") {
                     contextVerifier.shouldShowCampaign = true
                     messageMixerService.mockedResponse = PingResponse(
                         nextPingMilliseconds: Int.max,
@@ -342,17 +372,13 @@ class PublicAPISpec: QuickSpec {
                         data: [
                             TestHelpers.generateCampaign(id: "1",
                                                          title: "[ctx1][ctx2] title",
-                                                         triggers: [
-                                                            Trigger(type: .event,
-                                                                    eventType: .loginSuccessful,
-                                                                    eventName: "e1",
-                                                                    attributes: [])])])
+                                                         triggers: [Trigger.loginEventTrigger])
+                        ])
                     campaignsListManager.refreshList()
                     RInAppMessaging.logEvent(LoginSuccessfulEvent())
 
                     expect(contextVerifier.onVerifyContextCallParameters?.title).toEventually(equal("[ctx1][ctx2] title"), timeout: .seconds(2))
-                    expect(contextVerifier.onVerifyContextCallParameters?.contexts)
-                        .toEventually(contain(["ctx1", "ctx2"]), timeout: .seconds(2))
+                    expect(contextVerifier.onVerifyContextCallParameters?.contexts).to(contain(["ctx1", "ctx2"]))
                 }
             }
 
@@ -423,10 +449,7 @@ class PublicAPISpec: QuickSpec {
                 it("will not transfer cached data (sync) from anonymous user") {
                     messageMixerService.mockedResponse = TestHelpers.MockResponse.withGeneratedCampaigns(
                         count: 1, test: false, delay: 100, maxImpressions: 2, addContexts: false,
-                        triggers: [Trigger(type: .event,
-                                           eventType: .loginSuccessful,
-                                           eventName: "e1",
-                                           attributes: [])])
+                        triggers: [Trigger.loginEventTrigger])
                     RInAppMessaging.registerPreference(UserInfoProviderMock()) // anonymous user
                     RInAppMessaging.logEvent(LoginSuccessfulEvent())
 
@@ -446,10 +469,7 @@ class PublicAPISpec: QuickSpec {
                 it("will not transfer cached data (sync) from empty user") {
                     messageMixerService.mockedResponse = TestHelpers.MockResponse.withGeneratedCampaigns(
                         count: 1, test: false, delay: 100, maxImpressions: 2, addContexts: false,
-                        triggers: [Trigger(type: .event,
-                                           eventType: .loginSuccessful,
-                                           eventName: "e1",
-                                           attributes: [])])
+                        triggers: [Trigger.loginEventTrigger])
 
                     let emptyUser = UserInfoProviderMock()
                     emptyUser.userID = ""

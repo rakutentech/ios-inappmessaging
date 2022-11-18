@@ -58,29 +58,29 @@ class TooltipDispatcherSpec: QuickSpec {
 
             it("won't display a tooltip when it was not marked as needs display even if the target view is present") {
                 dispatcher.viewDidMoveToWindow(targetView, identifier: TooltipViewIdentifierMock)
-                expect(router.lastDisplayedTooltip).toAfterTimeout(beNil())
+                expect(router.displayedTooltips).toAfterTimeout(beEmpty())
             }
 
             context("when tooltip it is marked as needs display") {
                 it("won't display a tooltip when the target view is not present") {
                     viewListener.displayedViews.removeAll()
                     dispatcher.setNeedsDisplay(tooltip: tooltip)
-                    expect(router.lastDisplayedTooltip).toAfterTimeout(beNil())
+                    expect(router.displayedTooltips).toAfterTimeout(beEmpty())
                 }
 
                 it("will display a tooltip when the target view is present") {
                     dispatcher.setNeedsDisplay(tooltip: tooltip)
-                    expect(router.lastDisplayedTooltip).toEventuallyNot(beNil())
+                    expect(router.displayedTooltips).toEventuallyNot(beEmpty())
                 }
 
                 it("will display a tooltip when presented target view updated its identifier") {
                     targetView.accessibilityIdentifier = nil
                     dispatcher.setNeedsDisplay(tooltip: tooltip)
-                    expect(router.lastDisplayedTooltip).toAfterTimeout(beNil())
+                    expect(router.displayedTooltips).toAfterTimeout(beEmpty())
                     targetView.accessibilityIdentifier = TooltipViewIdentifierMock
                     // this is normally sent by the ViewListener
                     dispatcher.viewDidUpdateIdentifier(from: nil, to: TooltipViewIdentifierMock, view: targetView)
-                    expect(router.lastDisplayedTooltip).toEventuallyNot(beNil())
+                    expect(router.displayedTooltips).toEventuallyNot(beEmpty())
                 }
             }
 
@@ -88,7 +88,7 @@ class TooltipDispatcherSpec: QuickSpec {
                 httpSession.responseError =  HttpRequestableObjectError.sessionError
                 dispatcher.setNeedsDisplay(tooltip: tooltip)
                 dispatcher.viewDidChangeSuperview(targetView, identifier: TooltipViewIdentifierMock)
-                expect(router.lastDisplayedTooltip).toAfterTimeout(beNil())
+                expect(router.displayedTooltips).toAfterTimeout(beEmpty())
             }
 
             context("when tooltip is displayed") {
@@ -96,19 +96,19 @@ class TooltipDispatcherSpec: QuickSpec {
                     let tooltip = TestHelpers.generateTooltip(id: "test", autoCloseSeconds: 10)
                     dispatcher.setNeedsDisplay(tooltip: tooltip)
                     dispatcher.viewDidMoveToWindow(targetView, identifier: TooltipViewIdentifierMock)
-                    expect(router.lastDisplayedTooltip).toEventuallyNot(beNil())
+                    expect(router.displayedTooltips).toEventuallyNot(beEmpty())
                 }
 
                 it("will update currently displayed tooltip when the target view changed appeared") {
-                    router.lastDisplayedTooltip = nil
+                    router.displayedTooltips = []
                     dispatcher.viewDidMoveToWindow(targetView, identifier: TooltipViewIdentifierMock)
-                    expect(router.lastDisplayedTooltip).toEventuallyNot(beNil())
+                    expect(router.displayedTooltips).toEventuallyNot(beEmpty())
                 }
 
                 it("will update currently displayed tooltip when the target view changed its superview") {
-                    router.lastDisplayedTooltip = nil
+                    router.displayedTooltips = []
                     dispatcher.viewDidChangeSuperview(targetView, identifier: TooltipViewIdentifierMock)
-                    expect(router.lastDisplayedTooltip).toEventuallyNot(beNil())
+                    expect(router.displayedTooltips).toEventuallyNot(beEmpty())
                 }
 
                 it("will not decrement impressionsLeft when before tooltip is closed") {
@@ -128,7 +128,7 @@ class TooltipDispatcherSpec: QuickSpec {
                     let anotherTooltip = TestHelpers.generateTooltip(id: "test.auto", targetViewID: "view.another.id", autoCloseSeconds: 0)
                     dispatcher.setNeedsDisplay(tooltip: anotherTooltip)
                     dispatcher.viewDidMoveToWindow(targetView, identifier: "view.another.id")
-                    expect(router.lastDisplayedTooltip?.id).toEventually(equal("test.auto"))
+                    expect(router.displayedTooltips.last?.id).toEventually(equal("test.auto"))
 
                     let tooltipView = TooltipViewMock()
                     router.callTooltipBecameVisibleHandler(tooltipView: tooltipView)
@@ -142,8 +142,7 @@ class TooltipDispatcherSpec: QuickSpec {
                 beforeEach {
                     let tooltip = TestHelpers.generateTooltip(id: "test", autoCloseSeconds: 10)
                     dispatcher.setNeedsDisplay(tooltip: tooltip)
-                    dispatcher.viewDidMoveToWindow(targetView, identifier: TooltipViewIdentifierMock)
-                    expect(router.lastDisplayedTooltip).toEventuallyNot(beNil())
+                    expect(router.displayedTooltips).toEventuallyNot(beEmpty())
                 }
 
                 it("will decrement impressionsLeft") {
@@ -161,6 +160,95 @@ class TooltipDispatcherSpec: QuickSpec {
                     expect(dispatcher.queuedTooltips).toEventuallyNot(contain(tooltip))
                 }
             }
+
+            context("when delegate is set") {
+
+                var delegate: Delegate!
+
+                beforeEach {
+                    delegate = Delegate()
+                    dispatcher.delegate = delegate
+                }
+
+                it("will call delegate if contexts are present") {
+                    let tooltip = TestHelpers.generateTooltip(id: "test", title: "[Tooltip][ctx] title")
+                    dispatcher.setNeedsDisplay(tooltip: tooltip)
+                    expect(delegate.wasShouldShowCalled).toEventually(beTrue())
+                }
+
+                it("will not call delegate if contexts are not present") {
+                    let tooltip = TestHelpers.generateTooltip(id: "test", title: "[Tooltip] title")
+                    dispatcher.setNeedsDisplay(tooltip: tooltip)
+                    expect(delegate.wasShouldShowCalled).toAfterTimeout(beFalse())
+                }
+
+                context("and contexts are approved") {
+                    beforeEach {
+                        delegate.shouldShowCampaign = true
+                    }
+
+                    it("will display newly added campaigns") {
+                        let firstTooltip = TestHelpers.generateTooltip(id: "test1", title: "[Tooltip][ctx1] title")
+                        let secondTooltip = TestHelpers.generateTooltip(id: "test2", title: "[Tooltip][ctx2] title")
+                        dispatcher.setNeedsDisplay(tooltip: firstTooltip)
+                        dispatcher.setNeedsDisplay(tooltip: secondTooltip)
+
+                        expect(router.displayedTooltips).toEventually(elementsEqual([firstTooltip, secondTooltip]))
+                    }
+
+                    it("will not restore impressions left value") {
+                        let tooltip = TestHelpers.generateTooltip(id: "test", title: "[Tooltip][ctx] title")
+                        dispatcher.setNeedsDisplay(tooltip: tooltip)
+                        router.completeDisplayingTooltip(cancelled: false)
+                        expect(campaignRepository.incrementImpressionsCalls).toAfterTimeout(equal(0))
+                    }
+                }
+
+                context("and contexts are not approved") {
+                    beforeEach {
+                        delegate.shouldShowCampaign = false
+                    }
+
+                    it("will proceed with dispatching the next tooltip") {
+                        let firstTooltip = TestHelpers.generateTooltip(id: "test1", title: "[Tooltip][ctx1] title")
+                        let secondTooltip = TestHelpers.generateTooltip(id: "test2", title: "[Tooltip] title")
+                        dispatcher.setNeedsDisplay(tooltip: firstTooltip)
+                        dispatcher.setNeedsDisplay(tooltip: secondTooltip)
+
+                        expect(router.displayedTooltips).toEventually(equal([secondTooltip]))
+                        expect(router.displayedTooltips).toAfterTimeout(haveCount(1))
+                    }
+
+                    it("will not display campaigns with context") {
+                        let tooltip = TestHelpers.generateTooltip(id: "test", title: "[Tooltip][ctx] title")
+                        dispatcher.setNeedsDisplay(tooltip: tooltip)
+                        expect(router.displayedTooltips).toAfterTimeout(beEmpty())
+                    }
+
+                    it("will always dispatch test campaigns") {
+                        let tooltip = TestHelpers.generateTooltip(id: "test", title: "[Tooltip][ctx] title", isTest: true)
+                        dispatcher.setNeedsDisplay(tooltip: tooltip)
+                        expect(router.displayedTooltips).toEventually(equal([tooltip]))
+                    }
+
+                    it("will not decrement impressions left value (cancelled display)") {
+                        let tooltip = TestHelpers.generateTooltip(id: "test", title: "[Tooltip][ctx] title")
+                        dispatcher.setNeedsDisplay(tooltip: tooltip)
+                        router.completeDisplayingTooltip(cancelled: true)
+                        expect(campaignRepository.decrementImpressionsCalls).toAfterTimeout(equal(0))
+                    }
+                }
+            }
         }
+    }
+}
+
+private class Delegate: TooltipDispatcherDelegate {
+    private(set) var wasShouldShowCalled = false
+    var shouldShowCampaign = true
+
+    func shouldShowTooltip(title: String, contexts: [String]) -> Bool {
+        wasShouldShowCalled = true
+        return shouldShowCampaign
     }
 }

@@ -25,6 +25,7 @@ internal protocol RouterType: ErrorReportable {
                         identifier: String,
                         imageBlob: Data,
                         becameVisibleHandler: @escaping (_ tooltipView: TooltipView) -> Void,
+                        confirmation: @escaping @autoclosure () -> Bool,
                         completion: @escaping (_ cancelled: Bool) -> Void)
     
     /// Removes displayed campaign view from the stack
@@ -172,11 +173,13 @@ internal class Router: RouterType, ViewListenerObserver {
         return nil
     }
 
+    // swiftlint:disable:next function_parameter_count
     func displayTooltip(_ tooltip: Campaign,
                         targetView: UIView,
                         identifier: String,
                         imageBlob: Data,
                         becameVisibleHandler: @escaping (_ tooltipView: TooltipView) -> Void,
+                        confirmation: @escaping @autoclosure () -> Bool,
                         completion: @escaping (_ cancelled: Bool) -> Void) {
 
         guard let presenter = self.dependencyManager.resolve(type: TooltipPresenterType.self) else {
@@ -199,16 +202,6 @@ internal class Router: RouterType, ViewListenerObserver {
                 return
             }
 
-            let position = tooltipData.bodyData.position
-            let tooltipView = TooltipView(presenter: presenter)
-
-            presenter.set(view: tooltipView, dataModel: tooltip, image: image)
-            presenter.onDismiss = { [weak self] cancelled in
-                self?.displayedTooltips[identifier]?.removeFromSuperview()
-                self?.displayedTooltips[identifier] = nil
-                completion(cancelled)
-            }
-
             let superview = self.findParentViewForTooltip(targetView)
             guard superview != targetView else {
                 self.reportError(description: "Cannot find suitable view for tooltip targeting \(tooltipData.bodyData.uiElementIdentifier)", data: targetView)
@@ -216,46 +209,74 @@ internal class Router: RouterType, ViewListenerObserver {
                 return
             }
 
-            superview.addSubview(tooltipView)
-            superview.layoutIfNeeded()
-            if let displayedCampaign = superview.findIAMView() {
-                superview.bringSubviewToFront(displayedCampaign)
+            guard confirmation() else {
+                completion(true)
+                return
             }
 
-            self.updateFrame(targetView: targetView, tooltipView: tooltipView, superview: superview, position: position)
-
-            var didBecomeVisible = false
-            weak var weakSelf = self
-            func verifyVisibility() {
-                if !didBecomeVisible && weakSelf?.isTooltipVisible(tooltipView) == true {
-                    didBecomeVisible = true
-                    becameVisibleHandler(tooltipView)
-                }
-            }
-            verifyVisibility()
-
-            let newPositionHandler = { [weak self] in
-                self?.updateFrame(targetView: targetView, tooltipView: tooltipView, superview: superview, position: position)
-                verifyVisibility()
-            }
-
-            if let parentScrollView = superview as? UIScrollView {
-                let screenTransitionObserver = parentScrollView.observe(\.frame, options: []) { _, _ in
-                    newPositionHandler()
-                }
-                let viewVisibilityObserver = parentScrollView.observe(\.contentOffset, options: []) { _, _ in
-                    verifyVisibility()
-                }
-                self.observers.append(screenTransitionObserver)
-                self.observers.append(viewVisibilityObserver)
-            } else {
-                let observer = targetView.observe(\.frame, options: []) { _, _ in
-                    newPositionHandler()
-                }
-                self.observers.append(observer)
+            let tooltipView = TooltipView(presenter: presenter)
+            presenter.set(view: tooltipView, dataModel: tooltip, image: image)
+            presenter.onDismiss = { [weak self] cancelled in
+                self?.displayedTooltips[identifier]?.removeFromSuperview()
+                self?.displayedTooltips[identifier] = nil
+                completion(cancelled)
             }
 
             self.displayedTooltips[identifier] = tooltipView
+            self.commitTooltipDisplay(tooltipView: tooltipView,
+                                       targetView: targetView,
+                                       superview: superview,
+                                       data: tooltipData,
+                                       image: image,
+                                       becameVisibleHandler: becameVisibleHandler)
+        }
+    }
+
+    private func commitTooltipDisplay(tooltipView: TooltipView,
+                                      targetView: UIView,
+                                      superview: UIView,
+                                      data: TooltipData,
+                                      image: UIImage,
+                                      becameVisibleHandler: @escaping (_ tooltipView: TooltipView) -> Void) {
+
+        superview.addSubview(tooltipView)
+        superview.layoutIfNeeded()
+        if let displayedCampaign = superview.findIAMView() {
+            superview.bringSubviewToFront(displayedCampaign)
+        }
+        let position = data.bodyData.position
+
+        self.updateFrame(targetView: targetView, tooltipView: tooltipView, superview: superview, position: position)
+
+        var didBecomeVisible = false
+        weak var weakSelf = self
+        func verifyVisibility() {
+            if !didBecomeVisible && weakSelf?.isTooltipVisible(tooltipView) == true {
+                didBecomeVisible = true
+                becameVisibleHandler(tooltipView)
+            }
+        }
+        verifyVisibility()
+
+        let newPositionHandler = { [weak self] in
+            self?.updateFrame(targetView: targetView, tooltipView: tooltipView, superview: superview, position: position)
+            verifyVisibility()
+        }
+
+        if let parentScrollView = superview as? UIScrollView {
+            let screenTransitionObserver = parentScrollView.observe(\.frame, options: []) { _, _ in
+                newPositionHandler()
+            }
+            let viewVisibilityObserver = parentScrollView.observe(\.contentOffset, options: []) { _, _ in
+                verifyVisibility()
+            }
+            self.observers.append(screenTransitionObserver)
+            self.observers.append(viewVisibilityObserver)
+        } else {
+            let observer = targetView.observe(\.frame, options: []) { _, _ in
+                newPositionHandler()
+            }
+            self.observers.append(observer)
         }
     }
 
