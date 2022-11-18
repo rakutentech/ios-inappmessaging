@@ -247,7 +247,7 @@ class PublicAPISpec: QuickSpec {
 
                 it("will start ViewListener when completion was called with shouldDeinit = false") {
                     // init called in `beforeEach`
-                    expect(ViewListener.instance.isListening).to(beTrue())
+                    expect(ViewListener.currentInstance.isListening).to(beTrue())
                 }
 
                 it("will stop ViewListener when completion was called with shouldDeinit = true") {
@@ -255,7 +255,7 @@ class PublicAPISpec: QuickSpec {
                     reinitializeSDK {
                         configurationManager.rolloutPercentage = 0 // triggers deinit
                     }
-                    expect(ViewListener.instance.isListening).toAfterTimeout(beFalse())
+                    expect(ViewListener.currentInstance.isListening).toAfterTimeout(beFalse())
                 }
             }
 

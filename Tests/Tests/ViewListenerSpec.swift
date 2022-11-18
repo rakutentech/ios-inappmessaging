@@ -14,11 +14,19 @@ class ViewListenerSpec: QuickSpec {
     override func spec() {
         describe("ViewListener") {
 
-            let viewListener = ViewListener.instance
-            let window = UIApplication.shared.getKeyWindow()!
+            var viewListener: ViewListener {
+                ViewListener.currentInstance
+            }
+            var window: UIWindow!
+
+            beforeEach {
+                window = UIWindow()
+                ViewListener.reinitialize(windowGetter: { return window })
+            }
 
             afterEach {
-                viewListener.stopListening()
+                // restore default implementation
+                ViewListener.reinitialize(windowGetter: UIApplication.shared.getKeyWindow)
             }
 
             it("will not crash when startListening is called multiple times") {
@@ -147,7 +155,6 @@ class ViewListenerSpec: QuickSpec {
                 }
 
                 it("will not get notified when view without identifier moved to window") {
-                    assert(observer.wasViewDidMoveToWindowCalled == false)
                     view.accessibilityIdentifier = nil
                     view.didMoveToWindow()
                     expect(observer.wasViewDidMoveToWindowCalled).toAfterTimeout(beFalse())
