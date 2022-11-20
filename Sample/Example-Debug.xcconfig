@@ -6,4 +6,4 @@
 // override secrets
 
 // uncomment below line to use mocked server
-RIAM_CONFIG_URL=http:/$()/localhost:6789/config
+// RIAM_CONFIG_URL=http:/$()/localhost:6789/config
