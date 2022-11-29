@@ -20,21 +20,23 @@ internal class BaseViewPresenter: BaseViewPresenterType {
     private let campaignRepository: CampaignRepositoryType
     private let eventMatcher: EventMatcherType
     private let campaignTriggerAgent: CampaignTriggerAgentType
+    private let configurationRepository: ConfigurationRepositoryType
 
     var campaign: Campaign!
     var impressions: [Impression] = []
     var associatedImage: UIImage?
-    var bundleInfo = BundleInfo.self
 
     init(campaignRepository: CampaignRepositoryType,
          impressionService: ImpressionServiceType,
          eventMatcher: EventMatcherType,
-         campaignTriggerAgent: CampaignTriggerAgentType) {
+         campaignTriggerAgent: CampaignTriggerAgentType,
+         configurationRepository: ConfigurationRepositoryType) {
 
         self.impressionService = impressionService
         self.eventMatcher = eventMatcher
         self.campaignRepository = campaignRepository
         self.campaignTriggerAgent = campaignTriggerAgent
+        self.configurationRepository = configurationRepository
     }
 
     func viewDidInitialize() {
@@ -86,6 +88,6 @@ extension BaseViewPresenter {
         AnalyticsBroadcaster.sendEventName(Constants.RAnalytics.impressionsEventName,
                                            dataObject: [Constants.RAnalytics.Keys.impressions: impressionData,
                                                         Constants.RAnalytics.Keys.campaignID: campaign.id,
-                                                        Constants.RAnalytics.Keys.subscriptionID: bundleInfo.inAppSubscriptionId ?? "n/a"])
+                                                        Constants.RAnalytics.Keys.subscriptionID: configurationRepository.getSubscriptionID() ?? "n/a"])
     }
 }

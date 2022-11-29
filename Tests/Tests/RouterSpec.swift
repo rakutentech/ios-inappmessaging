@@ -37,7 +37,7 @@ class RouterSpec: QuickSpec {
             beforeEach {
                 errorDelegate = ErrorDelegateMock()
                 let dependencyManager = TypedDependencyManager()
-                dependencyManager.appendContainer(MainContainerFactory.create(dependencyManager: dependencyManager))
+                dependencyManager.appendContainer(MainContainerFactory.create(dependencyManager: dependencyManager, configURL: nil))
                 dependencyManager.appendContainer(mockContainer())
                 router = Router(dependencyManager: dependencyManager, viewListener: ViewListenerMock())
                 router.errorDelegate = errorDelegate

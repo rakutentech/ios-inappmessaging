@@ -65,7 +65,7 @@
 		D234A71E291C62CE0086AC80 /* ViewPresenterSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = D234A6F0291C62C90086AC80 /* ViewPresenterSpec.swift */; };
 		D234A71F291C62CE0086AC80 /* HeaderAttributesBuilderSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = D234A6F1291C62CA0086AC80 /* HeaderAttributesBuilderSpec.swift */; };
 		D234A720291C62CE0086AC80 /* CustomEventSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = D234A6F2291C62CA0086AC80 /* CustomEventSpec.swift */; };
-		D234A721291C62CF0086AC80 /* GetConfigResponseSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = D234A6F3291C62CA0086AC80 /* GetConfigResponseSpec.swift */; };
+		D234A721291C62CF0086AC80 /* ConfigEndpointResponseSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = D234A6F3291C62CA0086AC80 /* ConfigEndpointResponseSpec.swift */; };
 		D234A722291C62CF0086AC80 /* CustomAttributeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = D234A6F4291C62CA0086AC80 /* CustomAttributeSpec.swift */; };
 		D234A723291C62CF0086AC80 /* EventMatcherSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = D234A6F5291C62CA0086AC80 /* EventMatcherSpec.swift */; };
 		D234A724291C62CF0086AC80 /* PublicAPISpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = D234A6F6291C62CA0086AC80 /* PublicAPISpec.swift */; };
@@ -189,7 +189,7 @@
 		D234A6F0291C62C90086AC80 /* ViewPresenterSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewPresenterSpec.swift; sourceTree = "<group>"; };
 		D234A6F1291C62CA0086AC80 /* HeaderAttributesBuilderSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeaderAttributesBuilderSpec.swift; sourceTree = "<group>"; };
 		D234A6F2291C62CA0086AC80 /* CustomEventSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomEventSpec.swift; sourceTree = "<group>"; };
-		D234A6F3291C62CA0086AC80 /* GetConfigResponseSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GetConfigResponseSpec.swift; sourceTree = "<group>"; };
+		D234A6F3291C62CA0086AC80 /* ConfigEndpointResponseSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfigEndpointResponseSpec.swift; sourceTree = "<group>"; };
 		D234A6F4291C62CA0086AC80 /* CustomAttributeSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomAttributeSpec.swift; sourceTree = "<group>"; };
 		D234A6F5291C62CA0086AC80 /* EventMatcherSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventMatcherSpec.swift; sourceTree = "<group>"; };
 		D234A6F6291C62CA0086AC80 /* PublicAPISpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PublicAPISpec.swift; sourceTree = "<group>"; };
@@ -453,7 +453,7 @@
 				D234A703291C62CC0086AC80 /* DisplayPermissionServiceSpec.swift */,
 				D234A6FB291C62CB0086AC80 /* ErrorReportableSpec.swift */,
 				D234A6F5291C62CA0086AC80 /* EventMatcherSpec.swift */,
-				D234A6F3291C62CA0086AC80 /* GetConfigResponseSpec.swift */,
+				D234A6F3291C62CA0086AC80 /* ConfigEndpointResponseSpec.swift */,
 				D234A6F1291C62CA0086AC80 /* HeaderAttributesBuilderSpec.swift */,
 				D234A6EC291C62C90086AC80 /* HttpRequestableSpec.swift */,
 				D234A6EB291C62C90086AC80 /* ImpressionServiceSpec.swift */,
@@ -800,7 +800,7 @@
 				D234A734291C62CF0086AC80 /* CommonUtilitySpec.swift in Sources */,
 				D234A719291C62CE0086AC80 /* ImpressionServiceSpec.swift in Sources */,
 				D234A722291C62CF0086AC80 /* CustomAttributeSpec.swift in Sources */,
-				D234A721291C62CF0086AC80 /* GetConfigResponseSpec.swift in Sources */,
+				D234A721291C62CF0086AC80 /* ConfigEndpointResponseSpec.swift in Sources */,
 				D234A730291C62CF0086AC80 /* KeyHasherSpec.swift in Sources */,
 				D234A745291C62CF0086AC80 /* SerializationSpec.swift in Sources */,
 				D234A71A291C62CE0086AC80 /* HttpRequestableSpec.swift in Sources */,

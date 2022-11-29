@@ -33,7 +33,7 @@ class ConfigurationSpec: QuickSpec {
                 dependencyManager = TypedDependencyManager()
                 configurationManager = ConfigurationManagerMock()
                 RInAppMessaging.deinitializeModule()
-                dependencyManager.appendContainer(MainContainerFactory.create(dependencyManager: dependencyManager))
+                dependencyManager.appendContainer(MainContainerFactory.create(dependencyManager: dependencyManager, configURL: nil))
                 dependencyManager.appendContainer(mockContainer())
             }
 
@@ -49,7 +49,8 @@ class ConfigurationSpec: QuickSpec {
                             expect(RInAppMessaging.initializedModule).toNot(beNil())
                             done()
                         }
-                        RInAppMessaging.configure(dependencyManager: dependencyManager)
+                        RInAppMessaging.configure(dependencyManager: dependencyManager,
+                                                  moduleConfig: InAppMessagingModuleConfiguration.empty)
                     }
 
                     expect(RInAppMessaging.initializedModule).toEventually(beNil())
@@ -57,7 +58,8 @@ class ConfigurationSpec: QuickSpec {
                 }
 
                 it("will not call ping") {
-                    RInAppMessaging.configure(dependencyManager: dependencyManager)
+                    RInAppMessaging.configure(dependencyManager: dependencyManager,
+                                              moduleConfig: InAppMessagingModuleConfiguration.empty)
 
                     expect(mockMessageMixer.wasPingCalled).toAfterTimeout(beFalse())
                 }
@@ -67,7 +69,8 @@ class ConfigurationSpec: QuickSpec {
 
                 it("will call ping") {
                     configurationManager.rolloutPercentage = 100
-                    RInAppMessaging.configure(dependencyManager: dependencyManager)
+                    RInAppMessaging.configure(dependencyManager: dependencyManager,
+                                              moduleConfig: InAppMessagingModuleConfiguration.empty)
 
                     expect(mockMessageMixer.wasPingCalled).toEventually(beTrue())
                 }

@@ -1,7 +1,7 @@
 import Foundation
 
 internal protocol ConfigurationServiceType {
-    func getConfigData() -> Result<ConfigData, ConfigurationServiceError>
+    func getConfigData() -> Result<ConfigEndpointData, ConfigurationServiceError>
 }
 
 internal enum ConfigurationServiceError: Error {
@@ -12,20 +12,27 @@ internal enum ConfigurationServiceError: Error {
     case unknownSubscriptionId
     case invalidRequestError(UInt)
     case internalServerError(UInt)
+    case missingOrInvalidConfigURL
 }
 
 internal struct ConfigurationService: ConfigurationServiceType, HttpRequestable {
 
-    private let configURL: URL
+    private let configurationRepository: ConfigurationRepositoryType
     private(set) var httpSession: URLSession
     var bundleInfo = BundleInfo.self
 
-    init(configURL: URL, sessionConfiguration: URLSessionConfiguration) {
-        self.configURL = configURL
-        self.httpSession = URLSession(configuration: sessionConfiguration)
+    init(configurationRepository: ConfigurationRepositoryType) {
+        self.configurationRepository = configurationRepository
+        self.httpSession = URLSession(configuration: configurationRepository.defaultHttpSessionConfiguration)
     }
 
-    func getConfigData() -> Result<ConfigData, ConfigurationServiceError> {
+    func getConfigData() -> Result<ConfigEndpointData, ConfigurationServiceError> {
+        guard let configURLString = configurationRepository.getConfigEndpointURL(),
+              let configURL = URL(string: configURLString) else {
+            assertionFailure("Invalid Configuration URL: \(configurationRepository.getConfigEndpointURL() ?? "<empty>")")
+            return .failure(.missingOrInvalidConfigURL)
+        }
+
         let response = requestFromServerSync(
             url: configURL,
             httpMethod: .get,
@@ -55,9 +62,9 @@ internal struct ConfigurationService: ConfigurationServiceType, HttpRequestable 
         }
     }
 
-    private func parseResponse(_ configResponse: Data) -> Result<ConfigData, Error> {
+    private func parseResponse(_ configResponse: Data) -> Result<ConfigEndpointData, Error> {
         do {
-            let response = try JSONDecoder().decode(GetConfigResponse.self, from: configResponse)
+            let response = try JSONDecoder().decode(ConfigEndpointResponse.self, from: configResponse)
             return .success(response.data)
         } catch {
             let description = "Failed to parse json"
@@ -88,7 +95,7 @@ extension ConfigurationService {
     private func buildRequestHeader() -> [HeaderAttribute] {
         var headerBuilder = HeaderAttributesBuilder()
 
-        if !headerBuilder.addSubscriptionID(bundleInfo: bundleInfo) {
+        if !headerBuilder.addSubscriptionID(configurationRepository: configurationRepository) {
             Logger.debug("Info.plist must contain a valid InAppMessagingAppSubscriptionID")
             assertionFailure()
         }

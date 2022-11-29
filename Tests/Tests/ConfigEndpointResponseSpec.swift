@@ -3,15 +3,15 @@ import Quick
 import Nimble
 @testable import RInAppMessaging
 
-class GetConfigResponseSpec: QuickSpec {
+class ConfigEndpointResponseSpec: QuickSpec {
 
     override func spec() {
 
-        describe("GetConfigResponse model") {
+        describe("ConfigEndpointResponse model") {
             context("when decoding JSON payload") {
 
                 it("will be correctly created if all fields are present") {
-                    let model = try? JSONDecoder().decode(GetConfigResponse.self, from: Payloads.allFields.utf8Data!)
+                    let model = try? JSONDecoder().decode(ConfigEndpointResponse.self, from: Payloads.allFields.utf8Data!)
 
                     expect(model).toNot(beNil())
                     expect(model?.data.rolloutPercentage).to(equal(0))
@@ -21,7 +21,7 @@ class GetConfigResponseSpec: QuickSpec {
                 }
 
                 it("will be correctly created if there are no endpoints") {
-                    let model = try? JSONDecoder().decode(GetConfigResponse.self, from: Payloads.noEndpoints.utf8Data!)
+                    let model = try? JSONDecoder().decode(ConfigEndpointResponse.self, from: Payloads.noEndpoints.utf8Data!)
 
                     expect(model).toNot(beNil())
                     expect(model?.data.rolloutPercentage).to(equal(0))
@@ -29,7 +29,7 @@ class GetConfigResponseSpec: QuickSpec {
                 }
 
                 it("will be correctly created if endpoints field is empty") {
-                    let model = try? JSONDecoder().decode(GetConfigResponse.self, from: Payloads.emptyEndpoints.utf8Data!)
+                    let model = try? JSONDecoder().decode(ConfigEndpointResponse.self, from: Payloads.emptyEndpoints.utf8Data!)
 
                     expect(model).toNot(beNil())
                     expect(model?.data.rolloutPercentage).to(equal(0))
@@ -39,7 +39,7 @@ class GetConfigResponseSpec: QuickSpec {
                 }
 
                 it("will be correctly created if there is no ping endpoint") {
-                    let model = try? JSONDecoder().decode(GetConfigResponse.self, from: Payloads.noPingEndpoint.utf8Data!)
+                    let model = try? JSONDecoder().decode(ConfigEndpointResponse.self, from: Payloads.noPingEndpoint.utf8Data!)
 
                     expect(model).toNot(beNil())
                     expect(model?.data.rolloutPercentage).to(equal(0))
@@ -49,7 +49,7 @@ class GetConfigResponseSpec: QuickSpec {
                 }
 
                 it("will be correctly created if there is no impression endpoint") {
-                    let model = try? JSONDecoder().decode(GetConfigResponse.self, from: Payloads.noImpressionEndpoint.utf8Data!)
+                    let model = try? JSONDecoder().decode(ConfigEndpointResponse.self, from: Payloads.noImpressionEndpoint.utf8Data!)
 
                     expect(model).toNot(beNil())
                     expect(model?.data.rolloutPercentage).to(equal(0))
@@ -59,7 +59,7 @@ class GetConfigResponseSpec: QuickSpec {
                 }
 
                 it("will be correctly created if there is no display permission endpoint") {
-                    let model = try? JSONDecoder().decode(GetConfigResponse.self, from: Payloads.noDisplayPermissionEndpoint.utf8Data!)
+                    let model = try? JSONDecoder().decode(ConfigEndpointResponse.self, from: Payloads.noDisplayPermissionEndpoint.utf8Data!)
 
                     expect(model).toNot(beNil())
                     expect(model?.data.rolloutPercentage).to(equal(0))
@@ -69,13 +69,13 @@ class GetConfigResponseSpec: QuickSpec {
                 }
 
                 it("will not be correctly created if there is no rolloutPercentage flag") {
-                    let model = try? JSONDecoder().decode(GetConfigResponse.self, from: Payloads.noRolloutPercentage.utf8Data!)
+                    let model = try? JSONDecoder().decode(ConfigEndpointResponse.self, from: Payloads.noRolloutPercentage.utf8Data!)
 
                     expect(model).to(beNil())
                 }
 
                 it("will not be correctly created if there is no data") {
-                    let model = try? JSONDecoder().decode(GetConfigResponse.self, from: Payloads.noData.utf8Data!)
+                    let model = try? JSONDecoder().decode(ConfigEndpointResponse.self, from: Payloads.noData.utf8Data!)
 
                     expect(model).to(beNil())
                 }

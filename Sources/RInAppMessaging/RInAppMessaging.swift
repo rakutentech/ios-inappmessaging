@@ -53,24 +53,33 @@ import RSDKUtils
 
     /// Function to be called by host application to start a new thread that
     /// configures Rakuten InAppMessaging SDK.
-    /// - Parameter subscriptionKey: your app's subscription key. (This setting will override the `InAppMessagingAppSubscriptionID` value in Info.plist)
-    /// - Parameter configurationURL: a configuration URL. (This setting will override the `InAppMessagingConfigurationURL` value in Info.plist)
+    /// - Parameters:
+    ///     - subscriptionKey: your app's subscription key. (This setting will override the `InAppMessagingAppSubscriptionID` value in Info.plist)
+    ///     - configurationURL: a configuration URL. (This setting will override the `InAppMessagingConfigurationURL` value in Info.plist)
+    ///     - enableTooltipFeature: set to `true` to enable Tooltip campaigns. This feature is currently in beta phase. Default value: `false`
     @objc public static func configure(subscriptionID: String? = nil,
-                                       configurationURL: String? = nil) {
+                                       configurationURL: String? = nil,
+                                       enableTooltipFeature: Bool = false) {
         guard initializedModule == nil else {
             return
         }
 
-        BundleInfo.configurationURLOverride = configurationURL
-        BundleInfo.subscriptionIDOverride = subscriptionID
+        var configURL = configurationURL ?? BundleInfo.inAppConfigurationURL
+        if Environment.isUnitTestEnvironment {
+            configURL = "https://config.test"
+        }
+        let config = InAppMessagingModuleConfiguration(
+            configurationURL: configURL,
+            subscriptionID: subscriptionID ?? BundleInfo.inAppSubscriptionId,
+            isTooltipFeatureEnabled: enableTooltipFeature)
 
         let dependencyManager = TypedDependencyManager()
-        let mainContainer = MainContainerFactory.create(dependencyManager: dependencyManager)
+        let mainContainer = MainContainerFactory.create(dependencyManager: dependencyManager, configURL: config.configurationURL)
         dependencyManager.appendContainer(mainContainer)
-        configure(dependencyManager: dependencyManager)
+        configure(dependencyManager: dependencyManager, moduleConfig: config)
     }
 
-    internal static func configure(dependencyManager: TypedDependencyManager) {
+    internal static func configure(dependencyManager: TypedDependencyManager, moduleConfig: InAppMessagingModuleConfiguration) {
         self.dependencyManager = dependencyManager
 
         inAppQueue.async {
@@ -97,6 +106,7 @@ import RSDKUtils
                 return
             }
             router.accessibilityCompatibleDisplay = accessibilityCompatibleDisplay
+            configurationManager.saveIAMModuleConfiguration(moduleConfig)
 
             initializedModule = InAppMessagingModule(configurationManager: configurationManager,
                                                      campaignsListManager: campaignsListManager,
@@ -117,7 +127,7 @@ import RSDKUtils
                     self.initializedModule = nil
                     self.dependencyManager = nil
                     viewListener.stopListening()
-                } else {
+                } else if moduleConfig.isTooltipFeatureEnabled {
                     viewListener.startListening()
                 }
             }

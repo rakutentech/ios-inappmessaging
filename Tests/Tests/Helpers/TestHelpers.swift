@@ -526,3 +526,11 @@ extension Trigger {
                                            eventName: "login",
                                            attributes: [])
 }
+
+extension InAppMessagingModuleConfiguration {
+    static let empty = Self.init(configurationURL: nil, subscriptionID: nil, isTooltipFeatureEnabled: true)
+
+    init(subscriptionID: String?) {
+        self.init(configurationURL: "url", subscriptionID: subscriptionID, isTooltipFeatureEnabled: true)
+    }
+}

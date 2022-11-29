@@ -15,17 +15,22 @@ class ConfigurationServiceSpec: QuickSpec {
     override func spec() {
 
         let requestQueue = DispatchQueue(label: "iam.test.request")
+        let moduleConfig = InAppMessagingModuleConfiguration(configurationURL: configURL.absoluteString,
+                                                             subscriptionID: "sub-id",
+                                                             isTooltipFeatureEnabled: true)
 
         var service: ConfigurationService!
         var httpSession: URLSessionMock!
+        var configRepository: ConfigurationRepository!
 
         describe("ConfigurationService") {
 
             beforeEach {
                 URLSessionMock.startMockingURLSession()
 
-                service = ConfigurationService(configURL: configURL,
-                                               sessionConfiguration: .default)
+                configRepository = ConfigurationRepository()
+                configRepository.saveIAMModuleConfiguration(moduleConfig)
+                service = ConfigurationService(configurationRepository: configRepository)
 
                 BundleInfoMock.reset()
                 service.bundleInfo = BundleInfoMock.self
@@ -37,17 +42,6 @@ class ConfigurationServiceSpec: QuickSpec {
                 URLSessionMock.stopMockingURLSession()
             }
 
-            it("will use provided URL in a request") {
-                waitUntil { done in
-                    requestQueue.async {
-                        _ = service.getConfigData()
-                        done()
-                    }
-                }
-                expect(httpSession.sentRequest?.url?.scheme).to(equal(configURL.scheme))
-                expect(httpSession.sentRequest?.url?.host).to(equal(configURL.host))
-            }
-
             context("when request succeeds") {
 
                 beforeEach {
@@ -56,7 +50,7 @@ class ConfigurationServiceSpec: QuickSpec {
 
                 context("and payload is valid") {
 
-                    var configModel: ConfigData?
+                    var configModel: ConfigEndpointData?
 
                     beforeEach {
                         configModel = nil
@@ -264,6 +258,17 @@ class ConfigurationServiceSpec: QuickSpec {
                     service.bundleInfo = BundleInfoMock.self
                 }
 
+                it("will use provided URL in a request") {
+                    waitUntil { done in
+                        requestQueue.async {
+                            _ = service.getConfigData()
+                            done()
+                        }
+                    }
+                    expect(httpSession.sentRequest?.url?.scheme).to(equal(configURL.scheme))
+                    expect(httpSession.sentRequest?.url?.host).to(equal(configURL.host))
+                }
+
                 it("will send a valid data object") {
                     waitUntil { done in
                         requestQueue.async {
@@ -293,12 +298,12 @@ class ConfigurationServiceSpec: QuickSpec {
                     let Keys = Constants.Request.Header.self
                     let headers = httpSession.sentRequest?.allHTTPHeaderFields
                     expect(headers).toNot(beEmpty())
-                    expect(headers?[Keys.subscriptionID]).to(equal(BundleInfoMock.inAppSubscriptionId))
+                    expect(headers?[Keys.subscriptionID]).to(equal(configRepository.getSubscriptionID()))
                 }
 
                 context("and required data is missing") {
 
-                    func makeRequestAndEvaluateError() {
+                    func makeRequestAndEvaluateMetadataError() {
                         waitUntil { done in
                             requestQueue.async {
                                 let result = service.getConfigData()
@@ -319,17 +324,41 @@ class ConfigurationServiceSpec: QuickSpec {
 
                     it("will return RequestError.missingMetadata error if application id is missing") {
                         BundleInfoMock.applicationIdMock = nil
-                        makeRequestAndEvaluateError()
+                        makeRequestAndEvaluateMetadataError()
                     }
 
                     it("will return RequestError.missingMetadata error if sdk version is missing") {
                         BundleInfoMock.inAppSdkVersionMock = nil
-                        makeRequestAndEvaluateError()
+                        makeRequestAndEvaluateMetadataError()
                     }
 
                     it("will return RequestError.missingMetadata error if host app version is missing") {
                         BundleInfoMock.appVersionMock = nil
-                        makeRequestAndEvaluateError()
+                        makeRequestAndEvaluateMetadataError()
+                    }
+
+                    it("will throw an assertion if configURL is nil") {
+                        configRepository.saveIAMModuleConfiguration(InAppMessagingModuleConfiguration(configurationURL: nil,
+                                                                                                      subscriptionID: "sub-id",
+                                                                                                      isTooltipFeatureEnabled: true))
+                        waitUntil { done in
+                            requestQueue.async {
+                                expect(service.getConfigData()).to(throwAssertion())
+                                done()
+                            }
+                        }
+                    }
+
+                    it("will throw an assertion if configURL is empty") {
+                        configRepository.saveIAMModuleConfiguration(InAppMessagingModuleConfiguration(configurationURL: "",
+                                                                                                      subscriptionID: "sub-id",
+                                                                                                      isTooltipFeatureEnabled: true))
+                        waitUntil { done in
+                            requestQueue.async {
+                                expect(service.getConfigData()).to(throwAssertion())
+                                done()
+                            }
+                        }
                     }
                 }
             }

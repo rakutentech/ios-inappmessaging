@@ -14,8 +14,8 @@ struct HeaderAttributesBuilder {
     }
 
     @discardableResult
-    mutating func addSubscriptionID(bundleInfo: BundleInfo.Type) -> Bool {
-        guard let subId = bundleInfo.inAppSubscriptionId, !subId.isEmpty else {
+    mutating func addSubscriptionID(configurationRepository: ConfigurationRepositoryType) -> Bool {
+        guard let subId = configurationRepository.getSubscriptionID(), !subId.isEmpty else {
             return false
         }
         addedHeaders.append(HeaderAttribute(key: Keys.subscriptionID, value: subId))

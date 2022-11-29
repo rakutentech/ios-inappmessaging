@@ -11,34 +11,41 @@ class HeaderAttributesBuilderSpec: QuickSpec {
             var builder: HeaderAttributesBuilder!
             let accountRepository = AccountRepository(userDataCache: UserDataCacheMock())
             let userInfoProvider = UserInfoProviderMock()
+            var configurationRepository: ConfigurationRepository!
+
             accountRepository.setPreference(userInfoProvider)
 
             beforeEach {
                 builder = HeaderAttributesBuilder()
                 BundleInfoMock.reset()
                 userInfoProvider.clear()
+                configurationRepository = ConfigurationRepository()
             }
 
             context("when calling addSubscriptionID") {
 
                 it("should return false for empty subscription id") {
-                    BundleInfoMock.inAppSubscriptionIdMock = ""
-                    expect(builder.addSubscriptionID(bundleInfo: BundleInfoMock.self)).to(beFalse())
+                    configurationRepository.saveIAMModuleConfiguration(
+                        InAppMessagingModuleConfiguration(subscriptionID: ""))
+                    expect(builder.addSubscriptionID(configurationRepository: configurationRepository)).to(beFalse())
                 }
 
                 it("should return false for nil subscription id") {
-                    BundleInfoMock.inAppSubscriptionIdMock = nil
-                    expect(builder.addSubscriptionID(bundleInfo: BundleInfoMock.self)).to(beFalse())
+                    configurationRepository.saveIAMModuleConfiguration(
+                        InAppMessagingModuleConfiguration(subscriptionID: nil))
+                    expect(builder.addSubscriptionID(configurationRepository: configurationRepository)).to(beFalse())
                 }
 
                 it("should return true for any subscription id") {
-                    BundleInfoMock.inAppSubscriptionIdMock = "some-id"
-                    expect(builder.addSubscriptionID(bundleInfo: BundleInfoMock.self)).to(beTrue())
+                    configurationRepository.saveIAMModuleConfiguration(
+                        InAppMessagingModuleConfiguration(subscriptionID: "some-id"))
+                    expect(builder.addSubscriptionID(configurationRepository: configurationRepository)).to(beTrue())
                 }
 
                 it("should append new header attribute") {
-                    BundleInfoMock.inAppSubscriptionIdMock = "some-id"
-                    builder.addSubscriptionID(bundleInfo: BundleInfoMock.self)
+                    configurationRepository.saveIAMModuleConfiguration(
+                        InAppMessagingModuleConfiguration(subscriptionID: "some-id"))
+                    builder.addSubscriptionID(configurationRepository: configurationRepository)
                     expect(builder.build()).to(elementsEqual([HeaderAttribute(key: Constants.Request.Header.subscriptionID, value: "some-id")]))
                 }
             }
@@ -69,11 +76,12 @@ class HeaderAttributesBuilderSpec: QuickSpec {
                 }
 
                 it("should return array with all expected types") {
-                    BundleInfoMock.inAppSubscriptionIdMock = "some-id"
+                    configurationRepository.saveIAMModuleConfiguration(
+                        InAppMessagingModuleConfiguration(subscriptionID: "some-id"))
                     userInfoProvider.accessToken = "token"
 
                     builder.addDeviceID()
-                    builder.addSubscriptionID(bundleInfo: BundleInfoMock.self)
+                    builder.addSubscriptionID(configurationRepository: configurationRepository)
                     builder.addAccessToken(accountRepository: accountRepository)
 
                     expect(builder.build()).to(contain(HeaderAttribute(key: Constants.Request.Header.subscriptionID, value: "some-id")))

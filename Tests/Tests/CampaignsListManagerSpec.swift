@@ -14,15 +14,20 @@ class CampaignsListManagerSpec: QuickSpec {
             var messageMixerService: MessageMixerServiceMock!
             var campaignTriggerAgent: CampaignTriggerAgentMock!
             var errorDelegate: ErrorDelegateMock!
+            var configurationRepository: ConfigurationRepository!
 
             beforeEach {
                 campaignRepository = CampaignRepositoryMock()
                 messageMixerService = MessageMixerServiceMock()
                 errorDelegate = ErrorDelegateMock()
                 campaignTriggerAgent = CampaignTriggerAgentMock()
+                configurationRepository = ConfigurationRepository()
+                configurationRepository.saveIAMModuleConfiguration(
+                    InAppMessagingModuleConfiguration(configurationURL: nil, subscriptionID: nil, isTooltipFeatureEnabled: true))
                 manager = CampaignsListManager(campaignRepository: campaignRepository,
                                                campaignTriggerAgent: campaignTriggerAgent,
-                                               messageMixerService: messageMixerService)
+                                               messageMixerService: messageMixerService,
+                                               configurationRepository: configurationRepository)
                 manager.errorDelegate = errorDelegate
             }
 
@@ -149,6 +154,28 @@ class CampaignsListManagerSpec: QuickSpec {
 
                     beforeEach {
                         messageMixerService.mockedResponse = pingResponse
+                    }
+
+                    context("and tooltip feature is disabled") {
+                        beforeEach {
+                            configurationRepository.saveIAMModuleConfiguration(
+                                InAppMessagingModuleConfiguration(configurationURL: nil, subscriptionID: nil, isTooltipFeatureEnabled: false))
+                        }
+                        it("will request sync with ignoring tooltips") {
+                            manager.refreshList()
+                            expect(campaignRepository.didSyncIgnoringTooltips).to(beTrue())
+                        }
+                    }
+
+                    context("and tooltip feature is enabled") {
+                        beforeEach {
+                            configurationRepository.saveIAMModuleConfiguration(
+                                InAppMessagingModuleConfiguration(configurationURL: nil, subscriptionID: nil, isTooltipFeatureEnabled: true))
+                        }
+                        it("will request sync without ignoring tooltips") {
+                            manager.refreshList()
+                            expect(campaignRepository.didSyncIgnoringTooltips).to(beFalse())
+                        }
                     }
 
                     it("will request sync with received campaigns") {

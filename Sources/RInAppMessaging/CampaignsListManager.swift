@@ -9,6 +9,7 @@ internal class CampaignsListManager: CampaignsListManagerType, TaskSchedulable {
     private var campaignRepository: CampaignRepositoryType
     private let campaignTriggerAgent: CampaignTriggerAgentType
     private let messageMixerService: MessageMixerServiceType
+    private let configurationRepository: ConfigurationRepositoryType
 
     weak var errorDelegate: ErrorDelegate?
     var scheduledTask: DispatchWorkItem?
@@ -19,11 +20,13 @@ internal class CampaignsListManager: CampaignsListManagerType, TaskSchedulable {
 
     init(campaignRepository: CampaignRepositoryType,
          campaignTriggerAgent: CampaignTriggerAgentType,
-         messageMixerService: MessageMixerServiceType) {
+         messageMixerService: MessageMixerServiceType,
+         configurationRepository: ConfigurationRepositoryType) {
 
         self.campaignRepository = campaignRepository
         self.campaignTriggerAgent = campaignTriggerAgent
         self.messageMixerService = messageMixerService
+        self.configurationRepository = configurationRepository
     }
 
     deinit {
@@ -59,7 +62,8 @@ internal class CampaignsListManager: CampaignsListManagerType, TaskSchedulable {
 
         CommonUtility.lock(resourcesIn: [campaignRepository]) {
             campaignRepository.syncWith(list: decodedResponse.data,
-                                        timestampMilliseconds: decodedResponse.currentPingMilliseconds)
+                                        timestampMilliseconds: decodedResponse.currentPingMilliseconds,
+                                        ignoreTooltips: !configurationRepository.isTooltipFeatureEnabled)
         }
         campaignTriggerAgent.validateAndTriggerCampaigns()
 

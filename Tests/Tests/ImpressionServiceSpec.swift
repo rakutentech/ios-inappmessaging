@@ -16,11 +16,14 @@ class ImpressionServiceSpec: QuickSpec {
     override func spec() {
 
         let requestQueue = DispatchQueue(label: "iam.test.request")
-        let configData = ConfigData(rolloutPercentage: 100,
-                                    endpoints: EndpointURL(
-                                        ping: URL(string: "https://ping.url")!,
-                                        displayPermission: nil,
-                                        impression: impressionURL))
+        let configData = ConfigEndpointData(rolloutPercentage: 100,
+                                            endpoints: EndpointURL(
+                                                ping: URL(string: "https://ping.url")!,
+                                                displayPermission: nil,
+                                                impression: impressionURL))
+        let moduleConfig = InAppMessagingModuleConfiguration(configurationURL: "https://config.url",
+                                                             subscriptionID: "sub-id",
+                                                             isTooltipFeatureEnabled: true)
         let campaign = TestHelpers.generateCampaign(id: "test")
         let accountRepository = AccountRepository(userDataCache: UserDataCacheMock())
         let userInfoProvider = UserInfoProviderMock()
@@ -48,7 +51,8 @@ class ImpressionServiceSpec: QuickSpec {
 
                 userInfoProvider.clear()
                 configurationRepository = ConfigurationRepository()
-                configurationRepository.saveConfiguration(configData)
+                configurationRepository.saveRemoteConfiguration(configData)
+                configurationRepository.saveIAMModuleConfiguration(moduleConfig)
                 errorDelegate = ErrorDelegateMock()
                 service = ImpressionService(accountRepository: accountRepository,
                                             configurationRepository: configurationRepository)
@@ -67,12 +71,12 @@ class ImpressionServiceSpec: QuickSpec {
             }
 
             it("will report an error if url is not available") {
-                configurationRepository.saveConfiguration(
-                    ConfigData(rolloutPercentage: 100,
-                               endpoints: EndpointURL(
-                                ping: URL(string: "https://ping.url")!,
-                                displayPermission: nil,
-                                impression: nil)))
+                configurationRepository.saveRemoteConfiguration(
+                    ConfigEndpointData(rolloutPercentage: 100,
+                                       endpoints: EndpointURL(
+                                        ping: URL(string: "https://ping.url")!,
+                                        displayPermission: nil,
+                                        impression: nil)))
 
                 sendRequestAndWaitForResponse()
                 expect(errorDelegate.wasErrorReceived).to(beTrue())
@@ -218,13 +222,12 @@ class ImpressionServiceSpec: QuickSpec {
                     let Keys = Constants.Request.Header.self
                     expect(httpSession.sentRequest?.allHTTPHeaderFields).toEventuallyNot(beEmpty())
                     let headers = httpSession.sentRequest?.allHTTPHeaderFields
-                    expect(headers?[Keys.subscriptionID]).to(equal(BundleInfoMock.inAppSubscriptionId))
+                    expect(headers?[Keys.subscriptionID]).to(equal(moduleConfig.subscriptionID))
                     expect(headers?[Keys.deviceID]).toNot(beEmpty())
                     expect(headers?[Keys.authorization]).to(equal("OAuth2 token"))
                 }
 
                 it("will send impressions excluding `impression` type to RAnalytics with all required properties") {
-                    bundleInfo.inAppSubscriptionIdMock = "sub-id"
                     let impressionTypes: [ImpressionType] = [.actionOne, .actionTwo, .exit, .clickContent, .invalid, .optOut, .impression]
 
                     expect {
@@ -240,7 +243,7 @@ class ImpressionServiceSpec: QuickSpec {
                         impressions?.first(where: {
                             ($0[Constants.RAnalytics.Keys.action] as? Int) == ImpressionType.impression.rawValue
                         }) == nil &&
-                        data?[Constants.RAnalytics.Keys.subscriptionID] as? String == bundleInfo.inAppSubscriptionIdMock &&
+                        data?[Constants.RAnalytics.Keys.subscriptionID] as? String == moduleConfig.subscriptionID &&
                         data?[Constants.RAnalytics.Keys.campaignID] as? String == campaign.id
                     })))
                 }

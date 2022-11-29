@@ -12,17 +12,9 @@ class MainContainerSpec: QuickSpec {
     override func spec() {
         context("Main Container") {
 
-            var dependencyManager: TypedDependencyManager!
-
-            beforeEach {
-                dependencyManager = TypedDependencyManager()
-                dependencyManager.appendContainer(MainContainerFactory.create(dependencyManager: dependencyManager))
-            }
-
-            it("will have all dependencies resolved") {
-                let instances: [Any?] = [
+            func getRequiredInstances(_ dependencyManager: TypedDependencyManager) -> [Any?] {
+                [
                     dependencyManager.resolve(type: CommonUtility.self),
-                    dependencyManager.resolve(type: ReachabilityType.self),
                     dependencyManager.resolve(type: ConfigurationRepositoryType.self),
                     dependencyManager.resolve(type: ConfigurationManagerType.self),
                     dependencyManager.resolve(type: UserDataCacheable.self),
@@ -47,8 +39,63 @@ class MainContainerSpec: QuickSpec {
                     dependencyManager.resolve(type: TooltipManagerType.self),
                     dependencyManager.resolve(type: TooltipPresenterType.self)
                 ]
-                expect(instances).to(allPass({ $0 != nil }))
-                // this test will fail if there are any cycle references
+            }
+
+            var dependencyManager: TypedDependencyManager!
+
+            beforeEach {
+                dependencyManager = TypedDependencyManager()
+            }
+
+            context("when a valid configURL is provided") {
+                beforeEach {
+                    dependencyManager.appendContainer(MainContainerFactory.create(dependencyManager: dependencyManager,
+                                                                                  configURL: "http://config.url"))
+                }
+
+                it("will have all dependencies resolved") {
+                    let instances = getRequiredInstances(dependencyManager) + [dependencyManager.resolve(type: ReachabilityType.self)]
+                    expect(instances).to(allPass({ $0 != nil }))
+                    // this test will fail if there are any cycle references
+                }
+            }
+
+            context("when empty configURL is provided") {
+                beforeEach {
+                    dependencyManager.appendContainer(MainContainerFactory.create(dependencyManager: dependencyManager,
+                                                                                  configURL: ""))
+                }
+
+                it("will throw an assertion when resolving ReachabilityType dependency") {
+                    expect(dependencyManager.resolve(type: ReachabilityType.self)).to(throwAssertion())
+                }
+            }
+
+            context("when nil configURL is provided") {
+                beforeEach {
+                    dependencyManager.appendContainer(MainContainerFactory.create(dependencyManager: dependencyManager,
+                                                                                  configURL: nil))
+                }
+
+                it("will throw an assertion when resolving ReachabilityType dependency") {
+                    expect(dependencyManager.resolve(type: ReachabilityType.self)).to(throwAssertion())
+                }
+            }
+
+            context("when ReachabilityType dependency is nil") {
+                beforeEach {
+                    dependencyManager.appendContainer(MainContainerFactory.create(dependencyManager: dependencyManager,
+                                                                                  configURL: nil))
+                    dependencyManager.appendContainer(TypedDependencyManager.Container([
+                        // original ReachabilityType container throws an assertion which prevents further testing
+                        TypedDependencyManager.ContainerElement(type: ReachabilityType.self, factory: { nil })
+                    ]))
+                }
+
+                it("will have all required dependencies resolved") {
+                    let instances = getRequiredInstances(dependencyManager)
+                    expect(instances).to(allPass({ $0 != nil }))
+                }
             }
         }
     }

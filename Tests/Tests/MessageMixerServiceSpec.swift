@@ -14,7 +14,10 @@ class MessageMixerServiceSpec: QuickSpec {
     override func spec() {
 
         let requestQueue = DispatchQueue(label: "iam.test.request")
-        let configData = ConfigData(rolloutPercentage: 100, endpoints: .empty)
+        let configData = ConfigEndpointData(rolloutPercentage: 100, endpoints: .empty)
+        let moduleConfig = InAppMessagingModuleConfiguration(configurationURL: "https://config.url",
+                                                             subscriptionID: "sub-id",
+                                                             isTooltipFeatureEnabled: true)
         let accountRepository = AccountRepository(userDataCache: UserDataCacheMock())
         let userInfoProvider = UserInfoProviderMock()
         accountRepository.setPreference(userInfoProvider)
@@ -39,7 +42,8 @@ class MessageMixerServiceSpec: QuickSpec {
 
                 userInfoProvider.clear()
                 configurationRepository = ConfigurationRepository()
-                configurationRepository.saveConfiguration(configData)
+                configurationRepository.saveRemoteConfiguration(configData)
+                configurationRepository.saveIAMModuleConfiguration(moduleConfig)
                 service = MessageMixerService(accountRepository: accountRepository,
                                               configurationRepository: configurationRepository)
                 httpSession = URLSessionMock.mock(originalInstance: service.httpSession)
@@ -260,7 +264,7 @@ class MessageMixerServiceSpec: QuickSpec {
                     let Keys = Constants.Request.Header.self
                     let headers = httpSession.sentRequest?.allHTTPHeaderFields
                     expect(headers).toNot(beEmpty())
-                    expect(headers?[Keys.subscriptionID]).to(equal(BundleInfoMock.inAppSubscriptionId))
+                    expect(headers?[Keys.subscriptionID]).to(equal(configurationRepository.getSubscriptionID()))
                     expect(headers?[Keys.deviceID]).toNot(beEmpty())
                     expect(headers?[Keys.authorization]).to(equal("OAuth2 token"))
                 }

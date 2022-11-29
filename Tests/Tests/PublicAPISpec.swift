@@ -14,6 +14,9 @@ class PublicAPISpec: QuickSpec {
 
     override func spec() {
 
+        let defaultConfig = InAppMessagingModuleConfiguration(configurationURL: nil,
+                                                              subscriptionID: nil,
+                                                              isTooltipFeatureEnabled: true)
         let tooltipTargetView = UIView(frame: CGRect(x: 100, y: 100, width: 10, height: 10))
         let userDefaults = UserDefaults(suiteName: "PublicAPISpec")!
         var eventMatcher: EventMatcherSpy!
@@ -26,6 +29,7 @@ class PublicAPISpec: QuickSpec {
         var dataCache: UserDataCache!
         var contextVerifier: ContextVerifier!
         var errorReceiver: ErrorReceiver!
+        var configurationRepository: ConfigurationRepositoryType!
 
         func mockContainer() -> TypedDependencyManager.Container {
             return TypedDependencyManager.Container([
@@ -37,11 +41,13 @@ class PublicAPISpec: QuickSpec {
             ])
         }
 
-        func reinitializeSDK(onDependenciesResolved: (() -> Void)? = nil) {
+        func reinitializeSDK(waitForInit: Bool = true,
+                             config: InAppMessagingModuleConfiguration = defaultConfig,
+                             onDependenciesResolved: (() -> Void)? = nil) {
             let dependencyManager = TypedDependencyManager()
-            dependencyManager.appendContainer(MainContainerFactory.create(dependencyManager: dependencyManager))
+            dependencyManager.appendContainer(MainContainerFactory.create(dependencyManager: dependencyManager,
+                                                                          configURL: config.configurationURL))
             dependencyManager.appendContainer(mockContainer())
-            configurationManager = ConfigurationManagerMock()
             messageMixerService = MessageMixerServiceMock()
             dataCache = UserDataCache(userDefaults: userDefaults)
             eventMatcher = EventMatcherSpy(
@@ -50,8 +56,15 @@ class PublicAPISpec: QuickSpec {
             router = dependencyManager.resolve(type: RouterType.self)!
             campaignsListManager = dependencyManager.resolve(type: CampaignsListManagerType.self)
             campaignRepository = dependencyManager.resolve(type: CampaignRepositoryType.self)
+            configurationRepository = dependencyManager.resolve(type: ConfigurationRepositoryType.self)
+            configurationManager = ConfigurationManagerMock(configurationRepository: configurationRepository)
             onDependenciesResolved?()
-            RInAppMessaging.configure(dependencyManager: dependencyManager)
+            RInAppMessaging.configure(dependencyManager: dependencyManager,
+                                      moduleConfig: config)
+            if waitForInit {
+                // wait for initialization to finish
+                expect(RInAppMessaging.initializedModule).toEventuallyNot(beNil())
+            }
         }
 
         func generateAndDisplayLoginCampaigns(count: Int, addContexts: Bool) {
@@ -90,8 +103,6 @@ class PublicAPISpec: QuickSpec {
             RInAppMessaging.errorCallback = { error in
                 errorReceiver.inAppMessagingDidReturnError(error)
             }
-            // wait for initialization to finish
-            expect(RInAppMessaging.initializedModule).toEventuallyNot(beNil())
         }
 
         afterEach {
@@ -234,7 +245,7 @@ class PublicAPISpec: QuickSpec {
                     expect(RInAppMessaging.initializedModule).to(beNil())
 
                     var resumeRetry: (() -> Void)!
-                    reinitializeSDK {
+                    reinitializeSDK(waitForInit: false) {
                         resumeRetry = configurationManager.prepareRetryDelayAndWaitForSignal() // added delay to capture initialized object
                         configurationManager.rolloutPercentage = 0 // triggers deinit
                     }
@@ -245,17 +256,50 @@ class PublicAPISpec: QuickSpec {
                     expect(initializedModule).to(beNil())
                 }
 
-                it("will start ViewListener when completion was called with shouldDeinit = false") {
-                    // init called in `beforeEach`
-                    expect(ViewListener.currentInstance.isListening).to(beTrue())
+                // NOTE: configURL setting tests are omitted because in unit test environment the value is always set to "https://config.test"
+                context("when subscriptionID argument is set") {
+                    it("should set the same value in ConfigurationRepository (override Info.plist setting)") {
+                        RInAppMessaging.deinitializeModule()
+                        reinitializeSDK(config: InAppMessagingModuleConfiguration(configurationURL: nil,
+                                                                                  subscriptionID: "overriden.id",
+                                                                                  isTooltipFeatureEnabled: true))
+                        expect(configurationRepository.getSubscriptionID()).toEventually(equal("overriden.id"))
+                    }
                 }
 
-                it("will stop ViewListener when completion was called with shouldDeinit = true") {
-                    RInAppMessaging.deinitializeModule()
-                    reinitializeSDK {
-                        configurationManager.rolloutPercentage = 0 // triggers deinit
+                context("and tooltip feature is enabled") {
+
+                    it("will start ViewListener when completion was called with shouldDeinit = false") {
+                        RInAppMessaging.deinitializeModule()
+                        expect(ViewListener.currentInstance.isListening).toEventually(beFalse())
+                        reinitializeSDK(config: InAppMessagingModuleConfiguration(configurationURL: nil,
+                                                                                  subscriptionID: nil,
+                                                                                  isTooltipFeatureEnabled: true))
+                        expect(ViewListener.currentInstance.isListening).to(beTrue())
                     }
-                    expect(ViewListener.currentInstance.isListening).toAfterTimeout(beFalse())
+
+                    it("will stop ViewListener when completion was called with shouldDeinit = true") {
+                        RInAppMessaging.deinitializeModule()
+                        reinitializeSDK(waitForInit: false,
+                                        config: InAppMessagingModuleConfiguration(configurationURL: nil,
+                                                                                  subscriptionID: nil,
+                                                                                  isTooltipFeatureEnabled: true)) {
+                            configurationManager.rolloutPercentage = 0 // triggers deinit
+                        }
+                        expect(ViewListener.currentInstance.isListening).toAfterTimeout(beFalse())
+                    }
+                }
+
+                context("and tooltip feature is disabled") {
+
+                    it("will not start ViewListener") {
+                        RInAppMessaging.deinitializeModule()
+                        expect(ViewListener.currentInstance.isListening).toEventually(beFalse())
+                        reinitializeSDK(config: InAppMessagingModuleConfiguration(configurationURL: nil,
+                                                                                  subscriptionID: nil,
+                                                                                  isTooltipFeatureEnabled: false))
+                        expect(ViewListener.currentInstance.isListening).toAfterTimeout(beFalse())
+                    }
                 }
             }
 

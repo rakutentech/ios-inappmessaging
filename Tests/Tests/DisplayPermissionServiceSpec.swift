@@ -14,11 +14,14 @@ class DisplayPermissionServiceSpec: QuickSpec {
     override func spec() {
 
         let requestQueue = DispatchQueue(label: "iam.test.request")
-        let configData = ConfigData(rolloutPercentage: 100,
-                                    endpoints: EndpointURL(
-                                        ping: URL(string: "https://ping.url")!,
-                                        displayPermission: URL(string: "https://permission.url")!,
-                                        impression: nil))
+        let configData = ConfigEndpointData(rolloutPercentage: 100,
+                                            endpoints: EndpointURL(
+                                                ping: URL(string: "https://ping.url")!,
+                                                displayPermission: URL(string: "https://permission.url")!,
+                                                impression: nil))
+        let moduleConfig = InAppMessagingModuleConfiguration(configurationURL: "https://config.url",
+                                                             subscriptionID: "sub-id",
+                                                             isTooltipFeatureEnabled: true)
         let campaign = TestHelpers.generateCampaign(id: "test")
         let accountRepository = AccountRepository(userDataCache: UserDataCacheMock())
         let userInfoProvider = UserInfoProviderMock()
@@ -46,7 +49,8 @@ class DisplayPermissionServiceSpec: QuickSpec {
                 userInfoProvider.clear()
                 campaignRepository = CampaignRepositoryMock()
                 configurationRepository = ConfigurationRepository()
-                configurationRepository.saveConfiguration(configData)
+                configurationRepository.saveRemoteConfiguration(configData)
+                configurationRepository.saveIAMModuleConfiguration(moduleConfig)
                 service = DisplayPermissionService(campaignRepository: campaignRepository,
                                                    accountRepository: accountRepository,
                                                    configurationRepository: configurationRepository)
@@ -64,12 +68,12 @@ class DisplayPermissionServiceSpec: QuickSpec {
             }
 
             it("will deny permission if url is not available") {
-                configurationRepository.saveConfiguration(
-                    ConfigData(rolloutPercentage: 100,
-                               endpoints: EndpointURL(
-                                ping: URL(string: "https://ping.url")!,
-                                displayPermission: nil,
-                                impression: nil)))
+                configurationRepository.saveRemoteConfiguration(
+                    ConfigEndpointData(rolloutPercentage: 100,
+                                       endpoints: EndpointURL(
+                                        ping: URL(string: "https://ping.url")!,
+                                        displayPermission: nil,
+                                        impression: nil)))
                 waitUntil { done in
                     requestQueue.async {
                         let result = service.checkPermission(forCampaign: campaign.data)
@@ -224,7 +228,7 @@ class DisplayPermissionServiceSpec: QuickSpec {
                     let request = httpSession.decodeSentData(modelType: DisplayPermissionRequest.self)
 
                     expect(request).toNot(beNil())
-                    expect(request?.subscriptionId).to(equal(BundleInfoMock.inAppSubscriptionId))
+                    expect(request?.subscriptionId).to(equal(moduleConfig.subscriptionID))
                     expect(request?.campaignId).to(equal(campaign.id))
                     expect(request?.platform).to(equal(.ios))
                     expect(request?.appVersion).to(equal(BundleInfoMock.appVersion))
@@ -254,7 +258,7 @@ class DisplayPermissionServiceSpec: QuickSpec {
                     let Keys = Constants.Request.Header.self
                     let headers = httpSession.sentRequest?.allHTTPHeaderFields
                     expect(headers).toNot(beEmpty())
-                    expect(headers?[Keys.subscriptionID]).to(equal(BundleInfoMock.inAppSubscriptionId))
+                    expect(headers?[Keys.subscriptionID]).to(equal(moduleConfig.subscriptionID))
                     expect(headers?[Keys.authorization]).to(equal("OAuth2 token"))
                 }
 
@@ -272,7 +276,7 @@ class DisplayPermissionServiceSpec: QuickSpec {
                     }
 
                     it("will return RequestError.missingMetadata error if subscription id is missing") {
-                        BundleInfoMock.inAppSubscriptionIdMock = nil
+                        configurationRepository.saveIAMModuleConfiguration(InAppMessagingModuleConfiguration(subscriptionID: nil))
 
                         sendRequestAndWaitForResponse()
 

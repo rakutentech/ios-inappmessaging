@@ -24,6 +24,7 @@ internal class FullViewPresenter: BaseViewPresenter, FullViewPresenterType, Erro
          eventMatcher: EventMatcherType,
          campaignTriggerAgent: CampaignTriggerAgentType,
          pushPrimerOptions: UNAuthorizationOptions,
+         configurationRepository: ConfigurationRepositoryType,
          notificationCenter: RemoteNotificationRequestable = UNUserNotificationCenter.current()) {
 
         self.pushPrimerOptions = pushPrimerOptions
@@ -31,7 +32,8 @@ internal class FullViewPresenter: BaseViewPresenter, FullViewPresenterType, Erro
         super.init(campaignRepository: campaignRepository,
                    impressionService: impressionService,
                    eventMatcher: eventMatcher,
-                   campaignTriggerAgent: campaignTriggerAgent)
+                   campaignTriggerAgent: campaignTriggerAgent,
+                   configurationRepository: configurationRepository)
     }
 
     override func viewDidInitialize() {

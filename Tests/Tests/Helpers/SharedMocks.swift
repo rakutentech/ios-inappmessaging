@@ -37,6 +37,7 @@ class CampaignRepositoryMock: CampaignRepositoryType {
     private(set) var wasLoadCachedDataCalled = false
     private(set) var loadCachedDataParameters: (Bool)?
     private(set) var wasClearLastUserDataCalled = false
+    private(set) var didSyncIgnoringTooltips = false
 
     func decrementImpressionsLeftInCampaign(id: String) -> Campaign? {
         decrementImpressionsCalls += 1
@@ -61,8 +62,9 @@ class CampaignRepositoryMock: CampaignRepositoryType {
         return Campaign.updatedCampaign(campaign, asOptedOut: true)
     }
 
-    func syncWith(list: [Campaign], timestampMilliseconds: Int64) {
+    func syncWith(list: [Campaign], timestampMilliseconds: Int64, ignoreTooltips: Bool) {
         lastSyncCampaigns = list
+        didSyncIgnoringTooltips = ignoreTooltips
     }
 
     func loadCachedData(syncWithLastUserData: Bool) {
@@ -199,12 +201,17 @@ class ConfigurationManagerMock: ConfigurationManagerType {
     private let retryQueue = DispatchQueue(label: "ConfigurationManagerMock.retryQueue")
     private let retrySemaphore = DispatchGroup()
     private var shouldSimulateRetry = false
+    private let configRepository: ConfigurationRepositoryType?
 
-    func fetchAndSaveConfigData(completion: @escaping (ConfigData) -> Void) {
+    init(configurationRepository: ConfigurationRepositoryType? = nil) {
+        self.configRepository = configurationRepository
+    }
+
+    func fetchAndSaveConfigData(completion: @escaping (ConfigEndpointData) -> Void) {
         fetchCalledClosure()
 
         guard shouldSimulateRetry else {
-            completion(ConfigData(rolloutPercentage: rolloutPercentage, endpoints: .empty))
+            completion(ConfigEndpointData(rolloutPercentage: rolloutPercentage, endpoints: .empty))
             return
         }
         shouldSimulateRetry = false
@@ -213,6 +220,10 @@ class ConfigurationManagerMock: ConfigurationManagerType {
             self?.retrySemaphore.wait()
             self?.fetchAndSaveConfigData(completion: completion)
         }
+    }
+
+    func saveIAMModuleConfiguration(_ config: InAppMessagingModuleConfiguration) {
+        configRepository?.saveIAMModuleConfiguration(config)
     }
 
     /// call returned closure to send resume signal
@@ -250,14 +261,14 @@ class ConfigurationServiceMock: ConfigurationServiceType {
     var mockedError = ConfigurationServiceError.requestError(.unknown)
     var rolloutPercentage = 100
 
-    func getConfigData() -> Result<ConfigData, ConfigurationServiceError> {
+    func getConfigData() -> Result<ConfigEndpointData, ConfigurationServiceError> {
         getConfigDataCallCount += 1
 
         guard !simulateRequestFailure else {
             return .failure(mockedError)
         }
 
-        return .success(ConfigData(rolloutPercentage: rolloutPercentage, endpoints: .empty))
+        return .success(ConfigEndpointData(rolloutPercentage: rolloutPercentage, endpoints: .empty))
     }
 }
 
@@ -282,14 +293,12 @@ class BundleInfoMock: BundleInfo {
     static var applicationIdMock: String? = "app.id"
     static var appVersionMock: String? = "1.2.3"
     static var inAppSdkVersionMock: String? = "0.0.5"
-    static var inAppSubscriptionIdMock: String? = "sub-id"
     static var customFontMock: String? = "blank-Bold"
 
     static func reset() {
         applicationIdMock = "app.id"
         appVersionMock = "1.2.3"
         inAppSdkVersionMock = "0.0.5"
-        inAppSubscriptionIdMock = "sub-id"
         customFontMock = "blank-Bold"
     }
 
@@ -303,10 +312,6 @@ class BundleInfoMock: BundleInfo {
 
     override class var inAppSdkVersion: String? {
         inAppSdkVersionMock
-    }
-
-    override class var inAppSubscriptionId: String? {
-        inAppSubscriptionIdMock
     }
 
     override class var customFontNameTitle: String? {

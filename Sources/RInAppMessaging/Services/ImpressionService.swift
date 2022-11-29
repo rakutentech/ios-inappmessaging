@@ -55,7 +55,7 @@ internal class ImpressionService: ImpressionServiceType, HttpRequestable, TaskSc
         AnalyticsBroadcaster.sendEventName(Constants.RAnalytics.impressionsEventName,
                                            dataObject: [Constants.RAnalytics.Keys.impressions: impressionData,
                                                         Constants.RAnalytics.Keys.campaignID: campaignData.campaignId,
-                                                        Constants.RAnalytics.Keys.subscriptionID: bundleInfo.inAppSubscriptionId ?? "n/a"])
+                                                        Constants.RAnalytics.Keys.subscriptionID: configurationRepository.getSubscriptionID() ?? "n/a"])
         
         sendImpressionRequest(endpoint: impressionEndpoint, parameters: parameters)
     }
@@ -140,7 +140,7 @@ extension ImpressionService {
 
     private func buildRequestHeader() -> [HeaderAttribute] {
         var builder = HeaderAttributesBuilder()
-        builder.addSubscriptionID(bundleInfo: bundleInfo)
+        builder.addSubscriptionID(configurationRepository: configurationRepository)
         builder.addDeviceID()
         builder.addAccessToken(accountRepository: accountRepository)
 
