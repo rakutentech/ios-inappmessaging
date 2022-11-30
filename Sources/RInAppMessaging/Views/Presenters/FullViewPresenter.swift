@@ -1,6 +1,12 @@
 import UIKit
 import UserNotifications
 
+#if canImport(RSDKUtils)
+import class RSDKUtils.AnalyticsBroadcaster
+#else // SPM Version
+import class RSDKUtilsMain.AnalyticsBroadcaster
+#endif
+
 internal protocol FullViewPresenterType: BaseViewPresenterType {
     var view: FullViewType? { get set }
 
@@ -126,15 +132,32 @@ internal class FullViewPresenter: BaseViewPresenter, FullViewPresenterType, Erro
     }
 
     private func pushPrimerAction() {
-        notificationCenter.requestAuthorization(options: pushPrimerOptions) { [self] (granted, error) in
+        notificationCenter.getAuthorizationStatus { [self] authorizationStatus in
             // `self` becomes nil when the campaign window gets closed
-            if let error = error {
-                self.reportError(description: "PushPrimer: UNUserNotificationCenter requestAuthorization failed", data: error)
-            } else if granted {
-                DispatchQueue.main.async(execute: self.notificationCenter.registerForRemoteNotifications)
-            } else {
-                self.reportError(description: "PushPrimer: User has not granted authorization", data: nil)
+            let willPopupAppear = authorizationStatus == .notDetermined
+
+            self.notificationCenter.requestAuthorization(options: pushPrimerOptions) { [self] (granted, error) in
+                if let error = error {
+                    self.reportError(description: "PushPrimer: UNUserNotificationCenter requestAuthorization failed", data: error)
+                } else if granted {
+                    if willPopupAppear {
+                        self.trackPushPrimerAction(didOptIn: true)
+                    }
+                    DispatchQueue.main.async(execute: self.notificationCenter.registerForRemoteNotifications)
+                } else {
+                    if willPopupAppear {
+                        self.trackPushPrimerAction(didOptIn: false)
+                    }
+                    self.reportError(description: "PushPrimer: User has not granted authorization", data: nil)
+                }
             }
         }
+    }
+
+    private func trackPushPrimerAction(didOptIn: Bool) {
+        AnalyticsBroadcaster.sendEventName(Constants.RAnalytics.pushPrimerEventName,
+                                           dataObject: [Constants.RAnalytics.Keys.pushPermission: Int(booleanLiteral: didOptIn),
+                                                        Constants.RAnalytics.Keys.campaignID: campaign.id,
+                                                        Constants.RAnalytics.Keys.subscriptionID: bundleInfo.inAppSubscriptionId ?? "n/a"])
     }
 }

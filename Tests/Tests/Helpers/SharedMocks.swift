@@ -533,6 +533,7 @@ final class UNUserNotificationCenterMock: RemoteNotificationRequestable {
     private(set) var didCallRegisterForRemoteNotifications = false
     var authorizationRequestError: Error?
     var authorizationGranted = true
+    var authorizationStatus = UNAuthorizationStatus.notDetermined
 
     func requestAuthorization(options: UNAuthorizationOptions = [],
                               completionHandler: @escaping (Bool, Error?) -> Void) {
@@ -542,6 +543,10 @@ final class UNUserNotificationCenterMock: RemoteNotificationRequestable {
 
     func registerForRemoteNotifications() {
         didCallRegisterForRemoteNotifications = true
+    }
+
+    func getAuthorizationStatus(completionHandler: @escaping (UNAuthorizationStatus) -> Void) {
+        completionHandler(authorizationStatus)
     }
 }
 
