@@ -52,7 +52,7 @@ class ConfigurationRepositorySpec: QuickSpec {
             }
 
             context("when calling saveIAMModuleConfiguration") {
-                let sampleConfig = InAppMessagingModuleConfiguration(configurationURL: "http://config.url",
+                let sampleConfig = InAppMessagingModuleConfiguration(configURLString: "http://config.url",
                                                                      subscriptionID: "sub-id",
                                                                      isTooltipFeatureEnabled: true)
 
@@ -69,7 +69,7 @@ class ConfigurationRepositorySpec: QuickSpec {
                 }
 
                 it("will properly save config URL") {
-                    expect(configurationRepository.getConfigEndpointURL()).to(equal(sampleConfig.configurationURL))
+                    expect(configurationRepository.getConfigEndpointURL()).to(equal(sampleConfig.configURLString))
                 }
             }
         }

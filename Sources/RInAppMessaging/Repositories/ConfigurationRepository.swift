@@ -46,6 +46,6 @@ internal class ConfigurationRepository: ConfigurationRepositoryType {
     }
 
     func getConfigEndpointURL() -> String? {
-        iamModuleConfiguration?.configurationURL
+        iamModuleConfiguration?.configURLString
     }
 }

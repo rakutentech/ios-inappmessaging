@@ -15,7 +15,7 @@ class ConfigurationServiceSpec: QuickSpec {
     override func spec() {
 
         let requestQueue = DispatchQueue(label: "iam.test.request")
-        let moduleConfig = InAppMessagingModuleConfiguration(configurationURL: configURL.absoluteString,
+        let moduleConfig = InAppMessagingModuleConfiguration(configURLString: configURL.absoluteString,
                                                              subscriptionID: "sub-id",
                                                              isTooltipFeatureEnabled: true)
 
@@ -338,7 +338,7 @@ class ConfigurationServiceSpec: QuickSpec {
                     }
 
                     it("will throw an assertion if configURL is nil") {
-                        configRepository.saveIAMModuleConfiguration(InAppMessagingModuleConfiguration(configurationURL: nil,
+                        configRepository.saveIAMModuleConfiguration(InAppMessagingModuleConfiguration(configURLString: nil,
                                                                                                       subscriptionID: "sub-id",
                                                                                                       isTooltipFeatureEnabled: true))
                         waitUntil { done in
@@ -350,7 +350,7 @@ class ConfigurationServiceSpec: QuickSpec {
                     }
 
                     it("will throw an assertion if configURL is empty") {
-                        configRepository.saveIAMModuleConfiguration(InAppMessagingModuleConfiguration(configurationURL: "",
+                        configRepository.saveIAMModuleConfiguration(InAppMessagingModuleConfiguration(configURLString: "",
                                                                                                       subscriptionID: "sub-id",
                                                                                                       isTooltipFeatureEnabled: true))
                         waitUntil { done in

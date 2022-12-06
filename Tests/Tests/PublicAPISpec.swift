@@ -14,7 +14,7 @@ class PublicAPISpec: QuickSpec {
 
     override func spec() {
 
-        let defaultConfig = InAppMessagingModuleConfiguration(configurationURL: nil,
+        let defaultConfig = InAppMessagingModuleConfiguration(configURLString: nil,
                                                               subscriptionID: nil,
                                                               isTooltipFeatureEnabled: true)
         let tooltipTargetView = UIView(frame: CGRect(x: 100, y: 100, width: 10, height: 10))
@@ -46,7 +46,7 @@ class PublicAPISpec: QuickSpec {
                              onDependenciesResolved: (() -> Void)? = nil) {
             let dependencyManager = TypedDependencyManager()
             dependencyManager.appendContainer(MainContainerFactory.create(dependencyManager: dependencyManager,
-                                                                          configURL: config.configurationURL))
+                                                                          configURL: URL(string: config.configURLString ?? "empty")!))
             dependencyManager.appendContainer(mockContainer())
             messageMixerService = MessageMixerServiceMock()
             dataCache = UserDataCache(userDefaults: userDefaults)
@@ -260,7 +260,7 @@ class PublicAPISpec: QuickSpec {
                 context("when subscriptionID argument is set") {
                     it("should set the same value in ConfigurationRepository (override Info.plist setting)") {
                         RInAppMessaging.deinitializeModule()
-                        reinitializeSDK(config: InAppMessagingModuleConfiguration(configurationURL: nil,
+                        reinitializeSDK(config: InAppMessagingModuleConfiguration(configURLString: nil,
                                                                                   subscriptionID: "overriden.id",
                                                                                   isTooltipFeatureEnabled: true))
                         expect(configurationRepository.getSubscriptionID()).toEventually(equal("overriden.id"))
@@ -272,7 +272,7 @@ class PublicAPISpec: QuickSpec {
                     it("will start ViewListener when completion was called with shouldDeinit = false") {
                         RInAppMessaging.deinitializeModule()
                         expect(ViewListener.currentInstance.isListening).toEventually(beFalse())
-                        reinitializeSDK(config: InAppMessagingModuleConfiguration(configurationURL: nil,
+                        reinitializeSDK(config: InAppMessagingModuleConfiguration(configURLString: nil,
                                                                                   subscriptionID: nil,
                                                                                   isTooltipFeatureEnabled: true))
                         expect(ViewListener.currentInstance.isListening).to(beTrue())
@@ -281,7 +281,7 @@ class PublicAPISpec: QuickSpec {
                     it("will stop ViewListener when completion was called with shouldDeinit = true") {
                         RInAppMessaging.deinitializeModule()
                         reinitializeSDK(waitForInit: false,
-                                        config: InAppMessagingModuleConfiguration(configurationURL: nil,
+                                        config: InAppMessagingModuleConfiguration(configURLString: nil,
                                                                                   subscriptionID: nil,
                                                                                   isTooltipFeatureEnabled: true)) {
                             configurationManager.rolloutPercentage = 0 // triggers deinit
@@ -295,10 +295,65 @@ class PublicAPISpec: QuickSpec {
                     it("will not start ViewListener") {
                         RInAppMessaging.deinitializeModule()
                         expect(ViewListener.currentInstance.isListening).toEventually(beFalse())
-                        reinitializeSDK(config: InAppMessagingModuleConfiguration(configurationURL: nil,
+                        reinitializeSDK(config: InAppMessagingModuleConfiguration(configURLString: nil,
                                                                                   subscriptionID: nil,
                                                                                   isTooltipFeatureEnabled: false))
                         expect(ViewListener.currentInstance.isListening).toAfterTimeout(beFalse())
+                    }
+                }
+
+                context("when tryGettingValidConfigURL() is invoked") {
+
+                    context("and a valid configURL is provided") {
+                        let config = InAppMessagingModuleConfiguration(configURLString: "http://config.url",
+                                                                       subscriptionID: nil,
+                                                                       isTooltipFeatureEnabled: true)
+
+                        it("will not report an error") {
+                            _ = RInAppMessaging.tryGettingValidConfigURL(config)
+                            expect(errorReceiver.returnedError).to(beNil())
+                        }
+
+                        it("will not throw an assertion") {
+                            expect(RInAppMessaging.tryGettingValidConfigURL(config)).toNot(throwAssertion())
+                        }
+
+                        it("will return a value containing the valid url") {
+                            let validURL = RInAppMessaging.tryGettingValidConfigURL(config)
+                            expect(validURL).to(equal(URL(string: "http://config.url")!))
+                        }
+                    }
+
+                    context("and an empty configURL is provided") {
+                        let config = InAppMessagingModuleConfiguration(configURLString: "",
+                                                                       subscriptionID: nil,
+                                                                       isTooltipFeatureEnabled: true)
+
+                        it("will report an error") {
+                            // capturing assertion to allow further testing
+                            expect(RInAppMessaging.tryGettingValidConfigURL(config)).to(throwAssertion())
+                            expect(errorReceiver.returnedError).toNot(beNil())
+                        }
+
+                        it("will throw an assertion") {
+                            expect(RInAppMessaging.tryGettingValidConfigURL(config)).to(throwAssertion())
+                        }
+                    }
+
+                    context("and nil configURL is provided") {
+                        let config = InAppMessagingModuleConfiguration(configURLString: nil,
+                                                                       subscriptionID: nil,
+                                                                       isTooltipFeatureEnabled: true)
+
+                        it("will report an error") {
+                            // capturing assertion to allow further testing
+                            expect(RInAppMessaging.tryGettingValidConfigURL(config)).to(throwAssertion())
+                            expect(errorReceiver.returnedError).toNot(beNil())
+                        }
+
+                        it("will throw an assertion") {
+                            expect(RInAppMessaging.tryGettingValidConfigURL(config)).to(throwAssertion())
+                        }
                     }
                 }
             }

@@ -69,12 +69,13 @@ import RSDKUtils
             configURL = "https://config.test"
         }
         let config = InAppMessagingModuleConfiguration(
-            configurationURL: configURL,
+            configURLString: configURL,
             subscriptionID: subscriptionID ?? BundleInfo.inAppSubscriptionId,
             isTooltipFeatureEnabled: enableTooltipFeature)
 
         let dependencyManager = TypedDependencyManager()
-        let mainContainer = MainContainerFactory.create(dependencyManager: dependencyManager, configURL: config.configurationURL)
+        let validConfigURL = tryGettingValidConfigURL(config)
+        let mainContainer = MainContainerFactory.create(dependencyManager: dependencyManager, configURL: validConfigURL)
         dependencyManager.appendContainer(mainContainer)
         configure(dependencyManager: dependencyManager, moduleConfig: config)
     }
@@ -190,14 +191,27 @@ import RSDKUtils
         }
 
         let description = "⚠️ API method called before calling `configure()`"
-        let error = NSError(domain: "InAppMessaging.\(type(of: self))",
-                            code: 0,
-                            userInfo: [NSLocalizedDescriptionKey: "InAppMessaging: " + description])
+        let error = NSError.iamError(description: description)
         Logger.debug(description)
         errorCallback?(error)
     }
 
-    // MARK: - Unit tests
+    // visible for unit tests
+    internal static func tryGettingValidConfigURL(_ config: InAppMessagingModuleConfiguration) -> URL {
+        
+        guard let url = config.configURLString , let configURL = URL(string: url) else {
+            let description = "⚠️ Invalid Configuration URL: \(config.configURLString ?? "<empty>")"
+            let error = NSError.iamError(description: description)
+            Logger.debug(description)
+            errorCallback?(error)
+            assertionFailure(description)
+            return URL(string: "invalid")!
+        }
+
+        return configURL
+    }
+
+    // MARK: - Unit tests helpers
     internal static func deinitializeModule() {
         inAppQueue.sync {
             dependencyManager?.resolve(type: ViewListenerType.self)?.stopListening()

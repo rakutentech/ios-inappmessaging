@@ -19,7 +19,7 @@ class DisplayPermissionServiceSpec: QuickSpec {
                                                 ping: URL(string: "https://ping.url")!,
                                                 displayPermission: URL(string: "https://permission.url")!,
                                                 impression: nil))
-        let moduleConfig = InAppMessagingModuleConfiguration(configurationURL: "https://config.url",
+        let moduleConfig = InAppMessagingModuleConfiguration(configURLString: "https://config.url",
                                                              subscriptionID: "sub-id",
                                                              isTooltipFeatureEnabled: true)
         let campaign = TestHelpers.generateCampaign(id: "test")

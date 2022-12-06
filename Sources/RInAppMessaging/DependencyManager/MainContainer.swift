@@ -10,16 +10,12 @@ internal enum MainContainerFactory {
 
     private typealias ContainerElement = TypedDependencyManager.ContainerElement
 
-    static func create(dependencyManager manager: TypedDependencyManager, configURL: String?) -> TypedDependencyManager.Container {
+    static func create(dependencyManager manager: TypedDependencyManager, configURL: URL) -> TypedDependencyManager.Container {
 
         var elements = [
             ContainerElement(type: CommonUtility.self, factory: { CommonUtility() }),
             ContainerElement(type: ReachabilityType.self, factory: {
-                guard let configURL = URL(string: configURL ?? "") else {
-                    assertionFailure("Invalid Configuration URL: \(configURL ?? "<empty>")")
-                    return nil
-                }
-                return Reachability(url: configURL)
+                Reachability(url: configURL)
             }),
             ContainerElement(type: ConfigurationRepositoryType.self, factory: {
                 ConfigurationRepository()

@@ -1,7 +1,7 @@
 import Foundation
 
 internal struct InAppMessagingModuleConfiguration {
-    let configurationURL: String?
+    let configURLString: String?
     let subscriptionID: String?
     let isTooltipFeatureEnabled: Bool
 }

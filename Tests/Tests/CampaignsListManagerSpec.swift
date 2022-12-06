@@ -23,7 +23,7 @@ class CampaignsListManagerSpec: QuickSpec {
                 campaignTriggerAgent = CampaignTriggerAgentMock()
                 configurationRepository = ConfigurationRepository()
                 configurationRepository.saveIAMModuleConfiguration(
-                    InAppMessagingModuleConfiguration(configurationURL: nil, subscriptionID: nil, isTooltipFeatureEnabled: true))
+                    InAppMessagingModuleConfiguration(configURLString: nil, subscriptionID: nil, isTooltipFeatureEnabled: true))
                 manager = CampaignsListManager(campaignRepository: campaignRepository,
                                                campaignTriggerAgent: campaignTriggerAgent,
                                                messageMixerService: messageMixerService,
@@ -159,7 +159,7 @@ class CampaignsListManagerSpec: QuickSpec {
                     context("and tooltip feature is disabled") {
                         beforeEach {
                             configurationRepository.saveIAMModuleConfiguration(
-                                InAppMessagingModuleConfiguration(configurationURL: nil, subscriptionID: nil, isTooltipFeatureEnabled: false))
+                                InAppMessagingModuleConfiguration(configURLString: nil, subscriptionID: nil, isTooltipFeatureEnabled: false))
                         }
                         it("will request sync with ignoring tooltips") {
                             manager.refreshList()
@@ -170,7 +170,7 @@ class CampaignsListManagerSpec: QuickSpec {
                     context("and tooltip feature is enabled") {
                         beforeEach {
                             configurationRepository.saveIAMModuleConfiguration(
-                                InAppMessagingModuleConfiguration(configurationURL: nil, subscriptionID: nil, isTooltipFeatureEnabled: true))
+                                InAppMessagingModuleConfiguration(configURLString: nil, subscriptionID: nil, isTooltipFeatureEnabled: true))
                         }
                         it("will request sync without ignoring tooltips") {
                             manager.refreshList()

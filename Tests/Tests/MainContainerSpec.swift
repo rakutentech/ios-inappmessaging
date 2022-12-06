@@ -50,7 +50,7 @@ class MainContainerSpec: QuickSpec {
             context("when a valid configURL is provided") {
                 beforeEach {
                     dependencyManager.appendContainer(MainContainerFactory.create(dependencyManager: dependencyManager,
-                                                                                  configURL: "http://config.url"))
+                                                                                  configURL: URL(string: "http://config.url")!))
                 }
 
                 it("will have all dependencies resolved") {
@@ -60,32 +60,10 @@ class MainContainerSpec: QuickSpec {
                 }
             }
 
-            context("when empty configURL is provided") {
-                beforeEach {
-                    dependencyManager.appendContainer(MainContainerFactory.create(dependencyManager: dependencyManager,
-                                                                                  configURL: ""))
-                }
-
-                it("will throw an assertion when resolving ReachabilityType dependency") {
-                    expect(dependencyManager.resolve(type: ReachabilityType.self)).to(throwAssertion())
-                }
-            }
-
-            context("when nil configURL is provided") {
-                beforeEach {
-                    dependencyManager.appendContainer(MainContainerFactory.create(dependencyManager: dependencyManager,
-                                                                                  configURL: nil))
-                }
-
-                it("will throw an assertion when resolving ReachabilityType dependency") {
-                    expect(dependencyManager.resolve(type: ReachabilityType.self)).to(throwAssertion())
-                }
-            }
-
             context("when ReachabilityType dependency is nil") {
                 beforeEach {
                     dependencyManager.appendContainer(MainContainerFactory.create(dependencyManager: dependencyManager,
-                                                                                  configURL: nil))
+                                                                                  configURL: URL(string: "config.url")!))
                     dependencyManager.appendContainer(TypedDependencyManager.Container([
                         // original ReachabilityType container throws an assertion which prevents further testing
                         TypedDependencyManager.ContainerElement(type: ReachabilityType.self, factory: { nil })

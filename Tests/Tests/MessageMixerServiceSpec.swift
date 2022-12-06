@@ -15,7 +15,7 @@ class MessageMixerServiceSpec: QuickSpec {
 
         let requestQueue = DispatchQueue(label: "iam.test.request")
         let configData = ConfigEndpointData(rolloutPercentage: 100, endpoints: .empty)
-        let moduleConfig = InAppMessagingModuleConfiguration(configurationURL: "https://config.url",
+        let moduleConfig = InAppMessagingModuleConfiguration(configURLString: "https://config.url",
                                                              subscriptionID: "sub-id",
                                                              isTooltipFeatureEnabled: true)
         let accountRepository = AccountRepository(userDataCache: UserDataCacheMock())

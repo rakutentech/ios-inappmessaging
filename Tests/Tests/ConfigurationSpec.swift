@@ -33,7 +33,8 @@ class ConfigurationSpec: QuickSpec {
                 dependencyManager = TypedDependencyManager()
                 configurationManager = ConfigurationManagerMock()
                 RInAppMessaging.deinitializeModule()
-                dependencyManager.appendContainer(MainContainerFactory.create(dependencyManager: dependencyManager, configURL: nil))
+                dependencyManager.appendContainer(MainContainerFactory.create(dependencyManager: dependencyManager,
+                                                                              configURL: URL(string: "config.url")!))
                 dependencyManager.appendContainer(mockContainer())
             }
 

@@ -21,7 +21,7 @@ class ImpressionServiceSpec: QuickSpec {
                                                 ping: URL(string: "https://ping.url")!,
                                                 displayPermission: nil,
                                                 impression: impressionURL))
-        let moduleConfig = InAppMessagingModuleConfiguration(configurationURL: "https://config.url",
+        let moduleConfig = InAppMessagingModuleConfiguration(configURLString: "https://config.url",
                                                              subscriptionID: "sub-id",
                                                              isTooltipFeatureEnabled: true)
         let campaign = TestHelpers.generateCampaign(id: "test")
