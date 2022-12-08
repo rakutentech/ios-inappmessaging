@@ -68,6 +68,12 @@ internal class ConfigurationManager: ConfigurationManagerType, TaskSchedulable {
             responseStateMachine.push(state: .error)
 
             switch error {
+            case .missingOrInvalidConfigURL:
+                reportError(
+                    description: "Invalid Configuration URL: \(configurationRepository.getConfigEndpointURLString() ?? "<empty>"). SDK will be disabled.",
+                    data: error)
+                completion(ConfigEndpointData(rolloutPercentage: 0, endpoints: nil))
+
             case .tooManyRequestsError:
                 scheduleRetryWithRandomizedBackoff(retryHandler: retryHandler)
 

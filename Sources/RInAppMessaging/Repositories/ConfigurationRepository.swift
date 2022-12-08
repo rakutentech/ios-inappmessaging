@@ -9,7 +9,7 @@ internal protocol ConfigurationRepositoryType: AnyObject {
     func getEndpoints() -> EndpointURL?
     func getRolloutPercentage() -> Int?
     func getSubscriptionID() -> String?
-    func getConfigEndpointURL() -> String?
+    func getConfigEndpointURLString() -> String?
 }
 
 internal class ConfigurationRepository: ConfigurationRepositoryType {
@@ -45,7 +45,7 @@ internal class ConfigurationRepository: ConfigurationRepositoryType {
         iamModuleConfiguration?.subscriptionID
     }
 
-    func getConfigEndpointURL() -> String? {
+    func getConfigEndpointURLString() -> String? {
         iamModuleConfiguration?.configURLString
     }
 }

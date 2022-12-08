@@ -336,29 +336,38 @@ class ConfigurationServiceSpec: QuickSpec {
                         BundleInfoMock.appVersionMock = nil
                         makeRequestAndEvaluateMetadataError()
                     }
+                }
+                context("and config url is invalid") {
 
-                    it("will throw an assertion if configURL is nil") {
-                        configRepository.saveIAMModuleConfiguration(InAppMessagingModuleConfiguration(configURLString: nil,
-                                                                                                      subscriptionID: "sub-id",
-                                                                                                      isTooltipFeatureEnabled: true))
+                    func makeRequestAndValidateError() {
                         waitUntil { done in
                             requestQueue.async {
-                                expect(service.getConfigData()).to(throwAssertion())
+                                let result = service.getConfigData()
+                                let error = result.getError()
+                                expect(error).toNot(beNil())
+
+                                guard case .missingOrInvalidConfigURL = error else {
+                                    fail("Unexpected error type \(String(describing: error)). Expected .missingOrInvalidConfigURL")
+                                    done()
+                                    return
+                                }
                                 done()
                             }
                         }
                     }
 
-                    it("will throw an assertion if configURL is empty") {
+                    it("will return error if configURL is nil") {
+                        configRepository.saveIAMModuleConfiguration(InAppMessagingModuleConfiguration(configURLString: nil,
+                                                                                                      subscriptionID: "sub-id",
+                                                                                                      isTooltipFeatureEnabled: true))
+                        makeRequestAndValidateError()
+                    }
+
+                    it("will return error if configURL is empty") {
                         configRepository.saveIAMModuleConfiguration(InAppMessagingModuleConfiguration(configURLString: "",
                                                                                                       subscriptionID: "sub-id",
                                                                                                       isTooltipFeatureEnabled: true))
-                        waitUntil { done in
-                            requestQueue.async {
-                                expect(service.getConfigData()).to(throwAssertion())
-                                done()
-                            }
-                        }
+                        makeRequestAndValidateError()
                     }
                 }
             }

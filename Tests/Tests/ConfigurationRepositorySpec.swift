@@ -23,7 +23,7 @@ class ConfigurationRepositorySpec: QuickSpec {
                 expect(configurationRepository.getEndpoints()).to(beNil())
                 expect(configurationRepository.getRolloutPercentage()).to(beNil())
                 expect(configurationRepository.getSubscriptionID()).to(beNil())
-                expect(configurationRepository.getConfigEndpointURL()).to(beNil())
+                expect(configurationRepository.getConfigEndpointURLString()).to(beNil())
             }
 
             it("will throw an assertion when `isTooltipFeatureEnabled` is accessed before save") {
@@ -69,7 +69,7 @@ class ConfigurationRepositorySpec: QuickSpec {
                 }
 
                 it("will properly save config URL") {
-                    expect(configurationRepository.getConfigEndpointURL()).to(equal(sampleConfig.configURLString))
+                    expect(configurationRepository.getConfigEndpointURLString()).to(equal(sampleConfig.configURLString))
                 }
             }
         }

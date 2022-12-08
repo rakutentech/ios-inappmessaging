@@ -264,6 +264,22 @@ class ConfigurationManagerSpec: QuickSpec {
                         configurationManager.fetchAndSaveConfigData(completion: { _ in })
                         expect(errorDelegate.wasErrorReceived).to(beTrue())
                     }
+
+                    it("should not retry for .missingOrInvalidConfigURL error") {
+                        configurationService.mockedError = .missingOrInvalidConfigURL
+                        configurationManager.fetchAndSaveConfigData(completion: { _ in })
+                        expect(configurationManager.scheduledTask).toAfterTimeout(beNil())
+                    }
+
+                    it("should return disable response for .missingOrInvalidConfigURL error") {
+                        configurationService.mockedError = .missingOrInvalidConfigURL
+                        waitUntil { done in
+                            configurationManager.fetchAndSaveConfigData(completion: { config in
+                                expect(config.rolloutPercentage).to(equal(0))
+                                done()
+                            })
+                        }
+                    }
                 }
             }
 
@@ -276,7 +292,7 @@ class ConfigurationManagerSpec: QuickSpec {
                     configurationManager.saveIAMModuleConfiguration(config)
                     expect(configurationRepository.isTooltipFeatureEnabled).to(equal(config.isTooltipFeatureEnabled))
                     expect(configurationRepository.getSubscriptionID()).to(equal(config.subscriptionID))
-                    expect(configurationRepository.getConfigEndpointURL()).to(equal(config.configURLString))
+                    expect(configurationRepository.getConfigEndpointURLString()).to(equal(config.configURLString))
                 }
             }
         }

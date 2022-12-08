@@ -27,9 +27,8 @@ internal struct ConfigurationService: ConfigurationServiceType, HttpRequestable 
     }
 
     func getConfigData() -> Result<ConfigEndpointData, ConfigurationServiceError> {
-        guard let configURLString = configurationRepository.getConfigEndpointURL(),
+        guard let configURLString = configurationRepository.getConfigEndpointURLString(),
               let configURL = URL(string: configURLString) else {
-            assertionFailure("Invalid Configuration URL: \(configurationRepository.getConfigEndpointURL() ?? "<empty>")")
             return .failure(.missingOrInvalidConfigURL)
         }
 
