@@ -10,6 +10,8 @@
 	- Restored tab bar items support. Added UITabBar extension method for convenience [SDKCF-6134]
 - Bug fixes:
 	- Fixed an edge case of not readable status bar when campaign message is displayed [SDKCF-5134]
+- Improvements:
+	- Sample app improvements
 
 ### 7.2.0 (2022-09-23)
 - Features:

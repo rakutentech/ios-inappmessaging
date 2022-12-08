@@ -26,14 +26,6 @@ class ViewController: UIViewController {
     @IBAction func loginSuccessfulButton(_ sender: Any) {
         RInAppMessaging.logEvent(LoginSuccessfulEvent())
     }
-    @IBAction func customTestButton(_ sender: Any) {
-        RInAppMessaging.logEvent(
-            CustomEvent(
-                withName: "second activity",
-                withCustomAttributes: [CustomAttribute(withKeyName: "click", withBoolValue: true)]
-            )
-        )
-    }
 
     @IBAction func appStartButton(_ sender: Any) {
         RInAppMessaging.logEvent(AppStartEvent())
