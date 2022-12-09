@@ -1,5 +1,6 @@
 import Quick
 import Nimble
+import Foundation
 #if canImport(RSDKUtilsMain)
 import RSDKUtilsMain // SPM version
 #else

@@ -1,5 +1,6 @@
 import Quick
 import Nimble
+import Foundation
 #if canImport(RSDKUtilsMain)
 import class RSDKUtilsMain.TypedDependencyManager // SPM version
 #else

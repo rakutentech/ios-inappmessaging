@@ -22,7 +22,7 @@ class ValidatorHandler {
     }
 }
 
-// swiftlint:disable:next type_body_length
+// swiftlint:disable type_body_length
 struct TestHelpers {
 
     static func generateCampaign(id: String,
