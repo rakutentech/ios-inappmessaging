@@ -1393,7 +1393,7 @@
 			repositoryURL = "https://github.com/rakutentech/ios-sdkutils.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 3.0.0;
+				minimumVersion = 4.0.0;
 			};
 		};
 		45FA9002272C2C5C005166FD /* XCRemoteSwiftPackageReference "Shock" */ = {

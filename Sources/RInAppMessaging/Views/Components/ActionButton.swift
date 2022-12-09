@@ -1,4 +1,9 @@
 import UIKit
+#if SWIFT_PACKAGE
+import RSDKUtilsMain
+#else
+import RSDKUtils
+#endif
 
 // Button object used in campaigns's message view.
 internal class ActionButton: UIButton {
