@@ -1,12 +1,14 @@
 import Quick
 import Nimble
 import UIKit
+
 #if canImport(RSDKUtils)
-import class RSDKUtils.TypedDependencyManager
+import RSDKUtils
 #else // SPM version
 import RSDKUtilsNimble
 import class RSDKUtilsMain.TypedDependencyManager
 #endif
+
 @testable import RInAppMessaging
 
 @available(iOS 13.0, *) // Because of UIImage(named:in:with:)

@@ -1,8 +1,9 @@
 import Foundation
-#if canImport(RSDKUtils)
-import class RSDKUtils.AnalyticsBroadcaster
-#else // SPM Version
+
+#if SWIFT_PACKAGE
 import class RSDKUtilsMain.AnalyticsBroadcaster
+#else
+import class RSDKUtils.AnalyticsBroadcaster
 #endif
 
 internal protocol ImpressionServiceType: ErrorReportable {

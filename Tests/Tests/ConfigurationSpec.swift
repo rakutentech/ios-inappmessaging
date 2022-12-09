@@ -1,11 +1,13 @@
 import Quick
 import Nimble
 import Foundation
-#if canImport(RSDKUtilsMain)
-import class RSDKUtilsMain.TypedDependencyManager // SPM version
-#else
+
+#if canImport(RSDKUtils)
 import class RSDKUtils.TypedDependencyManager
+#else // SPM version
+import class RSDKUtilsMain.TypedDependencyManager
 #endif
+
 @testable import RInAppMessaging
 
 /// Tests for behavior of the SDK when supplied with different configuration responses.

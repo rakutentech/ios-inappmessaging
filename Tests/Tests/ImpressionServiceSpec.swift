@@ -1,12 +1,14 @@
 import Foundation
 import Quick
 import Nimble
+
 #if canImport(RSDKUtils)
 import RSDKUtils
 #else // SPM version
 import RSDKUtilsNimble
 import class RSDKUtilsTestHelpers.URLSessionMock
 #endif
+
 @testable import RInAppMessaging
 
 private let impressionURL = URL(string: "https://impression.url")!

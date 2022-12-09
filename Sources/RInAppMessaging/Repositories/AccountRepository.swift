@@ -1,6 +1,7 @@
 import class Foundation.Bundle
-#if canImport(RSDKUtilsMain)
-import class RSDKUtilsMain.WeakWrapper // SPM version
+
+#if SWIFT_PACKAGE
+import class RSDKUtilsMain.WeakWrapper
 #else
 import class RSDKUtils.WeakWrapper
 #endif

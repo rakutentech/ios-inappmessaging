@@ -1,7 +1,8 @@
 import Foundation
 import struct UserNotifications.UNAuthorizationOptions
-#if canImport(RSDKUtilsMain)
-import RSDKUtilsMain // SPM version
+
+#if SWIFT_PACKAGE
+import RSDKUtilsMain
 #else
 import RSDKUtils
 #endif

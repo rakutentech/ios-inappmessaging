@@ -1,12 +1,13 @@
 import XCTest
 import Quick
 import Nimble
-#if canImport(RSDKUtilsMain)
-import RSDKUtilsMain // SPM version
+import class Shock.MockServer
+
+#if SWIFT_PACKAGE
+import RSDKUtilsMain
 #else
 import RSDKUtils
 #endif
-import class Shock.MockServer
 
 class ModalViewSpec: QuickSpec {
 

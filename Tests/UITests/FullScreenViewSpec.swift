@@ -1,12 +1,13 @@
 import XCTest
 import Quick
 import Nimble
-#if canImport(RSDKUtilsNimble)
-import RSDKUtilsNimble // SPM version
+import class Shock.MockServer
+
+#if SWIFT_PACKAGE
+import RSDKUtilsNimble
 #else
 import RSDKUtils
 #endif
-import class Shock.MockServer
 
 class FullScreenViewSpec: QuickSpec {
 

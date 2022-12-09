@@ -1,11 +1,13 @@
 import Foundation
 import Quick
 import Nimble
-#if canImport(RSDKUtilsTestHelpers)
-import class RSDKUtilsTestHelpers.URLSessionMock // SPM version
-#else
+
+#if canImport(RSDKUtils)
 import class RSDKUtils.URLSessionMock
+#else // SPM version
+import class RSDKUtilsTestHelpers.URLSessionMock
 #endif
+
 @testable import RInAppMessaging
 
 // swiftlint:disable:next type_body_length

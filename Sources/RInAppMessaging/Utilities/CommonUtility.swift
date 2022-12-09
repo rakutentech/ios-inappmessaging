@@ -1,6 +1,7 @@
 import Foundation
-#if canImport(RSDKUtilsMain)
-import protocol RSDKUtilsMain.Lockable // SPM version
+
+#if SWIFT_PACKAGE
+import protocol RSDKUtilsMain.Lockable
 #else
 import protocol RSDKUtils.Lockable
 #endif
