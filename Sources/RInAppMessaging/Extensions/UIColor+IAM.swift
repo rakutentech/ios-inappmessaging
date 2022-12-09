@@ -52,14 +52,4 @@ internal extension UIColor {
         let threshold = 15
         return distance(from: anotherColor) <= threshold
     }
-
-    func isRGBAEqual(to anotherColor: UIColor) -> Bool {
-        var rgba1: (r: CGFloat, g: CGFloat, b: CGFloat, a: CGFloat) = (0, 0, 0, 0)
-        var rgba2: (r: CGFloat, g: CGFloat, b: CGFloat, a: CGFloat) = (0, 0, 0, 0)
-
-        getRed(&rgba1.r, green: &rgba1.g, blue: &rgba1.b, alpha: &rgba1.a)
-        anotherColor.getRed(&rgba2.r, green: &rgba2.g, blue: &rgba2.b, alpha: &rgba2.a)
-
-        return rgba1 == rgba2
-    }
 }
