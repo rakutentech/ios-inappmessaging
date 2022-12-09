@@ -11,6 +11,10 @@ class CampaignsValidatorSpec: QuickSpec {
         var eventMatcher: EventMatcher!
         var validatorHandler: ValidatorHandler!
 
+        func syncRepository(with campaigns: [Campaign]) {
+            campaignRepository.syncWith(list: campaigns, timestampMilliseconds: 0, ignoreTooltips: false)
+        }
+
         beforeEach {
             campaignRepository = CampaignRepository(userDataCache: UserDataCacheMock(),
                                                     accountRepository: AccountRepository(userDataCache: UserDataCacheMock()))
@@ -24,7 +28,7 @@ class CampaignsValidatorSpec: QuickSpec {
         describe("CampaignsValidator") {
 
             it("will accept outdated test campaign") {
-                campaignRepository.syncWith(list: [MockedCampaigns.outdatedTestCampaign], timestampMilliseconds: 0)
+                syncRepository(with: [MockedCampaigns.outdatedTestCampaign])
                 eventMatcher.matchAndStore(event: LoginSuccessfulEvent())
                 campaignsValidator.validate(validatedCampaignHandler: validatorHandler.closure)
                 expect(validatorHandler.validatedCampaigns).to(contain(MockedCampaigns.outdatedTestCampaign))
@@ -32,7 +36,7 @@ class CampaignsValidatorSpec: QuickSpec {
 
             it("will not accept test campaign with impressionLeft < 1") {
                 let testCampaign = TestHelpers.generateCampaign(id: "test", maxImpressions: 1, test: true)
-                campaignRepository.syncWith(list: [testCampaign], timestampMilliseconds: 0)
+                syncRepository(with: [testCampaign])
                 campaignRepository.decrementImpressionsLeftInCampaign(id: testCampaign.id)
                 eventMatcher.matchAndStore(event: LoginSuccessfulEvent())
                 campaignsValidator.validate(validatedCampaignHandler: validatorHandler.closure)
@@ -43,8 +47,7 @@ class CampaignsValidatorSpec: QuickSpec {
                 let campaign = TestHelpers.generateCampaign(
                     id: "test", maxImpressions: 2,
                     triggers: [Trigger.loginEventTrigger])
-                campaignRepository.syncWith(list: [campaign, MockedCampaigns.outdatedCampaign],
-                                            timestampMilliseconds: 0)
+                syncRepository(with: [campaign, MockedCampaigns.outdatedCampaign])
                 let event = LoginSuccessfulEvent()
                 eventMatcher.matchAndStore(event: event)
                 campaignsValidator.validate(validatedCampaignHandler: validatorHandler.closure)
@@ -53,8 +56,7 @@ class CampaignsValidatorSpec: QuickSpec {
             }
 
             it("will accept test campaigns with matching criteria") {
-                campaignRepository.syncWith(list: [MockedCampaigns.testCampaign, MockedCampaigns.outdatedCampaign],
-                                            timestampMilliseconds: 0)
+                syncRepository(with: [MockedCampaigns.testCampaign, MockedCampaigns.outdatedCampaign])
                 let event = LoginSuccessfulEvent()
                 eventMatcher.matchAndStore(event: event)
                 campaignsValidator.validate(validatedCampaignHandler: validatorHandler.closure)
@@ -66,14 +68,14 @@ class CampaignsValidatorSpec: QuickSpec {
                 let campaign = TestHelpers.generateCampaign(
                     id: "test", maxImpressions: 0,
                     triggers: [Trigger.loginEventTrigger])
-                campaignRepository.syncWith(list: [campaign], timestampMilliseconds: 0)
+                syncRepository(with: [campaign])
                 eventMatcher.matchAndStore(event: LoginSuccessfulEvent())
                 campaignsValidator.validate(validatedCampaignHandler: validatorHandler.closure)
                 expect(validatorHandler.validatedCampaigns).toEventuallyNot(contain(campaign))
             }
 
             it("won't accept outdated campaigns") {
-                campaignRepository.syncWith(list: [MockedCampaigns.outdatedCampaign], timestampMilliseconds: 0)
+                syncRepository(with: [MockedCampaigns.outdatedCampaign])
                 eventMatcher.matchAndStore(event: LoginSuccessfulEvent())
                 campaignsValidator.validate(validatedCampaignHandler: validatorHandler.closure)
                 expect(validatorHandler.validatedCampaigns).toNot(contain(MockedCampaigns.outdatedCampaign))
@@ -83,7 +85,7 @@ class CampaignsValidatorSpec: QuickSpec {
                 let campaign = TestHelpers.generateCampaign(
                     id: "test", maxImpressions: 2,
                     triggers: [Trigger.loginEventTrigger])
-                campaignRepository.syncWith(list: [campaign], timestampMilliseconds: 0)
+                syncRepository(with: [campaign])
                 eventMatcher.matchAndStore(event: LoginSuccessfulEvent())
                 _ = campaignRepository.optOutCampaign(campaign)
                 campaignsValidator.validate(validatedCampaignHandler: validatorHandler.closure)
@@ -107,7 +109,7 @@ class CampaignsValidatorSpec: QuickSpec {
                                 eventName: "testevent2",
                                 attributes: []
                             )])
-                    campaignRepository.syncWith(list: [campaign], timestampMilliseconds: 0)
+                    syncRepository(with: [campaign])
                     eventMatcher.matchAndStore(event: LoginSuccessfulEvent())
                     eventMatcher.matchAndStore(event: AppStartEvent())
                     campaignsValidator.validate(validatedCampaignHandler: validatorHandler.closure)
@@ -129,7 +131,7 @@ class CampaignsValidatorSpec: QuickSpec {
                                 eventName: "testevent2",
                                 attributes: []
                             )])
-                    campaignRepository.syncWith(list: [campaign], timestampMilliseconds: 0)
+                    syncRepository(with: [campaign])
                     eventMatcher.matchAndStore(event: LoginSuccessfulEvent())
                     eventMatcher.matchAndStore(event: AppStartEvent())
                     campaignsValidator.validate(validatedCampaignHandler: validatorHandler.closure)
@@ -140,7 +142,7 @@ class CampaignsValidatorSpec: QuickSpec {
                     let campaign = TestHelpers.generateCampaign(
                         id: "test", maxImpressions: 2,
                         triggers: [])
-                    campaignRepository.syncWith(list: [campaign], timestampMilliseconds: 0)
+                    syncRepository(with: [campaign])
                     eventMatcher.matchAndStore(event: LoginSuccessfulEvent())
                     campaignsValidator.validate(validatedCampaignHandler: validatorHandler.closure)
                     expect(validatorHandler.validatedCampaigns).to(beEmpty())
@@ -150,7 +152,7 @@ class CampaignsValidatorSpec: QuickSpec {
                     let campaign = TestHelpers.generateCampaign(
                         id: "test", maxImpressions: 2, test: true,
                         triggers: [])
-                    campaignRepository.syncWith(list: [campaign], timestampMilliseconds: 0)
+                    syncRepository(with: [campaign])
                     eventMatcher.matchAndStore(event: LoginSuccessfulEvent())
                     campaignsValidator.validate(validatedCampaignHandler: validatorHandler.closure)
                     expect(validatorHandler.validatedCampaigns).to(beEmpty())
@@ -171,7 +173,7 @@ class CampaignsValidatorSpec: QuickSpec {
                                 eventName: "testevent2",
                                 attributes: []
                             )])
-                    campaignRepository.syncWith(list: [campaign], timestampMilliseconds: 0)
+                    syncRepository(with: [campaign])
                     eventMatcher.matchAndStore(event: LoginSuccessfulEvent())
                     campaignsValidator.validate(validatedCampaignHandler: validatorHandler.closure)
                     expect(validatorHandler.validatedCampaigns).toEventuallyNot(contain(campaign))

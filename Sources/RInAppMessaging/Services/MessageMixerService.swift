@@ -100,7 +100,7 @@ extension MessageMixerService {
 
     private func buildRequestHeader() -> [HeaderAttribute] {
         var builder = HeaderAttributesBuilder()
-        builder.addSubscriptionID(bundleInfo: bundleInfo)
+        builder.addSubscriptionID(configurationRepository: configurationRepository)
         builder.addDeviceID()
         builder.addAccessToken(accountRepository: accountRepository)
 

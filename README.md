@@ -273,6 +273,15 @@ The process can be considered as successful when `application(_:didRegisterForRe
 
 [How to set up your app for registering with APNS](https://developer.apple.com/documentation/usernotifications/registering_your_app_with_apns)
 
+### **Tooltip Campaigns**
+Tooltip feature is currently in beta testing; its features and behaviour might change in the future.
+Please refer to the internal guide for more information.
+
+To enable tooltips you must set `enableTooltipFeature` flag to true when calling `configure()`
+```swift
+RInAppMessaging.configure(enableTooltipFeature: true)
+```
+
 ## **Build/Run Example Application and Unit Tests**
 
 * Clone or fork the repo

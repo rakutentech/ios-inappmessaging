@@ -6,7 +6,8 @@ import RSDKUtils
 #endif
 
 internal protocol ConfigurationManagerType: ErrorReportable {
-    func fetchAndSaveConfigData(completion: @escaping (ConfigData) -> Void)
+    func fetchAndSaveConfigData(completion: @escaping (ConfigEndpointData) -> Void)
+    func saveIAMModuleConfiguration(_ config: InAppMessagingModuleConfiguration)
 }
 
 internal class ConfigurationManager: ConfigurationManagerType, TaskSchedulable {
@@ -38,10 +39,10 @@ internal class ConfigurationManager: ConfigurationManagerType, TaskSchedulable {
         scheduledTask?.cancel()
     }
 
-    func fetchAndSaveConfigData(completion: @escaping (ConfigData) -> Void) {
+    func fetchAndSaveConfigData(completion: @escaping (ConfigEndpointData) -> Void) {
         guard let configurationService = configurationService else {
             reportError(description: "Configuration URL in Info.plist is missing. IAM SDK will be disabled.", data: nil)
-            completion(ConfigData(rolloutPercentage: 0, endpoints: nil))
+            completion(ConfigEndpointData(rolloutPercentage: 0, endpoints: nil))
             return
         }
         let retryHandler: () -> Void = { [weak self] in
@@ -60,28 +61,34 @@ internal class ConfigurationManager: ConfigurationManagerType, TaskSchedulable {
             responseStateMachine.push(state: .success)
             retryDelayMS = Constants.Retry.Default.initialRetryDelayMS
 
-            configurationRepository.saveConfiguration(configData)
+            configurationRepository.saveRemoteConfiguration(configData)
             completion(configData)
 
         case .failure(let error):
             responseStateMachine.push(state: .error)
 
             switch error {
+            case .missingOrInvalidConfigURL:
+                reportError(
+                    description: "Invalid Configuration URL: \(configurationRepository.getConfigEndpointURLString() ?? "<empty>"). SDK will be disabled.",
+                    data: error)
+                completion(ConfigEndpointData(rolloutPercentage: 0, endpoints: nil))
+
             case .tooManyRequestsError:
                 scheduleRetryWithRandomizedBackoff(retryHandler: retryHandler)
 
             case .missingOrInvalidSubscriptionId:
                 reportError(description: "Config request error: Missing or invalid Subscription ID. SDK will be disabled.", data: error)
-                completion(ConfigData(rolloutPercentage: 0, endpoints: nil))
+                completion(ConfigEndpointData(rolloutPercentage: 0, endpoints: nil))
 
             case .unknownSubscriptionId:
                 reportError(description: "Config request error: Unknown Subscription ID. SDK will be disabled.", data: error)
-                completion(ConfigData(rolloutPercentage: 0, endpoints: nil))
+                completion(ConfigEndpointData(rolloutPercentage: 0, endpoints: nil))
 
             case .internalServerError(let code):
                 guard responseStateMachine.consecutiveErrorCount <= Constants.Retry.retryCount else {
                     reportError(description: "Config request error: Response Code \(code): Internal server error", data: nil)
-                    completion(ConfigData(rolloutPercentage: 0, endpoints: nil))
+                    completion(ConfigEndpointData(rolloutPercentage: 0, endpoints: nil))
                     return
                 }
                 scheduleRetryWithRandomizedBackoff(retryHandler: retryHandler)
@@ -89,11 +96,11 @@ internal class ConfigurationManager: ConfigurationManagerType, TaskSchedulable {
 
             case .invalidRequestError(let code):
                 reportError(description: "Config request error: Response Code \(code): Invalid request error", data: nil)
-                completion(ConfigData(rolloutPercentage: 0, endpoints: nil))
+                completion(ConfigEndpointData(rolloutPercentage: 0, endpoints: nil))
 
             case .jsonDecodingError(let decodingError):
                 reportError(description: "Config request error: Failed to parse json", data: decodingError)
-                completion(ConfigData(rolloutPercentage: 0, endpoints: nil))
+                completion(ConfigEndpointData(rolloutPercentage: 0, endpoints: nil))
 
             default:
                 reportError(description: "Error calling config server. Retrying in \(retryDelayMS)ms", data: error)
@@ -102,6 +109,10 @@ internal class ConfigurationManager: ConfigurationManagerType, TaskSchedulable {
                 retryDelayMS.increaseBackOff()
             }
         }
+    }
+
+    func saveIAMModuleConfiguration(_ config: InAppMessagingModuleConfiguration) {
+        configurationRepository.saveIAMModuleConfiguration(config)
     }
 
     private func scheduleRetryWithRandomizedBackoff(retryHandler: @escaping () -> Void) {

@@ -82,7 +82,7 @@ extension DisplayPermissionService {
 
     func buildHttpBody(with parameters: [String: Any]?) -> Result<Data, Error> {
 
-        guard let subscriptionId = bundleInfo.inAppSubscriptionId,
+        guard let subscriptionId = configurationRepository.getSubscriptionID(),
               let appVersion = bundleInfo.appVersion,
               let sdkVersion = bundleInfo.inAppSdkVersion
         else {
@@ -113,7 +113,7 @@ extension DisplayPermissionService {
 
     private func buildRequestHeader() -> [HeaderAttribute] {
         var builder = HeaderAttributesBuilder()
-        builder.addSubscriptionID(bundleInfo: bundleInfo)
+        builder.addSubscriptionID(configurationRepository: configurationRepository)
         builder.addAccessToken(accountRepository: accountRepository)
 
         return builder.build()

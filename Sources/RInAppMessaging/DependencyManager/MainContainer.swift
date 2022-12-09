@@ -10,26 +10,12 @@ internal enum MainContainerFactory {
 
     private typealias ContainerElement = TypedDependencyManager.ContainerElement
 
-    private static func getValidConfigURL() -> URL? {
-        guard !Environment.isUnitTestEnvironment else {
-            return URL(string: "https://config.test")
-        }
-        guard let configURLString = BundleInfo.inAppConfigurationURL, !configURLString.isEmpty else {
-            return nil
-        }
-        return URL(string: configURLString)
-    }
-
-    static func create(dependencyManager manager: TypedDependencyManager) -> TypedDependencyManager.Container {
+    static func create(dependencyManager manager: TypedDependencyManager, configURL: URL) -> TypedDependencyManager.Container {
 
         var elements = [
             ContainerElement(type: CommonUtility.self, factory: { CommonUtility() }),
             ContainerElement(type: ReachabilityType.self, factory: {
-                guard let configURL = getValidConfigURL() else {
-                    assertionFailure("Configuration URL in Info.plist is missing")
-                    return nil
-                }
-                return Reachability(url: configURL)
+                Reachability(url: configURL)
             }),
             ContainerElement(type: ConfigurationRepositoryType.self, factory: {
                 ConfigurationRepository()
@@ -54,13 +40,7 @@ internal enum MainContainerFactory {
                 AccountRepository(userDataCache: manager.resolve(type: UserDataCacheable.self)!)
             }),
             ContainerElement(type: ConfigurationServiceType.self, factory: {
-                guard let configURL = getValidConfigURL() else {
-                    assertionFailure("Configuration URL in Info.plist is missing")
-                    return nil
-                }
-                let configurationRepository = manager.resolve(type: ConfigurationRepositoryType.self)!
-                return ConfigurationService(configURL: configURL,
-                                            sessionConfiguration: configurationRepository.defaultHttpSessionConfiguration)
+                ConfigurationService(configurationRepository: manager.resolve(type: ConfigurationRepositoryType.self)!)
             }),
             ContainerElement(type: DisplayPermissionServiceType.self, factory: {
                 DisplayPermissionService(
@@ -90,7 +70,8 @@ internal enum MainContainerFactory {
             ContainerElement(type: CampaignsListManagerType.self, factory: {
                 CampaignsListManager(campaignRepository: manager.resolve(type: CampaignRepositoryType.self)!,
                                      campaignTriggerAgent: manager.resolve(type: CampaignTriggerAgentType.self)!,
-                                     messageMixerService: manager.resolve(type: MessageMixerServiceType.self)!)
+                                     messageMixerService: manager.resolve(type: MessageMixerServiceType.self)!,
+                                     configurationRepository: manager.resolve(type: ConfigurationRepositoryType.self)!)
             }),
             ContainerElement(type: TooltipDispatcherType.self, factory: {
                 TooltipDispatcher(router: manager.resolve(type: RouterType.self)!,
@@ -116,13 +97,15 @@ internal enum MainContainerFactory {
                                   impressionService: manager.resolve(type: ImpressionServiceType.self)!,
                                   eventMatcher: manager.resolve(type: EventMatcherType.self)!,
                                   campaignTriggerAgent: manager.resolve(type: CampaignTriggerAgentType.self)!,
-                                  pushPrimerOptions: RInAppMessaging.pushPrimerAuthorizationOptions)
+                                  pushPrimerOptions: RInAppMessaging.pushPrimerAuthorizationOptions,
+                                  configurationRepository: manager.resolve(type: ConfigurationRepositoryType.self)!)
             }, transient: true),
             ContainerElement(type: SlideUpViewPresenterType.self, factory: {
                 SlideUpViewPresenter(campaignRepository: manager.resolve(type: CampaignRepositoryType.self)!,
                                      impressionService: manager.resolve(type: ImpressionServiceType.self)!,
                                      eventMatcher: manager.resolve(type: EventMatcherType.self)!,
-                                     campaignTriggerAgent: manager.resolve(type: CampaignTriggerAgentType.self)!)
+                                     campaignTriggerAgent: manager.resolve(type: CampaignTriggerAgentType.self)!,
+                                     configurationRepository: manager.resolve(type: ConfigurationRepositoryType.self)!)
             }, transient: true),
             ContainerElement(type: CampaignTriggerAgentType.self, factory: {
                 CampaignTriggerAgent(eventMatcher: manager.resolve(type: EventMatcherType.self)!,

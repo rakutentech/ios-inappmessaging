@@ -215,7 +215,7 @@ class ConfigurationManagerSpec: QuickSpec {
 
                     it("should retry 3 times for .internalServerError error") {
                         configurationService.mockedError = .internalServerError(500)
-                        var returnedConfig: ConfigData?
+                        var returnedConfig: ConfigEndpointData?
                         configurationManager.fetchAndSaveConfigData(completion: { config in
                             returnedConfig = config
                         })
@@ -264,6 +264,35 @@ class ConfigurationManagerSpec: QuickSpec {
                         configurationManager.fetchAndSaveConfigData(completion: { _ in })
                         expect(errorDelegate.wasErrorReceived).to(beTrue())
                     }
+
+                    it("should not retry for .missingOrInvalidConfigURL error") {
+                        configurationService.mockedError = .missingOrInvalidConfigURL
+                        configurationManager.fetchAndSaveConfigData(completion: { _ in })
+                        expect(configurationManager.scheduledTask).toAfterTimeout(beNil())
+                    }
+
+                    it("should return disable response for .missingOrInvalidConfigURL error") {
+                        configurationService.mockedError = .missingOrInvalidConfigURL
+                        waitUntil { done in
+                            configurationManager.fetchAndSaveConfigData(completion: { config in
+                                expect(config.rolloutPercentage).to(equal(0))
+                                done()
+                            })
+                        }
+                    }
+                }
+            }
+
+            context("when calling saveIAMModuleConfiguration") {
+
+                it("should store data in Configuration Repository") {
+                    let config = InAppMessagingModuleConfiguration(configURLString: "config.url",
+                                                                   subscriptionID: "sub-id",
+                                                                   isTooltipFeatureEnabled: true)
+                    configurationManager.saveIAMModuleConfiguration(config)
+                    expect(configurationRepository.isTooltipFeatureEnabled).to(equal(config.isTooltipFeatureEnabled))
+                    expect(configurationRepository.getSubscriptionID()).to(equal(config.subscriptionID))
+                    expect(configurationRepository.getConfigEndpointURLString()).to(equal(config.configURLString))
                 }
             }
         }

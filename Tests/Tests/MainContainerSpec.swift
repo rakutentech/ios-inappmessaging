@@ -1,5 +1,6 @@
 import Quick
 import Nimble
+import Foundation
 #if canImport(RSDKUtilsMain)
 import RSDKUtilsMain // SPM version
 #else
@@ -12,17 +13,9 @@ class MainContainerSpec: QuickSpec {
     override func spec() {
         context("Main Container") {
 
-            var dependencyManager: TypedDependencyManager!
-
-            beforeEach {
-                dependencyManager = TypedDependencyManager()
-                dependencyManager.appendContainer(MainContainerFactory.create(dependencyManager: dependencyManager))
-            }
-
-            it("will have all dependencies resolved") {
-                let instances: [Any?] = [
+            func getRequiredInstances(_ dependencyManager: TypedDependencyManager) -> [Any?] {
+                [
                     dependencyManager.resolve(type: CommonUtility.self),
-                    dependencyManager.resolve(type: ReachabilityType.self),
                     dependencyManager.resolve(type: ConfigurationRepositoryType.self),
                     dependencyManager.resolve(type: ConfigurationManagerType.self),
                     dependencyManager.resolve(type: UserDataCacheable.self),
@@ -47,8 +40,41 @@ class MainContainerSpec: QuickSpec {
                     dependencyManager.resolve(type: TooltipManagerType.self),
                     dependencyManager.resolve(type: TooltipPresenterType.self)
                 ]
-                expect(instances).to(allPass({ $0 != nil }))
-                // this test will fail if there are any cycle references
+            }
+
+            var dependencyManager: TypedDependencyManager!
+
+            beforeEach {
+                dependencyManager = TypedDependencyManager()
+            }
+
+            context("when a valid configURL is provided") {
+                beforeEach {
+                    dependencyManager.appendContainer(MainContainerFactory.create(dependencyManager: dependencyManager,
+                                                                                  configURL: URL(string: "http://config.url")!))
+                }
+
+                it("will have all dependencies resolved") {
+                    let instances = getRequiredInstances(dependencyManager) + [dependencyManager.resolve(type: ReachabilityType.self)]
+                    expect(instances).to(allPass({ $0 != nil }))
+                    // this test will fail if there are any cycle references
+                }
+            }
+
+            context("when ReachabilityType dependency is nil") {
+                beforeEach {
+                    dependencyManager.appendContainer(MainContainerFactory.create(dependencyManager: dependencyManager,
+                                                                                  configURL: URL(string: "config.url")!))
+                    dependencyManager.appendContainer(TypedDependencyManager.Container([
+                        // original ReachabilityType container throws an assertion which prevents further testing
+                        TypedDependencyManager.ContainerElement(type: ReachabilityType.self, factory: { nil })
+                    ]))
+                }
+
+                it("will have all required dependencies resolved") {
+                    let instances = getRequiredInstances(dependencyManager)
+                    expect(instances).to(allPass({ $0 != nil }))
+                }
             }
         }
     }

@@ -22,7 +22,7 @@ class ValidatorHandler {
     }
 }
 
-// swiftlint:disable:next type_body_length
+// swiftlint:disable type_body_length
 struct TestHelpers {
 
     static func generateCampaign(id: String,
@@ -525,4 +525,12 @@ extension Trigger {
                                            eventType: .loginSuccessful,
                                            eventName: "login",
                                            attributes: [])
+}
+
+extension InAppMessagingModuleConfiguration {
+    static let empty = Self.init(configURLString: nil, subscriptionID: nil, isTooltipFeatureEnabled: true)
+
+    init(subscriptionID: String?) {
+        self.init(configURLString: "url", subscriptionID: subscriptionID, isTooltipFeatureEnabled: true)
+    }
 }

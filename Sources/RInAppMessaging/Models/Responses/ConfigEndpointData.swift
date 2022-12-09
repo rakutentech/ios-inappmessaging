@@ -1,10 +1,10 @@
 import struct Foundation.URL
 
-internal struct GetConfigResponse: Decodable {
-    let data: ConfigData
+internal struct ConfigEndpointResponse: Decodable {
+    let data: ConfigEndpointData
 }
 
-internal struct ConfigData: Decodable {
+internal struct ConfigEndpointData: Decodable {
     let rolloutPercentage: Int
     let endpoints: EndpointURL?
 }

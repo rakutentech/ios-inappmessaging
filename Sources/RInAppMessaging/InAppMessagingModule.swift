@@ -172,7 +172,7 @@ extension InAppMessagingModule {
 
 // MARK: - Enabled method
 extension InAppMessagingModule {
-    private func isEnabled(config: ConfigData) -> Bool {
+    private func isEnabled(config: ConfigEndpointData) -> Bool {
         guard config.rolloutPercentage > 0 else {
             return false
         }

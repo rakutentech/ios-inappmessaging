@@ -53,24 +53,34 @@ import RSDKUtils
 
     /// Function to be called by host application to start a new thread that
     /// configures Rakuten InAppMessaging SDK.
-    /// - Parameter subscriptionKey: your app's subscription key. (This setting will override the `InAppMessagingAppSubscriptionID` value in Info.plist)
-    /// - Parameter configurationURL: a configuration URL. (This setting will override the `InAppMessagingConfigurationURL` value in Info.plist)
+    /// - Parameters:
+    ///     - subscriptionKey: your app's subscription key. (This setting will override the `InAppMessagingAppSubscriptionID` value in Info.plist)
+    ///     - configurationURL: a configuration URL. (This setting will override the `InAppMessagingConfigurationURL` value in Info.plist)
+    ///     - enableTooltipFeature: set to `true` to enable Tooltip campaigns. This feature is currently in beta phase. Default value: `false`
     @objc public static func configure(subscriptionID: String? = nil,
-                                       configurationURL: String? = nil) {
+                                       configurationURL: String? = nil,
+                                       enableTooltipFeature: Bool = false) {
         guard initializedModule == nil else {
             return
         }
 
-        BundleInfo.configurationURLOverride = configurationURL
-        BundleInfo.subscriptionIDOverride = subscriptionID
+        var configURL = configurationURL ?? BundleInfo.inAppConfigurationURL
+        if Environment.isUnitTestEnvironment {
+            configURL = "https://config.test"
+        }
+        let config = InAppMessagingModuleConfiguration(
+            configURLString: configURL,
+            subscriptionID: subscriptionID ?? BundleInfo.inAppSubscriptionId,
+            isTooltipFeatureEnabled: enableTooltipFeature)
 
         let dependencyManager = TypedDependencyManager()
-        let mainContainer = MainContainerFactory.create(dependencyManager: dependencyManager)
+        let validConfigURL = tryGettingValidConfigURL(config)
+        let mainContainer = MainContainerFactory.create(dependencyManager: dependencyManager, configURL: validConfigURL)
         dependencyManager.appendContainer(mainContainer)
-        configure(dependencyManager: dependencyManager)
+        configure(dependencyManager: dependencyManager, moduleConfig: config)
     }
 
-    internal static func configure(dependencyManager: TypedDependencyManager) {
+    internal static func configure(dependencyManager: TypedDependencyManager, moduleConfig: InAppMessagingModuleConfiguration) {
         self.dependencyManager = dependencyManager
 
         inAppQueue.async {
@@ -97,6 +107,7 @@ import RSDKUtils
                 return
             }
             router.accessibilityCompatibleDisplay = accessibilityCompatibleDisplay
+            configurationManager.saveIAMModuleConfiguration(moduleConfig)
 
             initializedModule = InAppMessagingModule(configurationManager: configurationManager,
                                                      campaignsListManager: campaignsListManager,
@@ -117,7 +128,7 @@ import RSDKUtils
                     self.initializedModule = nil
                     self.dependencyManager = nil
                     viewListener.stopListening()
-                } else {
+                } else if moduleConfig.isTooltipFeatureEnabled {
                     viewListener.startListening()
                 }
             }
@@ -180,14 +191,27 @@ import RSDKUtils
         }
 
         let description = "⚠️ API method called before calling `configure()`"
-        let error = NSError(domain: "InAppMessaging.\(type(of: self))",
-                            code: 0,
-                            userInfo: [NSLocalizedDescriptionKey: "InAppMessaging: " + description])
+        let error = NSError.iamError(description: description)
         Logger.debug(description)
         errorCallback?(error)
     }
 
-    // MARK: - Unit tests
+    // visible for unit tests
+    internal static func tryGettingValidConfigURL(_ config: InAppMessagingModuleConfiguration) -> URL {
+        
+        guard let url = config.configURLString , let configURL = URL(string: url) else {
+            let description = "⚠️ Invalid Configuration URL: \(config.configURLString ?? "<empty>")"
+            let error = NSError.iamError(description: description)
+            Logger.debug(description)
+            errorCallback?(error)
+            assertionFailure(description)
+            return URL(string: "invalid")!
+        }
+
+        return configURL
+    }
+
+    // MARK: - Unit tests helpers
     internal static func deinitializeModule() {
         inAppQueue.sync {
             dependencyManager?.resolve(type: ViewListenerType.self)?.stopListening()

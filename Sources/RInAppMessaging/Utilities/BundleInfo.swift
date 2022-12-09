@@ -7,9 +7,6 @@ import RSDKUtils
 
 internal class BundleInfo {
 
-    static var subscriptionIDOverride: String?
-    static var configurationURLOverride: String?
-
     class var bundle: Bundle {
         .main
     }
@@ -33,12 +30,10 @@ internal class BundleInfo {
     }
 
     class var inAppSubscriptionId: String? {
-        subscriptionIDOverride ??
         bundle.infoDictionary?[Constants.Info.subscriptionIDKey] as? String
     }
 
     class var inAppConfigurationURL: String? {
-        configurationURLOverride ??
         bundle.infoDictionary?[Constants.Info.configurationURLKey] as? String
     }
 

@@ -13,6 +13,7 @@ class ViewPresenterSpec: QuickSpec {
         var impressionService: ImpressionServiceMock!
         var eventMatcher: EventMatcherMock!
         var campaignTriggerAgent: CampaignTriggerAgentMock!
+        var configurationRepository: ConfigurationRepository!
         let bundleInfo = BundleInfoMock.self
 
         beforeEach {
@@ -20,6 +21,8 @@ class ViewPresenterSpec: QuickSpec {
             impressionService = ImpressionServiceMock()
             eventMatcher = EventMatcherMock()
             campaignTriggerAgent = CampaignTriggerAgentMock()
+            configurationRepository = ConfigurationRepository()
+            configurationRepository.saveIAMModuleConfiguration(InAppMessagingModuleConfiguration.empty)
             bundleInfo.reset()
         }
 
@@ -32,9 +35,9 @@ class ViewPresenterSpec: QuickSpec {
                 presenter = BaseViewPresenter(campaignRepository: campaignRepository,
                                               impressionService: impressionService,
                                               eventMatcher: eventMatcher,
-                                              campaignTriggerAgent: campaignTriggerAgent)
+                                              campaignTriggerAgent: campaignTriggerAgent,
+                                              configurationRepository: configurationRepository)
                 presenter.campaign = testCampaign
-                presenter.bundleInfo = bundleInfo
             }
 
             context("when logImpression is called") {
@@ -49,7 +52,8 @@ class ViewPresenterSpec: QuickSpec {
                 }
 
                 it("will send `impression` type to RAnalytics with all required properties") {
-                    bundleInfo.inAppSubscriptionIdMock = "sub-id"
+                    let subscriptionID = "sub-id"
+                    configurationRepository.saveIAMModuleConfiguration(InAppMessagingModuleConfiguration.init(subscriptionID: subscriptionID))
 
                     expect {
                         presenter.logImpression(type: .impression)
@@ -61,7 +65,7 @@ class ViewPresenterSpec: QuickSpec {
                         return data != nil &&
                         impressions?.count == 1 &&
                         impressions?.first?[Constants.RAnalytics.Keys.action] as? Int == ImpressionType.impression.rawValue &&
-                        data?[Constants.RAnalytics.Keys.subscriptionID] as? String == bundleInfo.inAppSubscriptionIdMock &&
+                        data?[Constants.RAnalytics.Keys.subscriptionID] as? String == subscriptionID &&
                         data?[Constants.RAnalytics.Keys.campaignID] as? String == testCampaign.id
                     })))
                 }
@@ -170,7 +174,8 @@ class ViewPresenterSpec: QuickSpec {
                 presenter = SlideUpViewPresenter(campaignRepository: campaignRepository,
                                                  impressionService: impressionService,
                                                  eventMatcher: eventMatcher,
-                                                 campaignTriggerAgent: campaignTriggerAgent)
+                                                 campaignTriggerAgent: campaignTriggerAgent,
+                                                 configurationRepository: configurationRepository)
                 presenter.view = view
                 presenter.campaign = campaign
             }
@@ -327,6 +332,7 @@ class ViewPresenterSpec: QuickSpec {
                                               eventMatcher: eventMatcher,
                                               campaignTriggerAgent: campaignTriggerAgent,
                                               pushPrimerOptions: pushPrimerOptions,
+                                              configurationRepository: configurationRepository,
                                               notificationCenter: notificationCenterMock)
                 presenter.view = view
                 presenter.campaign = campaign
