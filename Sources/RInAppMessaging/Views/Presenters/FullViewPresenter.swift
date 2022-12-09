@@ -158,6 +158,6 @@ internal class FullViewPresenter: BaseViewPresenter, FullViewPresenterType, Erro
         AnalyticsBroadcaster.sendEventName(Constants.RAnalytics.pushPrimerEventName,
                                            dataObject: [Constants.RAnalytics.Keys.pushPermission: NSNumber(value: didOptIn),
                                                         Constants.RAnalytics.Keys.campaignID: campaign.id,
-                                                        Constants.RAnalytics.Keys.subscriptionID: bundleInfo.inAppSubscriptionId ?? "n/a"])
+                                                        Constants.RAnalytics.Keys.subscriptionID: configurationRepository.getSubscriptionID() ?? "n/a"])
     }
 }
