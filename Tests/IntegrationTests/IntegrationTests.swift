@@ -17,16 +17,25 @@ class IntegrationTests: XCTestCase {
     static var dependencyManager: TypedDependencyManager!
 
     var testQueue: DispatchQueue {
-        return IntegrationTests.testQueue
+        IntegrationTests.testQueue
     }
     var dependencyManager: TypedDependencyManager {
-        return IntegrationTests.dependencyManager
+        IntegrationTests.dependencyManager
     }
 
     override class func setUp() {
         testQueue = DispatchQueue(label: "IAM.IntegrationTests", qos: .utility)
         dependencyManager = TypedDependencyManager()
-        dependencyManager.appendContainer(MainContainerFactory.create(dependencyManager: dependencyManager))
+
+        guard let configURLString = BundleInfo.inAppConfigurationURL, let configURL = URL(string: configURLString) else {
+            assertionFailure("Invalid configuration URL in Info.plist")
+            return
+        }
+        dependencyManager.appendContainer(MainContainerFactory.create(dependencyManager: dependencyManager, configURL: configURL))
+        dependencyManager.resolve(type: ConfigurationRepositoryType.self)?
+            .saveIAMModuleConfiguration(InAppMessagingModuleConfiguration(configURLString: configURLString,
+                                                                          subscriptionID: BundleInfo.inAppSubscriptionId,
+                                                                          isTooltipFeatureEnabled: true))
     }
 
     func test1Config() throws {
@@ -38,10 +47,10 @@ class IntegrationTests: XCTestCase {
             XCTAssertNotNil(service)
 
             let result = service?.getConfigData()
-            let response: ConfigData?
+            let response: ConfigEndpointData?
             do {
                 response = try result?.get()
-                configRepo?.saveConfiguration(response!)
+                configRepo?.saveRemoteConfiguration(response!)
             } catch {
                 XCTFail("Couldn't get a response from configuration service. Error: \(error)")
                 response = nil
