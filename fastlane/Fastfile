@@ -105,8 +105,11 @@ platform :ios do
       output_name: "RInAppMessaging.ipa",
       archive_path: "./artifacts/RInAppMessaging.xcarchive",
       export_options: {
-        method: options[:export_method] || "ad-hoc"
-      }
+        method: options[:export_method] || "ad-hoc",
+        provisioningProfiles: {
+          "jp.co.rakuten.inappmessaging.demo" => options[:provisioning_profile]
+        }
+      },
     )
   end
 end
