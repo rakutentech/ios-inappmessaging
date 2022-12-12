@@ -36,4 +36,12 @@ class ViewController: UIViewController {
         let newViewController = SecondPageViewController(nibName: "SecondPageViewController", bundle: nil)
         self.present(newViewController, animated: true, completion: nil)
     }
+
+    @IBAction func initWithTooltip(_ sender: Any) {
+        RInAppMessaging.configure(enableTooltipFeature: true)
+    }
+
+    @IBAction func initWithoutTooltip(_ sender: Any) {
+        RInAppMessaging.configure(enableTooltipFeature: true)
+    }
 }
