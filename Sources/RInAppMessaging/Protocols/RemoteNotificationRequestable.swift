@@ -5,6 +5,7 @@ protocol RemoteNotificationRequestable {
     func requestAuthorization(options: UNAuthorizationOptions,
                               completionHandler: @escaping (Bool, Error?) -> Void)
     func registerForRemoteNotifications()
+    func getAuthorizationStatus(completionHandler: @escaping (UNAuthorizationStatus) -> Void)
 }
 
 extension RemoteNotificationRequestable {
@@ -13,4 +14,10 @@ extension RemoteNotificationRequestable {
     }
 }
 
-extension UNUserNotificationCenter: RemoteNotificationRequestable { }
+extension UNUserNotificationCenter: RemoteNotificationRequestable {
+    func getAuthorizationStatus(completionHandler: @escaping (UNAuthorizationStatus) -> Void) {
+        getNotificationSettings { settings in
+            completionHandler(settings.authorizationStatus)
+        }
+    }
+}

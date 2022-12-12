@@ -5,6 +5,7 @@
 	- Added new API method to close displayed tooltips [SDKCF-6027]
 	- Added contexts validation for tooltip campaigns [SDKCF-6028]
 	- Added a feature flag to enable/disable the Tooltip feature [SDKCF-6075]
+	- Added tracking of opt-in/opt-outs in Push Primer feature [SDKCF-6026]
 - Bug fixes:
 	- Fixed an edge case of not readable status bar when campaign message is displayed [SDKCF-5134]
 

@@ -20,7 +20,7 @@ internal class BaseViewPresenter: BaseViewPresenterType {
     private let campaignRepository: CampaignRepositoryType
     private let eventMatcher: EventMatcherType
     private let campaignTriggerAgent: CampaignTriggerAgentType
-    private let configurationRepository: ConfigurationRepositoryType
+    let configurationRepository: ConfigurationRepositoryType
 
     var campaign: Campaign!
     var impressions: [Impression] = []

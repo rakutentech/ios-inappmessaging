@@ -53,7 +53,7 @@ class ViewPresenterSpec: QuickSpec {
 
                 it("will send `impression` type to RAnalytics with all required properties") {
                     let subscriptionID = "sub-id"
-                    configurationRepository.saveIAMModuleConfiguration(InAppMessagingModuleConfiguration.init(subscriptionID: subscriptionID))
+                    configurationRepository.saveIAMModuleConfiguration(InAppMessagingModuleConfiguration(subscriptionID: subscriptionID))
 
                     expect {
                         presenter.logImpression(type: .impression)
@@ -496,6 +496,18 @@ class ViewPresenterSpec: QuickSpec {
                                               impression: .actionOne,
                                               uri: nil, trigger: nil)
 
+                    func validatePushPermissionNotification(_ notification: Notification, expectedFlag: Bool) -> Bool {
+                        guard let params = notification.object as? [String: Any],
+                              let data = params["eventData"] as? [String: Any] else {
+                            return false
+                        }
+
+                        return params["eventName"] as? String == Constants.RAnalytics.pushPrimerEventName &&
+                        data[Constants.RAnalytics.Keys.pushPermission] as? Int == Int(booleanLiteral: expectedFlag) &&
+                        data[Constants.RAnalytics.Keys.subscriptionID] as? String == configurationRepository.getSubscriptionID() &&
+                        data[Constants.RAnalytics.Keys.campaignID] as? String == campaign.id
+                    }
+
                     it("will call dismiss on the view object") {
                         presenter.didClickAction(sender: sender)
                         expect(view.wasDismissCalled).to(beTrue())
@@ -521,11 +533,63 @@ class ViewPresenterSpec: QuickSpec {
                             presenter.didClickAction(sender: sender)
                             expect(notificationCenterMock.didCallRegisterForRemoteNotifications).toEventually(beTrue())
                         }
+
+                        it("will track analytics event when user gives permission") {
+                            notificationCenterMock.authorizationStatus = .notDetermined
+                            configurationRepository.saveIAMModuleConfiguration(InAppMessagingModuleConfiguration(subscriptionID: "sub-id"))
+
+                            expect {
+                                presenter.didClickAction(sender: sender)
+                            }.toEventually(postNotifications(containElementSatisfying({
+                                validatePushPermissionNotification($0, expectedFlag: true)
+                            })))
+                        }
+
+                        it("will not track analytics event when authorization popup did not appear") {
+                            notificationCenterMock.authorizationStatus = .authorized
+                            configurationRepository.saveIAMModuleConfiguration(InAppMessagingModuleConfiguration(subscriptionID: "sub-id"))
+
+                            var receivedNotification: Notification?
+                            NotificationCenter.default.addObserver(forName: .rAnalyticsCustomEvent,
+                                                                   object: nil,
+                                                                   queue: OperationQueue()) { notification in
+                                receivedNotification = notification
+                            }
+                            presenter.didClickAction(sender: sender)
+
+                            expect(receivedNotification).toAfterTimeout(beNil())
+                        }
                     }
 
                     context("when authorization is not granted") {
                         beforeEach {
                             notificationCenterMock.authorizationGranted = false
+                        }
+
+                        it("will track analytics event when user denies permission") {
+                            notificationCenterMock.authorizationStatus = .notDetermined
+                            configurationRepository.saveIAMModuleConfiguration(InAppMessagingModuleConfiguration(subscriptionID: "sub-id"))
+
+                            expect {
+                                presenter.didClickAction(sender: sender)
+                            }.toEventually(postNotifications(containElementSatisfying({
+                                validatePushPermissionNotification($0, expectedFlag: false)
+                            })))
+                        }
+
+                        it("will not track analytics event when authorization popup did not appear") {
+                            notificationCenterMock.authorizationStatus = .denied
+                            configurationRepository.saveIAMModuleConfiguration(InAppMessagingModuleConfiguration(subscriptionID: "sub-id"))
+
+                            var receivedNotification: Notification?
+                            NotificationCenter.default.addObserver(forName: .rAnalyticsCustomEvent,
+                                                                   object: nil,
+                                                                   queue: OperationQueue()) { notification in
+                                receivedNotification = notification
+                            }
+                            presenter.didClickAction(sender: sender)
+
+                            expect(receivedNotification).toAfterTimeout(beNil())
                         }
 
                         it("will not try to register for remote notifications") {

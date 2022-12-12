@@ -50,13 +50,15 @@ internal enum Constants {
 
     enum RAnalytics {
         static let impressionsEventName = "_rem_iam_impressions"
-        
+        static let pushPrimerEventName = "_rem_iam_pushprimer"
+
         enum Keys {
             static let action = "action"
             static let timestamp = "timestamp"
             static let impressions = "impressions"
             static let campaignID = "campaign_id"
             static let subscriptionID = "subscription_id"
+            static let pushPermission = "push_permission"
         }
     }
 
