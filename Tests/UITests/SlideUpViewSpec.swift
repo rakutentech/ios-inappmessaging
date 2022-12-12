@@ -92,7 +92,7 @@ class SlideUpViewSpec: QuickSpec {
                 beforeEach {
                     launchAppIfNecessary(context: "slide-up-trigger")
                     if !iamView.exists {
-                        app.buttons["custom_test"].tap()
+                        app.buttons["purchase_successful"].tap()
                         expect(iamView.exists).toEventually(beTrue(), timeout: .seconds(2))
                     }
                 }

@@ -15,15 +15,8 @@
                     {
                         "type": 1,
                         "eventType": 4,
-                        "eventName": "second activity",
-                        "attributes": [
-                            {
-                                "name": "click",
-                                "value": "true",
-                                "type": 4,
-                                "operator": 1
-                            }
-                        ]
+                        "eventName": "purchase_successful",
+                        "attributes": []
                     }
                 ],
                 "messagePayload": {
@@ -71,15 +64,8 @@
                                     "campaignTrigger": {
                                         "type": 1,
                                         "eventType": 4,
-                                        "eventName": "second activity",
-                                        "attributes": [
-                                            {
-                                                "name": "click",
-                                                "value": "true",
-                                                "type": 4,
-                                                "operator": 1
-                                            }
-                                        ]
+                                        "eventName": "purchase_successful",
+                                        "attributes": []
                                     }
                                 }
                             ]
