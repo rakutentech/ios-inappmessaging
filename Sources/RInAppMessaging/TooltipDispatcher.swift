@@ -103,9 +103,9 @@ internal class TooltipDispatcher: TooltipDispatcherType, ViewListenerObserver {
                     tooltipView.startAutoDisappearIfNeeded(seconds: autoCloseSeconds)
                 },
                 confirmation: {
-                    let contexts = tooltip.contexts // first context will always be "Tooltip"
+                    let contexts = Array(tooltip.contexts.dropFirst()) // first context will always be "Tooltip"
                     let tooltipTitle = tooltip.data.messagePayload.title
-                    guard let delegate = self.delegate, contexts.count > 1, !tooltip.data.isTest else {
+                    guard let delegate = self.delegate, !contexts.isEmpty, !tooltip.data.isTest else {
                         return true
                     }
                     let shouldShow = delegate.shouldShowTooltip(title: tooltipTitle,
