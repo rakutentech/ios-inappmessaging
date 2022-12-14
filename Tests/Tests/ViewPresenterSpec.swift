@@ -501,6 +501,10 @@ class ViewPresenterSpec: QuickSpec {
                               let data = params["eventData"] as? [String: Any] else {
                             return false
                         }
+                        guard !(data[Constants.RAnalytics.Keys.pushPermission] is Bool) else {
+                            // the value should be an integer 1/0
+                            return false
+                        }
 
                         return params["eventName"] as? String == Constants.RAnalytics.pushPrimerEventName &&
                         data[Constants.RAnalytics.Keys.pushPermission] as? Int == Int(booleanLiteral: expectedFlag) &&
