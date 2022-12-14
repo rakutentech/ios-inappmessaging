@@ -442,6 +442,14 @@ class PublicAPISpec: QuickSpec {
                     // multiple onVerifyContext calls are possible due to target view tracking logic updates
                 }
 
+                it("will not pass 'Tooltip' in the context array") {
+                    generateAndDisplayLoginTooltip(uiElementIdentifier: "view-id", addContexts: true)
+
+                    expect(contextVerifier.onVerifyContextCallCount).toEventually(beGreaterThan(0))
+                    expect(contextVerifier.onVerifyContextCallParameters?.contexts).toNot(contain("Tooltip"))
+                    // multiple onVerifyContext calls are possible due to target view tracking logic updates
+                }
+
                 it("will call the method before showing a tooltip with expected parameters") {
                     contextVerifier.shouldShowCampaign = true
                     tooltipTargetView.accessibilityIdentifier = TooltipViewIdentifierMock
@@ -460,23 +468,6 @@ class PublicAPISpec: QuickSpec {
 
                     expect(contextVerifier.onVerifyContextCallParameters?.title)
                         .toEventually(equal("[Tooltip][ctx1][ctx2] title"), timeout: .seconds(2))
-                    expect(contextVerifier.onVerifyContextCallParameters?.contexts).to(contain(["Tooltip", "ctx1", "ctx2"]))
-                }
-
-                it("will call the method before showing a message with expected parameters") {
-                    contextVerifier.shouldShowCampaign = true
-                    messageMixerService.mockedResponse = PingResponse(
-                        nextPingMilliseconds: Int.max,
-                        currentPingMilliseconds: 0,
-                        data: [
-                            TestHelpers.generateCampaign(id: "1",
-                                                         title: "[ctx1][ctx2] title",
-                                                         triggers: [Trigger.loginEventTrigger])
-                        ])
-                    campaignsListManager.refreshList()
-                    RInAppMessaging.logEvent(LoginSuccessfulEvent())
-
-                    expect(contextVerifier.onVerifyContextCallParameters?.title).toEventually(equal("[ctx1][ctx2] title"), timeout: .seconds(2))
                     expect(contextVerifier.onVerifyContextCallParameters?.contexts).to(contain(["ctx1", "ctx2"]))
                 }
             }

@@ -212,7 +212,8 @@ From the SDK side, host app developers will be able to log custom events as show
 ### **Campaign context verification**
 
 An optional variable `onVerifyContext` is called before a message is displayed for campaigns that have one or more contexts defined. A context can be added as the text inside "[]" within an IAM portal "Campaign Name" e.g. the campaign name is "[ctx1] title" so the context is "ctx1". Return `false` in `onVerifyContext` closure to prevent campaign from displaying (it won't count as an impression).<br/>
-__Note__: `onVerifyContext` is not called for campaigns without defined contexts
+__Note__: `onVerifyContext` is not called for campaigns without defined contexts.<br/>
+__Note__: This feature also works with Tooltips. ('[Tooltip]' in the title is not considered as a context)
 
 ```swift
 RInAppMessaging.onVerifyContext = { (contexts: [String], campaignTitle: String) in
