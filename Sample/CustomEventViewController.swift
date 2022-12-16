@@ -14,6 +14,11 @@ final class CustomEventViewController: UIViewController {
     @IBOutlet private weak var eventNameTextField: UITextField!
     @IBOutlet private weak var attributesStackView: UIStackView!
 
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        tabBarItem.accessibilityIdentifier = "tabbar.button.2"
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.addGestureRecognizer(UITapGestureRecognizer(target: view, action: #selector(view.endEditing)))

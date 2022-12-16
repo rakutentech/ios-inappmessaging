@@ -3,6 +3,11 @@ import UIKit
 
 class ViewController: UIViewController {
 
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        tabBarItem.accessibilityIdentifier = "tabbar.button.1"
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
