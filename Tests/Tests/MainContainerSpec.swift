@@ -2,10 +2,10 @@ import Quick
 import Nimble
 import Foundation
 
-#if canImport(RSDKUtils)
-import RSDKUtils
-#else // SPM version
+#if SWIFT_PACKAGE
 import RSDKUtilsMain
+#else
+import RSDKUtils
 #endif
 
 @testable import RInAppMessaging

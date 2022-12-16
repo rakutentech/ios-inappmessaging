@@ -2,10 +2,10 @@ import Foundation
 import Quick
 import Nimble
 
-#if canImport(RSDKUtils)
-import class RSDKUtils.URLSessionMock
-#else // SPM version
+#if SWIFT_PACKAGE
 import class RSDKUtilsTestHelpers.URLSessionMock
+#else
+import class RSDKUtils.URLSessionMock
 #endif
 
 @testable import RInAppMessaging

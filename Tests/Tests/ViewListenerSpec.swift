@@ -3,10 +3,10 @@ import Quick
 import Nimble
 import UIKit
 
-#if canImport(RSDKUtils)
+#if canImport(RSDKUtilsNimble)
+import RSDKUtilsNimble // SPM Version
+#else
 import RSDKUtils
-#else // SPM version
-import RSDKUtilsNimble
 #endif
 
 @testable import RInAppMessaging

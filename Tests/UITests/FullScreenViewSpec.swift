@@ -3,8 +3,8 @@ import Quick
 import Nimble
 import class Shock.MockServer
 
-#if SWIFT_PACKAGE
-import RSDKUtilsNimble
+#if canImport(RSDKUtilsNimble)
+import RSDKUtilsNimble // SPM version
 #else
 import RSDKUtils
 #endif

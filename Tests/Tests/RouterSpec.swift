@@ -2,11 +2,11 @@ import Quick
 import Nimble
 import UIKit
 
-#if canImport(RSDKUtils)
-import RSDKUtils
-#else // SPM version
+#if SWIFT_PACKAGE
 import RSDKUtilsNimble
 import class RSDKUtilsMain.TypedDependencyManager
+#else
+import class RSDKUtils.TypedDependencyManager
 #endif
 
 @testable import RInAppMessaging
