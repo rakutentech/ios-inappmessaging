@@ -104,6 +104,7 @@
 		D234A745291C62CF0086AC80 /* SerializationSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = D234A717291C62CE0086AC80 /* SerializationSpec.swift */; };
 		D234A747291C63000086AC80 /* MockServerHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = D234A746291C63000086AC80 /* MockServerHelper.swift */; };
 		D234A759291C653F0086AC80 /* Shock in Frameworks */ = {isa = PBXBuildFile; productRef = D234A758291C653F0086AC80 /* Shock */; };
+		D24CF282294BE427007C6C85 /* UITabBarExtensionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24CF281294BE427007C6C85 /* UITabBarExtensionSpec.swift */; };
 		D920D8C92277B80F008FB38D /* SecondPageViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D920D8C82277B80F008FB38D /* SecondPageViewController.xib */; };
 		D920D8CB2277B965008FB38D /* SecondPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D920D8CA2277B965008FB38D /* SecondPageViewController.swift */; };
 		D924268722D91C15002F50D3 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = D924268522D91C15002F50D3 /* Localizable.strings */; };
@@ -227,6 +228,7 @@
 		D234A716291C62CE0086AC80 /* UIFontExtensionSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIFontExtensionSpec.swift; sourceTree = "<group>"; };
 		D234A717291C62CE0086AC80 /* SerializationSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SerializationSpec.swift; sourceTree = "<group>"; };
 		D234A746291C63000086AC80 /* MockServerHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MockServerHelper.swift; path = ../Tests/UITests/Helpers/MockServerHelper.swift; sourceTree = "<group>"; };
+		D24CF281294BE427007C6C85 /* UITabBarExtensionSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UITabBarExtensionSpec.swift; sourceTree = "<group>"; };
 		D920D8C82277B80F008FB38D /* SecondPageViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SecondPageViewController.xib; sourceTree = "<group>"; };
 		D920D8CA2277B965008FB38D /* SecondPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondPageViewController.swift; sourceTree = "<group>"; };
 		D924268022D91046002F50D3 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Main.strings; sourceTree = "<group>"; };
@@ -475,6 +477,7 @@
 				D234A709291C62CD0086AC80 /* UIApplicationExtensionSpec.swift */,
 				D234A6F8291C62CA0086AC80 /* UIColorExtensionSpec.swift */,
 				D234A716291C62CE0086AC80 /* UIFontExtensionSpec.swift */,
+				D24CF281294BE427007C6C85 /* UITabBarExtensionSpec.swift */,
 				D234A712291C62CE0086AC80 /* UIViewExtensionSpec.swift */,
 				D234A70A291C62CD0086AC80 /* UserDataCacheSpec.swift */,
 				D234A6FD291C62CB0086AC80 /* UserInfoProviderSpec.swift */,
@@ -759,6 +762,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D24CF282294BE427007C6C85 /* UITabBarExtensionSpec.swift in Sources */,
 				D234A736291C62CF0086AC80 /* TooltipViewSpec.swift in Sources */,
 				D234A72F291C62CF0086AC80 /* MatchingUtilitySpec.swift in Sources */,
 				D234A72E291C62CF0086AC80 /* BackoffSpec.swift in Sources */,

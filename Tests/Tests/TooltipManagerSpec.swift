@@ -92,6 +92,26 @@ class TooltipManagerSpec: QuickSpec {
                     expect((iamModule.loggedEvent as? ViewAppearedEvent)?.viewIdentifier).to(equal(TooltipViewIdentifierMock))
                 }
             }
+
+            context("when calling viewDidUpdateIdentifier") {
+                it("will not iterate over displayed views") {
+                    manager.viewDidUpdateIdentifier(from: nil, to: "id", view: UIView())
+                    expect(viewListener.wasIterateOverDisplayedViewsCalled).to(beFalse())
+                }
+
+                it("will log event for matching view") {
+                    let superview = UIView()
+                    let view = UIView()
+                    view.accessibilityIdentifier = TooltipViewIdentifierMock
+                    superview.addSubview(view)
+                    campaignRepository.list = [TestHelpers.generateTooltip(id: "test")]
+
+                    manager.viewDidUpdateIdentifier(from: "old-id", to: TooltipViewIdentifierMock, view: view)
+                    expect(iamModule.loggedEvent).toEventuallyNot(beNil())
+                    expect(iamModule.loggedEvent?.type).to(equal(.viewAppeared))
+                    expect((iamModule.loggedEvent as? ViewAppearedEvent)?.viewIdentifier).to(equal(TooltipViewIdentifierMock))
+                }
+            }
         }
     }
 }

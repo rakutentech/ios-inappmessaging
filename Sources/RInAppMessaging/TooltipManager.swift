@@ -64,6 +64,9 @@ extension TooltipManager {
     }
 
     func viewDidUpdateIdentifier(from: String?, to: String?, view: UIView) {
-        // unused
+        guard let identifier = to else {
+            return
+        }
+        verify(view: view, identifier: identifier)
     }
 }
