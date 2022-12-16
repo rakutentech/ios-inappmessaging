@@ -84,7 +84,6 @@ final class CustomEventViewController: UIViewController {
     }
 
     fileprivate func showAttributeTypeSelection(callback: @escaping (String) -> Void) {
-
         let alert = UIAlertController(title: "Select attribute type", message: nil, preferredStyle: .alert)
 
         AttributeTypeKeys.allCases.forEach { type in
