@@ -283,6 +283,16 @@ To enable tooltips you must set `enableTooltipFeature` flag to true when calling
 RInAppMessaging.configure(enableTooltipFeature: true)
 ```
 
+#### **Displaying Tooltips on tab bar buttons**
+To be able to display tooltips on UITabBar items/buttons you need to set `accessibilityIdentifier` of UITabBarItem object associated with your tab view controller. Then you need to call `updateItemIdentifiers()` method on `UITabBar` object.
+
+A code example from UIViewController's `viewDidLoad()` method
+```swift
+tabBarItem.accessibilityIdentifier = "UIElement.4"
+tabBarController?.tabBar.updateItemIdentifiers()
+```
+This setup can be also done in other lifecycle methods and classes.
+
 ## **Build/Run Example Application and Unit Tests**
 
 * Clone or fork the repo

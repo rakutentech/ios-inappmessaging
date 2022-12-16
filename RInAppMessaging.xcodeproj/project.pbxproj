@@ -90,6 +90,7 @@
 		607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDC1AFB9204008FA782 /* Images.xcassets */; };
 		607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDE1AFB9204008FA782 /* LaunchScreen.xib */; };
 		C9827558262C423C00476505 /* BackoffSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9827557262C423C00476505 /* BackoffSpec.swift */; };
+		D24CF280294BE3FA007C6C85 /* UITabBarExtensionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24CF27F294BE3F9007C6C85 /* UITabBarExtensionSpec.swift */; };
 		D911DC4F211115730082B950 /* ConfigurationSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9F418282110FD9F00E2158F /* ConfigurationSpec.swift */; };
 		D920D8C92277B80F008FB38D /* SecondPageViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D920D8C82277B80F008FB38D /* SecondPageViewController.xib */; };
 		D920D8CB2277B965008FB38D /* SecondPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D920D8CA2277B965008FB38D /* SecondPageViewController.swift */; };
@@ -215,6 +216,7 @@
 		6DA608F3248603BA00A8260D /* Example-Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Example-Debug.xcconfig"; sourceTree = "<group>"; };
 		6DA608F424860B7F00A8260D /* Example-Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Example-Release.xcconfig"; sourceTree = "<group>"; };
 		C9827557262C423C00476505 /* BackoffSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackoffSpec.swift; sourceTree = "<group>"; };
+		D24CF27F294BE3F9007C6C85 /* UITabBarExtensionSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UITabBarExtensionSpec.swift; sourceTree = "<group>"; };
 		D920D8C82277B80F008FB38D /* SecondPageViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SecondPageViewController.xib; sourceTree = "<group>"; };
 		D920D8CA2277B965008FB38D /* SecondPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondPageViewController.swift; sourceTree = "<group>"; };
 		D924268022D91046002F50D3 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Main.strings; sourceTree = "<group>"; };
@@ -438,6 +440,7 @@
 				45EA720425B71FA2001B2049 /* UIApplicationExtensionSpec.swift */,
 				455FEBE127F214640064470D /* UIColorExtensionSpec.swift */,
 				4BBE7EAE274F1A6A0039D2BF /* UIFontExtensionSpec.swift */,
+				D24CF27F294BE3F9007C6C85 /* UITabBarExtensionSpec.swift */,
 				45EA720C25B72002001B2049 /* UIViewExtensionSpec.swift */,
 				4538BCF5262AE8FA009952BE /* UserDataCacheSpec.swift */,
 				45DC6D0427A426C000B28C13 /* ViewListenerSpec.swift */,
@@ -727,6 +730,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D24CF280294BE3FA007C6C85 /* UITabBarExtensionSpec.swift in Sources */,
 				45ADA542247D206B00A9E2A3 /* RouterSpec.swift in Sources */,
 				456FE1E72428513200304872 /* ErrorReportableSpec.swift in Sources */,
 				4538BCF6262AE8FA009952BE /* UserDataCacheSpec.swift in Sources */,
