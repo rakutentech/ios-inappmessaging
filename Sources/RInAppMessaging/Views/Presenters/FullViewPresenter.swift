@@ -3,7 +3,7 @@ import UserNotifications
 
 #if canImport(RSDKUtils)
 import class RSDKUtils.AnalyticsBroadcaster
-#else // SPM Version
+#else // SPM version
 import class RSDKUtilsMain.AnalyticsBroadcaster
 #endif
 

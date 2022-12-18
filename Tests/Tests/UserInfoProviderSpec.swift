@@ -1,8 +1,8 @@
 import Quick
 import Nimble
 
-#if SWIFT_PACKAGE
-import RSDKUtilsNimble
+#if canImport(RSDKUtilsNimble)
+import RSDKUtilsNimble // SPM version
 #else
 import RSDKUtils
 #endif

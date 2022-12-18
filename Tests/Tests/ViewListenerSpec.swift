@@ -4,7 +4,7 @@ import Nimble
 import UIKit
 
 #if canImport(RSDKUtilsNimble)
-import RSDKUtilsNimble // SPM Version
+import RSDKUtilsNimble // SPM version
 #else
 import RSDKUtils
 #endif

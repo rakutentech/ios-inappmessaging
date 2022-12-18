@@ -2,8 +2,8 @@ import UIKit
 import Quick
 import Nimble
 
-#if SWIFT_PACKAGE
-import class RSDKUtilsMain.TypedDependencyManager
+#if canImport(RSDKUtilsMain)
+import class RSDKUtilsMain.TypedDependencyManager // SPM version
 #else
 import class RSDKUtils.TypedDependencyManager
 #endif

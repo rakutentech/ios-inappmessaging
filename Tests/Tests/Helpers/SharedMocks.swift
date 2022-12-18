@@ -1,8 +1,8 @@
 import Foundation
 import UIKit
 
-#if SWIFT_PACKAGE
-import RSDKUtilsMain
+#if canImport(RSDKUtilsMain)
+import RSDKUtilsMain // SPM version
 #else
 import RSDKUtils
 #endif

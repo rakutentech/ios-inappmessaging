@@ -3,8 +3,8 @@ import Quick
 import Nimble
 import UIKit
 
-#if SWIFT_PACKAGE
-import class RSDKUtilsTestHelpers.URLSessionMock
+#if canImport(RSDKUtilsTestHelpers)
+import class RSDKUtilsTestHelpers.URLSessionMock // SPM version
 #else
 import class RSDKUtils.URLSessionMock
 #endif
