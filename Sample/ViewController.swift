@@ -6,6 +6,7 @@ class ViewController: UIViewController {
     override func awakeFromNib() {
         super.awakeFromNib()
         tabBarItem.accessibilityIdentifier = "tabbar.button.1"
+        tabBarController?.tabBar.updateItemIdentifiers()
     }
 
     override func viewDidLoad() {

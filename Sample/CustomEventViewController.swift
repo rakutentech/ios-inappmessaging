@@ -17,6 +17,7 @@ final class CustomEventViewController: UIViewController {
     override func awakeFromNib() {
         super.awakeFromNib()
         tabBarItem.accessibilityIdentifier = "tabbar.button.2"
+        tabBarController?.tabBar.updateItemIdentifiers()
     }
 
     override func viewDidLoad() {
