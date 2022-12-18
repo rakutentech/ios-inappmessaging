@@ -1,11 +1,13 @@
 import Foundation
 import Quick
 import Nimble
+
 #if canImport(RSDKUtilsNimble)
 import RSDKUtilsNimble // SPM version
 #else
 import RSDKUtils
 #endif
+
 @testable import RInAppMessaging
 
 // swiftlint:disable:next type_body_length

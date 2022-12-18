@@ -1,6 +1,7 @@
 import XCTest
-#if canImport(RSDKUtilsMain)
-import class RSDKUtilsMain.TypedDependencyManager // SPM version
+
+#if SWIFT_PACKAGE
+import class RSDKUtilsMain.TypedDependencyManager
 #else
 import class RSDKUtils.TypedDependencyManager
 #endif

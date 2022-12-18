@@ -1,10 +1,12 @@
 import Foundation
 import UIKit
+
 #if canImport(RSDKUtilsMain)
 import RSDKUtilsMain // SPM version
 #else
 import RSDKUtils
 #endif
+
 @testable import RInAppMessaging
 
 let TooltipViewIdentifierMock = "view.id"

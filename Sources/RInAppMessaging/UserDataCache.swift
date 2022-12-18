@@ -1,6 +1,7 @@
 import Foundation
-#if canImport(RSDKUtilsMain)
-import class RSDKUtilsMain.AtomicGetSet // SPM version
+
+#if SWIFT_PACKAGE
+import class RSDKUtilsMain.AtomicGetSet
 #else
 import class RSDKUtils.AtomicGetSet
 #endif

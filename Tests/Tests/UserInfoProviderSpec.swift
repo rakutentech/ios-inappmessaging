@@ -1,10 +1,12 @@
 import Quick
 import Nimble
+
 #if canImport(RSDKUtilsNimble)
 import RSDKUtilsNimble // SPM version
 #else
 import RSDKUtils
 #endif
+
 @testable import RInAppMessaging
 
 class UserInfoProviderSpec: QuickSpec {

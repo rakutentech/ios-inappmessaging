@@ -2,11 +2,13 @@ import Foundation
 import Quick
 import Nimble
 import UIKit
+
 #if canImport(RSDKUtilsNimble)
 import RSDKUtilsNimble // SPM version
 #else
 import RSDKUtils
 #endif
+
 @testable import RInAppMessaging
 
 class ViewListenerSpec: QuickSpec {

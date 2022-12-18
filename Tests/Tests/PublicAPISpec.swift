@@ -1,11 +1,13 @@
 import UIKit
 import Quick
 import Nimble
+
 #if canImport(RSDKUtilsMain)
 import class RSDKUtilsMain.TypedDependencyManager // SPM version
 #else
 import class RSDKUtils.TypedDependencyManager
 #endif
+
 @testable import RInAppMessaging
 
 // swiftlint:disable type_body_length

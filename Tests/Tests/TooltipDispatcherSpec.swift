@@ -2,11 +2,13 @@ import Foundation
 import Quick
 import Nimble
 import UIKit
+
 #if canImport(RSDKUtilsTestHelpers)
 import class RSDKUtilsTestHelpers.URLSessionMock // SPM version
 #else
 import class RSDKUtils.URLSessionMock
 #endif
+
 @testable import RInAppMessaging
 
 class TooltipDispatcherSpec: QuickSpec {

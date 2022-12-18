@@ -1,11 +1,13 @@
 import Quick
 import Nimble
 import Foundation
+
 #if canImport(RSDKUtilsMain)
 import RSDKUtilsMain // SPM version
 #else
 import RSDKUtils
 #endif
+
 @testable import RInAppMessaging
 
 class MainContainerSpec: QuickSpec {

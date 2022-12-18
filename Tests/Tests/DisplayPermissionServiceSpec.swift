@@ -1,12 +1,14 @@
 import Foundation
 import Quick
 import Nimble
+
 #if canImport(RSDKUtils)
 import RSDKUtils
 #else // SPM version
 import RSDKUtilsNimble
 import class RSDKUtilsTestHelpers.URLSessionMock
 #endif
+
 @testable import RInAppMessaging
 
 class DisplayPermissionServiceSpec: QuickSpec {

@@ -1,11 +1,13 @@
 import Quick
 import Nimble
 import Foundation
+
 #if canImport(RSDKUtilsMain)
 import class RSDKUtilsMain.TypedDependencyManager // SPM version
 #else
 import class RSDKUtils.TypedDependencyManager
 #endif
+
 @testable import RInAppMessaging
 
 /// Tests for behavior of the SDK when supplied with different configuration responses.
@@ -56,7 +58,7 @@ class ConfigurationSpec: QuickSpec {
                     }
 
                     expect(RInAppMessaging.initializedModule).toEventually(beNil())
-                    expect(RInAppMessaging.dependencyManager).to(beNil())
+                    expect(RInAppMessaging.dependencyManager).toEventually(beNil())
                 }
 
                 it("will not call ping") {
