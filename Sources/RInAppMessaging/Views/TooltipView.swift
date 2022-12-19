@@ -37,6 +37,7 @@ internal class TooltipView: UIView {
     }
     
     let presenter: TooltipPresenterType
+    var onDeinit: () -> Void = { }
     private var position: TooltipBodyData.Position?
     private var imageBgColor: UIColor?
     private(set) var autoCloseTimer: Timer?
@@ -56,6 +57,15 @@ internal class TooltipView: UIView {
         layer.shadowColor = UIColor.black.cgColor
         layer.shadowRadius = UIConstants.shadowRadius
         layer.shadowOpacity = UIConstants.shadowOpacity
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    deinit {
+        onDeinit()
+        exitButton.removeFromSuperview()
     }
 
     func setup(model: TooltipViewModel) {
@@ -92,14 +102,6 @@ internal class TooltipView: UIView {
 
         autoCloseTimer = timer
         RunLoop.current.add(timer, forMode: .common)
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    deinit {
-        exitButton.removeFromSuperview()
     }
 
     // MARK: - UIView overrides

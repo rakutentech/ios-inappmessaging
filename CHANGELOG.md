@@ -8,6 +8,7 @@
 	- Added tracking of opt-in/opt-outs in Push Primer feature [SDKCF-6026]
 - Improvements:
 	- Restored tab bar items support. Added UITabBar extension method for convenience [SDKCF-6134]
+	- Added support for screen orientation changes when using Tooltip feature [SDKCF-6177]
 - Bug fixes:
 	- Fixed an edge case of not readable status bar when campaign message is displayed [SDKCF-5134]
 
