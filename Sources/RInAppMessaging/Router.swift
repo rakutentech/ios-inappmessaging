@@ -53,7 +53,7 @@ internal class Router: RouterType, ViewListenerObserver {
     private let dependencyManager: TypedDependencyManager
     private let displayQueue = DispatchQueue(label: "IAM.MessageLoader")
     private var displayedTooltips = [String: TooltipView]()
-    private var observers = [NSKeyValueObservation]()
+    private var positionObservers = [TooltipView: [NSKeyValueObservation]]()
 
     weak var errorDelegate: ErrorDelegate?
     var accessibilityCompatibleDisplay = false
@@ -225,11 +225,11 @@ internal class Router: RouterType, ViewListenerObserver {
 
             self.displayedTooltips[identifier] = tooltipView
             self.commitTooltipDisplay(tooltipView: tooltipView,
-                                       targetView: targetView,
-                                       superview: superview,
-                                       data: tooltipData,
-                                       image: image,
-                                       becameVisibleHandler: becameVisibleHandler)
+                                      targetView: targetView,
+                                      superview: superview,
+                                      data: tooltipData,
+                                      image: image,
+                                      becameVisibleHandler: becameVisibleHandler)
         }
     }
 
@@ -247,7 +247,7 @@ internal class Router: RouterType, ViewListenerObserver {
         }
         let position = data.bodyData.position
 
-        self.updateFrame(targetView: targetView, tooltipView: tooltipView, superview: superview, position: position)
+        updateFrame(targetView: targetView, tooltipView: tooltipView, superview: superview, position: position)
 
         var didBecomeVisible = false
         weak var weakSelf = self
@@ -271,13 +271,21 @@ internal class Router: RouterType, ViewListenerObserver {
             let viewVisibilityObserver = parentScrollView.observe(\.contentOffset, options: []) { _, _ in
                 verifyVisibility()
             }
-            self.observers.append(screenTransitionObserver)
-            self.observers.append(viewVisibilityObserver)
+            positionObservers[tooltipView] = [screenTransitionObserver, viewVisibilityObserver]
         } else {
             let observer = targetView.observe(\.frame, options: []) { _, _ in
                 newPositionHandler()
             }
-            self.observers.append(observer)
+            positionObservers[tooltipView] = [observer]
+        }
+
+        let orientationObserver = NotificationCenter.default.addObserver(forName: UIDevice.orientationDidChangeNotification, object: nil, queue: nil) { _ in
+            // async execution is needed to do position calculation after view layout is updated
+            DispatchQueue.main.async(execute: newPositionHandler)
+        }
+        tooltipView.onDeinit = { [weak self] in
+            self?.positionObservers[tooltipView] = nil
+            NotificationCenter.default.removeObserver(orientationObserver)
         }
     }
 

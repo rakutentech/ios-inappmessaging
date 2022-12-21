@@ -40,6 +40,17 @@ class TooltipViewSpec: QuickSpec {
                     expect(presenter.wasDidTapExitButtonCalled).to(beTrue())
                 }
             }
+
+            context("onDeinit closure") {
+                it("will be called when instance is initialized") {
+                    waitUntil { done in
+                        tooltipView.onDeinit = {
+                            done()
+                        }
+                        tooltipView = nil
+                    }
+                }
+            }
         }
     }
 }
