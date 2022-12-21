@@ -99,7 +99,7 @@ class FullScreenViewSpec: QuickSpec {
                 beforeEach {
                     launchAppIfNecessary(context: "full-controls")
                     if !iamView.exists {
-                        app.buttons["custom_test"].tap()
+                        app.buttons["purchase_successful"].tap()
                         expect(iamView.exists).toEventually(beTrue(), timeout: .seconds(2))
                     }
                 }
@@ -132,8 +132,8 @@ class FullScreenViewSpec: QuickSpec {
                 beforeEach {
                     launchAppIfNecessary(context: "full-controls")
                     if !iamView.exists {
-                        expect(app.buttons["custom_test"].exists).to(beTrue())
-                        app.buttons["custom_test"].tap()
+                        expect(app.buttons["purchase_successful"].exists).to(beTrue())
+                        app.buttons["purchase_successful"].tap()
                         expect(iamView.exists).toEventually(beTrue(), timeout: .seconds(2))
                     }
                 }
@@ -145,7 +145,7 @@ class FullScreenViewSpec: QuickSpec {
                 it("should not display the campaign again if opt out button was checked") {
                     iamView.buttons["Do not show me this message again"].tap()
                     iamView.buttons["exitButton"].tap()
-                    app.buttons["custom_test"].tap()
+                    app.buttons["purchase_successful"].tap()
                     expect(iamView.exists).toAfterTimeout(beFalse())
                     app = nil // force clean launch to clear opt-out setting
                 }

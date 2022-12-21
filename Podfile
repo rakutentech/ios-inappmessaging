@@ -25,4 +25,11 @@ end
 
 post_install do |installer|
   system("./configure-secrets.sh InAppMessaging #{secrets.join(" ")}")
+  installer.pods_project.targets.each do |target|
+    if target.name == 'RInAppMessaging'
+      target.build_configurations.each do |config|
+        config.build_settings['ENABLE_TESTABILITY'] = 'YES'
+      end
+    end
+  end
 end

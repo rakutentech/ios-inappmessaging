@@ -105,6 +105,8 @@
 		D234A747291C63000086AC80 /* MockServerHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = D234A746291C63000086AC80 /* MockServerHelper.swift */; };
 		D234A759291C653F0086AC80 /* Shock in Frameworks */ = {isa = PBXBuildFile; productRef = D234A758291C653F0086AC80 /* Shock */; };
 		D24CF282294BE427007C6C85 /* UITabBarExtensionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24CF281294BE427007C6C85 /* UITabBarExtensionSpec.swift */; };
+		D24EDF762941506000F9EC5E /* CustomEventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24EDF752941506000F9EC5E /* CustomEventViewController.swift */; };
+		D24EDF792941512D00F9EC5E /* String+Conversion.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24EDF782941512D00F9EC5E /* String+Conversion.swift */; };
 		D920D8C92277B80F008FB38D /* SecondPageViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D920D8C82277B80F008FB38D /* SecondPageViewController.xib */; };
 		D920D8CB2277B965008FB38D /* SecondPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D920D8CA2277B965008FB38D /* SecondPageViewController.swift */; };
 		D924268722D91C15002F50D3 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = D924268522D91C15002F50D3 /* Localizable.strings */; };
@@ -229,6 +231,8 @@
 		D234A717291C62CE0086AC80 /* SerializationSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SerializationSpec.swift; sourceTree = "<group>"; };
 		D234A746291C63000086AC80 /* MockServerHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MockServerHelper.swift; path = ../Tests/UITests/Helpers/MockServerHelper.swift; sourceTree = "<group>"; };
 		D24CF281294BE427007C6C85 /* UITabBarExtensionSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UITabBarExtensionSpec.swift; sourceTree = "<group>"; };
+		D24EDF752941506000F9EC5E /* CustomEventViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomEventViewController.swift; sourceTree = "<group>"; };
+		D24EDF782941512D00F9EC5E /* String+Conversion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Conversion.swift"; sourceTree = "<group>"; };
 		D920D8C82277B80F008FB38D /* SecondPageViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SecondPageViewController.xib; sourceTree = "<group>"; };
 		D920D8CA2277B965008FB38D /* SecondPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondPageViewController.swift; sourceTree = "<group>"; };
 		D924268022D91046002F50D3 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Main.strings; sourceTree = "<group>"; };
@@ -409,9 +413,11 @@
 			children = (
 				607FACD51AFB9204008FA782 /* AppDelegate.swift */,
 				607FACD71AFB9204008FA782 /* ViewController.swift */,
+				D24EDF752941506000F9EC5E /* CustomEventViewController.swift */,
 				607FACD91AFB9204008FA782 /* Main.storyboard */,
 				D920D8CA2277B965008FB38D /* SecondPageViewController.swift */,
 				D920D8C82277B80F008FB38D /* SecondPageViewController.xib */,
+				D24EDF772941507800F9EC5E /* Helpers */,
 				607FACDC1AFB9204008FA782 /* Images.xcassets */,
 				607FACDE1AFB9204008FA782 /* LaunchScreen.xib */,
 				607FACD31AFB9204008FA782 /* Supporting Files */,
@@ -505,6 +511,14 @@
 				4518EEDD270F73BB00E8CBBC /* Foundation.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		D24EDF772941507800F9EC5E /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				D24EDF782941512D00F9EC5E /* String+Conversion.swift */,
+			);
+			path = Helpers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -755,6 +769,8 @@
 				607FACD81AFB9204008FA782 /* ViewController.swift in Sources */,
 				D234A747291C63000086AC80 /* MockServerHelper.swift in Sources */,
 				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,
+				D24EDF792941512D00F9EC5E /* String+Conversion.swift in Sources */,
+				D24EDF762941506000F9EC5E /* CustomEventViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -1,7 +1,13 @@
 import UIKit
-import RInAppMessaging
+@testable import RInAppMessaging
 
 class ViewController: UIViewController {
+
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        tabBarItem.accessibilityIdentifier = "tabbar.button.1"
+        tabBarController?.tabBar.updateItemIdentifiers()
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,14 +32,6 @@ class ViewController: UIViewController {
     @IBAction func loginSuccessfulButton(_ sender: Any) {
         RInAppMessaging.logEvent(LoginSuccessfulEvent())
     }
-    @IBAction func customTestButton(_ sender: Any) {
-        RInAppMessaging.logEvent(
-            CustomEvent(
-                withName: "second activity",
-                withCustomAttributes: [CustomAttribute(withKeyName: "click", withBoolValue: true)]
-            )
-        )
-    }
 
     @IBAction func appStartButton(_ sender: Any) {
         RInAppMessaging.logEvent(AppStartEvent())
@@ -43,5 +41,40 @@ class ViewController: UIViewController {
         // Register Nib
         let newViewController = SecondPageViewController(nibName: "SecondPageViewController", bundle: nil)
         self.present(newViewController, animated: true, completion: nil)
+    }
+
+    @IBAction func initWithTooltip(_ sender: Any) {
+        initSDK(enableTooltipFeature: true)
+    }
+
+    @IBAction func initWithoutTooltip(_ sender: Any) {
+        initSDK(enableTooltipFeature: false)
+    }
+
+    private func initSDK(enableTooltipFeature: Bool) {
+        guard RInAppMessaging.initializedModule == nil else {
+            showInitFailedAlert()
+            return
+        }
+        RInAppMessaging.configure(enableTooltipFeature: enableTooltipFeature)
+        showInitFinishedAlert()
+    }
+
+    private func showInitFinishedAlert() {
+        let alert = UIAlertController(title: "Init successful",
+                                      message: nil,
+                                      preferredStyle: .alert)
+        let confirmAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+        alert.addAction(confirmAction)
+        present(alert, animated: true)
+    }
+
+    private func showInitFailedAlert() {
+        let alert = UIAlertController(title: "Error",
+                                      message: "IAM SDK is already initialized",
+                                      preferredStyle: .alert)
+        let confirmAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+        alert.addAction(confirmAction)
+        present(alert, animated: true)
     }
 }

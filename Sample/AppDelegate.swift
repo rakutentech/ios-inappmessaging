@@ -17,7 +17,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             // To mock API using ping.json file, uncomment the line below and enable `RIAM_CONFIG_URL` override in Example-Debug.xcconfig
             // MockServerHelper.setupForSampleApp()
         }
-        if !AppDelegate.isTestEnvironment || CommandLine.arguments.contains("--uitesting") {
+        if CommandLine.arguments.contains("--uitesting") {
             RInAppMessaging.configure()
         }
 
