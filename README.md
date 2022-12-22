@@ -293,6 +293,16 @@ tabBarController?.tabBar.updateItemIdentifiers()
 ```
 This setup can be also done in other lifecycle methods and classes.
 
+#### **Manually closing displayed tooltip**
+Tooltips can be closed manually in similar way campaign messages are closed with `closeMessage()` API method.<br/>
+The `closeTooltip(with uiElementIdentifier: String)` API method closes currently displayed tooltip attached to provided UI Element without user interaction. The `uiElementIdentifier` parameter identifier tells SDK which tooltip should be closed. Its value should match the value put under `UIElement` parameter in tooltip JSON payload.
+
+```swift
+RInAppMessaging.closeTooltip(with: "uielement.button.action1")
+```
+**Note:** Calling this method will not count as an impression (i.e. the message won't be counted as displayed). 
+
+
 ## **Build/Run Example Application and Unit Tests**
 
 * Clone or fork the repo
