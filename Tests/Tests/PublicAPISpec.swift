@@ -34,7 +34,7 @@ class PublicAPISpec: QuickSpec {
         var configurationRepository: ConfigurationRepositoryType!
 
         func mockContainer() -> TypedDependencyManager.Container {
-            return TypedDependencyManager.Container([
+            TypedDependencyManager.Container([
                 TypedDependencyManager.ContainerElement(type: DisplayPermissionServiceType.self, factory: { DisplayPermissionServiceMock() }),
                 TypedDependencyManager.ContainerElement(type: ConfigurationManagerType.self, factory: { configurationManager }),
                 TypedDependencyManager.ContainerElement(type: MessageMixerServiceType.self, factory: { messageMixerService }),
@@ -113,7 +113,9 @@ class PublicAPISpec: QuickSpec {
             RInAppMessaging.errorCallback = nil
             UserDefaults.standard.removePersistentDomain(forName: "PublicAPISpec")
             UIApplication.shared.getKeyWindow()?.findIAMView()?.removeFromSuperview()
-            UIApplication.shared.getKeyWindow()?.findTooltipView()?.removeFromSuperview()
+            while let tooltipView = UIApplication.shared.getKeyWindow()?.findTooltipView() {
+                tooltipView.removeFromSuperview()
+            }
             tooltipTargetView.removeFromSuperview()
         }
 
