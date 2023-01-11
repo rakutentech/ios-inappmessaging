@@ -1,6 +1,6 @@
 ## Changelog
 
-### 7.3.0 (in-progress)
+### 7.3.0 (2023-01-11)
 - Features:
 	- Added new API method to close displayed tooltips [SDKCF-6027]
 	- Added contexts validation for tooltip campaigns [SDKCF-6028]
