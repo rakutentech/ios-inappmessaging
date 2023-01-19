@@ -16,8 +16,8 @@ extension UIView {
 
     func findTooltipView() -> TooltipView? {
         for subview in subviews {
-            if let TooltipView = subview as? TooltipView {
-                return TooltipView
+            if let tooltipView = subview as? TooltipView {
+                return tooltipView
             } else if let nestedTooltipView = subview.findTooltipView() {
                 return nestedTooltipView
             }

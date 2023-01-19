@@ -103,17 +103,17 @@ internal final class ViewListener: ViewListenerType {
     }
 
     private func performSwizzling() -> Bool {
-        [swizzle(#selector(UIView.didMoveToSuperview), with: #selector(UIView.swizzled_didMoveToSuperview)),
-         swizzle(#selector(UIView.removeFromSuperview), with: #selector(UIView.swizzled_removeFromSuperview)),
+        [swizzle(#selector(UIView.didMoveToSuperview), with: #selector(UIView.swizzledDidMoveToSuperview)),
+         swizzle(#selector(UIView.removeFromSuperview), with: #selector(UIView.swizzledRemoveFromSuperview)),
          swizzle(#selector(setter: UIView.accessibilityIdentifier),
-                 with: #selector(NSObject.swizzled_setAccessibilityIdentifier),
+                 with: #selector(NSObject.swizzledSetAccessibilityIdentifier),
                  of: NSObject.self),
-         swizzle(#selector(UIView.didMoveToWindow), with: #selector(UIView.swizzled_didMoveToWindow))].allSatisfy { $0 == true }
+         swizzle(#selector(UIView.didMoveToWindow), with: #selector(UIView.swizzledDidMoveToWindow))].allSatisfy { $0 == true }
     }
 
-    private func swizzle(_ sel1: Selector, with sel2: Selector, of class: AnyClass = UIView.self) -> Bool {
-        guard let originalMethod = class_getInstanceMethod(`class`, sel1),
-              let swizzledMethod = class_getInstanceMethod(`class`, sel2) else {
+    private func swizzle(_ sel1: Selector, with sel2: Selector, of classRef: AnyClass = UIView.self) -> Bool {
+        guard let originalMethod = class_getInstanceMethod(classRef, sel1),
+              let swizzledMethod = class_getInstanceMethod(classRef, sel2) else {
                   assertionFailure()
                   return false
               }
@@ -125,9 +125,9 @@ internal final class ViewListener: ViewListenerType {
 }
 
 private extension NSObject {
-    @objc func swizzled_setAccessibilityIdentifier(_ identifier: String?) {
+    @objc func swizzledSetAccessibilityIdentifier(_ identifier: String?) {
         let oldIdentifier = (self as? UIView)?.accessibilityIdentifier
-        self.swizzled_setAccessibilityIdentifier(identifier)
+        self.swizzledSetAccessibilityIdentifier(identifier)
 
         guard let self = self as? UIView, oldIdentifier != identifier else {
             return
@@ -146,8 +146,8 @@ private extension UIView {
 
     // TOOLTIP: support isHidden
 
-    @objc func swizzled_didMoveToSuperview() {
-        self.swizzled_didMoveToSuperview()
+    @objc func swizzledDidMoveToSuperview() {
+        self.swizzledDidMoveToSuperview()
 
         guard !identifier.isEmpty else {
             return
@@ -157,8 +157,8 @@ private extension UIView {
         }
     }
 
-    @objc func swizzled_removeFromSuperview() {
-        self.swizzled_removeFromSuperview()
+    @objc func swizzledRemoveFromSuperview() {
+        self.swizzledRemoveFromSuperview()
 
         guard !identifier.isEmpty else {
             return
@@ -168,8 +168,8 @@ private extension UIView {
         }
     }
 
-    @objc func swizzled_didMoveToWindow() {
-        self.swizzled_didMoveToWindow()
+    @objc func swizzledDidMoveToWindow() {
+        self.swizzledDidMoveToWindow()
 
         guard !identifier.isEmpty else {
             return
