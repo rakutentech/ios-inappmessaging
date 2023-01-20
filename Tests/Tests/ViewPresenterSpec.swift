@@ -22,7 +22,7 @@ class ViewPresenterSpec: QuickSpec {
             eventMatcher = EventMatcherMock()
             campaignTriggerAgent = CampaignTriggerAgentMock()
             configurationRepository = ConfigurationRepository()
-            configurationRepository.saveIAMModuleConfiguration(InAppMessagingModuleConfiguration.empty)
+            configurationRepository.saveIAMModuleConfiguration(.empty)
             bundleInfo.reset()
         }
 

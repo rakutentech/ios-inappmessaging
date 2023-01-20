@@ -531,6 +531,6 @@ extension InAppMessagingModuleConfiguration {
     static let empty = Self.init(configURLString: nil, subscriptionID: nil, isTooltipFeatureEnabled: true)
 
     init(subscriptionID: String?) {
-        self.init(configURLString: "url", subscriptionID: subscriptionID, isTooltipFeatureEnabled: true)
+        self.init(configURLString: "https://config.test", subscriptionID: subscriptionID, isTooltipFeatureEnabled: true)
     }
 }
