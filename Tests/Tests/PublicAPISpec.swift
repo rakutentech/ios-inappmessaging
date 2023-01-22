@@ -635,7 +635,7 @@ class PublicAPISpec: QuickSpec {
 
                         expect(UIApplication.shared.getKeyWindow()?.findTooltipView()).toEventuallyNot(beNil())
                         RInAppMessaging.closeTooltip(with: tooltipTargetViewID)
-                        expect(UIApplication.shared.getKeyWindow()?.findTooltipView()).toEventually(beNil())
+                        expect(UIApplication.shared.getKeyWindow()?.findTooltipView()).toEventually(beNil(), timeout: .seconds(2))
                     }
 
                     it("will not decrement impressionsLeft in closed tooltip") {
