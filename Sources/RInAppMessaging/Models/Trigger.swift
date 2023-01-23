@@ -21,23 +21,30 @@ internal struct Trigger: Codable, Equatable {
 }
 
 internal struct TriggerAttribute: Codable, Equatable {
+    private enum CodingKeys: String, CodingKey {
+        case name
+        case value
+        case type
+        case operatorType = "operator"
+    }
+
     let name: String
     let value: String
     let type: AttributeType
-    let `operator`: AttributeOperator
+    let operatorType: AttributeOperator
 
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         name = try container.decode(String.self, forKey: CodingKeys.name).lowercased()
         value = try container.decode(String.self, forKey: CodingKeys.value).lowercased()
         type = try container.decode(AttributeType.self, forKey: CodingKeys.type)
-        self.operator = try container.decode(AttributeOperator.self, forKey: CodingKeys.operator)
+        operatorType = try container.decode(AttributeOperator.self, forKey: CodingKeys.operatorType)
     }
 
-    init(name: String, value: String, type: AttributeType, `operator`: AttributeOperator) {
+    init(name: String, value: String, type: AttributeType, operatorType: AttributeOperator) {
         self.name = name.lowercased()
         self.value = value.lowercased()
         self.type = type
-        self.operator = `operator`
+        self.operatorType = operatorType
     }
 }
