@@ -113,15 +113,19 @@ internal class TooltipDispatcher: TooltipDispatcherType, ViewListenerObserver {
                     return shouldShow
                 }(),
                 completion: { cancelled in
-                    self.dispatchQueue.async {
-                        if !cancelled {
-                            self.campaignRepository.decrementImpressionsLeftInCampaign(id: tooltip.id)
-                        }
-                        self.queuedTooltips.remove(tooltip)
-                    }
+                    self.handleDisplayCompletion(cancelled: cancelled, tooltip: tooltip)
                 }
             )
             waitForImageDispatchGroup.leave()
+        }
+    }
+
+    private func handleDisplayCompletion(cancelled: Bool, tooltip: Campaign) {
+        dispatchQueue.async {
+            if !cancelled {
+                self.campaignRepository.decrementImpressionsLeftInCampaign(id: tooltip.id)
+            }
+            self.queuedTooltips.remove(tooltip)
         }
     }
 

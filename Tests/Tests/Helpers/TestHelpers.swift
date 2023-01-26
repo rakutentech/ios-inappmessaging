@@ -178,7 +178,7 @@ struct TestHelpers {
                                         eventName: "testevent",
                                         attributes: [
                                             TriggerAttribute(name: "attributeone", value: "attributeOneValue",
-                                                             type: .string, operator: .equals)
+                                                             type: .string, operatorType: .equals)
                                         ]
                                     )])
         }()
@@ -194,7 +194,7 @@ struct TestHelpers {
                                         eventName: "testevent",
                                         attributes: [
                                             TriggerAttribute(name: "attributeone", value: "attributeOneValue",
-                                                             type: .string, operator: .isNotEqual)
+                                                             type: .string, operatorType: .isNotEqual)
                                         ]
                                     )])
         }()
@@ -210,7 +210,7 @@ struct TestHelpers {
                                         eventName: "testevent",
                                         attributes: [
                                             TriggerAttribute(name: "attributeone", value: "123",
-                                                             type: .integer, operator: .equals)
+                                                             type: .integer, operatorType: .equals)
                                         ]
                                     )])
         }()
@@ -226,7 +226,7 @@ struct TestHelpers {
                                         eventName: "testevent",
                                         attributes: [
                                             TriggerAttribute(name: "attributeone", value: "123",
-                                                             type: .integer, operator: .isNotEqual)
+                                                             type: .integer, operatorType: .isNotEqual)
                                         ]
                                     )])
         }()
@@ -242,7 +242,7 @@ struct TestHelpers {
                                         eventName: "testevent",
                                         attributes: [
                                             TriggerAttribute(name: "attributeone", value: "123",
-                                                             type: .integer, operator: .greaterThan)
+                                                             type: .integer, operatorType: .greaterThan)
                                         ]
                                     )])
         }()
@@ -258,7 +258,7 @@ struct TestHelpers {
                                         eventName: "testevent",
                                         attributes: [
                                             TriggerAttribute(name: "attributeone", value: "123",
-                                                             type: .integer, operator: .lessThan)
+                                                             type: .integer, operatorType: .lessThan)
                                         ]
                                     )])
         }()
@@ -274,7 +274,7 @@ struct TestHelpers {
                                         eventName: "testevent",
                                         attributes: [
                                             TriggerAttribute(name: "attributeone", value: "123.0",
-                                                             type: .double, operator: .equals)
+                                                             type: .double, operatorType: .equals)
                                         ]
                                     )])
         }()
@@ -290,7 +290,7 @@ struct TestHelpers {
                                         eventName: "testevent",
                                         attributes: [
                                             TriggerAttribute(name: "attributeone", value: "123.0",
-                                                             type: .double, operator: .isNotEqual)
+                                                             type: .double, operatorType: .isNotEqual)
                                         ]
                                     )])
         }()
@@ -306,7 +306,7 @@ struct TestHelpers {
                                         eventName: "testevent",
                                         attributes: [
                                             TriggerAttribute(name: "attributeone", value: "123.0",
-                                                             type: .double, operator: .greaterThan)
+                                                             type: .double, operatorType: .greaterThan)
                                         ]
                                     )])
         }()
@@ -322,7 +322,7 @@ struct TestHelpers {
                                         eventName: "testevent",
                                         attributes: [
                                             TriggerAttribute(name: "attributeone", value: "123.0",
-                                                             type: .double, operator: .lessThan)
+                                                             type: .double, operatorType: .lessThan)
                                         ]
                                     )])
         }()
@@ -338,7 +338,7 @@ struct TestHelpers {
                                         eventName: "testevent",
                                         attributes: [
                                             TriggerAttribute(name: "attributeone", value: "true",
-                                                             type: .boolean, operator: .equals)
+                                                             type: .boolean, operatorType: .equals)
                                         ]
                                     )])
         }()
@@ -354,7 +354,7 @@ struct TestHelpers {
                                         eventName: "testevent",
                                         attributes: [
                                             TriggerAttribute(name: "attributeone", value: "true",
-                                                             type: .boolean, operator: .isNotEqual)
+                                                             type: .boolean, operatorType: .isNotEqual)
                                         ]
                                     )])
         }()
@@ -370,7 +370,7 @@ struct TestHelpers {
                                         eventName: "testevent",
                                         attributes: [
                                             TriggerAttribute(name: "attributeone", value: "1100",
-                                                             type: .timeInMilliseconds, operator: .equals)
+                                                             type: .timeInMilliseconds, operatorType: .equals)
                                         ]
                                     )])
         }()
@@ -386,7 +386,7 @@ struct TestHelpers {
                                         eventName: "testevent",
                                         attributes: [
                                             TriggerAttribute(name: "attributeone", value: "1100",
-                                                             type: .timeInMilliseconds, operator: .isNotEqual)
+                                                             type: .timeInMilliseconds, operatorType: .isNotEqual)
                                         ]
                                     )])
         }()
@@ -402,7 +402,7 @@ struct TestHelpers {
                                         eventName: "testevent",
                                         attributes: [
                                             TriggerAttribute(name: "attributeone", value: "1100",
-                                                             type: .timeInMilliseconds, operator: .greaterThan)
+                                                             type: .timeInMilliseconds, operatorType: .greaterThan)
                                         ]
                                     )])
         }()
@@ -418,7 +418,7 @@ struct TestHelpers {
                                         eventName: "testevent",
                                         attributes: [
                                             TriggerAttribute(name: "attributeone", value: "1100",
-                                                             type: .timeInMilliseconds, operator: .lessThan)
+                                                             type: .timeInMilliseconds, operatorType: .lessThan)
                                         ]
                                     )])
         }()
@@ -448,7 +448,7 @@ struct TestHelpers {
                                         eventName: "testevent",
                                         attributes: [
                                             TriggerAttribute(name: "attributeone", value: "hi",
-                                                             type: .string, operator: .equals)
+                                                             type: .string, operatorType: .equals)
                                         ]
                                     )])
         }()
@@ -464,7 +464,7 @@ struct TestHelpers {
                                         eventName: "testevent",
                                         attributes: [
                                             TriggerAttribute(name: "attributeone", value: "Hi",
-                                                             type: .string, operator: .equals)
+                                                             type: .string, operatorType: .equals)
                                         ]
                                     )])
         }()
@@ -531,6 +531,6 @@ extension InAppMessagingModuleConfiguration {
     static let empty = Self.init(configURLString: nil, subscriptionID: nil, isTooltipFeatureEnabled: true)
 
     init(subscriptionID: String?) {
-        self.init(configURLString: "url", subscriptionID: subscriptionID, isTooltipFeatureEnabled: true)
+        self.init(configURLString: "https://config.test", subscriptionID: subscriptionID, isTooltipFeatureEnabled: true)
     }
 }

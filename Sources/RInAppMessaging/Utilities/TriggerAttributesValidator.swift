@@ -35,7 +35,7 @@ internal struct TriggerAttributesValidator {
 
         return isValueReconciled(
             valueType: triggerAttribute.type,
-            operator: triggerAttribute.operator,
+            operator: triggerAttribute.operatorType,
             triggerAttributeValue: triggerAttribute.value,
             eventAttributeValue: eventAttribute.value
         )

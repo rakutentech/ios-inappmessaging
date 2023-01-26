@@ -54,7 +54,7 @@ class ConfigurationSpec: QuickSpec {
                             done()
                         }
                         RInAppMessaging.configure(dependencyManager: dependencyManager,
-                                                  moduleConfig: InAppMessagingModuleConfiguration.empty)
+                                                  moduleConfig: .empty)
                     }
 
                     expect(RInAppMessaging.initializedModule).toEventually(beNil())
@@ -63,7 +63,7 @@ class ConfigurationSpec: QuickSpec {
 
                 it("will not call ping") {
                     RInAppMessaging.configure(dependencyManager: dependencyManager,
-                                              moduleConfig: InAppMessagingModuleConfiguration.empty)
+                                              moduleConfig: .empty)
 
                     expect(mockMessageMixer.wasPingCalled).toAfterTimeout(beFalse())
                 }
@@ -74,7 +74,7 @@ class ConfigurationSpec: QuickSpec {
                 it("will call ping") {
                     configurationManager.rolloutPercentage = 100
                     RInAppMessaging.configure(dependencyManager: dependencyManager,
-                                              moduleConfig: InAppMessagingModuleConfiguration.empty)
+                                              moduleConfig: .empty)
 
                     expect(mockMessageMixer.wasPingCalled).toEventually(beTrue())
                 }

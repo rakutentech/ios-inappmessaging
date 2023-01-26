@@ -65,12 +65,8 @@ import RSDKUtils
             return
         }
 
-        var configURL = configurationURL ?? BundleInfo.inAppConfigurationURL
-        if Environment.isUnitTestEnvironment {
-            configURL = "https://config.test"
-        }
         let config = InAppMessagingModuleConfiguration(
-            configURLString: configURL,
+            configURLString: configurationURL ?? BundleInfo.inAppConfigurationURL,
             subscriptionID: subscriptionID ?? BundleInfo.inAppSubscriptionId,
             isTooltipFeatureEnabled: enableTooltipFeature)
 

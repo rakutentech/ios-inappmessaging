@@ -32,7 +32,7 @@ class EventMatcherSpec: QuickSpec {
                                 TriggerAttribute(name: "int",
                                                  value: "1",
                                                  type: .integer,
-                                                 operator: .greaterThan)])
+                                                 operatorType: .greaterThan)])
                 ]
             )
             let persistentEventOnlyCampaign = TestHelpers.generateCampaign(id: "test",

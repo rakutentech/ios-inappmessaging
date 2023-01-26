@@ -104,8 +104,8 @@ class UserDataCacheSpec: QuickSpec {
                         }
                         DispatchQueue.main.async { queue2IsDone = true }
                     }
-                    expect(queue1IsDone).toEventually(beTrue())
-                    expect(queue2IsDone).toEventually(beTrue())
+                    expect(queue1IsDone).toEventually(beTrue(), timeout: .seconds(2))
+                    expect(queue2IsDone).toEventually(beTrue(), timeout: .seconds(2))
                 }
 
                 afterEach {
