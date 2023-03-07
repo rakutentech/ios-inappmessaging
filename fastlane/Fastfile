@@ -4,42 +4,9 @@ import_from_git(url: 'https://github.com/rakutentech/ios-buildconfig.git')
 platform :ios do
   desc "Build everything"
   lane :ci do |options|
-    tests(options)
-    coverage
-    archive
-  end
-
-  desc "Run tests"
-  lane :tests do
-    cocoapods(repo_update: ENV['REM_FL_CP_REPO_UPDATE'] || false)
-
-    scan(
-      clean: true,
-      skip_build: true,
-      configuration: 'UITests',
-      output_directory: './artifacts/ui-tests',
-      scheme: ENV['REM_FL_UITESTS_SCHEME'] || 'UITests',
-      device: ENV['REM_FL_TESTS_DEVICE'] || 'iPhone 11',
-      code_coverage: false,
-      slack_only_on_failure: true,
-      skip_slack: ENV['PREVIOUS_BUILD_STATUS'] == 'error', # var defined in Bitrise step
-      output_types: 'json-compilation-database,html,junit',
-      output_files: 'compile_commands.json,report.html,report.junit')
-
-    scan(
-      clean: false,
-      skip_build: true,
-      output_directory: './artifacts/unit-tests',
-      scheme: ENV['REM_FL_TESTS_SCHEME'] || 'Tests',
-      device: ENV['REM_FL_TESTS_DEVICE'] || 'iPhone 11',
-      code_coverage: true,
-      slack_only_on_failure: true,
-      skip_slack: ENV['PREVIOUS_BUILD_STATUS'] == 'error', # var defined in Bitrise step
-      output_types: 'json-compilation-database,html,junit',
-      output_files: 'compile_commands.json,report.html,report.junit')
-
-    lint_module
+    shared_tests(options)
     build_swift_package
+    archive
   end
 
   lane :build_swift_package do
@@ -48,23 +15,11 @@ platform :ios do
     scan(
       clean: true,
       build_for_testing: true,
-      scheme: ENV['REM_FL_TESTS_SCHEME'] || 'Tests',
+      scheme: 'Tests',
       device: ENV['REM_FL_TESTS_DEVICE'] || 'iPhone 11',
       project: 'SampleSPM/SampleSPM.xcodeproj',
     )
     sh 'git config --global --unset url."https://github.com/".insteadOf'
-  end
-
-  lane :coverage do
-    slather(
-      output_directory: './artifacts/coverage',
-      scheme: ENV['REM_FL_TESTS_SCHEME'] || 'Tests',
-      sonarqube_xml: true,
-      use_bundle_exec: true,
-      proj: ENV['REM_FL_TESTS_PROJECT'],
-      workspace: ENV['REM_FL_TESTS_WORKSPACE'],
-      binary_basename: ENV['REM_FL_TESTS_SLATHER_BASENAME'],
-      ignore: '*.{h,m}')
   end
 
   lane :run_xcov do
