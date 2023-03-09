@@ -3,6 +3,8 @@ platform :ios, '12.0'
 
 secrets = ["RIAM_CONFIG_URL", "RIAM_APP_SUBSCRIPTION_KEY"]
 
+project 'RInAppMessaging', 'UITests' => :debug
+
 target 'RInAppMessaging_Example' do
   pod 'RInAppMessaging', :path => '.'
   pod 'SwiftLint', '~> 0.48.0' # Version 0.49+ requires macOS 12 and Swift 5.6

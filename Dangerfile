@@ -52,7 +52,7 @@ end
 system('rm -rf artifacts/unit-tests/coverage')
 xcov.report(
   workspace: 'RInAppMessaging.xcworkspace',
-  scheme: 'RInAppMessaging-Example',
+  scheme: 'AllTests',
   output_directory: 'artifacts/unit-tests/coverage',
   json_report: true,
   include_targets: 'RInAppMessaging.framework',

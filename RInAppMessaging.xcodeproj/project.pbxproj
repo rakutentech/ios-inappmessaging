@@ -974,10 +974,6 @@
 		4592B4C1270263D4004FF27B /* UITests */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
 				INFOPLIST_FILE = Tests/Tests/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.co.rakuten.inappmessaging.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1233,10 +1229,6 @@
 		607FACF31AFB9204008FA782 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
 				INFOPLIST_FILE = Tests/Tests/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.co.rakuten.inappmessaging.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";

@@ -28,6 +28,8 @@
 		453D244D26A4DBDC00FB9E6A /* full-text-image.json in Resources */ = {isa = PBXBuildFile; fileRef = 453D244526A4DBDC00FB9E6A /* full-text-image.json */; };
 		453D245026A4DCD800FB9E6A /* slide-up-trigger.json in Resources */ = {isa = PBXBuildFile; fileRef = 453D244E26A4DCD800FB9E6A /* slide-up-trigger.json */; };
 		453D245326A4DF1D00FB9E6A /* slide-up-close.json in Resources */ = {isa = PBXBuildFile; fileRef = 453D245126A4DF1D00FB9E6A /* slide-up-close.json */; };
+		4545631B29B955340080782E /* test-image.png in Resources */ = {isa = PBXBuildFile; fileRef = 4545631A29B955340080782E /* test-image.png */; };
+		4545631D29B955BE0080782E /* legacy_ping.json in Resources */ = {isa = PBXBuildFile; fileRef = 4545631C29B955BE0080782E /* legacy_ping.json */; };
 		4592B4B3270229D1004FF27B /* config.json in Resources */ = {isa = PBXBuildFile; fileRef = 4592B4B2270229D1004FF27B /* config.json */; };
 		4592B4B627024925004FF27B /* MockServerHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4592B4B527024925004FF27B /* MockServerHelper.swift */; };
 		4592B4BA27024D0C004FF27B /* display-permission.json in Resources */ = {isa = PBXBuildFile; fileRef = 4592B4B927024D0C004FF27B /* display-permission.json */; };
@@ -162,6 +164,8 @@
 		453D244526A4DBDC00FB9E6A /* full-text-image.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "full-text-image.json"; sourceTree = "<group>"; };
 		453D244E26A4DCD800FB9E6A /* slide-up-trigger.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "slide-up-trigger.json"; sourceTree = "<group>"; };
 		453D245126A4DF1D00FB9E6A /* slide-up-close.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "slide-up-close.json"; sourceTree = "<group>"; };
+		4545631A29B955340080782E /* test-image.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "test-image.png"; sourceTree = "<group>"; };
+		4545631C29B955BE0080782E /* legacy_ping.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = legacy_ping.json; sourceTree = "<group>"; };
 		4592B4B2270229D1004FF27B /* config.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = config.json; sourceTree = "<group>"; };
 		4592B4B527024925004FF27B /* MockServerHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockServerHelper.swift; sourceTree = "<group>"; };
 		4592B4B927024D0C004FF27B /* display-permission.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "display-permission.json"; sourceTree = "<group>"; };
@@ -303,6 +307,7 @@
 				45357AEF245A8CAA007D8FDC /* ping_invalid.json */,
 				45357AF2245AC836007D8FDC /* displayPermission_invalid.json */,
 				45357AF3245AC836007D8FDC /* displayPermission_success.json */,
+				4545631C29B955BE0080782E /* legacy_ping.json */,
 			);
 			path = Payloads;
 			sourceTree = "<group>";
@@ -500,6 +505,7 @@
 		607FACE91AFB9204008FA782 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				4545631A29B955340080782E /* test-image.png */,
 				607FACEA1AFB9204008FA782 /* Info.plist */,
 			);
 			name = "Supporting Files";
@@ -728,11 +734,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4545631D29B955BE0080782E /* legacy_ping.json in Resources */,
 				45357AE52457EBBC007D8FDC /* config_success.json in Resources */,
 				45357AF1245A8CAA007D8FDC /* ping_invalid.json in Resources */,
 				45357AF0245A8CAA007D8FDC /* ping_success_empty.json in Resources */,
 				45357AF4245AC836007D8FDC /* displayPermission_invalid.json in Resources */,
 				45357AE72458361F007D8FDC /* config_success_optional.json in Resources */,
+				4545631B29B955340080782E /* test-image.png in Resources */,
 				45357AED245A8C57007D8FDC /* ping_success.json in Resources */,
 				45357AEB245A69FD007D8FDC /* config_fail_enabled.json in Resources */,
 				45357AF5245AC836007D8FDC /* displayPermission_success.json in Resources */,
