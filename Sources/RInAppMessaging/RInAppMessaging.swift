@@ -104,7 +104,7 @@ import RSDKUtils
                 return
             }
             router.accessibilityCompatibleDisplay = accessibilityCompatibleDisplay
-            configurationManager.saveIAMModuleConfiguration(moduleConfig)
+            configurationManager.save(moduleConfig: moduleConfig)
 
             initializedModule = InAppMessagingModule(configurationManager: configurationManager,
                                                      campaignsListManager: campaignsListManager,

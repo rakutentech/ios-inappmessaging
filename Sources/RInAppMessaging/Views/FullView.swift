@@ -69,14 +69,14 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
 
     var uiConstants = UIConstants()
     var mode: Mode {
-        return .none
+        .none
     }
     var isOptOutChecked: Bool {
-        return !optOutView.isHidden && optOutView.isChecked
+        !optOutView.isHidden && optOutView.isChecked
     }
     var onDismiss: ((_ cancelled: Bool) -> Void)?
     var basePresenter: BaseViewPresenterType {
-        return presenter
+        presenter
     }
 
     private var layout: Layout?
@@ -164,7 +164,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
     func animateOnShow(completion: @escaping () -> Void) { completion() }
 
     func constraintsForParent(_ parent: UIView) -> [NSLayoutConstraint] {
-        return constraintsFilling(parent: parent, activate: false)
+        constraintsFilling(parent: parent, activate: false)
     }
 
     private func setupAccessibility() {

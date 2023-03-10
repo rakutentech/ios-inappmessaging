@@ -5,7 +5,7 @@ import Foundation
 
     /// For broadcasting to RAT SDK. 'eventType' field will be removed.
     override var analyticsParameters: [String: Any] {
-        return [
+        [
             "eventName": super.name,
             "timestamp": super.timestamp
         ]

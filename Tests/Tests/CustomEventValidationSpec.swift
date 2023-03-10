@@ -3,7 +3,7 @@ import Nimble
 @testable import RInAppMessaging
 
 /// Tests for campaign validation logic when provided with different custom events
-class CustomEventsSpec: QuickSpec {
+class CustomEventValidationSpec: QuickSpec {
 // swiftlint:disable:previous type_body_length
 
     // swiftlint:disable:next function_body_length

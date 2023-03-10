@@ -26,12 +26,12 @@ class RouterSpec: QuickSpec {
             var errorDelegate: ErrorDelegateMock!
 
             func mockContainer() -> TypedDependencyManager.Container {
-                return TypedDependencyManager.Container([
+                TypedDependencyManager.Container([
                     TypedDependencyManager.ContainerElement(type: ConfigurationManagerType.self, factory: {
-                        return ConfigurationManagerMock()
+                        ConfigurationManagerMock()
                     }),
                     TypedDependencyManager.ContainerElement(type: CampaignsListManagerType.self, factory: {
-                        return CampaignsListManagerMock()
+                        CampaignsListManagerMock()
                     })
                 ])
             }
@@ -450,32 +450,19 @@ class RouterSpec: QuickSpec {
                         expect(displayedTooltip.frame.origin).toEventually(equal(lastTooltipPosition.applying(translation)))
                     }
 
-                    // To be confirmed
-    //                it("will remove the tooltip if targeted view changes its identifier") {
-    //                    router.displayTooltip(tooltip,
-    //                                          targetView: targetView,
-    //                                          identifier: TooltipViewIdentifierMock,
-    //                                          imageBlob: imageData,
-    //                                          becameVisibleHandler: { _ in },
-    //                                          completion: { })
-    //                    expect(window.findTooltipView()).toEventuallyNot(beNil())
-    //                    let displayedTooltip = window.findTooltipView()!
-    //                    router.viewDidUpdateIdentifier(from: TooltipViewIdentifierMock, to: "another.identifier", view: targetView)
-    //                    expect(displayedTooltip.superview).toEventually(beNil())
-    //                }
-    //
-    //                it("will remove the tooltip if targeted view changes its identifier to nil") {
-    //                    router.displayTooltip(tooltip,
-    //                                          targetView: targetView,
-    //                                          identifier: TooltipViewIdentifierMock,
-    //                                          imageBlob: imageData,
-    //                                          becameVisibleHandler: { _ in },
-    //                                          completion: { })
-    //                    expect(window.findTooltipView()).toEventuallyNot(beNil())
-    //                    let displayedTooltip = window.findTooltipView()!
-    //                    router.viewDidUpdateIdentifier(from: TooltipViewIdentifierMock, to: nil, view: targetView)
-    //                    expect(displayedTooltip.superview).toEventually(beNil())
-    //                }
+                    it("will remove the tooltip if targeted view changes its identifier to nil") {
+                        router.displayTooltip(tooltip,
+                                              targetView: targetView,
+                                              identifier: TooltipViewIdentifierMock,
+                                              imageBlob: imageBlob,
+                                              becameVisibleHandler: { _ in },
+                                              confirmation: true,
+                                              completion: { _ in })
+                        expect(window.findTooltipView()).toEventuallyNot(beNil())
+                        let displayedTooltip = window.findTooltipView()!
+                        router.viewDidUpdateIdentifier(from: TooltipViewIdentifierMock, to: nil, view: targetView)
+                        expect(displayedTooltip.superview).toEventually(beNil())
+                    }
 
                     it("will remove the tooltip if targeted view gets removed from superview") {
                         router.displayTooltip(tooltip,

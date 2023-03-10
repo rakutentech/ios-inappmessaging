@@ -8,7 +8,7 @@ import RSDKUtils
 
 internal protocol ConfigurationManagerType: ErrorReportable {
     func fetchAndSaveConfigData(completion: @escaping (ConfigEndpointData) -> Void)
-    func saveIAMModuleConfiguration(_ config: InAppMessagingModuleConfiguration)
+    func save(moduleConfig config: InAppMessagingModuleConfiguration)
 }
 
 internal class ConfigurationManager: ConfigurationManagerType, TaskSchedulable {
@@ -112,7 +112,7 @@ internal class ConfigurationManager: ConfigurationManagerType, TaskSchedulable {
         }
     }
 
-    func saveIAMModuleConfiguration(_ config: InAppMessagingModuleConfiguration) {
+    func save(moduleConfig config: InAppMessagingModuleConfiguration) {
         configurationRepository.saveIAMModuleConfiguration(config)
     }
 

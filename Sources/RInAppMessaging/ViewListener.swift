@@ -190,7 +190,7 @@ private extension UIView {
     }
 
     class func getAllSubviewsExceptTooltipView(from parentView: UIView) -> [UIView] {
-        return parentView.subviews.flatMap { subView -> [UIView] in
+        parentView.subviews.flatMap { subView -> [UIView] in
             guard !(subView is TooltipView) else {
                 return []
             }

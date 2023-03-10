@@ -59,7 +59,7 @@ internal struct Campaign: Codable, Hashable {
     }
 
     static func == (lhs: Campaign, rhs: Campaign) -> Bool {
-        return lhs.data == rhs.data
+        lhs.data == rhs.data
     }
 
     static func updatedCampaign(_ campaign: Campaign, withImpressionLeft impressionsLeft: Int) -> Campaign {

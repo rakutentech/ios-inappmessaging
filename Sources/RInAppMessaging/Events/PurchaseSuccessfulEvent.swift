@@ -17,7 +17,7 @@ import Foundation
 
     /// For broadcasting to RAT SDK. 'eventType' field will be removed.
     override var analyticsParameters: [String: Any] {
-        return [
+        [
             "eventName": super.name,
             "timestamp": super.timestamp,
             Keys.purchaseAmount: self.purchaseAmount,
@@ -28,7 +28,7 @@ import Foundation
     }
 
     var customAttributes: [CustomAttribute] {
-        return [
+        [
             CustomAttribute(withKeyName: Keys.purchaseAmount, withIntValue: self.purchaseAmount),
             CustomAttribute(withKeyName: Keys.numberOfItems, withIntValue: self.numberOfItems),
             CustomAttribute(withKeyName: Keys.currencyCode, withStringValue: self.currencyCode),
@@ -92,7 +92,7 @@ import Foundation
     }
 
     override func getAttributeMap() -> [String: CustomAttribute] {
-        return [
+        [
             Keys.purchaseAmount: CustomAttribute(withKeyName: Keys.purchaseAmount, withIntValue: self.purchaseAmount),
             Keys.numberOfItems: CustomAttribute(withKeyName: Keys.numberOfItems, withIntValue: self.numberOfItems),
             Keys.currencyCode: CustomAttribute(withKeyName: Keys.currencyCode, withStringValue: self.currencyCode),

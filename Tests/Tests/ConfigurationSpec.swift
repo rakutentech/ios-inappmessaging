@@ -21,12 +21,12 @@ class ConfigurationSpec: QuickSpec {
             var dependencyManager: TypedDependencyManager!
 
             func mockContainer() -> TypedDependencyManager.Container {
-                return TypedDependencyManager.Container([
+                TypedDependencyManager.Container([
                     TypedDependencyManager.ContainerElement(type: ConfigurationManagerType.self, factory: {
-                        return configurationManager
+                        configurationManager
                     }),
                     TypedDependencyManager.ContainerElement(type: MessageMixerServiceType.self, factory: {
-                        return mockMessageMixer
+                        mockMessageMixer
                     })
                 ])
             }

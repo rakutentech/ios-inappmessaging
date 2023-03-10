@@ -15,7 +15,7 @@ class ValidatorHandler {
 
     var validatedElements = [Element]()
     var validatedCampaigns: [Campaign] {
-        return validatedElements.map { $0.campaign }
+        validatedElements.map { $0.campaign }
     }
     private(set) lazy var closure = { [unowned self] (campaign: Campaign, events: Set<Event>) in
         self.validatedElements.append(Element(campaign, events))

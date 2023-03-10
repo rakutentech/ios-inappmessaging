@@ -8,7 +8,7 @@ public class CustomAttribute: NSObject {
 
     /// For broadcasting to RAT SDK. 'type' field will be removed.
     var dictionaryRepresentation: [String: Any] {
-        return [
+        [
             "name": name,
             "value": value
         ]

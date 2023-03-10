@@ -265,28 +265,28 @@ class SlideUpViewPresenterMock: SlideUpViewPresenterType {
 
 extension FullViewModel {
     static var empty: FullViewModel {
-        return .init(image: nil,
-                     backgroundColor: .black,
-                     title: "",
-                     messageBody: "",
-                     header: "",
-                     titleColor: .black,
-                     headerColor: .black,
-                     messageBodyColor: .black,
-                     isHTML: false,
-                     showOptOut: true,
-                     showButtons: true,
-                     isDismissable: true)
+        .init(image: nil,
+              backgroundColor: .black,
+              title: "",
+              messageBody: "",
+              header: "",
+              titleColor: .black,
+              headerColor: .black,
+              messageBodyColor: .black,
+              isHTML: false,
+              showOptOut: true,
+              showButtons: true,
+              isDismissable: true)
     }
 }
 
 extension SlideUpViewModel {
     static var empty: SlideUpViewModel {
-        return .init(slideFromDirection: .bottom,
-                     backgroundColor: .black,
-                     messageBody: "",
-                     messageBodyColor: .black,
-                     isDismissable: true)
+        .init(slideFromDirection: .bottom,
+              backgroundColor: .black,
+              messageBody: "",
+              messageBodyColor: .black,
+              isDismissable: true)
     }
 }
 
