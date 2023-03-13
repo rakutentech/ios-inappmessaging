@@ -41,12 +41,8 @@ internal protocol CampaignRepositoryType: AnyObject, Lockable {
     @discardableResult
     func incrementImpressionsLeftInCampaign(id: String) -> Campaign?
 
-    /// Loads campaign data from user cache
-    /// - Parameter syncWithLastUserData: When set to true, loaded data will be synchronized with previously registered user (including anonymous user).
-    func loadCachedData(syncWithLastUserData: Bool)
-
-    /// Deletes cached data used to sync between users
-    func clearLastUserData()
+    /// Loads cached campaign data of current user
+    func loadCachedData()
 }
 
 internal protocol CampaignRepositoryDelegate: AnyObject {
@@ -55,8 +51,6 @@ internal protocol CampaignRepositoryDelegate: AnyObject {
 
 /// Repository to store campaigns retrieved from ping request.
 internal class CampaignRepository: CampaignRepositoryType {
-
-    static let lastUser = [UserIdentifier(type: .userId, identifier: "IAM.lastUser!@#")]
 
     private let userDataCache: UserDataCacheable
     private let accountRepository: AccountRepositoryType
@@ -81,7 +75,7 @@ internal class CampaignRepository: CampaignRepositoryType {
         self.userDataCache = userDataCache
         self.accountRepository = accountRepository
 
-        loadCachedData(syncWithLastUserData: true)
+        loadCachedData()
     }
 
     func syncWith(list: [Campaign], timestampMilliseconds: Int64, ignoreTooltips: Bool) {
@@ -151,22 +145,9 @@ internal class CampaignRepository: CampaignRepositoryType {
         return updateImpressionsLeftInCampaign(campaign, newValue: campaign.impressionsLeft + 1)
     }
 
-    func loadCachedData(syncWithLastUserData: Bool) {
-        var cachedData = userDataCache.getUserData(identifiers: accountRepository.getUserIdentifiers())?.campaignData ?? []
-        if syncWithLastUserData {
-            userDataCache.getUserData(identifiers: CampaignRepository.lastUser)?.campaignData?.forEach({ lastUserCampaign in
-                if let existingCampaignIndex = cachedData.firstIndex(where: { $0.id == lastUserCampaign.id }) {
-                    cachedData[existingCampaignIndex] = lastUserCampaign
-                } else {
-                    cachedData.append(lastUserCampaign)
-                }
-            })
-        }
+    func loadCachedData() {
+        let cachedData = userDataCache.getUserData(identifiers: accountRepository.getUserIdentifiers())?.campaignData ?? []
         allCampaigns.set(value: cachedData)
-    }
-
-    func clearLastUserData() {
-        userDataCache.deleteUserData(identifiers: CampaignRepository.lastUser)
     }
 
     // MARK: - Helpers
@@ -194,6 +175,5 @@ internal class CampaignRepository: CampaignRepositoryType {
     private func saveDataToCache(_ list: [Campaign]) {
         let user = accountRepository.getUserIdentifiers()
         userDataCache.cacheCampaignData(list, userIdentifiers: user)
-        userDataCache.cacheCampaignData(list, userIdentifiers: CampaignRepository.lastUser)
     }
 }

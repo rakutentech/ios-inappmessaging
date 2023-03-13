@@ -147,10 +147,10 @@ A preference is what will allow IAM to identify users for targeting and segmenta
 1.  IDTrackingIdentifier - The value provided by the internal ID SDK as the "tracking identifier" value.
 1.  AccessToken - This is the token provided by the internal RAuthentication SDK as the "accessToken" value
 
-The preference object can be set once per app session. IAM SDK will read object's properties on demand.
+⚠️ The method is designed to be called ONCE once per app session - i.e. only one instance of `UserInfoProvider` can be created. IAM SDK will read object's properties on demand. There's no need to call this method again after login/logout for example.
 
-To help IAM identify users, please keep user information in the preference object up to date.
-After logout is complete please ensure that all `UserInfoProvider` methods in the preference object return `nil`.  
+To ensure correct user targeting, please keep user information in the preference object up to date.
+After logout process is complete the preference object should return `nil` or `""` in all `UserInfoProvider` methods.  
 Preferences are not persisted so this function needs to be called on every launch.
 
 #### Generic example using UserID
@@ -374,5 +374,10 @@ In your `Info.plist` configuration, set the PostScript names under `InAppMessagi
   * IAM SDK is not able to verify if provided accessToken is invalid or not matching userId.
 * Status bar characters and icons are not visible when Full-Screen campaign is presented
   * If your app is running on iOS version below 13.0 you need to either change background color of the campaign or set proper `preferredStatusbarStyle` in the top-most view controller. (for iOS versions above 13.0 this issue is handled internally by the SDK)
+* A launch event campaign is presented more times than expected.
+  * Ensure that `registerPreference()` is called after `configure()` and before any `logEvent()` method
+  * The preference object must contain up-to-date information before `registerPreference()` is called
+  * Each *userId*/*idTrackingIdentifier* combination (including empty one) has its own counter for campaign impressions.
+  * Killing the app or calling `closeMessage()` API while campaign is being displayed doesn't count as impression.
 
 #### For other issues and more detailed information, Rakuten developers should refer to the Troubleshooting Guide on the internal developer documentation portal.

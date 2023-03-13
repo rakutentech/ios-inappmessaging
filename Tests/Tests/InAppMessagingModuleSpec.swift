@@ -435,17 +435,10 @@ class InAppMessagingModuleSpec: QuickSpec {
                             expect(campaignsListManager.wasRefreshListCalled).to(beTrue())
                         }
 
-                        it("will reload campaigns repository cache with syncWithLastUserData set to false") {
+                        it("will reload campaigns repository cache") {
                             campaignRepository.resetFlags()
                             iamModule.checkUserChanges()
                             expect(campaignRepository.wasLoadCachedDataCalled).to(beTrue())
-                            expect(campaignRepository.loadCachedDataParameters).to(equal((false)))
-                        }
-
-                        it("will clear last user data") {
-                            campaignRepository.resetFlags()
-                            iamModule.checkUserChanges()
-                            expect(campaignRepository.wasClearLastUserDataCalled).to(beTrue())
                         }
 
                         it("will clear event list") {
@@ -469,17 +462,10 @@ class InAppMessagingModuleSpec: QuickSpec {
                             expect(campaignsListManager.wasRefreshListCalled).to(beTrue())
                         }
 
-                        it("will reload campaigns repository cache with syncWithLastUserData set to false") {
+                        it("will reload campaigns repository cache") {
                             campaignRepository.resetFlags()
                             iamModule.checkUserChanges()
                             expect(campaignRepository.wasLoadCachedDataCalled).to(beTrue())
-                            expect(campaignRepository.loadCachedDataParameters).to(equal((false)))
-                        }
-
-                        it("will clear last user data") {
-                            campaignRepository.resetFlags()
-                            iamModule.checkUserChanges()
-                            expect(campaignRepository.wasClearLastUserDataCalled).to(beTrue())
                         }
 
                         it("will clear event list") {
@@ -501,17 +487,10 @@ class InAppMessagingModuleSpec: QuickSpec {
                             expect(campaignsListManager.wasRefreshListCalled).to(beTrue())
                         }
 
-                        it("will reload campaigns repository cache with syncWithLastUserData set to false") {
+                        it("will reload campaigns repository cache") {
                             campaignRepository.resetFlags()
                             iamModule.checkUserChanges()
                             expect(campaignRepository.wasLoadCachedDataCalled).to(beTrue())
-                            expect(campaignRepository.loadCachedDataParameters).to(equal((false)))
-                        }
-
-                        it("will not clear last user data") {
-                            campaignRepository.resetFlags()
-                            iamModule.checkUserChanges()
-                            expect(campaignRepository.wasClearLastUserDataCalled).to(beFalse())
                         }
 
                         it("will not clear event list") {
@@ -540,12 +519,6 @@ class InAppMessagingModuleSpec: QuickSpec {
                             expect(campaignRepository.wasLoadCachedDataCalled).to(beFalse())
                         }
 
-                        it("will not clear last user data") {
-                            campaignRepository.resetFlags()
-                            iamModule.checkUserChanges()
-                            expect(campaignRepository.wasClearLastUserDataCalled).to(beFalse())
-                        }
-
                         it("will not clear event list") {
                             eventMatcher.wasClearNonPersistentEventsCalled = false // reset
                             iamModule.checkUserChanges()
@@ -571,12 +544,6 @@ class InAppMessagingModuleSpec: QuickSpec {
                             campaignRepository.resetFlags()
                             iamModule.checkUserChanges()
                             expect(campaignRepository.wasLoadCachedDataCalled).to(beFalse())
-                        }
-
-                        it("will not clear last user data") {
-                            campaignRepository.resetFlags()
-                            iamModule.checkUserChanges()
-                            expect(campaignRepository.wasClearLastUserDataCalled).to(beFalse())
                         }
 
                         it("will not clear event list") {
