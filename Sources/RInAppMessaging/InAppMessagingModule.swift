@@ -125,7 +125,7 @@ internal class InAppMessagingModule: ErrorDelegate, CampaignDispatcherDelegate, 
     // visible for testing
     func checkUserChanges() {
         if accountRepository.updateUserInfo() {
-            campaignRepository.loadCachedData(syncWithLastUserData: false)
+            campaignRepository.loadCachedData()
             campaignsListManager.refreshList()
         }
     }
@@ -184,7 +184,6 @@ extension InAppMessagingModule {
 extension InAppMessagingModule {
 
     func userDidChangeOrLogout() {
-        campaignRepository.clearLastUserData()
         eventMatcher.clearNonPersistentEvents()
     }
 }

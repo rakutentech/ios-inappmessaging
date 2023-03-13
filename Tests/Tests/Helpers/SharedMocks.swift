@@ -37,8 +37,6 @@ class CampaignRepositoryMock: CampaignRepositoryType {
     private(set) var wasOptOutCalled = false
     private(set) var lastSyncCampaigns = [Campaign]()
     private(set) var wasLoadCachedDataCalled = false
-    private(set) var loadCachedDataParameters: (Bool)?
-    private(set) var wasClearLastUserDataCalled = false
     private(set) var didSyncIgnoringTooltips = false
 
     func decrementImpressionsLeftInCampaign(id: String) -> Campaign? {
@@ -69,9 +67,8 @@ class CampaignRepositoryMock: CampaignRepositoryType {
         didSyncIgnoringTooltips = ignoreTooltips
     }
 
-    func loadCachedData(syncWithLastUserData: Bool) {
+    func loadCachedData() {
         wasLoadCachedDataCalled = true
-        loadCachedDataParameters = (syncWithLastUserData)
     }
 
     func resetFlags() {
@@ -80,12 +77,6 @@ class CampaignRepositoryMock: CampaignRepositoryType {
         wasOptOutCalled = false
         lastSyncCampaigns = [Campaign]()
         wasLoadCachedDataCalled = false
-        loadCachedDataParameters = nil
-        wasClearLastUserDataCalled = false
-    }
-
-    func clearLastUserData() {
-        wasClearLastUserDataCalled = true
     }
 
     private func indexAndCampaign(forID id: String) -> (Int, Campaign)? {
@@ -421,13 +412,12 @@ class RouterMock: RouterType {
 
 class UserDataCacheMock: UserDataCacheable {
     var userDataMock: UserDataCacheContainer?
-    var lastUserDataMock: UserDataCacheContainer?
     var cachedCampaignData: [Campaign]?
     var cachedDisplayPermissionData: (DisplayPermissionResponse, String)?
     var cachedData = [[UserIdentifier]: UserDataCacheContainer]()
 
     func getUserData(identifiers: [UserIdentifier]) -> UserDataCacheContainer? {
-        identifiers == CampaignRepository.lastUser ? lastUserDataMock : userDataMock
+        userDataMock ?? cachedData[identifiers]
     }
 
     func cacheCampaignData(_ data: [Campaign], userIdentifiers: [UserIdentifier]) {
