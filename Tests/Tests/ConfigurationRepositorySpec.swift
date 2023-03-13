@@ -51,7 +51,7 @@ class ConfigurationRepositorySpec: QuickSpec {
                 }
             }
 
-            context("when calling saveIAMModuleConfiguration") {
+            context("when calling save") {
                 let sampleConfig = InAppMessagingModuleConfiguration(configURLString: "http://config.url",
                                                                      subscriptionID: "sub-id",
                                                                      isTooltipFeatureEnabled: true)

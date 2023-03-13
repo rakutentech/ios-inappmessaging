@@ -45,8 +45,8 @@ internal class MessageMixerService: MessageMixerServiceType, HttpRequestable {
 
         switch response {
         case .success((let data, _)):
-            return parseResponse(data).mapError {
-                return MessageMixerServiceError.jsonDecodingError($0)
+            return parse(response: data).mapError {
+                MessageMixerServiceError.jsonDecodingError($0)
             }
         case .failure(let requestError):
             switch requestError {
@@ -62,7 +62,7 @@ internal class MessageMixerService: MessageMixerServiceType, HttpRequestable {
         }
     }
 
-    private func parseResponse(_ response: Data) -> Result<PingResponse, Error> {
+    private func parse(response: Data) -> Result<PingResponse, Error> {
         do {
             let response = try JSONDecoder().decode(PingResponse.self, from: response)
             return .success(response)

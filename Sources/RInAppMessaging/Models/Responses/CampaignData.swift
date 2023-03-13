@@ -52,6 +52,6 @@ internal struct CampaignData: Codable, Hashable {
     }
 
     static func == (lhs: CampaignData, rhs: CampaignData) -> Bool {
-        return lhs.campaignId == rhs.campaignId
+        lhs.campaignId == rhs.campaignId
     }
 }

@@ -39,7 +39,7 @@ internal class EventMatcher: EventMatcherType {
     private var triggeredPersistentEventOnlyCampaigns = Set<String>()
     private var persistentEvents = Set<Event>()
     var resourcesToLock: [LockableResource] {
-        return [matchedEvents]
+        [matchedEvents]
     }
 
     init(campaignRepository: CampaignRepositoryType) {
@@ -70,7 +70,7 @@ internal class EventMatcher: EventMatcherType {
     }
 
     func matchedEvents(for campaign: Campaign) -> [Event] {
-        return matchedEvents.get()[campaign.id, default: []] + persistentEvents
+        matchedEvents.get()[campaign.id, default: []] + persistentEvents
     }
 
     func containsAllMatchedEvents(for campaign: Campaign) -> Bool {
@@ -123,15 +123,15 @@ internal class EventMatcher: EventMatcherType {
     }
 
     private func isEventMatchingOneOfTriggers(_ event: Event, triggers: [Trigger]) -> Bool {
-        return triggers.first { trigger -> Bool in
+        triggers.contains { trigger -> Bool in
             event.name == trigger.matchingEventName
-        } != nil
+        }
     }
 
     private func isTriggerMatchingOneOfEvents(_ trigger: Trigger, events: [Event]) -> Bool {
-        return events.first { event -> Bool in
+        events.contains { event -> Bool in
             event.name == trigger.matchingEventName
-        } != nil
+        }
     }
 
     private func isEventMatchingTooltipData(_ event: Event, tooltip: Campaign) -> Bool {
@@ -148,7 +148,7 @@ internal class EventMatcher: EventMatcherType {
 
 private extension Event {
     var isPersistent: Bool {
-        return type == .appStart
+        type == .appStart
     }
 }
 
@@ -156,6 +156,6 @@ extension Trigger {
     var matchingEventName: String {
         // If event is a custom event, search by the name provided by the host app.
         // If event is a pre-defined event, search by using the enum name.
-        return eventType == .custom ? eventName.lowercased() : eventType.name
+        eventType == .custom ? eventName.lowercased() : eventType.name
     }
 }

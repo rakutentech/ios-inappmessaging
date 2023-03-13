@@ -24,7 +24,7 @@ internal struct UserDataCacheContainer: Codable, Equatable {
     }
 
     func displayPermissionData(for campaign: Campaign) -> DisplayPermissionResponse? {
-        return displayPermissionData[campaign.id]
+        displayPermissionData[campaign.id]
     }
 }
 

@@ -127,7 +127,7 @@ class EventMatcherMock: EventMatcherType {
     func matchedEvents(for campaign: Campaign) -> [Event] { return [] }
 
     func containsAllMatchedEvents(for campaign: Campaign) -> Bool {
-        return simulateMatchingSuccess
+        simulateMatchingSuccess
     }
 
     func removeSetOfMatchedEvents(_ eventsToRemove: Set<Event>, for campaign: Campaign) throws {
@@ -224,7 +224,7 @@ class ConfigurationManagerMock: ConfigurationManagerType {
         }
     }
 
-    func saveIAMModuleConfiguration(_ config: InAppMessagingModuleConfiguration) {
+    func save(moduleConfig config: InAppMessagingModuleConfiguration) {
         configRepository?.saveIAMModuleConfiguration(config)
     }
 
@@ -244,7 +244,7 @@ class ReachabilityMock: ReachabilityType {
         }
     }
     var connection: Reachability.Connection {
-        return connectionStub
+        connectionStub
     }
 
     var observers = [WeakWrapper<ReachabilityObserver>]()
@@ -415,7 +415,7 @@ class RouterMock: RouterType {
     }
 
     func isDisplayingTooltip(with uiElementIdentifier: String) -> Bool {
-        return false
+        false
     }
 }
 
@@ -441,7 +441,7 @@ class UserDataCacheMock: UserDataCacheable {
     }
 
     func userHash(from identifiers: [UserIdentifier]) -> String {
-        return identifiers.map({ $0.identifier }).joined()
+        identifiers.map({ $0.identifier }).joined()
     }
 
     func deleteUserData(identifiers: [UserIdentifier]) { }
@@ -501,7 +501,7 @@ final class RandomizerMock: RandomizerType {
 
 final class LockableTestObject: Lockable {
     var resourcesToLock: [LockableResource] {
-        return [resource]
+        [resource]
     }
     let resource = LockableObject([Int]())
 

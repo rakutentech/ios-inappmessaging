@@ -4,7 +4,7 @@ import UIKit
 internal class ModalView: FullView {
 
     override class var viewIdentifier: String {
-        return "IAMView-Modal"
+        "IAMView-Modal"
     }
 
     override var mode: Mode {

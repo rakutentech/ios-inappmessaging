@@ -4,7 +4,7 @@ import UIKit
 internal class FullScreenView: FullView {
 
     override class var viewIdentifier: String {
-        return "IAMView-FullScreen"
+        "IAMView-FullScreen"
     }
 
     private lazy var statusBarBackgroundView: UIView = {
@@ -17,7 +17,7 @@ internal class FullScreenView: FullView {
         .constraint(equalToConstant: UIApplication.shared.statusBarFrame.height)
 
     override var mode: Mode {
-        return .fullScreen
+        .fullScreen
     }
 
     override func updateUIConstants() {

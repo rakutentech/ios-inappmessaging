@@ -5,7 +5,7 @@ import RInAppMessaging
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     static var isTestEnvironment: Bool {
-        return NSClassFromString("XCTest") != nil
+        NSClassFromString("XCTest") != nil
     }
 
     var window: UIWindow?

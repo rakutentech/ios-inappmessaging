@@ -13,12 +13,12 @@ internal class SlideUpView: UIView, SlideUpViewType {
     }
 
     static var viewIdentifier: String {
-        return "IAMView-SlideUp"
+        "IAMView-SlideUp"
     }
 
     var onDismiss: ((_ cancelled: Bool) -> Void)?
     var basePresenter: BaseViewPresenterType {
-        return presenter
+        presenter
     }
 
     private let presenter: SlideUpViewPresenterType
@@ -71,7 +71,7 @@ internal class SlideUpView: UIView, SlideUpViewType {
             return
         }
 
-        switch self.slideFromDirection {
+        switch slideFromDirection {
         case .bottom:
             bottomConstraint.constant = -frame.height
         case .left:
@@ -84,7 +84,7 @@ internal class SlideUpView: UIView, SlideUpViewType {
             Logger.debug("Error: Unsupported slide direction (top)")
         }
 
-        self.superview?.layoutIfNeeded()
+        superview?.layoutIfNeeded()
 
         UIView.animate(withDuration: UIConstants.slideAnimationDuration, animations: {
             self.leftConstraint.constant = 0

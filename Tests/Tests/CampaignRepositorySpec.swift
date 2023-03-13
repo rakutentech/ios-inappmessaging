@@ -13,7 +13,7 @@ class CampaignRepositorySpec: QuickSpec {
             var userDataCache: UserDataCacheMock!
             var accountRepository: AccountRepositoryType!
             var firstPersistedCampaign: Campaign? {
-                return campaignRepository.list.first
+                campaignRepository.list.first
             }
             var userCache: UserDataCacheContainer? {
                 userDataCache.cachedData[accountRepository.getUserIdentifiers()]

@@ -283,13 +283,13 @@ class ConfigurationManagerSpec: QuickSpec {
                 }
             }
 
-            context("when calling saveIAMModuleConfiguration") {
+            context("when calling save") {
 
                 it("should store data in Configuration Repository") {
                     let config = InAppMessagingModuleConfiguration(configURLString: "config.url",
                                                                    subscriptionID: "sub-id",
                                                                    isTooltipFeatureEnabled: true)
-                    configurationManager.saveIAMModuleConfiguration(config)
+                    configurationManager.save(moduleConfig: config)
                     expect(configurationRepository.isTooltipFeatureEnabled).to(equal(config.isTooltipFeatureEnabled))
                     expect(configurationRepository.getSubscriptionID()).to(equal(config.subscriptionID))
                     expect(configurationRepository.getConfigEndpointURLString()).to(equal(config.configURLString))

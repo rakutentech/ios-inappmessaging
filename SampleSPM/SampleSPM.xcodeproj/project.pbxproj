@@ -66,7 +66,7 @@
 		D234A71D291C62CE0086AC80 /* TooltipManagerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = D234A6EF291C62C90086AC80 /* TooltipManagerSpec.swift */; };
 		D234A71E291C62CE0086AC80 /* ViewPresenterSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = D234A6F0291C62C90086AC80 /* ViewPresenterSpec.swift */; };
 		D234A71F291C62CE0086AC80 /* HeaderAttributesBuilderSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = D234A6F1291C62CA0086AC80 /* HeaderAttributesBuilderSpec.swift */; };
-		D234A720291C62CE0086AC80 /* CustomEventSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = D234A6F2291C62CA0086AC80 /* CustomEventSpec.swift */; };
+		D234A720291C62CE0086AC80 /* CustomEventValidationSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = D234A6F2291C62CA0086AC80 /* CustomEventValidationSpec.swift */; };
 		D234A721291C62CF0086AC80 /* ConfigEndpointResponseSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = D234A6F3291C62CA0086AC80 /* ConfigEndpointResponseSpec.swift */; };
 		D234A722291C62CF0086AC80 /* CustomAttributeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = D234A6F4291C62CA0086AC80 /* CustomAttributeSpec.swift */; };
 		D234A723291C62CF0086AC80 /* EventMatcherSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = D234A6F5291C62CA0086AC80 /* EventMatcherSpec.swift */; };
@@ -195,7 +195,7 @@
 		D234A6EF291C62C90086AC80 /* TooltipManagerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TooltipManagerSpec.swift; sourceTree = "<group>"; };
 		D234A6F0291C62C90086AC80 /* ViewPresenterSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewPresenterSpec.swift; sourceTree = "<group>"; };
 		D234A6F1291C62CA0086AC80 /* HeaderAttributesBuilderSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeaderAttributesBuilderSpec.swift; sourceTree = "<group>"; };
-		D234A6F2291C62CA0086AC80 /* CustomEventSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomEventSpec.swift; sourceTree = "<group>"; };
+		D234A6F2291C62CA0086AC80 /* CustomEventValidationSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomEventValidationSpec.swift; sourceTree = "<group>"; };
 		D234A6F3291C62CA0086AC80 /* ConfigEndpointResponseSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfigEndpointResponseSpec.swift; sourceTree = "<group>"; };
 		D234A6F4291C62CA0086AC80 /* CustomAttributeSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomAttributeSpec.swift; sourceTree = "<group>"; };
 		D234A6F5291C62CA0086AC80 /* EventMatcherSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventMatcherSpec.swift; sourceTree = "<group>"; };
@@ -457,16 +457,16 @@
 				D234A714291C62CE0086AC80 /* CampaignsValidatorSpec.swift */,
 				D234A6FF291C62CB0086AC80 /* CampaignTriggerAgentSpec.swift */,
 				D234A706291C62CC0086AC80 /* CommonUtilitySpec.swift */,
+				D234A6F3291C62CA0086AC80 /* ConfigEndpointResponseSpec.swift */,
 				D234A70E291C62CD0086AC80 /* ConfigurationManagerSpec.swift */,
 				D234A70F291C62CD0086AC80 /* ConfigurationRepositorySpec.swift */,
 				D234A707291C62CD0086AC80 /* ConfigurationServiceSpec.swift */,
 				D234A6F9291C62CA0086AC80 /* ConfigurationSpec.swift */,
 				D234A6F4291C62CA0086AC80 /* CustomAttributeSpec.swift */,
-				D234A6F2291C62CA0086AC80 /* CustomEventSpec.swift */,
+				D234A6F2291C62CA0086AC80 /* CustomEventValidationSpec.swift */,
 				D234A703291C62CC0086AC80 /* DisplayPermissionServiceSpec.swift */,
 				D234A6FB291C62CB0086AC80 /* ErrorReportableSpec.swift */,
 				D234A6F5291C62CA0086AC80 /* EventMatcherSpec.swift */,
-				D234A6F3291C62CA0086AC80 /* ConfigEndpointResponseSpec.swift */,
 				D234A6F1291C62CA0086AC80 /* HeaderAttributesBuilderSpec.swift */,
 				D234A6EC291C62C90086AC80 /* HttpRequestableSpec.swift */,
 				D234A6EB291C62C90086AC80 /* ImpressionServiceSpec.swift */,
@@ -809,7 +809,7 @@
 				D234A741291C62CF0086AC80 /* ViewModelSpec.swift in Sources */,
 				D234A73B291C62CF0086AC80 /* OptOutMessageViewSpec.swift in Sources */,
 				D234A735291C62CF0086AC80 /* ConfigurationServiceSpec.swift in Sources */,
-				D234A720291C62CE0086AC80 /* CustomEventSpec.swift in Sources */,
+				D234A720291C62CE0086AC80 /* CustomEventValidationSpec.swift in Sources */,
 				D234A71B291C62CE0086AC80 /* MainContainerSpec.swift in Sources */,
 				D234A718291C62CE0086AC80 /* BundleSpec.swift in Sources */,
 				D234A72A291C62CF0086AC80 /* TooltipDispatcherSpec.swift in Sources */,

@@ -41,7 +41,7 @@ internal struct ConfigurationService: ConfigurationServiceType, HttpRequestable 
         switch response {
         case .success((let data, _)):
             return parseResponse(data).mapError {
-                return ConfigurationServiceError.jsonDecodingError($0)
+                ConfigurationServiceError.jsonDecodingError($0)
             }
         case .failure(let requestError):
             switch requestError {
@@ -119,6 +119,6 @@ extension ConfigurationService {
     }
 
     func buildHttpBody(with parameters: [String: Any]?) -> Result<Data, Error> {
-        return .failure(RequestError.bodyIsNil)
+        .failure(RequestError.bodyIsNil)
     }
 }

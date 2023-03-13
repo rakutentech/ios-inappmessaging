@@ -14,7 +14,7 @@ import Foundation
     let name: String
 
     var analyticsParameters: [String: Any] {
-        return [:]
+        [:]
     }
 
     init(type: EventType, name: String, timestamp: Int64 = Date().millisecondsSince1970) {
@@ -26,7 +26,7 @@ import Foundation
     /// Used for custom atribute matching. Subclass will
     /// overwrite this if it uses CustomAttributes.
     func getAttributeMap() -> [String: CustomAttribute]? {
-        return nil
+        nil
     }
 
     // MARK: - Hashable (NSObject)
@@ -40,6 +40,6 @@ import Foundation
     }
 
     public override var hash: Int {
-        return name.hashValue ^ type.hashValue
+        name.hashValue ^ type.hashValue
     }
 }
