@@ -27,14 +27,17 @@ class TooltipDispatcherSpec: QuickSpec {
             var dispatcher: TooltipDispatcher!
             var campaignRepository: CampaignRepositoryMock!
             var router: RouterMock!
+            var permissionService: DisplayPermissionServiceMock!
             var httpSession: URLSessionMock!
             var viewListener: ViewListenerMock!
 
             beforeEach {
                 campaignRepository = CampaignRepositoryMock()
                 router = RouterMock()
+                permissionService = DisplayPermissionServiceMock()
                 viewListener = ViewListenerMock()
                 dispatcher = TooltipDispatcher(router: router,
+                                               permissionService: permissionService,
                                                campaignRepository: campaignRepository,
                                                viewListener: viewListener)
 
@@ -204,6 +207,13 @@ class TooltipDispatcherSpec: QuickSpec {
                         router.completeDisplayingTooltip(cancelled: false)
                         expect(campaignRepository.incrementImpressionsCalls).toAfterTimeout(equal(0))
                     }
+
+                    it("will perform ping") {
+                        permissionService.shouldPerformPing = true
+                        let tooltip = TestHelpers.generateTooltip(id: "test", title: "[Tooltip][ctx] title", isTest: true)
+                        dispatcher.setNeedsDisplay(tooltip: tooltip)
+                        expect(delegate.wasPingCalled).toEventually(beTrue())
+                    }
                 }
 
                 context("and contexts are not approved") {
@@ -246,11 +256,16 @@ class TooltipDispatcherSpec: QuickSpec {
 }
 
 private class Delegate: TooltipDispatcherDelegate {
+    var wasPingCalled = false
     private(set) var wasShouldShowCalled = false
     var shouldShowCampaign = true
 
     func shouldShowTooltip(title: String, contexts: [String]) -> Bool {
         wasShouldShowCalled = true
         return shouldShowCampaign
+    }
+
+    func performPing() {
+        wasPingCalled = true
     }
 }
