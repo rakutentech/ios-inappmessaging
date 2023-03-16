@@ -43,7 +43,7 @@ class CustomAttributeSpec: QuickSpec {
                 }
             }
 
-            context("when dictionary representation") {
+            context("when accessing dictionary representation") {
 
                 it("should return dictionary without type") {
                     let att = CustomAttribute(withKeyName: "test", withStringValue: "TeSt4")
