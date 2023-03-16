@@ -3,6 +3,7 @@
 ### Unreleased
 - Bug fixes:
 	- Removed "last user" cache to avoid overwriting anonymous user cache during init [SDKCF-6409]
+    - Added display permission service to perform ping on tooltip dispatcher [SDKCF-4964]
 - Improvements:
 	- Created new test scheme to combine unit test and UI test results [SDKCF-6356]
 
