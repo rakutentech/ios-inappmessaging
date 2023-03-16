@@ -49,8 +49,7 @@ public class CustomAttribute: NSObject {
         self.type = .timeInMilliseconds
     }
 
-    @objc
-    public init(withKeyName name: String, withInvalid value: Any) {
+    init(withKeyName name: String, withInvalid value: Any) {
         self.name = name.lowercased()
         self.value = value
         self.type = .invalid
