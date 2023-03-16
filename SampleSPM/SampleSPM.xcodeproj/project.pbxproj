@@ -113,6 +113,7 @@
 		D920D8CB2277B965008FB38D /* SecondPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D920D8CA2277B965008FB38D /* SecondPageViewController.swift */; };
 		D924268722D91C15002F50D3 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = D924268522D91C15002F50D3 /* Localizable.strings */; };
 		D92D1F262224A269008EA748 /* TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = D92D1F242224A265008EA748 /* TestHelpers.swift */; };
+		FCF93D8229C30863000DB8CE /* EventTypeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCF93D8129C30863000DB8CE /* EventTypeSpec.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -244,6 +245,7 @@
 		D924268622D91C15002F50D3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
 		D924268822D91C19002F50D3 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
 		D92D1F242224A265008EA748 /* TestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestHelpers.swift; sourceTree = "<group>"; };
+		FCF93D8129C30863000DB8CE /* EventTypeSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventTypeSpec.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -465,6 +467,7 @@
 				D234A6F4291C62CA0086AC80 /* CustomAttributeSpec.swift */,
 				D234A6F2291C62CA0086AC80 /* CustomEventValidationSpec.swift */,
 				D234A703291C62CC0086AC80 /* DisplayPermissionServiceSpec.swift */,
+				FCF93D8129C30863000DB8CE /* EventTypeSpec.swift */,
 				D234A6FB291C62CB0086AC80 /* ErrorReportableSpec.swift */,
 				D234A6F5291C62CA0086AC80 /* EventMatcherSpec.swift */,
 				D234A6F1291C62CA0086AC80 /* HeaderAttributesBuilderSpec.swift */,
@@ -791,6 +794,7 @@
 				D234A72F291C62CF0086AC80 /* MatchingUtilitySpec.swift in Sources */,
 				D234A72E291C62CF0086AC80 /* BackoffSpec.swift in Sources */,
 				D234A723291C62CF0086AC80 /* EventMatcherSpec.swift in Sources */,
+				FCF93D8229C30863000DB8CE /* EventTypeSpec.swift in Sources */,
 				D234A742291C62CF0086AC80 /* CampaignsValidatorSpec.swift in Sources */,
 				D234A743291C62CF0086AC80 /* ViewListenerSpec.swift in Sources */,
 				D234A71F291C62CE0086AC80 /* HeaderAttributesBuilderSpec.swift in Sources */,
