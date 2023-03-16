@@ -49,6 +49,13 @@ public class CustomAttribute: NSObject {
         self.type = .timeInMilliseconds
     }
 
+    @objc
+    public init(withKeyName name: String, withInvalid value: Any) {
+        self.name = name.lowercased()
+        self.value = value
+        self.type = .invalid
+    }
+
     public override func isEqual(_ object: Any?) -> Bool {
         guard let object = object as? CustomAttribute else {
             return false
