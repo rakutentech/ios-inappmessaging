@@ -49,6 +49,18 @@ class CustomAttributeSpec: QuickSpec {
                     let att = CustomAttribute(withKeyName: "test", withStringValue: "TeSt4")
                     expect(att.dictionaryRepresentation["type"]).to(beNil())
                 }
+
+                it("should return dictionary with name test") {
+                    let att = CustomAttribute(withKeyName: "tEst", withStringValue: "test5")
+                    let name = att.dictionaryRepresentation["name"] as? String
+                    expect(name).to(equal("test"))
+                }
+
+                it("should return dictionary with value test5") {
+                    let att = CustomAttribute(withKeyName: "test", withStringValue: "teSt5")
+                    let value = att.dictionaryRepresentation["value"] as? String
+                    expect(value).to(equal("test5"))
+                }
             }
 
             context("when comparing objects") {
