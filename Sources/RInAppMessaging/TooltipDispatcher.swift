@@ -92,6 +92,10 @@ internal class TooltipDispatcher: TooltipDispatcherType, ViewListenerObserver {
             delegate?.performPing()
         }
 
+        guard permissionResponse.display else {
+            return
+        }
+
         let waitForImageDispatchGroup = DispatchGroup()
         waitForImageDispatchGroup.enter()
 
