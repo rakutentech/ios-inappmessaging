@@ -187,6 +187,49 @@ class TooltipDispatcherSpec: QuickSpec {
                     expect(delegate.wasShouldShowCalled).toAfterTimeout(beFalse())
                 }
 
+                context("performing permission check") {
+
+                    context("and permission response perform ping are true") {
+
+                        it("will perform ping") {
+                            permissionService.shouldPerformPing = true
+                            let tooltip = TestHelpers.generateTooltip(id: "test", title: "[Tooltip][ctx] title", isTest: true)
+                            dispatcher.setNeedsDisplay(tooltip: tooltip)
+                            expect(delegate.wasPingCalled).toEventually(beTrue())
+                        }
+                    }
+
+                    context("and permission response perform ping are false") {
+
+                        it("will not perform ping") {
+                            permissionService.shouldPerformPing = false
+                            let tooltip = TestHelpers.generateTooltip(id: "test", title: "[Tooltip][ctx] title", isTest: true)
+                            dispatcher.setNeedsDisplay(tooltip: tooltip)
+                            expect(delegate.wasPingCalled).toEventually(beFalse())
+                        }
+                    }
+
+                    context("and permission response display are true") {
+
+                        it("will display the tooltip") {
+                            permissionService.shouldGrantPermission = true
+                            let tooltip = TestHelpers.generateTooltip(id: "test", title: "[Tooltip][ctx] title", isTest: true)
+                            dispatcher.setNeedsDisplay(tooltip: tooltip)
+                            expect(router.displayedTooltips).toEventuallyNot(beEmpty())
+                        }
+                    }
+
+                    context("and permission response display are false") {
+
+                        it("will not display the tooltip") {
+                            permissionService.shouldGrantPermission = false
+                            let tooltip = TestHelpers.generateTooltip(id: "test", title: "[Tooltip][ctx] title", isTest: true)
+                            dispatcher.setNeedsDisplay(tooltip: tooltip)
+                            expect(router.displayedTooltips).toEventually(beEmpty())
+                        }
+                    }
+                }
+
                 context("and contexts are approved") {
                     beforeEach {
                         delegate.shouldShowCampaign = true
@@ -206,13 +249,6 @@ class TooltipDispatcherSpec: QuickSpec {
                         dispatcher.setNeedsDisplay(tooltip: tooltip)
                         router.completeDisplayingTooltip(cancelled: false)
                         expect(campaignRepository.incrementImpressionsCalls).toAfterTimeout(equal(0))
-                    }
-
-                    it("will perform ping") {
-                        permissionService.shouldPerformPing = true
-                        let tooltip = TestHelpers.generateTooltip(id: "test", title: "[Tooltip][ctx] title", isTest: true)
-                        dispatcher.setNeedsDisplay(tooltip: tooltip)
-                        expect(delegate.wasPingCalled).toEventually(beTrue())
                     }
                 }
 
