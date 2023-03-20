@@ -83,7 +83,6 @@ internal class TooltipDispatcher: TooltipDispatcherType, ViewListenerObserver {
         guard let resImgUrlString = tooltip.tooltipData?.imageUrl,
               let resImgUrl = URL(string: resImgUrlString)
         else {
-            // TOOLTIP: display permission?
             return
         }
 
