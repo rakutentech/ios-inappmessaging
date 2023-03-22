@@ -99,6 +99,7 @@
 		D924268722D91C15002F50D3 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = D924268522D91C15002F50D3 /* Localizable.strings */; };
 		D92D1F2322249853008EA748 /* CampaignsValidatorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = D92D1F2122249833008EA748 /* CampaignsValidatorSpec.swift */; };
 		D92D1F262224A269008EA748 /* TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = D92D1F242224A265008EA748 /* TestHelpers.swift */; };
+		FCF93D8029C2D359000DB8CE /* EventTypeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCF93D7F29C2D359000DB8CE /* EventTypeSpec.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -230,6 +231,7 @@
 		D92D1F2122249833008EA748 /* CampaignsValidatorSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CampaignsValidatorSpec.swift; sourceTree = "<group>"; };
 		D92D1F242224A265008EA748 /* TestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestHelpers.swift; sourceTree = "<group>"; };
 		D9F418282110FD9F00E2158F /* ConfigurationSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationSpec.swift; sourceTree = "<group>"; };
+		FCF93D7F29C2D359000DB8CE /* EventTypeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventTypeSpec.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -422,6 +424,7 @@
 				45ADA53D247CFE9E00A9E2A3 /* ConfigurationRepositorySpec.swift */,
 				459B227B245289F300D218CE /* ConfigurationServiceSpec.swift */,
 				D9F418282110FD9F00E2158F /* ConfigurationSpec.swift */,
+				FCF93D7F29C2D359000DB8CE /* EventTypeSpec.swift */,
 				45491058247F58660019864D /* CustomAttributeSpec.swift */,
 				459DE86B2407B5750002F451 /* CustomEventValidationSpec.swift */,
 				459B228124528A7D00D218CE /* DisplayPermissionServiceSpec.swift */,
@@ -751,6 +754,7 @@
 				456FE1E72428513200304872 /* ErrorReportableSpec.swift in Sources */,
 				4538BCF6262AE8FA009952BE /* UserDataCacheSpec.swift in Sources */,
 				45BDFD052421EE7B004DEA0C /* SharedMocks.swift in Sources */,
+				FCF93D8029C2D359000DB8CE /* EventTypeSpec.swift in Sources */,
 				45B3CC8427871C01005BA3F7 /* BundleSpec.swift in Sources */,
 				459B228024528A6900D218CE /* ImpressionServiceSpec.swift in Sources */,
 				4557A8B1257E544C00C9D241 /* AccountRepositorySpec.swift in Sources */,
