@@ -91,7 +91,7 @@ internal class TooltipDispatcher: TooltipDispatcherType, ViewListenerObserver {
             delegate?.performPing()
         }
 
-        guard permissionResponse.display else {
+        guard permissionResponse.display || tooltip.data.isTest else {
             return
         }
 
