@@ -211,21 +211,47 @@ class TooltipDispatcherSpec: QuickSpec {
 
                     context("and permission response display are true") {
 
-                        it("will display the tooltip") {
-                            permissionService.shouldGrantPermission = true
-                            let tooltip = TestHelpers.generateTooltip(id: "test", title: "[Tooltip][ctx] title", isTest: true)
-                            dispatcher.setNeedsDisplay(tooltip: tooltip)
-                            expect(router.displayedTooltips).toAfterTimeoutNot(beEmpty())
+                        context("and isTest are true") {
+
+                            it("will display the tooltip") {
+                                permissionService.shouldGrantPermission = true
+                                let tooltip = TestHelpers.generateTooltip(id: "test", title: "[Tooltip][ctx] title", isTest: true)
+                                dispatcher.setNeedsDisplay(tooltip: tooltip)
+                                expect(router.displayedTooltips).toAfterTimeoutNot(beEmpty())
+                            }
+                        }
+
+                        context("and isTest are false") {
+
+                            it("will display the tooltip") {
+                                permissionService.shouldGrantPermission = true
+                                let tooltip = TestHelpers.generateTooltip(id: "test", title: "[Tooltip][ctx] title", isTest: false)
+                                dispatcher.setNeedsDisplay(tooltip: tooltip)
+                                expect(router.displayedTooltips).toAfterTimeoutNot(beEmpty())
+                            }
                         }
                     }
 
                     context("and permission response display are false") {
 
-                        it("will not display the tooltip") {
-                            permissionService.shouldGrantPermission = false
-                            let tooltip = TestHelpers.generateTooltip(id: "test", title: "[Tooltip][ctx] title", isTest: true)
-                            dispatcher.setNeedsDisplay(tooltip: tooltip)
-                            expect(router.displayedTooltips).toAfterTimeout(beEmpty())
+                        context("and isTest are true") {
+
+                            it("will display the tooltip") {
+                                permissionService.shouldGrantPermission = true
+                                let tooltip = TestHelpers.generateTooltip(id: "test", title: "[Tooltip][ctx] title", isTest: true)
+                                dispatcher.setNeedsDisplay(tooltip: tooltip)
+                                expect(router.displayedTooltips).toAfterTimeoutNot(beEmpty())
+                            }
+                        }
+
+                        context("and isTest are false") {
+
+                            it("will not display the tooltip") {
+                                permissionService.shouldGrantPermission = false
+                                let tooltip = TestHelpers.generateTooltip(id: "test", title: "[Tooltip][ctx] title", isTest: false)
+                                dispatcher.setNeedsDisplay(tooltip: tooltip)
+                                expect(router.displayedTooltips).toAfterTimeout(beEmpty())
+                            }
                         }
                     }
                 }
