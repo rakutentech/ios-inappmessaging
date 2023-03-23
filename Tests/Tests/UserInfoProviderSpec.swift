@@ -157,6 +157,106 @@ class UserInfoProviderSpec: QuickSpec {
                     expect(userInfoProviderA == userInfoProviderB).to(beTrue())
                 }
             }
+
+            context("when checking inequality") {
+                var userInfoProviderA: UserInfoProviderMock!
+                var userInfoProviderB: UserInfoProviderMock!
+
+                beforeEach {
+                    userInfoProviderA = UserInfoProviderMock()
+                    userInfoProviderB = UserInfoProviderMock()
+                }
+
+                it("will return true for nil object") {
+                    userInfoProviderA = nil
+                    userInfoProviderB = nil
+                    expect(userInfoProviderA != userInfoProviderB).to(beFalse())
+                }
+
+                it("will return true for nil and empty objects") {
+                    userInfoProviderA = nil
+                    expect(userInfoProviderA != userInfoProviderB).to(beTrue())
+                }
+
+                it("will return false for different userIds") {
+                    userInfoProviderA.userID = "userA"
+                    userInfoProviderB.userID = "userA"
+                    expect(userInfoProviderA != userInfoProviderB).to(beFalse())
+                }
+
+                it("will return false for nil end empty userId") {
+                    userInfoProviderA.userID = nil
+                    userInfoProviderB.userID = ""
+                    expect(userInfoProviderA != userInfoProviderB).to(beFalse())
+                }
+
+                it("will return true for different userIds") {
+                    userInfoProviderA.userID = "userA"
+                    userInfoProviderB.userID = "userB"
+                    expect(userInfoProviderA != userInfoProviderB).to(beTrue())
+                }
+
+                it("will return false for the same idTrackingIdentifiers") {
+                    userInfoProviderA.idTrackingIdentifier = "tracking-id"
+                    userInfoProviderB.idTrackingIdentifier = "tracking-id"
+                    expect(userInfoProviderA != userInfoProviderB).to(beFalse())
+                }
+
+                it("will return false for nil end empty isTrackingIdentifier") {
+                    userInfoProviderA.idTrackingIdentifier = nil
+                    userInfoProviderB.idTrackingIdentifier = ""
+                    expect(userInfoProviderA != userInfoProviderB).to(beFalse())
+                }
+
+                it("will return true for different idTrackingIdentifiers") {
+                    userInfoProviderA.idTrackingIdentifier = "identityA"
+                    userInfoProviderB.idTrackingIdentifier = "identityB"
+                    expect(userInfoProviderA != userInfoProviderB).to(beTrue())
+                }
+
+                // Disclaimer: User is not defined by its access token
+                it("will return false for the same accessTokens") {
+                    userInfoProviderA.accessToken = "token"
+                    userInfoProviderB.accessToken = "token"
+                    expect(userInfoProviderA != userInfoProviderB).to(beFalse())
+                }
+
+                it("will return false for nil end empty accessToken") {
+                    userInfoProviderA.accessToken = nil
+                    userInfoProviderB.accessToken = ""
+                    expect(userInfoProviderA != userInfoProviderB).to(beFalse())
+                }
+
+                it("will return false for different accessTokens") {
+                    userInfoProviderA.accessToken = "tokenA"
+                    userInfoProviderB.accessToken = "tokenB"
+                    expect(userInfoProviderA != userInfoProviderB).to(beFalse())
+                }
+
+                it("will return true if one identifier is different") {
+                    userInfoProviderA.userID = "userA"
+                    userInfoProviderB.userID = "userB"
+                    userInfoProviderA.idTrackingIdentifier = "tracking-id"
+                    userInfoProviderB.idTrackingIdentifier = "tracking-id"
+                    expect(userInfoProviderA != userInfoProviderB).to(beTrue())
+
+                    userInfoProviderA.userID = "user"
+                    userInfoProviderB.userID = "user"
+                    userInfoProviderA.idTrackingIdentifier = "tracking-id-A"
+                    userInfoProviderB.idTrackingIdentifier = "tracking-id-B"
+                    expect(userInfoProviderA != userInfoProviderB).to(beTrue())
+                }
+
+                it("will return false if only accessToken is different") {
+                    userInfoProviderA.idTrackingIdentifier = "tracking-id"
+                    userInfoProviderB.idTrackingIdentifier = "tracking-id"
+                    userInfoProviderA.userID = "user"
+                    userInfoProviderB.userID = "user"
+                    userInfoProviderA.accessToken = "tokenA"
+                    userInfoProviderB.accessToken = "tokenB"
+                    expect(userInfoProviderA != userInfoProviderB).to(beFalse())
+                }
+            }
         }
     }
 }

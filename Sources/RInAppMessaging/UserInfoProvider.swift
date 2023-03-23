@@ -66,8 +66,14 @@ func == (lhs: UserInfoProvider?, rhs: UserInfoProvider?) -> Bool {
 
 @inlinable
 func != (lhs: UserInfoProvider?, rhs: UserInfoProvider?) -> Bool {
-    let equalsResult = lhs == rhs
-    return !equalsResult
+    switch (lhs, rhs) {
+    case let (l?, r?):
+        return l != r
+    case (nil, nil):
+        return false
+    default:
+        return true
+    }
 }
 
 @inlinable
