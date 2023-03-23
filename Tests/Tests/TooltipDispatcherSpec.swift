@@ -217,7 +217,7 @@ class TooltipDispatcherSpec: QuickSpec {
                                 permissionService.shouldGrantPermission = true
                                 let tooltip = TestHelpers.generateTooltip(id: "test", title: "[Tooltip][ctx] title", isTest: true)
                                 dispatcher.setNeedsDisplay(tooltip: tooltip)
-                                expect(router.displayedTooltips).toAfterTimeoutNot(beEmpty())
+                                expect(router.displayedTooltips).toEventuallyNot(beEmpty())
                             }
                         }
 
@@ -227,7 +227,7 @@ class TooltipDispatcherSpec: QuickSpec {
                                 permissionService.shouldGrantPermission = true
                                 let tooltip = TestHelpers.generateTooltip(id: "test", title: "[Tooltip][ctx] title", isTest: false)
                                 dispatcher.setNeedsDisplay(tooltip: tooltip)
-                                expect(router.displayedTooltips).toAfterTimeoutNot(beEmpty())
+                                expect(router.displayedTooltips).toEventuallyNot(beEmpty())
                             }
                         }
                     }
@@ -240,7 +240,7 @@ class TooltipDispatcherSpec: QuickSpec {
                                 permissionService.shouldGrantPermission = true
                                 let tooltip = TestHelpers.generateTooltip(id: "test", title: "[Tooltip][ctx] title", isTest: true)
                                 dispatcher.setNeedsDisplay(tooltip: tooltip)
-                                expect(router.displayedTooltips).toAfterTimeoutNot(beEmpty())
+                                expect(router.displayedTooltips).toEventuallyNot(beEmpty())
                             }
                         }
 
