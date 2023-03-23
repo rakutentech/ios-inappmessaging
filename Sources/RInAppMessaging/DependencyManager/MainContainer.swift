@@ -76,6 +76,7 @@ internal enum MainContainerFactory {
             }),
             ContainerElement(type: TooltipDispatcherType.self, factory: {
                 TooltipDispatcher(router: manager.resolve(type: RouterType.self)!,
+                                  permissionService: manager.resolve(type: DisplayPermissionServiceType.self)!,
                                   campaignRepository: manager.resolve(type: CampaignRepositoryType.self)!,
                                   viewListener: manager.resolve(type: ViewListenerType.self)!)
             }),

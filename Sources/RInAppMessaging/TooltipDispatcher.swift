@@ -2,6 +2,7 @@ import Foundation
 import UIKit
 
 internal protocol TooltipDispatcherDelegate: AnyObject {
+    func performPing()
     func shouldShowTooltip(title: String, contexts: [String]) -> Bool
 }
 
@@ -14,6 +15,7 @@ internal protocol TooltipDispatcherType: AnyObject {
 internal class TooltipDispatcher: TooltipDispatcherType, ViewListenerObserver {
 
     private let router: RouterType
+    private let permissionService: DisplayPermissionServiceType
     private let campaignRepository: CampaignRepositoryType
     private let viewListener: ViewListenerType
     private let dispatchQueue = DispatchQueue(label: "IAM.TooltipDisplay", qos: .userInteractive)
@@ -23,10 +25,12 @@ internal class TooltipDispatcher: TooltipDispatcherType, ViewListenerObserver {
     weak var delegate: TooltipDispatcherDelegate?
 
     init(router: RouterType,
+         permissionService: DisplayPermissionServiceType,
          campaignRepository: CampaignRepositoryType,
          viewListener: ViewListenerType) {
 
         self.router = router
+        self.permissionService = permissionService
         self.campaignRepository = campaignRepository
         self.viewListener = viewListener
 
@@ -79,7 +83,15 @@ internal class TooltipDispatcher: TooltipDispatcherType, ViewListenerObserver {
         guard let resImgUrlString = tooltip.tooltipData?.imageUrl,
               let resImgUrl = URL(string: resImgUrlString)
         else {
-            // TOOLTIP: display permission?
+            return
+        }
+
+        let permissionResponse = permissionService.checkPermission(forCampaign: tooltip.data)
+        if permissionResponse.performPing {
+            delegate?.performPing()
+        }
+
+        guard permissionResponse.display || tooltip.data.isTest else {
             return
         }
 
