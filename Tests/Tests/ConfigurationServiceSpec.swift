@@ -12,7 +12,6 @@ import class RSDKUtils.URLSessionMock
 
 private let configURL = URL(string: "http://config.url")!
 
-// swiftlint:disable:next type_body_length
 class ConfigurationServiceSpec: QuickSpec {
 
     override func spec() {

@@ -10,10 +10,8 @@ import class RSDKUtils.URLSessionMock
 
 @testable import RInAppMessaging
 
-// swiftlint:disable:next type_body_length
 class ReadyCampaignDispatcherSpec: QuickSpec {
 
-    // swiftlint:disable:next function_body_length
     override func spec() {
         describe("CampaignDispatcher") {
             var dispatcher: CampaignDispatcher!
