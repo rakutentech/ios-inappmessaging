@@ -43,6 +43,26 @@ class CustomAttributeSpec: QuickSpec {
                 }
             }
 
+            context("when accessing dictionary representation") {
+
+                it("should return dictionary without type") {
+                    let att = CustomAttribute(withKeyName: "test", withStringValue: "TeSt4")
+                    expect(att.dictionaryRepresentation["type"]).to(beNil())
+                }
+
+                it("should return dictionary with name test") {
+                    let att = CustomAttribute(withKeyName: "tEst", withStringValue: "test5")
+                    let name = att.dictionaryRepresentation["name"] as? String
+                    expect(name).to(equal("test"))
+                }
+
+                it("should return dictionary with value test5") {
+                    let att = CustomAttribute(withKeyName: "test", withStringValue: "teSt5")
+                    let value = att.dictionaryRepresentation["value"] as? String
+                    expect(value).to(equal("test5"))
+                }
+            }
+
             context("when comparing objects") {
 
                 it("will return false when names differ") {
@@ -115,6 +135,18 @@ class CustomAttributeSpec: QuickSpec {
                     let att1 = CustomAttribute(withKeyName: "1", withTimeInMilliValue: 133333)
                     let att2 = CustomAttribute(withKeyName: "1", withTimeInMilliValue: 13333)
                     expect(att1).toNot(equal(att2))
+                }
+
+                it("will return false when object is not CustomAttribute") {
+                    let att1 = CustomAttribute(withKeyName: "CustomAttribute", withStringValue: "value")
+                    let att2 = "Not CustomAttribute"
+                    expect(att1.isEqual(att2)).to(beFalse())
+                }
+
+                it("will return false when objectValue is not NSObject") {
+                    let att1 = CustomAttribute(withKeyName: "CustomAttribute", withStringValue: "value")
+                    var att2 = CustomAttribute(withKeyName: "CustomAttribute", withInvalid: ActionType.invalid)
+                    expect(att1.isEqual(att2)).to(beFalse())
                 }
             }
         }
