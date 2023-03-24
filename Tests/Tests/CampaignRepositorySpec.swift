@@ -9,10 +9,8 @@ import RSDKUtilsNimble
 
 @testable import RInAppMessaging
 
-// swiftlint:disable:next type_body_length
 class CampaignRepositorySpec: QuickSpec {
 
-    // swiftlint:disable:next function_body_length
     override func spec() {
         describe("CampaignRepository") {
 
