@@ -173,9 +173,9 @@ class UserInfoProviderSpec: QuickSpec {
                     expect(userInfoProviderA != userInfoProviderB).to(beFalse())
                 }
 
-                it("will return true for nil and empty objects") {
+                it("will return false for nil and empty objects") {
                     userInfoProviderA = nil
-                    expect(userInfoProviderA != userInfoProviderB).to(beTrue())
+                    expect(userInfoProviderA != userInfoProviderB).to(beFalse())
                 }
 
                 it("will return false for different userIds") {

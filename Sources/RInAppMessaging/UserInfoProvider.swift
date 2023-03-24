@@ -72,7 +72,7 @@ func != (lhs: UserInfoProvider?, rhs: UserInfoProvider?) -> Bool {
     case (nil, nil):
         return false
     default:
-        return true
+        return false
     }
 }
 
