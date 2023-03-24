@@ -167,7 +167,7 @@ class UserInfoProviderSpec: QuickSpec {
                     userInfoProviderB = UserInfoProviderMock()
                 }
 
-                it("will return true for nil object") {
+                it("will return false for nil object") {
                     userInfoProviderA = nil
                     userInfoProviderB = nil
                     expect(userInfoProviderA != userInfoProviderB).to(beFalse())
