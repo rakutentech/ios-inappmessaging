@@ -80,11 +80,10 @@ internal class EventMatcher: EventMatcherType {
         let events = matchedEvents.get()[campaign.id, default: []] + persistentEvents
         let allTriggersSatisfied = triggers.allSatisfy { isTriggerMatchingOneOfEvents($0, events: events) }
         
-        if campaign.isTooltip {
-            return allTriggersSatisfied && events.contains(where: { $0.type == .viewAppeared })
-        } else {
+        guard campaign.isTooltip else {
             return allTriggersSatisfied
         }
+        return allTriggersSatisfied && events.contains(where: { $0.type == .viewAppeared })
     }
 
     func removeSetOfMatchedEvents(_ eventsToRemove: Set<Event>, for campaign: Campaign) throws {

@@ -19,6 +19,10 @@ class EventMatcherSpec: QuickSpec {
                     Trigger(type: .event,
                             eventType: .loginSuccessful,
                             eventName: "loginSuccessfulTest",
+                            attributes: []),
+                    Trigger(type: .event,
+                            eventType: .custom,
+                            eventName: "customEventTest",
                             attributes: [])
                 ]
             )
@@ -81,6 +85,17 @@ class EventMatcherSpec: QuickSpec {
                     eventMatcher.matchAndStore(event: LoginSuccessfulEvent())
                     expect {
                         try eventMatcher.removeSetOfMatchedEvents([AppStartEvent(), LoginSuccessfulEvent()],
+                                                                  for: testCampaign)
+                    }.to(throwError(EventMatcherError.couldntFindRequestedSetOfEvents))
+                }
+
+                it("will throw error if the event to remove isn't persistent or the event weren't found inside persistent events") {
+                    let customEvent = CustomEvent(withName: "customEventTest", withCustomAttributes: nil)
+                    let customEventToRemove = CustomEvent(withName: "customEventToRemove", withCustomAttributes: nil)
+                    campaignRepository.list = [testCampaign]
+                    eventMatcher.matchAndStore(event: customEvent)
+                    expect {
+                        try eventMatcher.removeSetOfMatchedEvents([customEventToRemove],
                                                                   for: testCampaign)
                     }.to(throwError(EventMatcherError.couldntFindRequestedSetOfEvents))
                 }
@@ -212,6 +227,16 @@ class EventMatcherSpec: QuickSpec {
                 expect(events).to(contain(AppStartEvent()))
             }
 
+            it("will stop matching events when triggers inside campaign is nil") {
+                let testCampaignWithoutTrigger = TestHelpers.generateCampaign(
+                    id: "test"
+                )
+                campaignRepository.list = [testCampaignWithoutTrigger]
+                eventMatcher.matchAndStore(event: LoginSuccessfulEvent())
+                let events = eventMatcher.matchedEvents(for: testCampaignWithoutTrigger)
+                expect(events).to(beEmpty())
+            }
+
             it("will properly match non-persistent events") {
                 campaignRepository.list = [testCampaign]
                 eventMatcher.matchAndStore(event: LoginSuccessfulEvent())
@@ -241,6 +266,7 @@ class EventMatcherSpec: QuickSpec {
                 it("will return true if all required events were stored") {
                     eventMatcher.matchAndStore(event: AppStartEvent())
                     eventMatcher.matchAndStore(event: LoginSuccessfulEvent())
+                    eventMatcher.matchAndStore(event: CustomEvent(withName: "customEventTest", withCustomAttributes: []))
                     expect(eventMatcher.containsAllMatchedEvents(for: testCampaign)).to(beTrue())
                 }
 
@@ -249,6 +275,7 @@ class EventMatcherSpec: QuickSpec {
                     eventMatcher.matchAndStore(event: LoginSuccessfulEvent())
                     eventMatcher.matchAndStore(event: LoginSuccessfulEvent())
                     eventMatcher.matchAndStore(event: PurchaseSuccessfulEvent())
+                    eventMatcher.matchAndStore(event: CustomEvent(withName: "customEventTest", withCustomAttributes: []))
                     expect(eventMatcher.containsAllMatchedEvents(for: testCampaign)).to(beTrue())
                 }
 
