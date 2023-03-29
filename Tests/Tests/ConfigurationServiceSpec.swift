@@ -254,6 +254,15 @@ class ConfigurationServiceSpec: QuickSpec {
                 }
             }
 
+            context("when building request body") {
+
+                it("will return RequestError.bodyIsNil") {
+                    let result = service.buildHttpBody(with: nil)
+                    let error = result.getError() as? RequestError
+                    expect(error).toNot(beNil())
+                }
+            }
+
             context("when making a request") {
                 beforeEach {
                     BundleInfoMock.reset()
