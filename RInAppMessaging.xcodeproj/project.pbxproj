@@ -73,6 +73,7 @@
 		45BDFD032421D311004DEA0C /* CampaignsListManagerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45BDFD022421D311004DEA0C /* CampaignsListManagerSpec.swift */; };
 		45BDFD052421EE7B004DEA0C /* SharedMocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45BDFD042421EE7B004DEA0C /* SharedMocks.swift */; };
 		45BDFD0724232714004DEA0C /* PublicAPISpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45BDFD0624232714004DEA0C /* PublicAPISpec.swift */; };
+		45D064D029D2ECE10009DFB2 /* slide-up-trigger-without-messageBody.json in Resources */ = {isa = PBXBuildFile; fileRef = 45D064CE29D2ECE10009DFB2 /* slide-up-trigger-without-messageBody.json */; };
 		45D4DA4F240F5597009B9B37 /* ViewPresenterSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D4DA4E240F5597009B9B37 /* ViewPresenterSpec.swift */; };
 		45DA01AD23D5831900A27CC6 /* ConfigurationManagerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA01AC23D5831900A27CC6 /* ConfigurationManagerSpec.swift */; };
 		45DC6D0127A33BB300B28C13 /* TooltipDispatcherSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DC6D0027A33BB300B28C13 /* TooltipDispatcherSpec.swift */; };
@@ -196,6 +197,7 @@
 		45BDFD022421D311004DEA0C /* CampaignsListManagerSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CampaignsListManagerSpec.swift; sourceTree = "<group>"; };
 		45BDFD042421EE7B004DEA0C /* SharedMocks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedMocks.swift; sourceTree = "<group>"; };
 		45BDFD0624232714004DEA0C /* PublicAPISpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicAPISpec.swift; sourceTree = "<group>"; };
+		45D064CE29D2ECE10009DFB2 /* slide-up-trigger-without-messageBody.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "slide-up-trigger-without-messageBody.json"; sourceTree = "<group>"; };
 		45D4DA4E240F5597009B9B37 /* ViewPresenterSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewPresenterSpec.swift; sourceTree = "<group>"; };
 		45DA01AC23D5831900A27CC6 /* ConfigurationManagerSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationManagerSpec.swift; sourceTree = "<group>"; };
 		45DC6D0027A33BB300B28C13 /* TooltipDispatcherSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TooltipDispatcherSpec.swift; sourceTree = "<group>"; };
@@ -312,6 +314,7 @@
 				453D245126A4DF1D00FB9E6A /* slide-up-close.json */,
 				4592B4B2270229D1004FF27B /* config.json */,
 				4592B4B927024D0C004FF27B /* display-permission.json */,
+				45D064CE29D2ECE10009DFB2 /* slide-up-trigger-without-messageBody.json */,
 			);
 			path = ResponseStubs;
 			sourceTree = "<group>";
@@ -645,6 +648,7 @@
 				453D243926A4ABD000FB9E6A /* modal-image-only.json in Resources */,
 				453D243226A172F600FB9E6A /* modal-text-only.json in Resources */,
 				453D244726A4DBDC00FB9E6A /* full-controls.json in Resources */,
+				45D064D029D2ECE10009DFB2 /* slide-up-trigger-without-messageBody.json in Resources */,
 				453D245326A4DF1D00FB9E6A /* slide-up-close.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

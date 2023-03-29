@@ -6,9 +6,11 @@
 	- Added display permission service to perform ping on tooltip dispatcher [SDKCF-4964]
 - Improvements:
 	- Created new test scheme to combine unit test and UI test results [SDKCF-6356]
-	- Added a new file for EventType unit test to increase code coverage [SDKCF-6378]
-	- Added more unit test to increase code coverage [SDKCF-6379]
-	- Added testing code to cover all code in the UserInfoProvider [SDKCF-6380]
+	- Improved unit test code coverage to
+		- EventType.swift [SDKCF-6378]
+		- CustomAttribute.swift [SDKCF-6379]
+		- UserInfoProvider.swift [SDKCF-6380]
+		- SlideUpViewPresenter.swift [SDKCF-6383]
 
 ### 7.3.0 (2023-01-11)
 - Features:
