@@ -44,10 +44,10 @@ internal class SlideUpViewPresenter: BaseViewPresenter, SlideUpViewPresenterType
             }
 
             UIApplication.shared.open(uriToOpen, options: [:], completionHandler: { success in
-                            if !success, let view = self.view {
-                                self.showURLError(view: view)
-                            }
-                        })
+                if !success, let view = self.view {
+                    self.showURLError(view: view)
+                }
+            })
         }
 
         logImpression(type: .clickContent)
