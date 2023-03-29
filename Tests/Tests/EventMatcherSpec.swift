@@ -89,7 +89,7 @@ class EventMatcherSpec: QuickSpec {
                     }.to(throwError(EventMatcherError.couldntFindRequestedSetOfEvents))
                 }
 
-                it("will throw error if the event to remove isn't persistent or the event weren't found inside persistent events") {
+                it("will throw error if the event to remove isn't persistent event") {
                     let customEvent = CustomEvent(withName: "customEventTest", withCustomAttributes: nil)
                     let customEventToRemove = CustomEvent(withName: "customEventToRemove", withCustomAttributes: nil)
                     campaignRepository.list = [testCampaign]
@@ -227,7 +227,7 @@ class EventMatcherSpec: QuickSpec {
                 expect(events).to(contain(AppStartEvent()))
             }
 
-            it("will stop matching events when triggers inside campaign is nil") {
+            it("will not match any event with campaign that has no triggers") {
                 let testCampaignWithoutTrigger = TestHelpers.generateCampaign(
                     id: "test"
                 )
