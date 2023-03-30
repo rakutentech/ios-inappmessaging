@@ -10,7 +10,9 @@ import RSDKUtilsNimble
 @testable import RInAppMessaging
 
 class CampaignRepositorySpec: QuickSpec {
+// swiftlint:disable:previous type_body_length
 
+    // swiftlint:disable:next function_body_length
     override func spec() {
         describe("CampaignRepository") {
 
@@ -80,6 +82,12 @@ class CampaignRepositorySpec: QuickSpec {
                         expect(campaignRepository.list).to(haveCount(1))
                     }
 
+                    it("check decrement impression with invalid campaign id") {
+                        syncRepository(with: [campaign])
+                        let campaign = campaignRepository.decrementImpressionsLeftInCampaign(id: testCampaign.data.campaignId)
+                        expect(campaign).to(beNil())
+                    }
+
                     it("will persist impressionsLeft value") {
                         syncRepository(with: [campaign])
                         campaignRepository.decrementImpressionsLeftInCampaign(id: campaign.id)
@@ -105,6 +113,12 @@ class CampaignRepositorySpec: QuickSpec {
                         campaignRepository.optOutCampaign(campaign)
                         syncRepository(with: [campaign])
                         expect(firstPersistedCampaign?.isOptedOut).to(beTrue())
+                    }
+
+                    it("check increment impression with invalid campaign id") {
+                        syncRepository(with: [campaign])
+                        let campaign = campaignRepository.incrementImpressionsLeftInCampaign(id: testCampaign.data.campaignId)
+                        expect(campaign).to(beNil())
                     }
 
                     it("will not override impressionsLeft value even if maxImpressions number is smaller") {
@@ -272,6 +286,12 @@ class CampaignRepositorySpec: QuickSpec {
                     syncRepository(with: [testCampaign])
                     campaignRepository.optOutCampaign(testCampaign)
                     expect(userCache?.campaignData?.first?.isOptedOut).to(beFalse())
+                }
+
+                it("optout campaign with invalid campaign") {
+                    syncRepository(with: [campaign])
+                    let campaign = campaignRepository.optOutCampaign(testCampaign)
+                    expect(campaign).to(beNil())
                 }
             }
 
