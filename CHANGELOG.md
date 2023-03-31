@@ -9,6 +9,7 @@
 	- Added a new file for EventType unit test to increase code coverage [SDKCF-6378]
 	- Added more unit test to increase code coverage [SDKCF-6379]
 	- Added testing code to cover all code in the UserInfoProvider [SDKCF-6380]
+	- Added more unit test to EventMatcher to increase code coverage [SDKCF-6390]
 
 ### 7.3.0 (2023-01-11)
 - Features:
