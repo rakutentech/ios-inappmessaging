@@ -75,8 +75,13 @@ class EventMatcherSpec: QuickSpec {
             context("when removing events") {
 
                 it("will throw error if events for given campaign weren't found") {
+                    let customEvent = CustomEvent(withName: "customEventTest", withCustomAttributes: nil)
+                    let customEventToRemove = CustomEvent(withName: "customEventToRemove", withCustomAttributes: nil)
+                    campaignRepository.list = [testCampaign]
+                    eventMatcher.matchAndStore(event: customEvent)
                     expect {
-                        try eventMatcher.removeSetOfMatchedEvents([AppStartEvent()], for: testCampaign)
+                        try eventMatcher.removeSetOfMatchedEvents([customEventToRemove],
+                                                                  for: testCampaign)
                     }.to(throwError(EventMatcherError.couldntFindRequestedSetOfEvents))
                 }
 
@@ -89,14 +94,9 @@ class EventMatcherSpec: QuickSpec {
                     }.to(throwError(EventMatcherError.couldntFindRequestedSetOfEvents))
                 }
 
-                it("will throw error if the event to remove isn't persistent event") {
-                    let customEvent = CustomEvent(withName: "customEventTest", withCustomAttributes: nil)
-                    let customEventToRemove = CustomEvent(withName: "customEventToRemove", withCustomAttributes: nil)
-                    campaignRepository.list = [testCampaign]
-                    eventMatcher.matchAndStore(event: customEvent)
+                it("will throw error if persistent event for given campaign wasn't found") {
                     expect {
-                        try eventMatcher.removeSetOfMatchedEvents([customEventToRemove],
-                                                                  for: testCampaign)
+                        try eventMatcher.removeSetOfMatchedEvents([AppStartEvent()], for: testCampaign)
                     }.to(throwError(EventMatcherError.couldntFindRequestedSetOfEvents))
                 }
 
