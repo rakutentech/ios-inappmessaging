@@ -44,13 +44,12 @@ class SlideUpViewSpec: QuickSpec {
 
                 beforeEach {
                     launchAppIfNecessary(context: "slide-up-trigger-without-messageBody")
-                    if !iamView.exists {
-                        app.buttons["purchase_successful"].tap()
-                    }
+                    expect(iamView.exists).to(beFalse())
+                    app.buttons["purchase_successful"].tap()
                 }
 
                 it("should not construct the slideup view") {
-                    expect(iamView.exists).to(beFalse())
+                    expect(iamView.exists).toAfterTimeout(beFalse(), timeout: 2)
                 }
             }
 
