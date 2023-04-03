@@ -254,6 +254,21 @@ class ConfigurationServiceSpec: QuickSpec {
                 }
             }
 
+            context("when building request body") {
+
+                it("will return RequestError.bodyIsNil with parameters") {
+                    let result = service.buildHttpBody(with: ["key": "value"])
+                    let error = result.getError() as? RequestError
+                    expect(error).toNot(beNil())
+                }
+
+                it("will return RequestError.bodyIsNil when parameters is nil") {
+                    let result = service.buildHttpBody(with: nil)
+                    let error = result.getError() as? RequestError
+                    expect(error).toNot(beNil())
+                }
+            }
+
             context("when making a request") {
                 beforeEach {
                     BundleInfoMock.reset()
@@ -337,6 +352,18 @@ class ConfigurationServiceSpec: QuickSpec {
                     it("will return RequestError.missingMetadata error if host app version is missing") {
                         BundleInfoMock.appVersionMock = nil
                         makeRequestAndEvaluateMetadataError()
+                    }
+
+                    it("will throwAssertion when SubscriptionID is missing") {
+                        configRepository.saveIAMModuleConfiguration(InAppMessagingModuleConfiguration(configURLString: "http:config.url",
+                                                                                                      subscriptionID: nil,
+                                                                                                      isTooltipFeatureEnabled: true))
+                        waitUntil { done in
+                            requestQueue.async {
+                                expect(service.getConfigData()).to(throwAssertion())
+                                done()
+                            }
+                        }
                     }
                 }
                 context("and config url is invalid") {
