@@ -11,6 +11,7 @@
 		- CustomAttribute.swift [SDKCF-6379]
 		- UserInfoProvider.swift [SDKCF-6380]
 		- EventMatcher.swift [SDKCF-6390]
+		- ConfigurationService.swift [SDKCF-6388]
 		- SlideUpViewPresenter.swift [SDKCF-6383]
 
 ### 7.3.0 (2023-01-11)
