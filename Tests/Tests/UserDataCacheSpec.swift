@@ -85,6 +85,22 @@ class UserDataCacheSpec: QuickSpec {
                 expect(userContainer).to(beNil())
             }
 
+            it("will remove all user cached data for registered user") {
+                let userCache = UserDataCache(userDefaults: userDefaults)
+                let userIdentifier = [UserIdentifier(type: .userId, identifier: "testUser")]
+
+                let campaigns = TestHelpers.MockResponse.withGeneratedCampaigns(count: 2, test: false, delay: 0).data
+                userCache.cacheCampaignData(campaigns, userIdentifiers: userIdentifier)
+                let displayPermission = DisplayPermissionResponse(display: true, performPing: false)
+                userCache.cacheDisplayPermissionData(displayPermission, campaignID: campaigns[0].id, userIdentifiers: userIdentifier)
+
+                userCache.deleteUserData(identifiers: userIdentifier)
+                let userContainer = userCache.getUserData(identifiers: userIdentifier)
+
+                expect(userContainer?.campaignData).to(beNil())
+                expect(userContainer?.displayPermissionData(for: campaigns[0])).to(beNil())
+            }
+
             context("when two threads call cacheCampaignData") {
                 it("will not crash") {
                     let queue1 = DispatchQueue(label: "UserDataCacheQueue1")
