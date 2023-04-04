@@ -666,4 +666,10 @@ extension EndpointURL {
                            displayPermission: emptyURL,
                            impression: emptyURL)
     }
+
+    static var invalid: Self {
+        return EndpointURL(ping: nil,
+                           displayPermission: nil,
+                           impression: nil)
+    }
 }

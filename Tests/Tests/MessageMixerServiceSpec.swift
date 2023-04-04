@@ -221,6 +221,24 @@ class MessageMixerServiceSpec: QuickSpec {
                         }
                     }
                 }
+
+                context("configuration doesn't have valid ping endpoint") {
+                    it("will return invalid configuration error") {
+                        waitUntil { done in
+                            let configData = ConfigEndpointData(rolloutPercentage: 100, endpoints: .invalid)
+                            configurationRepository.saveRemoteConfiguration(configData)
+                            let result = service.ping()
+                            let error = result.getError()
+                            expect(error).toNot(beNil())
+                            guard case .invalidConfiguration = error else {
+                                fail("Unexpected error type \(String(describing: error)). Expected .invalidConfiguration")
+                                done()
+                                return
+                            }
+                            done()
+                        }
+                    }
+                }
             }
 
             context("when making a request") {
