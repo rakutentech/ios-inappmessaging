@@ -114,6 +114,7 @@
 		D920D8CB2277B965008FB38D /* SecondPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D920D8CA2277B965008FB38D /* SecondPageViewController.swift */; };
 		D924268722D91C15002F50D3 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = D924268522D91C15002F50D3 /* Localizable.strings */; };
 		D92D1F262224A269008EA748 /* TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = D92D1F242224A265008EA748 /* TestHelpers.swift */; };
+		FC92B45D29DD27670053CF0E /* UILabelExtensionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC92B45C29DD27670053CF0E /* UILabelExtensionSpec.swift */; };
 		FCF93D8229C30863000DB8CE /* EventTypeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCF93D8129C30863000DB8CE /* EventTypeSpec.swift */; };
 /* End PBXBuildFile section */
 
@@ -247,6 +248,7 @@
 		D924268622D91C15002F50D3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
 		D924268822D91C19002F50D3 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
 		D92D1F242224A265008EA748 /* TestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestHelpers.swift; sourceTree = "<group>"; };
+		FC92B45C29DD27670053CF0E /* UILabelExtensionSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UILabelExtensionSpec.swift; sourceTree = "<group>"; };
 		FCF93D8129C30863000DB8CE /* EventTypeSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventTypeSpec.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -494,6 +496,7 @@
 				D234A709291C62CD0086AC80 /* UIApplicationExtensionSpec.swift */,
 				D234A6F8291C62CA0086AC80 /* UIColorExtensionSpec.swift */,
 				D234A716291C62CE0086AC80 /* UIFontExtensionSpec.swift */,
+				FC92B45C29DD27670053CF0E /* UILabelExtensionSpec.swift */,
 				D24CF281294BE427007C6C85 /* UITabBarExtensionSpec.swift */,
 				D234A712291C62CE0086AC80 /* UIViewExtensionSpec.swift */,
 				D234A70A291C62CD0086AC80 /* UserDataCacheSpec.swift */,
@@ -818,6 +821,7 @@
 				D234A73B291C62CF0086AC80 /* OptOutMessageViewSpec.swift in Sources */,
 				D234A735291C62CF0086AC80 /* ConfigurationServiceSpec.swift in Sources */,
 				D234A720291C62CE0086AC80 /* CustomEventValidationSpec.swift in Sources */,
+				FC92B45D29DD27670053CF0E /* UILabelExtensionSpec.swift in Sources */,
 				D234A71B291C62CE0086AC80 /* MainContainerSpec.swift in Sources */,
 				D234A718291C62CE0086AC80 /* BundleSpec.swift in Sources */,
 				D234A72A291C62CF0086AC80 /* TooltipDispatcherSpec.swift in Sources */,
