@@ -668,8 +668,8 @@ extension EndpointURL {
     }
 
     static var invalid: Self {
-        return EndpointURL(ping: nil,
-                           displayPermission: nil,
-                           impression: nil)
+        EndpointURL(ping: nil,
+                    displayPermission: nil,
+                    impression: nil)
     }
 }
