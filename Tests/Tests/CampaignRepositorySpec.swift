@@ -82,12 +82,6 @@ class CampaignRepositorySpec: QuickSpec {
                         expect(campaignRepository.list).to(haveCount(1))
                     }
 
-                    it("check decrement impression with invalid campaign id") {
-                        syncRepository(with: [campaign])
-                        let campaign = campaignRepository.decrementImpressionsLeftInCampaign(id: testCampaign.data.campaignId)
-                        expect(campaign).to(beNil())
-                    }
-
                     it("will persist impressionsLeft value") {
                         syncRepository(with: [campaign])
                         campaignRepository.decrementImpressionsLeftInCampaign(id: campaign.id)
@@ -113,12 +107,6 @@ class CampaignRepositorySpec: QuickSpec {
                         campaignRepository.optOutCampaign(campaign)
                         syncRepository(with: [campaign])
                         expect(firstPersistedCampaign?.isOptedOut).to(beTrue())
-                    }
-
-                    it("check increment impression with invalid campaign id") {
-                        syncRepository(with: [campaign])
-                        let campaign = campaignRepository.incrementImpressionsLeftInCampaign(id: testCampaign.data.campaignId)
-                        expect(campaign).to(beNil())
                     }
 
                     it("will not override impressionsLeft value even if maxImpressions number is smaller") {
@@ -288,10 +276,12 @@ class CampaignRepositorySpec: QuickSpec {
                     expect(userCache?.campaignData?.first?.isOptedOut).to(beFalse())
                 }
 
-                it("optout campaign with invalid campaign") {
-                    syncRepository(with: [campaign])
-                    let campaign = campaignRepository.optOutCampaign(testCampaign)
-                    expect(campaign).to(beNil())
+                context("when provided campaign is invalid") {
+                    it("will not mark campaign as opted out") {
+                        syncRepository(with: [campaign])
+                        let campaign = campaignRepository.optOutCampaign(testCampaign)
+                        expect(campaign).to(beNil())
+                    }
                 }
             }
 
@@ -397,6 +387,14 @@ class CampaignRepositorySpec: QuickSpec {
                         expect(userCache?.campaignData?.first?.impressionsLeft).to(equal(2))
                     }
                 }
+
+                context("when provided campaign id is invalid") {
+                    it("will not find campaign when decrement the impressionLeft value") {
+                        syncRepository(with: [campaign])
+                        let campaign = campaignRepository.decrementImpressionsLeftInCampaign(id: testCampaign.data.campaignId)
+                        expect(campaign).to(beNil())
+                    }
+                }
             }
 
             context("when incrementImpressionsLeftInCampaign is called") {
@@ -437,6 +435,14 @@ class CampaignRepositorySpec: QuickSpec {
                     syncRepository(with: [testCampaign])
                     campaignRepository.incrementImpressionsLeftInCampaign(id: testCampaign.id)
                     expect(userCache?.campaignData?.first?.impressionsLeft).to(equal(4))
+                }
+
+                context("when provided campaign id is invalid") {
+                    it("will not find campaign when increment the impressionLeft value") {
+                        syncRepository(with: [campaign])
+                        let campaign = campaignRepository.incrementImpressionsLeftInCampaign(id: testCampaign.data.campaignId)
+                        expect(campaign).to(beNil())
+                    }
                 }
             }
 
