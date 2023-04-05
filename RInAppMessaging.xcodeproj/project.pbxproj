@@ -82,6 +82,8 @@
 		45DC6D0927A4501300B28C13 /* TooltipPresenterSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DC6D0827A4501300B28C13 /* TooltipPresenterSpec.swift */; };
 		45EA720525B71FA2001B2049 /* UIApplicationExtensionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45EA720425B71FA2001B2049 /* UIApplicationExtensionSpec.swift */; };
 		45EA720D25B72002001B2049 /* UIViewExtensionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45EA720C25B72002001B2049 /* UIViewExtensionSpec.swift */; };
+		45ECADDF29DD6B96003F75B2 /* slide-up-trigger-without-messageBody.json in Resources */ = {isa = PBXBuildFile; fileRef = 45ECADDE29DD6B95003F75B2 /* slide-up-trigger-without-messageBody.json */; };
+		45ECADE029DD6B96003F75B2 /* slide-up-trigger-without-messageBody.json in Resources */ = {isa = PBXBuildFile; fileRef = 45ECADDE29DD6B95003F75B2 /* slide-up-trigger-without-messageBody.json */; };
 		4B1A88AB274F6896002724B6 /* dummy-font.otf in Resources */ = {isa = PBXBuildFile; fileRef = 4B1A88AA274F6891002724B6 /* dummy-font.otf */; };
 		4BBE7EAF274F1A6A0039D2BF /* UIFontExtensionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BBE7EAE274F1A6A0039D2BF /* UIFontExtensionSpec.swift */; };
 		607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD51AFB9204008FA782 /* AppDelegate.swift */; };
@@ -205,6 +207,7 @@
 		45DC6D0827A4501300B28C13 /* TooltipPresenterSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TooltipPresenterSpec.swift; sourceTree = "<group>"; };
 		45EA720425B71FA2001B2049 /* UIApplicationExtensionSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIApplicationExtensionSpec.swift; sourceTree = "<group>"; };
 		45EA720C25B72002001B2049 /* UIViewExtensionSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewExtensionSpec.swift; sourceTree = "<group>"; };
+		45ECADDE29DD6B95003F75B2 /* slide-up-trigger-without-messageBody.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "slide-up-trigger-without-messageBody.json"; sourceTree = "<group>"; };
 		4B1A88AA274F6891002724B6 /* dummy-font.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "dummy-font.otf"; sourceTree = "<group>"; };
 		4BBE7EAE274F1A6A0039D2BF /* UIFontExtensionSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIFontExtensionSpec.swift; sourceTree = "<group>"; };
 		607FACD01AFB9204008FA782 /* RInAppMessaging_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RInAppMessaging_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -310,6 +313,7 @@
 				453D244426A4DBDC00FB9E6A /* full-text-only.json */,
 				453D244E26A4DCD800FB9E6A /* slide-up-trigger.json */,
 				453D245126A4DF1D00FB9E6A /* slide-up-close.json */,
+				45ECADDE29DD6B95003F75B2 /* slide-up-trigger-without-messageBody.json */,
 				4592B4B2270229D1004FF27B /* config.json */,
 				4592B4B927024D0C004FF27B /* display-permission.json */,
 			);
@@ -633,6 +637,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				45ECADE029DD6B96003F75B2 /* slide-up-trigger-without-messageBody.json in Resources */,
 				453D244B26A4DBDC00FB9E6A /* full-text-only.json in Resources */,
 				453D244D26A4DBDC00FB9E6A /* full-text-image.json in Resources */,
 				4592B4B3270229D1004FF27B /* config.json in Resources */,
@@ -666,6 +671,7 @@
 				D920D8C92277B80F008FB38D /* SecondPageViewController.xib in Resources */,
 				45073FA8277CDBF0007CB732 /* ping.json in Resources */,
 				607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */,
+				45ECADDF29DD6B96003F75B2 /* slide-up-trigger-without-messageBody.json in Resources */,
 				607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */,
 				607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */,
 				45073FA5277CDBC6007CB732 /* display-permission.json in Resources */,

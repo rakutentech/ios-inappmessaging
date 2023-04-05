@@ -4,29 +4,28 @@
     "data": [
         {
             "campaignData": {
-                "campaignId": "slide-up-redirect",
+                "campaignId": "slide-up-trigger-invalid-messagepayload",
                 "maxImpressions": 999,
                 "type": 3,
                 "isTest": false,
-                "isCampaignDismissable": true,
+                "isCampaignDismissable": false,
                 "hasNoEndDate": false,
                 "infiniteImpressions": true,
                 "triggers": [
                     {
                         "type": 1,
-                        "eventType": 2,
-                        "eventName": "Login Successful Event",
+                        "eventType": 4,
+                        "eventName": "purchase_successful",
                         "attributes": []
                     }
                 ],
                 "messagePayload": {
                     "title": "test",
-                    "messageBody": "test",
                     "header": "Test Campaign",
                     "titleColor": "#000000",
                     "headerColor": "#000000",
-                    "messageBodyColor": "",
-                    "backgroundColor": "",
+                    "messageBodyColor": "#000000",
+                    "backgroundColor": "#ffffff",
                     "frameColor": "#ffffff",
                     "resource": {
                         "cropType": 2
@@ -38,11 +37,17 @@
                             "orientation": 1,
                             "textAlign": 2,
                             "optOut": true,
-                            "delay": 0,
+                            "delay": 500,
                             "html": false
                         },
                         "controlSettings": {
                             "content": {
+                                "campaignTrigger": {
+                                    "type": 1,
+                                    "eventType": 4,
+                                    "eventName": "purchase_successful",
+                                    "attributes": []
+                                },
                                 "onClickBehavior": {
                                     "action": 3,
                                     "uri": null
