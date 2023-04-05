@@ -16,6 +16,7 @@
 		- MessageMixerService.swift [SDKCF-6386]   
 		- CampaignRepository.swift [SDKCF-6387]
 		- SlideUpViewPresenter.swift [SDKCF-6383]   
+		- UILabel+IAM [SDKCF-6385]
 
 ### 7.3.0 (2023-01-11)
 - Features:
