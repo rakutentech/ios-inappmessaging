@@ -14,7 +14,7 @@ internal extension UILabel {
         paragraphStyle.lineSpacing = lineSpacing
 
         let attributedString: NSMutableAttributedString
-        if let attributedText = self.attributedText {
+        if let attributedText, attributedText.length > 0 {
             attributedString = NSMutableAttributedString(attributedString: attributedText)
         } else {
             attributedString = NSMutableAttributedString(string: labelText)

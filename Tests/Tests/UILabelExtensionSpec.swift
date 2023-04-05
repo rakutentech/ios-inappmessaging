@@ -24,6 +24,14 @@ class UILabelExtensionSpec: QuickSpec {
                     expect(getParaghraphStyle(for: label)).to(beNil())
                 }
 
+                it("will set the line spacing for empty text") {
+                    let label = UILabel()
+                    label.text = ""
+                    label.setLineSpacing(lineSpacing: 4.0)
+
+                    expect(getParaghraphStyle(for: label)).to(beNil())
+                }
+
                 it("will set the line spacing as expected value") {
                     let label = UILabel()
                     label.text = "test label \n test label line 2"
