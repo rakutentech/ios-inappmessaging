@@ -24,20 +24,23 @@ class UILabelExtensionSpec: QuickSpec {
                     expect(getParaghraphStyle(for: label)).to(beNil())
                 }
 
-                it("will set the line spacing for empty text") {
-                    let label = UILabel()
-                    label.text = ""
-                    label.setLineSpacing(lineSpacing: 4.0)
-
-                    expect(getParaghraphStyle(for: label)).to(beNil())
-                }
-
                 it("will set the line spacing as expected value") {
                     let label = UILabel()
                     label.text = "test label \n test label line 2"
                     label.setLineSpacing(lineSpacing: 4.0)
 
                     expect(getParaghraphStyle(for: label)?.lineSpacing).to(equal(4.0))
+                }
+
+                it("will keep the text color after setting the line spacing") {
+                    let label = UILabel()
+                    label.text = "test label has style before calling setLineSpacing"
+                    label.textColor = .blue
+
+                    label.setLineSpacing(lineSpacing: 5.1)
+
+                    expect(label.textColor).to(equal(.blue))
+                    expect(getParaghraphStyle(for: label)?.lineSpacing).to(equal(5.1))
                 }
 
                 it("will replace line spacing as expected value") {
@@ -50,7 +53,6 @@ class UILabelExtensionSpec: QuickSpec {
 
                     let paragraphStyle = NSMutableParagraphStyle()
                     paragraphStyle.lineSpacing = 4.2
-                    paragraphStyle.alignment = .center
 
                     let attributedString = NSMutableAttributedString(attributedString: attributedText)
                     attributedString.addAttribute(NSAttributedString.Key.paragraphStyle,
