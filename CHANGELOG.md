@@ -14,6 +14,7 @@
 		- ConfigurationService.swift [SDKCF-6388]
 		- UserDataCache.swift [SDKCF-6384]
 		- MessageMixerService.swift [SDKCF-6386]   
+		- CampaignRepository.swift [SDKCF-6387]
 
 ### 7.3.0 (2023-01-11)
 - Features:
