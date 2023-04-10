@@ -101,6 +101,7 @@
 		D924268722D91C15002F50D3 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = D924268522D91C15002F50D3 /* Localizable.strings */; };
 		D92D1F2322249853008EA748 /* CampaignsValidatorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = D92D1F2122249833008EA748 /* CampaignsValidatorSpec.swift */; };
 		D92D1F262224A269008EA748 /* TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = D92D1F242224A265008EA748 /* TestHelpers.swift */; };
+		FC92B45B29DBDEBE0053CF0E /* UILabelExtensionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC92B45A29DBDEBE0053CF0E /* UILabelExtensionSpec.swift */; };
 		FCF93D8029C2D359000DB8CE /* EventTypeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCF93D7F29C2D359000DB8CE /* EventTypeSpec.swift */; };
 /* End PBXBuildFile section */
 
@@ -234,6 +235,7 @@
 		D92D1F2122249833008EA748 /* CampaignsValidatorSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CampaignsValidatorSpec.swift; sourceTree = "<group>"; };
 		D92D1F242224A265008EA748 /* TestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestHelpers.swift; sourceTree = "<group>"; };
 		D9F418282110FD9F00E2158F /* ConfigurationSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationSpec.swift; sourceTree = "<group>"; };
+		FC92B45A29DBDEBE0053CF0E /* UILabelExtensionSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UILabelExtensionSpec.swift; sourceTree = "<group>"; };
 		FCF93D7F29C2D359000DB8CE /* EventTypeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventTypeSpec.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -454,6 +456,7 @@
 				45DC6D0627A44CA800B28C13 /* TooltipViewSpec.swift */,
 				45EA720425B71FA2001B2049 /* UIApplicationExtensionSpec.swift */,
 				455FEBE127F214640064470D /* UIColorExtensionSpec.swift */,
+				FC92B45A29DBDEBE0053CF0E /* UILabelExtensionSpec.swift */,
 				4BBE7EAE274F1A6A0039D2BF /* UIFontExtensionSpec.swift */,
 				D24CF27F294BE3F9007C6C85 /* UITabBarExtensionSpec.swift */,
 				45EA720C25B72002001B2049 /* UIViewExtensionSpec.swift */,
@@ -780,6 +783,7 @@
 				45DA01AD23D5831900A27CC6 /* ConfigurationManagerSpec.swift in Sources */,
 				45DC6D0327A41CE700B28C13 /* TooltipManagerSpec.swift in Sources */,
 				45DC6D0927A4501300B28C13 /* TooltipPresenterSpec.swift in Sources */,
+				FC92B45B29DBDEBE0053CF0E /* UILabelExtensionSpec.swift in Sources */,
 				4BBE7EAF274F1A6A0039D2BF /* UIFontExtensionSpec.swift in Sources */,
 				456FE1ED2429C4D200304872 /* ViewSpec.swift in Sources */,
 				4595F4F4262DE12C0001F30B /* KeyHasherSpec.swift in Sources */,
