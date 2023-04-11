@@ -3,10 +3,22 @@
 ### Unreleased
 - Bug fixes:
 	- Removed "last user" cache to avoid overwriting anonymous user cache during init [SDKCF-6409]
+	- Added display permission service to perform ping on tooltip dispatcher [SDKCF-4964]
 - Improvements:
 	- Created new test scheme to combine unit test and UI test results [SDKCF-6356]
 	- Added a new file for EventType unit test to increase code coverage [SDKCF-6378]
-    - Removed unused legacy code from Event classes [SDKCF-6381]   
+  - Removed unused legacy code from Event classes [SDKCF-6381]   
+	- Improved unit test code coverage to
+		- EventType.swift [SDKCF-6378]
+		- CustomAttribute.swift [SDKCF-6379]
+		- UserInfoProvider.swift [SDKCF-6380]
+		- EventMatcher.swift [SDKCF-6390]
+		- ConfigurationService.swift [SDKCF-6388]
+		- UserDataCache.swift [SDKCF-6384]
+		- MessageMixerService.swift [SDKCF-6386]   
+		- CampaignRepository.swift [SDKCF-6387]
+		- SlideUpViewPresenter.swift [SDKCF-6383]   
+		- UILabel+IAM [SDKCF-6385]
 
 ### 7.3.0 (2023-01-11)
 - Features:

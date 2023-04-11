@@ -40,6 +40,19 @@ class SlideUpViewSpec: QuickSpec {
 
         describe("Slide-up campaign view") {
 
+            context("trigger action with invalid message payload") {
+
+                beforeEach {
+                    launchAppIfNecessary(context: "slide-up-trigger-without-messageBody")
+                    expect(iamView.exists).to(beFalse())
+                    app.buttons["purchase_successful"].tap()
+                }
+
+                it("should not construct the slideup view") {
+                    expect(iamView.exists).toAfterTimeout(beFalse(), timeout: 2)
+                }
+            }
+
             context("when clicking X button") {
 
                 beforeEach {

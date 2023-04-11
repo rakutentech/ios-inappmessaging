@@ -131,18 +131,12 @@ internal class CampaignRepository: CampaignRepositoryType {
 
     @discardableResult
     func decrementImpressionsLeftInCampaign(id: String) -> Campaign? {
-        guard let campaign = findCampaign(withID: id) else {
-            return nil
-        }
-        return updateImpressionsLeftInCampaign(campaign, newValue: max(0, campaign.impressionsLeft - 1))
+        updateImpressionsLeftInCampaign(withID: id, by: -1)
     }
 
     @discardableResult
     func incrementImpressionsLeftInCampaign(id: String) -> Campaign? {
-        guard let campaign = findCampaign(withID: id) else {
-            return nil
-        }
-        return updateImpressionsLeftInCampaign(campaign, newValue: campaign.impressionsLeft + 1)
+        updateImpressionsLeftInCampaign(withID: id, by: 1)
     }
 
     func loadCachedData() {
@@ -152,19 +146,14 @@ internal class CampaignRepository: CampaignRepositoryType {
 
     // MARK: - Helpers
 
-    private func findCampaign(withID id: String) -> Campaign? {
-        (allCampaigns.get() + tooltips.get()).first(where: { $0.id == id })
-    }
-
-    private func updateImpressionsLeftInCampaign(_ campaign: Campaign, newValue: Int) -> Campaign? {
+    private func updateImpressionsLeftInCampaign(withID id: String, by value: Int) -> Campaign? {
         var newList = allCampaigns.get()
-        guard let index = newList.firstIndex(where: { $0.id == campaign.id }) else {
-            Logger.debug("Campaign \(campaign.id) could not be updated - not found in the repository")
-            assertionFailure()
+        guard let index = newList.firstIndex(where: { $0.id == id }) else {
+            Logger.debug("Campaign \(id) could not be updated - not found in the repository")
             return nil
         }
-
-        let updatedCampaign = Campaign.updatedCampaign(campaign, withImpressionLeft: newValue)
+        let campaign = newList[index]
+        let updatedCampaign = Campaign.updatedCampaign(campaign, withImpressionLeft: max(0, campaign.impressionsLeft + value))
         newList[index] = updatedCampaign
         allCampaigns.set(value: newList)
 

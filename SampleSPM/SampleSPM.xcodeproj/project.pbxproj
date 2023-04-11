@@ -36,6 +36,7 @@
 		4592B4CA27026FB7004FF27B /* istockphoto-1047234038.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 4592B4C627026AE8004FF27B /* istockphoto-1047234038.jpg */; };
 		45B5723F25ACE90F005A80F7 /* IntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B5723E25ACE90F005A80F7 /* IntegrationTests.swift */; };
 		45BDFD052421EE7B004DEA0C /* SharedMocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45BDFD042421EE7B004DEA0C /* SharedMocks.swift */; };
+		45ECADE229DD6C91003F75B2 /* slide-up-trigger-without-messageBody.json in Resources */ = {isa = PBXBuildFile; fileRef = 45ECADE129DD6C91003F75B2 /* slide-up-trigger-without-messageBody.json */; };
 		45FA8FDE272C26C8005166FD /* RInAppMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 45FA8FDD272C26C8005166FD /* RInAppMessaging */; };
 		45FA8FE0272C2835005166FD /* RInAppMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 45FA8FDF272C2835005166FD /* RInAppMessaging */; };
 		45FA8FE2272C283B005166FD /* RInAppMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 45FA8FE1272C283B005166FD /* RInAppMessaging */; };
@@ -113,6 +114,7 @@
 		D920D8CB2277B965008FB38D /* SecondPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D920D8CA2277B965008FB38D /* SecondPageViewController.swift */; };
 		D924268722D91C15002F50D3 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = D924268522D91C15002F50D3 /* Localizable.strings */; };
 		D92D1F262224A269008EA748 /* TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = D92D1F242224A265008EA748 /* TestHelpers.swift */; };
+		FC92B45D29DD27670053CF0E /* UILabelExtensionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC92B45C29DD27670053CF0E /* UILabelExtensionSpec.swift */; };
 		FCF93D8229C30863000DB8CE /* EventTypeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCF93D8129C30863000DB8CE /* EventTypeSpec.swift */; };
 /* End PBXBuildFile section */
 
@@ -176,6 +178,7 @@
 		45B5723E25ACE90F005A80F7 /* IntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntegrationTests.swift; sourceTree = "<group>"; };
 		45B5724025ACE90F005A80F7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		45BDFD042421EE7B004DEA0C /* SharedMocks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedMocks.swift; sourceTree = "<group>"; };
+		45ECADE129DD6C91003F75B2 /* slide-up-trigger-without-messageBody.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "slide-up-trigger-without-messageBody.json"; sourceTree = "<group>"; };
 		45FA8FDA272C2698005166FD /* ios-inappmessaging */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "ios-inappmessaging"; path = ..; sourceTree = "<group>"; };
 		607FACD01AFB9204008FA782 /* RInAppMessaging_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RInAppMessaging_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACD41AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = ../SampleSPM/Info.plist; sourceTree = "<group>"; };
@@ -245,6 +248,7 @@
 		D924268622D91C15002F50D3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
 		D924268822D91C19002F50D3 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
 		D92D1F242224A265008EA748 /* TestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestHelpers.swift; sourceTree = "<group>"; };
+		FC92B45C29DD27670053CF0E /* UILabelExtensionSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UILabelExtensionSpec.swift; sourceTree = "<group>"; };
 		FCF93D8129C30863000DB8CE /* EventTypeSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventTypeSpec.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -342,6 +346,7 @@
 				453D244426A4DBDC00FB9E6A /* full-text-only.json */,
 				453D244E26A4DCD800FB9E6A /* slide-up-trigger.json */,
 				453D245126A4DF1D00FB9E6A /* slide-up-close.json */,
+				45ECADE129DD6C91003F75B2 /* slide-up-trigger-without-messageBody.json */,
 				4592B4B2270229D1004FF27B /* config.json */,
 				4592B4B927024D0C004FF27B /* display-permission.json */,
 			);
@@ -491,6 +496,7 @@
 				D234A709291C62CD0086AC80 /* UIApplicationExtensionSpec.swift */,
 				D234A6F8291C62CA0086AC80 /* UIColorExtensionSpec.swift */,
 				D234A716291C62CE0086AC80 /* UIFontExtensionSpec.swift */,
+				FC92B45C29DD27670053CF0E /* UILabelExtensionSpec.swift */,
 				D24CF281294BE427007C6C85 /* UITabBarExtensionSpec.swift */,
 				D234A712291C62CE0086AC80 /* UIViewExtensionSpec.swift */,
 				D234A70A291C62CD0086AC80 /* UserDataCacheSpec.swift */,
@@ -698,6 +704,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				45ECADE229DD6C91003F75B2 /* slide-up-trigger-without-messageBody.json in Resources */,
 				453D244B26A4DBDC00FB9E6A /* full-text-only.json in Resources */,
 				453D244D26A4DBDC00FB9E6A /* full-text-image.json in Resources */,
 				4592B4B3270229D1004FF27B /* config.json in Resources */,
@@ -814,6 +821,7 @@
 				D234A73B291C62CF0086AC80 /* OptOutMessageViewSpec.swift in Sources */,
 				D234A735291C62CF0086AC80 /* ConfigurationServiceSpec.swift in Sources */,
 				D234A720291C62CE0086AC80 /* CustomEventValidationSpec.swift in Sources */,
+				FC92B45D29DD27670053CF0E /* UILabelExtensionSpec.swift in Sources */,
 				D234A71B291C62CE0086AC80 /* MainContainerSpec.swift in Sources */,
 				D234A718291C62CE0086AC80 /* BundleSpec.swift in Sources */,
 				D234A72A291C62CF0086AC80 /* TooltipDispatcherSpec.swift in Sources */,

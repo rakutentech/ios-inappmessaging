@@ -33,7 +33,7 @@ struct TestHelpers {
                                  test: Bool = false,
                                  hasImage: Bool = false,
                                  content: Content? = nil,
-                                 triggers: [Trigger] = [],
+                                 triggers: [Trigger]? = nil,
                                  buttons: [Button] = []) -> Campaign {
         Campaign(
             data: CampaignData(

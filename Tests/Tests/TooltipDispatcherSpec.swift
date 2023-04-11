@@ -27,14 +27,17 @@ class TooltipDispatcherSpec: QuickSpec {
             var dispatcher: TooltipDispatcher!
             var campaignRepository: CampaignRepositoryMock!
             var router: RouterMock!
+            var permissionService: DisplayPermissionServiceMock!
             var httpSession: URLSessionMock!
             var viewListener: ViewListenerMock!
 
             beforeEach {
                 campaignRepository = CampaignRepositoryMock()
                 router = RouterMock()
+                permissionService = DisplayPermissionServiceMock()
                 viewListener = ViewListenerMock()
                 dispatcher = TooltipDispatcher(router: router,
+                                               permissionService: permissionService,
                                                campaignRepository: campaignRepository,
                                                viewListener: viewListener)
 
@@ -184,6 +187,75 @@ class TooltipDispatcherSpec: QuickSpec {
                     expect(delegate.wasShouldShowCalled).toAfterTimeout(beFalse())
                 }
 
+                context("performing permission check") {
+
+                    context("and permission response perform ping are true") {
+
+                        it("will perform ping") {
+                            permissionService.shouldPerformPing = true
+                            let tooltip = TestHelpers.generateTooltip(id: "test", title: "[Tooltip][ctx] title", isTest: true)
+                            dispatcher.setNeedsDisplay(tooltip: tooltip)
+                            expect(delegate.wasPingCalled).toEventually(beTrue())
+                        }
+                    }
+
+                    context("and permission response perform ping are false") {
+
+                        it("will not perform ping") {
+                            permissionService.shouldPerformPing = false
+                            let tooltip = TestHelpers.generateTooltip(id: "test", title: "[Tooltip][ctx] title", isTest: true)
+                            dispatcher.setNeedsDisplay(tooltip: tooltip)
+                            expect(delegate.wasPingCalled).toEventually(beFalse())
+                        }
+                    }
+
+                    context("and permission response display are true") {
+
+                        context("and isTest are true") {
+
+                            it("will display the tooltip") {
+                                permissionService.shouldGrantPermission = true
+                                let tooltip = TestHelpers.generateTooltip(id: "test", title: "[Tooltip][ctx] title", isTest: true)
+                                dispatcher.setNeedsDisplay(tooltip: tooltip)
+                                expect(router.displayedTooltips).toEventuallyNot(beEmpty())
+                            }
+                        }
+
+                        context("and isTest are false") {
+
+                            it("will display the tooltip") {
+                                permissionService.shouldGrantPermission = true
+                                let tooltip = TestHelpers.generateTooltip(id: "test", title: "[Tooltip][ctx] title", isTest: false)
+                                dispatcher.setNeedsDisplay(tooltip: tooltip)
+                                expect(router.displayedTooltips).toEventuallyNot(beEmpty())
+                            }
+                        }
+                    }
+
+                    context("and permission response display are false") {
+
+                        context("and isTest are true") {
+
+                            it("will display the tooltip") {
+                                permissionService.shouldGrantPermission = true
+                                let tooltip = TestHelpers.generateTooltip(id: "test", title: "[Tooltip][ctx] title", isTest: true)
+                                dispatcher.setNeedsDisplay(tooltip: tooltip)
+                                expect(router.displayedTooltips).toEventuallyNot(beEmpty())
+                            }
+                        }
+
+                        context("and isTest are false") {
+
+                            it("will not display the tooltip") {
+                                permissionService.shouldGrantPermission = false
+                                let tooltip = TestHelpers.generateTooltip(id: "test", title: "[Tooltip][ctx] title", isTest: false)
+                                dispatcher.setNeedsDisplay(tooltip: tooltip)
+                                expect(router.displayedTooltips).toAfterTimeout(beEmpty())
+                            }
+                        }
+                    }
+                }
+
                 context("and contexts are approved") {
                     beforeEach {
                         delegate.shouldShowCampaign = true
@@ -246,11 +318,16 @@ class TooltipDispatcherSpec: QuickSpec {
 }
 
 private class Delegate: TooltipDispatcherDelegate {
+    var wasPingCalled = false
     private(set) var wasShouldShowCalled = false
     var shouldShowCampaign = true
 
     func shouldShowTooltip(title: String, contexts: [String]) -> Bool {
         wasShouldShowCalled = true
         return shouldShowCampaign
+    }
+
+    func performPing() {
+        wasPingCalled = true
     }
 }

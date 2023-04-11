@@ -82,6 +82,8 @@
 		45DC6D0927A4501300B28C13 /* TooltipPresenterSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DC6D0827A4501300B28C13 /* TooltipPresenterSpec.swift */; };
 		45EA720525B71FA2001B2049 /* UIApplicationExtensionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45EA720425B71FA2001B2049 /* UIApplicationExtensionSpec.swift */; };
 		45EA720D25B72002001B2049 /* UIViewExtensionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45EA720C25B72002001B2049 /* UIViewExtensionSpec.swift */; };
+		45ECADDF29DD6B96003F75B2 /* slide-up-trigger-without-messageBody.json in Resources */ = {isa = PBXBuildFile; fileRef = 45ECADDE29DD6B95003F75B2 /* slide-up-trigger-without-messageBody.json */; };
+		45ECADE029DD6B96003F75B2 /* slide-up-trigger-without-messageBody.json in Resources */ = {isa = PBXBuildFile; fileRef = 45ECADDE29DD6B95003F75B2 /* slide-up-trigger-without-messageBody.json */; };
 		4B1A88AB274F6896002724B6 /* dummy-font.otf in Resources */ = {isa = PBXBuildFile; fileRef = 4B1A88AA274F6891002724B6 /* dummy-font.otf */; };
 		4BBE7EAF274F1A6A0039D2BF /* UIFontExtensionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BBE7EAE274F1A6A0039D2BF /* UIFontExtensionSpec.swift */; };
 		607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD51AFB9204008FA782 /* AppDelegate.swift */; };
@@ -99,6 +101,7 @@
 		D924268722D91C15002F50D3 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = D924268522D91C15002F50D3 /* Localizable.strings */; };
 		D92D1F2322249853008EA748 /* CampaignsValidatorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = D92D1F2122249833008EA748 /* CampaignsValidatorSpec.swift */; };
 		D92D1F262224A269008EA748 /* TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = D92D1F242224A265008EA748 /* TestHelpers.swift */; };
+		FC92B45B29DBDEBE0053CF0E /* UILabelExtensionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC92B45A29DBDEBE0053CF0E /* UILabelExtensionSpec.swift */; };
 		FCF93D8029C2D359000DB8CE /* EventTypeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCF93D7F29C2D359000DB8CE /* EventTypeSpec.swift */; };
 /* End PBXBuildFile section */
 
@@ -205,6 +208,7 @@
 		45DC6D0827A4501300B28C13 /* TooltipPresenterSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TooltipPresenterSpec.swift; sourceTree = "<group>"; };
 		45EA720425B71FA2001B2049 /* UIApplicationExtensionSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIApplicationExtensionSpec.swift; sourceTree = "<group>"; };
 		45EA720C25B72002001B2049 /* UIViewExtensionSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewExtensionSpec.swift; sourceTree = "<group>"; };
+		45ECADDE29DD6B95003F75B2 /* slide-up-trigger-without-messageBody.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "slide-up-trigger-without-messageBody.json"; sourceTree = "<group>"; };
 		4B1A88AA274F6891002724B6 /* dummy-font.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "dummy-font.otf"; sourceTree = "<group>"; };
 		4BBE7EAE274F1A6A0039D2BF /* UIFontExtensionSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIFontExtensionSpec.swift; sourceTree = "<group>"; };
 		607FACD01AFB9204008FA782 /* RInAppMessaging_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RInAppMessaging_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -231,6 +235,7 @@
 		D92D1F2122249833008EA748 /* CampaignsValidatorSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CampaignsValidatorSpec.swift; sourceTree = "<group>"; };
 		D92D1F242224A265008EA748 /* TestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestHelpers.swift; sourceTree = "<group>"; };
 		D9F418282110FD9F00E2158F /* ConfigurationSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationSpec.swift; sourceTree = "<group>"; };
+		FC92B45A29DBDEBE0053CF0E /* UILabelExtensionSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UILabelExtensionSpec.swift; sourceTree = "<group>"; };
 		FCF93D7F29C2D359000DB8CE /* EventTypeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventTypeSpec.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -310,6 +315,7 @@
 				453D244426A4DBDC00FB9E6A /* full-text-only.json */,
 				453D244E26A4DCD800FB9E6A /* slide-up-trigger.json */,
 				453D245126A4DF1D00FB9E6A /* slide-up-close.json */,
+				45ECADDE29DD6B95003F75B2 /* slide-up-trigger-without-messageBody.json */,
 				4592B4B2270229D1004FF27B /* config.json */,
 				4592B4B927024D0C004FF27B /* display-permission.json */,
 			);
@@ -450,6 +456,7 @@
 				45DC6D0627A44CA800B28C13 /* TooltipViewSpec.swift */,
 				45EA720425B71FA2001B2049 /* UIApplicationExtensionSpec.swift */,
 				455FEBE127F214640064470D /* UIColorExtensionSpec.swift */,
+				FC92B45A29DBDEBE0053CF0E /* UILabelExtensionSpec.swift */,
 				4BBE7EAE274F1A6A0039D2BF /* UIFontExtensionSpec.swift */,
 				D24CF27F294BE3F9007C6C85 /* UITabBarExtensionSpec.swift */,
 				45EA720C25B72002001B2049 /* UIViewExtensionSpec.swift */,
@@ -633,6 +640,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				45ECADE029DD6B96003F75B2 /* slide-up-trigger-without-messageBody.json in Resources */,
 				453D244B26A4DBDC00FB9E6A /* full-text-only.json in Resources */,
 				453D244D26A4DBDC00FB9E6A /* full-text-image.json in Resources */,
 				4592B4B3270229D1004FF27B /* config.json in Resources */,
@@ -666,6 +674,7 @@
 				D920D8C92277B80F008FB38D /* SecondPageViewController.xib in Resources */,
 				45073FA8277CDBF0007CB732 /* ping.json in Resources */,
 				607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */,
+				45ECADDF29DD6B96003F75B2 /* slide-up-trigger-without-messageBody.json in Resources */,
 				607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */,
 				607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */,
 				45073FA5277CDBC6007CB732 /* display-permission.json in Resources */,
@@ -708,7 +717,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" lint --config \"${SRCROOT}/.swiftlint.yml\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" lint --config \"${SRCROOT}/.swiftlint.yml\" --strict\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -774,6 +783,7 @@
 				45DA01AD23D5831900A27CC6 /* ConfigurationManagerSpec.swift in Sources */,
 				45DC6D0327A41CE700B28C13 /* TooltipManagerSpec.swift in Sources */,
 				45DC6D0927A4501300B28C13 /* TooltipPresenterSpec.swift in Sources */,
+				FC92B45B29DBDEBE0053CF0E /* UILabelExtensionSpec.swift in Sources */,
 				4BBE7EAF274F1A6A0039D2BF /* UIFontExtensionSpec.swift in Sources */,
 				456FE1ED2429C4D200304872 /* ViewSpec.swift in Sources */,
 				4595F4F4262DE12C0001F30B /* KeyHasherSpec.swift in Sources */,

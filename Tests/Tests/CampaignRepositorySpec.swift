@@ -9,8 +9,8 @@ import RSDKUtilsNimble
 
 @testable import RInAppMessaging
 
-// swiftlint:disable:next type_body_length
 class CampaignRepositorySpec: QuickSpec {
+// swiftlint:disable:previous type_body_length
 
     // swiftlint:disable:next function_body_length
     override func spec() {
@@ -275,6 +275,14 @@ class CampaignRepositorySpec: QuickSpec {
                     campaignRepository.optOutCampaign(testCampaign)
                     expect(userCache?.campaignData?.first?.isOptedOut).to(beFalse())
                 }
+
+                context("when provided campaign is invalid") {
+                    it("will not mark campaign as opted out") {
+                        syncRepository(with: [campaign])
+                        let campaign = campaignRepository.optOutCampaign(testCampaign)
+                        expect(campaign).to(beNil())
+                    }
+                }
             }
 
             context("when decrementImpressionsLeftInCampaign is called") {
@@ -379,6 +387,14 @@ class CampaignRepositorySpec: QuickSpec {
                         expect(userCache?.campaignData?.first?.impressionsLeft).to(equal(2))
                     }
                 }
+
+                context("when provided campaign id is invalid") {
+                    it("will not find campaign when decrement the impressionLeft value") {
+                        syncRepository(with: [campaign])
+                        let campaign = campaignRepository.decrementImpressionsLeftInCampaign(id: testCampaign.data.campaignId)
+                        expect(campaign).to(beNil())
+                    }
+                }
             }
 
             context("when incrementImpressionsLeftInCampaign is called") {
@@ -419,6 +435,14 @@ class CampaignRepositorySpec: QuickSpec {
                     syncRepository(with: [testCampaign])
                     campaignRepository.incrementImpressionsLeftInCampaign(id: testCampaign.id)
                     expect(userCache?.campaignData?.first?.impressionsLeft).to(equal(4))
+                }
+
+                context("when provided campaign id is invalid") {
+                    it("will not find campaign when increment the impressionLeft value") {
+                        syncRepository(with: [campaign])
+                        let campaign = campaignRepository.incrementImpressionsLeftInCampaign(id: testCampaign.data.campaignId)
+                        expect(campaign).to(beNil())
+                    }
                 }
             }
 

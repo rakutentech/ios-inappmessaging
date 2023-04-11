@@ -6,7 +6,7 @@ internal extension UILabel {
     /// - Parameter lineSpacing: The value of the spacing for each line. Defaults to 0.
     func setLineSpacing(lineSpacing: CGFloat = 0.0) {
 
-        guard let labelText = self.text else {
+        guard let attributedText = self.attributedText else {
             return
         }
 
@@ -14,11 +14,7 @@ internal extension UILabel {
         paragraphStyle.lineSpacing = lineSpacing
 
         let attributedString: NSMutableAttributedString
-        if let attributedText = self.attributedText {
-            attributedString = NSMutableAttributedString(attributedString: attributedText)
-        } else {
-            attributedString = NSMutableAttributedString(string: labelText)
-        }
+        attributedString = NSMutableAttributedString(attributedString: attributedText)
 
         attributedString.addAttribute(NSAttributedString.Key.paragraphStyle,
                                       value: paragraphStyle,
