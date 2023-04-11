@@ -40,14 +40,6 @@ import Foundation
                    timestamp: timestamp)
     }
 
-    required public init(from decoder: Decoder) throws {
-        fatalError("init(from:) has not been implemented")
-    }
-
-    override public func encode(to encoder: Encoder) throws {
-        try super.encode(to: encoder)
-    }
-
     public override func isEqual(_ object: Any?) -> Bool {
         guard let object = object as? CustomEvent else {
             return false
