@@ -6,6 +6,7 @@
 - Improvements:
 	- Created new test scheme to combine unit test and UI test results [SDKCF-6356]
 	- Added a new file for EventType unit test to increase code coverage [SDKCF-6378]
+    - Removed unused legacy code from Event classes [SDKCF-6381]   
 
 ### 7.3.0 (2023-01-11)
 - Features:
