@@ -10,12 +10,4 @@ internal class ViewAppearedEvent: Event {
         super.init(type: EventType.viewAppeared,
                    name: Constants.Event.viewAppeared)
     }
-
-    required public init(from decoder: Decoder) throws {
-        throw CocoaError(.featureUnsupported)
-    }
-
-    override public func encode(to encoder: Encoder) throws {
-        throw CocoaError(.featureUnsupported)
-    }
 }

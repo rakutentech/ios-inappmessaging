@@ -59,14 +59,6 @@ import Foundation
                        timestamp: timestamp)
     }
 
-    required public init(from decoder: Decoder) throws {
-        fatalError("init(from:) has not been implemented")
-    }
-
-    override public func encode(to encoder: Encoder) throws {
-        try super.encode(to: encoder)
-    }
-
     @objc @discardableResult
     public func setPurchaseAmount(_ purchaseAmount: Int) -> PurchaseSuccessfulEvent {
         self.purchaseAmount = purchaseAmount
