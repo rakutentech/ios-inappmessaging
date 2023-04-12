@@ -8,8 +8,7 @@ class CommonUtilitySpec: QuickSpec {
     override func spec() {
         describe("CommonUtility") {
 
-            context("CommonUtility.lock") {
-
+            context("CommonUtility.lock(resourcesIn:for:)") {
                 it("will lock provided resource for the time of operation") {
                     let lockableObject = LockableTestObject()
                     DispatchQueue.global().asyncAfter(deadline: .now() + 1, execute: {
@@ -101,6 +100,45 @@ class CommonUtilitySpec: QuickSpec {
                     let data = Data()
                     let result = CommonUtility.convertDataToDictionary(data)
                     expect(result).to(beNil())
+                }
+            }
+
+            context("CommonUtility.convertTriggerObjectToCustomEvent") {
+
+                it("will return Custom Event") {
+                    let attribute = TriggerAttribute(name: "att", value: "val",
+                                                     type: .string, operatorType: .isNotBlank)
+                    let trigger = Trigger(type: .event, eventType: .custom, eventName: "app start", attributes: [attribute])
+                    let result1 = CommonUtility.convertTriggerObjectToCustomEvent(trigger)
+                    expect(result1.name).to(equal("app start"))
+                    expect(result1.type).to(equal(.custom))
+                }
+            }
+
+            context("CommonUtility.unlock(resourcesIn:)") {
+                it("will unlock resource object") {
+                    let lockableObject = LockableTestObject()
+                    CommonUtility.lock(resourcesIn: lockableObject)
+                    DispatchQueue.global().async {
+                        lockableObject.append(1)
+                    }
+                    CommonUtility.unlock(resourcesIn: lockableObject)
+                    expect(lockableObject.resource.get()).toEventually(equal([1]))
+                }
+            }
+
+            context("CommonUtility.lock(resourcesIn:)") {
+
+                let lockableObject = LockableTestObject()
+                it("will lock resource object") {
+                    CommonUtility.lock(resourcesIn: lockableObject)
+                    DispatchQueue.global().async {
+                        lockableObject.append(1)
+                    }
+                    expect(lockableObject.resource.get()).toAfterTimeout(beEmpty())
+                }
+                afterEach {
+                    CommonUtility.unlock(resourcesIn: lockableObject)
                 }
             }
 
