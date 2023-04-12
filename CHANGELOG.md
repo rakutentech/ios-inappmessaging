@@ -20,6 +20,7 @@
 		- UILabel+IAM [SDKCF-6385]
 		- CommonUtility [SDKCF-6381]
 		- CampaignDispatcher [SDKCF-6452]
+		- AlertPresentable [SDKCF-6375]
 
 ### 7.3.0 (2023-01-11)
 - Features:
