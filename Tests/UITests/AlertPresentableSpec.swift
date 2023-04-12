@@ -9,9 +9,6 @@ class AlertPresentableSpec: QuickSpec {
 
         var mockServer: MockServer!
         var app: XCUIApplication!
-        var iamView: XCUIElement {
-            app.otherElements.element(matching: NSPredicate(format: "identifier BEGINSWITH[cd] 'IAMView'"))
-        }
 
         func launchAppIfNecessary(context: String) {
             mockServer.setup(route: MockServerHelper.pingRouteMock(jsonStub: context))
@@ -32,11 +29,16 @@ class AlertPresentableSpec: QuickSpec {
 
         afterEach {
             mockServer.stop()
+            app = nil
         }
 
         describe("AlertPresentable") {
 
-            context("with redirect action") {
+            context("with modal view") {
+
+                var iamView: XCUIElement {
+                    app.otherElements.element(matching: NSPredicate(format: "identifier BEGINSWITH[cd] 'IAMView'"))
+                }
 
                 beforeEach {
                     launchAppIfNecessary(context: "modal-controls-invalid-url")
@@ -50,6 +52,32 @@ class AlertPresentableSpec: QuickSpec {
                     iamView.buttons["Button0"].tap()
                     expect(app.alerts.element.staticTexts["Page not found"].exists).to(beTrue())
                     app.alerts.element.buttons["Close"].tap()
+                }
+            }
+
+            context("with slide up view") {
+
+                var iamView: XCUIElement {
+                    app.otherElements["IAMView-SlideUp"]
+                }
+                var content: XCUIElement {
+                    iamView.buttons["bodyMessage"]
+                }
+
+                beforeEach {
+                    launchAppIfNecessary(context: "slide-up-trigger-invalid-url")
+                    if !iamView.exists {
+                        app.buttons["purchase_successful"].tap()
+                        expect(iamView.exists).toEventually(beTrue(), timeout: .seconds(2))
+                    }
+                }
+
+                it("should show error alert after tapping button 1 and close campaign") {
+                    content.tap()
+                    expect(app.alerts.element.staticTexts["Page not found"].exists).to(beTrue())
+                    app.alerts.element.buttons["Close"].tap()
+                    iamView.buttons["exitButton"].tap()
+                    expect(iamView.exists).to(beFalse())
                 }
             }
         }
