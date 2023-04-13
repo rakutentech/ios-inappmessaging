@@ -19,6 +19,11 @@
 		- SlideUpViewPresenter.swift [SDKCF-6383]   
 		- UILabel+IAM [SDKCF-6385]
         - CommonUtility [SDKCF-6381]
+        - Event [SDKCF-6376]
+        - AppStartEvent [SDKCF-6376]
+        - CustomEvent [SDKCF-6376]
+        - PurchaseSuccessfulEvent [SDKCF-6376]
+        - LoginSuccessfulEvent [SDKCF-6376]
 
 ### 7.3.0 (2023-01-11)
 - Features:
