@@ -3,7 +3,6 @@ import typealias Foundation.TimeInterval
 internal enum Constants {
 
     enum CampaignMessage {
-        static let defaultIntervalBetweenDisplaysInMS = 3000
         static let imageRequestTimeoutSeconds: TimeInterval = 20
         static let imageResourceTimeoutSeconds: TimeInterval = 300
     }
