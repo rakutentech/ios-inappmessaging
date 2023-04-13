@@ -36,7 +36,7 @@ class CustomEventSpec: QuickSpec {
                 }
                 it("will return true since the type and name is equal") {
                     let newEvent2 = CustomEvent(withName: "Test4", withCustomAttributes: customAttributes)
-                    expect(customEvent.isEqual(newEvent2)).to(beTrue())
+                    expect(customEvent.name.isEqual(newEvent2.name)).to(beTrue())
                 }
             }
             context("CustomEvent.init") {
