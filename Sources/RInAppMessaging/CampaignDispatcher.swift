@@ -155,8 +155,7 @@ internal class CampaignDispatcher: CampaignDispatcherType, TaskSchedulable {
     }
 
     private func delayBeforeNextMessage(for campaignData: CampaignData) -> Int {
-        campaignData.intervalBetweenDisplaysInMS ??
-            Constants.CampaignMessage.defaultIntervalBetweenDisplaysInMS
+        campaignData.intervalBetweenDisplaysInMS
     }
 
     private func data(from url: URL, completion: @escaping (Data?) -> Void) {

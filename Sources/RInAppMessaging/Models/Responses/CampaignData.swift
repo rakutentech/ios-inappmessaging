@@ -9,7 +9,7 @@ internal struct CampaignData: Codable, Hashable {
     let isCampaignDismissable: Bool
     let messagePayload: MessagePayload
 
-    var intervalBetweenDisplaysInMS: Int? {
+    var intervalBetweenDisplaysInMS: Int {
         messagePayload.messageSettings.displaySettings.delay
     }
 
