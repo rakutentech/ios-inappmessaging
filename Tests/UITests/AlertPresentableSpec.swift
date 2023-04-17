@@ -14,7 +14,7 @@ class AlertPresentableSpec: QuickSpec {
             mockServer.setup(route: MockServerHelper.pingRouteMock(jsonStub: context))
             mockServer.start()
 
-            guard app == nil else {
+            guard app == nil || !app.launchArguments.joined(separator: " ").contains(context) else {
                 return
             }
             app = XCUIApplication()
@@ -29,7 +29,6 @@ class AlertPresentableSpec: QuickSpec {
 
         afterEach {
             mockServer.stop()
-            app = nil
         }
 
         describe("AlertPresentable") {
