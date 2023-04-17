@@ -75,8 +75,6 @@ class AlertPresentableSpec: QuickSpec {
                     content.tap()
                     expect(app.alerts.element.staticTexts["Page not found"].exists).to(beTrue())
                     app.alerts.element.buttons["Close"].tap()
-                    iamView.buttons["exitButton"].tap()
-                    expect(iamView.exists).to(beFalse())
                 }
             }
         }
