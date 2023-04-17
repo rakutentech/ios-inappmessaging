@@ -4,7 +4,7 @@
     "data": [
         {
             "campaignData": {
-                "campaignId": "slide-up-trigger",
+                "campaignId": "slide-up-trigger-invalid-url",
                 "maxImpressions": 999,
                 "type": 3,
                 "isTest": false,
