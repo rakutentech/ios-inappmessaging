@@ -43,8 +43,8 @@ internal class SlideUpViewPresenter: BaseViewPresenter, SlideUpViewPresenterType
                 return
             }
 
-            UIApplication.shared.open(uriToOpen, options: [:], completionHandler: { success in
-                if !success, let view = self.view {
+            UIApplication.shared.open(uriToOpen, options: [:], completionHandler: { [view] success in
+                if !success, let view = view {
                     self.showURLError(view: view)
                 }
             })
