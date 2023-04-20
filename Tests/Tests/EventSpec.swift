@@ -1,3 +1,4 @@
+import Foundation
 import Quick
 import Nimble
 @testable import RInAppMessaging
@@ -9,7 +10,7 @@ class EventSpec: QuickSpec {
 
             context("Event.analyticsParameters") {
                 it("will return an empty dictionary") {
-                    expect(event.analyticsParameters.count).to(equal(0))
+                    expect(event.analyticsParameters).to(beEmpty())
                 }
             }
             context("Event.getAttributeMap") {

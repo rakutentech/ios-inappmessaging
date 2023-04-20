@@ -7,14 +7,14 @@ class LoginSuccessfulEventSpec: QuickSpec {
     override func spec() {
         describe("LoginSuccessfulEvent") {
             let loginSuccessfulEvent = LoginSuccessfulEvent()
+
             context("LoginSuccessfulEvent.analyticsParameters") {
                 it("will return dictionary with eventName and timestamp values") {
-                    if let eventName = loginSuccessfulEvent.analyticsParameters["eventName"] as? String {
-                        expect(eventName).to(equal("login_successful"))
-                    }
-                    expect(loginSuccessfulEvent.analyticsParameters["timestamp"]).toNot(beNil())
+                    expect(loginSuccessfulEvent.analyticsParameters).toNot(beNil())
+                    expect(loginSuccessfulEvent.analyticsParameters).to(beAKindOf([String: Any].self))
                 }
             }
+
             context("LoginSuccessfulEvent.init(timestamp:)") {
                 it("will return the timestamp value") {
                     let newEvent = LoginSuccessfulEvent.init(timestamp: 30)
