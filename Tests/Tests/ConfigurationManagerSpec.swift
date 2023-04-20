@@ -69,6 +69,13 @@ class ConfigurationManagerSpec: QuickSpec {
                         expect(reachability.observers).toEventuallyNot(containElementSatisfying({ $0.value === configurationManager }))
                     }
 
+                    it("should not unregister itself as Reachability observer when connection still unavailable") {
+                        configurationManager.fetchAndSaveConfigData(completion: { _ in })
+                        expect(reachability.observers).to(containElementSatisfying({ $0.value === configurationManager }))
+                        reachability.connectionStub = .unavailable
+                        expect(reachability.observers).to(containElementSatisfying({ $0.value === configurationManager }))
+                    }
+
                     it("should not call completion handler") {
                         var wasCompletionCalled = false
                         configurationManager.fetchAndSaveConfigData(completion: { _ in
