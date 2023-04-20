@@ -21,6 +21,7 @@
 		- CommonUtility [SDKCF-6381]
 		- CampaignDispatcher [SDKCF-6452]
 		- AlertPresentable [SDKCF-6375]
+		- ConfigurationManager [SDKCF-6451]
 
 ### 7.3.0 (2023-01-11)
 - Features:
