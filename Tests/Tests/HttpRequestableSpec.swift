@@ -320,6 +320,41 @@ class HttpRequestableSpec: QuickSpec {
                         }
                     }
                 }
+
+                it("will using empty string for error message as a default when failed to encode error message as .utf8") {
+                    let data = "テスト".data(using: .japaneseEUC)!
+                    let response = HTTPURLResponse(
+                        url: URL(string: "https://test.url")!,
+                        statusCode: 404,
+                        httpVersion: nil,
+                        headerFields: nil)
+
+                    httpRequestable.httpSessionMock.responseData = data
+                    httpRequestable.httpSessionMock.httpResponse = response
+
+                    waitUntil { done in
+                        requestQueue.async {
+                            let result = httpRequestable.requestFromServerSync(
+                                url: URL(string: "https://test.url")!,
+                                httpMethod: .put,
+                                parameters: nil,
+                                addtionalHeaders: nil)
+
+                            expect {
+                                try result.get()
+                            }.to(throwError())
+                            done()
+                        }
+                    }
+                }
+
+                it("will whrow assertion if calling the method on the main thread") {
+                    expect(httpRequestable.requestFromServerSync(
+                        url: URL(string: "")!,
+                        httpMethod: .get,
+                        parameters: nil,
+                        addtionalHeaders: nil)).to(throwAssertion())
+                }
             }
 
             context("when calling requestFromServer") {
