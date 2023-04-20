@@ -28,9 +28,12 @@ end
 post_install do |installer|
   system("./configure-secrets.sh InAppMessaging #{secrets.join(" ")}")
   installer.pods_project.targets.each do |target|
-    if target.name == 'RInAppMessaging'
-      target.build_configurations.each do |config|
+    target.build_configurations.each do |config|
+      if target.name == 'RInAppMessaging'
         config.build_settings['ENABLE_TESTABILITY'] = 'YES'
+      end
+      if config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'].to_i < 9
+        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '9.0'
       end
     end
   end
