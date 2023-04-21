@@ -9,9 +9,10 @@ class PurchaseSuccessfulEventSpec: QuickSpec {
                                                               withCurrencyCode: "Yen", withItems: ["event"], timestamp: 30)
         describe("PurchaseSuccessfulEvent") {
             context("PurchaseSuccessfulEvent.analyticsParameters") {
-                it("will return dictionary with values") {
+                it("will return dictionary with eventName and timestamp values") {
                     expect(purchaseSuccessfulEvent.analyticsParameters).toNot(beNil())
-                    expect(purchaseSuccessfulEvent.analyticsParameters).to(beAKindOf([String: Any].self))
+                    expect(purchaseSuccessfulEvent.analyticsParameters["eventName"]).to(beAKindOf(String.self))
+                    expect(purchaseSuccessfulEvent.analyticsParameters["timestamp"]).to(beAKindOf(Int64.self))
                 }
             }
 

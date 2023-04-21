@@ -9,12 +9,13 @@ class CustomEventSpec: QuickSpec {
             let customAttributes =  [CustomAttribute(withKeyName: "Key1", withBoolValue: false),
                                      CustomAttribute(withKeyName: "Key2", withDoubleValue: 3),
                                      CustomAttribute(withKeyName: "Key3", withIntValue: 1)]
-            let customEvent = CustomEvent.init(withName: "Test", withCustomAttributes: customAttributes, timestamp: 60)
+            let customEvent = CustomEvent(withName: "Test", withCustomAttributes: customAttributes, timestamp: 60)
 
             context("CustomEvent.analyticsParameters") {
                 it("will return dictionary value with analytics parameters") {
                     expect(customEvent.analyticsParameters).toNot(beNil())
-                    expect(customEvent.analyticsParameters).to(beAKindOf([String: Any].self))
+                    expect(customEvent.analyticsParameters["eventName"]).to(beAKindOf(String.self))
+                    expect(customEvent.analyticsParameters["timestamp"]).to(beAKindOf(Int64.self))
                 }
             }
 
