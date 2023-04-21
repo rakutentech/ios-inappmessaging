@@ -26,7 +26,10 @@ class HttpRequestableSpec: QuickSpec {
             }
 
             afterEach {
-                httpRequestable = nil // force deallocation of .httpSessionMock
+                // force deallocation of httpSessionMock
+                httpRequestable.httpSessionMock.responseData = nil
+                httpRequestable.httpSessionMock.responseError = nil
+                httpRequestable.httpSessionMock.sentRequest = nil
             }
 
             context("when calling requestFromServerSync") {
@@ -348,9 +351,9 @@ class HttpRequestableSpec: QuickSpec {
                     }
                 }
 
-                it("will whrow assertion if calling the method on the main thread") {
+                it("will throw assertion if calling the method on the main thread") {
                     expect(httpRequestable.requestFromServerSync(
-                        url: URL(string: "")!,
+                        url: URL(string: "https://test.url")!,
                         httpMethod: .get,
                         parameters: nil,
                         addtionalHeaders: nil)).to(throwAssertion())
