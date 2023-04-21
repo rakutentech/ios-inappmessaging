@@ -45,13 +45,13 @@ class CustomEventSpec: QuickSpec {
                     expect(customEvent.isEqual(event)).to(beFalse())
                 }
                 it("will return false since the attributes are different") {
-                    let customAttributes =  [CustomAttribute(withKeyName: "customKey1", withBoolValue: true),
+                    let customAttributes = [CustomAttribute(withKeyName: "customKey1", withBoolValue: true),
                                              CustomAttribute(withKeyName: "customkey2", withDoubleValue: 5)]
-                    let event = CustomEvent(withName: "Test", withCustomAttributes: customAttributes)
+                    let event = CustomEvent(withName: customEvent.name, withCustomAttributes: customAttributes)
                     expect(customEvent.isEqual(event)).to(beFalse())
                 }
                 it("will return true since the type and name is equal") {
-                    let event = CustomEvent(withName: "Test", withCustomAttributes: customAttributes)
+                    let event = CustomEvent(withName: customEvent.name, withCustomAttributes: customAttributes)
                     expect(customEvent.name.isEqual(event.name)).to(beTrue())
                 }
             }
