@@ -91,11 +91,10 @@ internal class Router: RouterType, ViewListenerObserver {
         let result = {
             return self.displayedTooltips[uiElementIdentifier] != nil
         }
-        if Thread.current == .main {
-            return result()
-        } else {
+        guard Thread.current == .main else {
             return DispatchQueue.main.sync(execute: result)
         }
+        return result()
     }
 
     func displayCampaign(_ campaign: Campaign,
@@ -293,14 +292,13 @@ internal class Router: RouterType, ViewListenerObserver {
         // For accessibilityCompatible option, campaign view must be inserted to
         // UIWindow's main subview. Private instance of UITransitionView
         // shouldn't be used for that - that's why it's omitted.
-        if accessibilityCompatibleDisplay,
+        
+        guard accessibilityCompatibleDisplay,
            let transitionViewClass = NSClassFromString("UITransitionView"),
-           let mainSubview = rootView.subviews.first(where: { !$0.isKind(of: transitionViewClass) }) {
-
-            return mainSubview
-        } else {
+           let mainSubview = rootView.subviews.first(where: { !$0.isKind(of: transitionViewClass) }) else {
             return rootView
         }
+        return mainSubview
     }
 
     private func findParentViewForTooltip(_ sourceView: UIView) -> UIView {
@@ -312,14 +310,13 @@ internal class Router: RouterType, ViewListenerObserver {
         case is UIScrollView:
             return superview
         case is UIWindow:
-            if accessibilityCompatibleDisplay,
+            guard accessibilityCompatibleDisplay,
                let transitionViewClass = NSClassFromString("UITransitionView"),
-               let transitionView = superview.subviews.first(where: { !$0.isKind(of: transitionViewClass) }) {
-
-                return transitionView
-            } else {
+               let transitionView = superview.subviews.first(where: { !$0.isKind(of: transitionViewClass) }) else {
+                
                 return superview
             }
+            return transitionView
         default:
             return findParentViewForTooltip(superview)
         }
