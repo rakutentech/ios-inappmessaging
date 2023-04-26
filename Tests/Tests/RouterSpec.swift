@@ -139,6 +139,11 @@ class RouterSpec: QuickSpec {
                     expect(window.findIAMView()).toEventually(beNil())
                 }
 
+                it("will not remove the campaign that doesn't exist") {
+                    router.discardDisplayedCampaign()
+                    expect(window.findIAMView()).toEventually(beNil())
+                }
+
                 it("will call onDismiss/completion callback with cancelled flag") {
                     let campaign = TestHelpers.generateCampaign(id: "test", type: .modal)
                     var completionCalled = false
@@ -217,6 +222,45 @@ class RouterSpec: QuickSpec {
                 }
             }
 
+            context("when calling isDisplayingTooltip") {
+
+                let tooltipTargetView = UIView(frame: CGRect(x: 100, y: 100, width: 10, height: 10))
+                let tooltip = TestHelpers.generateTooltip(id: "test")
+                let imageBlob: Data! = UIImage(named: "test-image", in: .unitTests, with: nil)?.pngData()
+
+                beforeEach {
+                    tooltipTargetView.accessibilityIdentifier = TooltipViewIdentifierMock
+                    window.addSubview(tooltipTargetView)
+                }
+
+                afterEach {
+                    tooltipTargetView.removeFromSuperview()
+                    window.findTooltipView()?.removeFromSuperview()
+                }
+
+                it("will return true when tooltip displayed") {
+                    router.displayTooltip(tooltip, targetView: tooltipTargetView,
+                                          identifier: TooltipViewIdentifierMock,
+                                          imageBlob: imageBlob,
+                                          becameVisibleHandler: { _ in },
+                                          confirmation: true,
+                                          completion: { _ in })
+                    expect(window.findTooltipView()).toEventuallyNot(beNil())
+                    expect(router.isDisplayingTooltip(with: TooltipViewIdentifierMock)).to(beTrue())
+                }
+
+                it("will return false when tooltip is not displayed") {
+                    expect(router.isDisplayingTooltip(with: "test")).to(beFalse())
+                }
+
+                it("will return a value when calling the function from main thread") {
+                    let q = DispatchQueue(label: "test")
+                    q.async {
+                        expect(router.isDisplayingTooltip(with: "test")).to(beFalse())
+                    }
+                }
+            }
+
             context("when calling displayTooltip") {
 
                 let targetView: UIView = {
@@ -277,6 +321,37 @@ class RouterSpec: QuickSpec {
                                               confirmation: true,
                                               completion: { _ in })
                         expect(window.findTooltipView()).toEventuallyNot(beNil())
+                    }
+
+                    it("will display a tooltip above the campaign view") {
+                        let rootView = UIView()
+                        UIApplication.shared.keyWindow?.addSubview(rootView)
+                        router.accessibilityCompatibleDisplay = true
+                        let campaign = TestHelpers.generateCampaign(id: "test", type: .modal)
+                        router.displayCampaign(campaign, associatedImageData: nil, confirmation: true, completion: { _ in })
+                        expect(window.findIAMView()).toEventuallyNot(beNil())
+
+                        router.displayTooltip(tooltip,
+                                              targetView: rootView,
+                                              identifier: TooltipViewIdentifierMock,
+                                              imageBlob: imageBlob,
+                                              becameVisibleHandler: { _ in },
+                                              confirmation: true,
+                                              completion: { _ in })
+                        expect(window.findTooltipView()).toEventuallyNot(beNil())
+                        rootView.findIAMView()?.removeFromSuperview()
+                    }
+
+                    it("will not display a tooltip campaign with no tooltip data") {
+                        let tooltip = TestHelpers.generateTooltip(id: "test", isTooltip: false)
+                        router.displayTooltip(tooltip,
+                                              targetView: targetView,
+                                              identifier: TooltipViewIdentifierMock,
+                                              imageBlob: imageBlob,
+                                              becameVisibleHandler: { _ in },
+                                              confirmation: true,
+                                              completion: { _ in })
+                        expect(window.findTooltipView()).toEventually(beNil())
                     }
 
                     it("will call completion with false flag when tooltip was closed") {
@@ -369,6 +444,18 @@ class RouterSpec: QuickSpec {
                         expect(window.findTooltipView()).toAfterTimeout(beNil())
                     }
 
+                    it("will not display a tooltip if the tooltip presenter cannot found") {
+                        let router = Router(dependencyManager: TypedDependencyManager(), viewListener: ViewListenerMock())
+                        expect(router.displayTooltip(tooltip,
+                                                     targetView: targetView,
+                                                     identifier: TooltipViewIdentifierMock,
+                                                     imageBlob: "image".data(using: .ascii)!,
+                                                     becameVisibleHandler: { _ in },
+                                                     confirmation: true,
+                                                     completion: { _ in })).to(throwAssertion())
+                        expect(window.findTooltipView()).toAfterTimeout(beNil())
+                    }
+
                     it("will report an error if targetView has no superview") {
                         targetView.removeFromSuperview()
                         router.displayTooltip(tooltip,
@@ -411,6 +498,24 @@ class RouterSpec: QuickSpec {
                         scrollView.removeFromSuperview()
                     }
 
+                    it("will insert a tooltip in the same UIWindow type view as the targetView") {
+                        let uiWindow = UIWindowSubclass()
+                        uiWindow.addSubview(targetView)
+                        window.addSubview(uiWindow)
+                        router.displayTooltip(tooltip,
+                                              targetView: targetView,
+                                              identifier: TooltipViewIdentifierMock,
+                                              imageBlob: imageBlob,
+                                              becameVisibleHandler: { _ in },
+                                              confirmation: true,
+                                              completion: { _ in })
+                        expect(window.findTooltipView()).toEventuallyNot(beNil())
+                        let displayedTooltip = window.findTooltipView()
+                        expect(displayedTooltip?.superview).to(beIdenticalTo(uiWindow))
+
+                        uiWindow.removeFromSuperview()
+                    }
+
                     it("will insert a tooltip below existing campaign view") {
                         let campaign = TestHelpers.generateCampaign(id: "test", type: .modal)
                         router.displayCampaign(campaign, associatedImageData: nil, confirmation: true, completion: { _ in })
@@ -450,6 +555,87 @@ class RouterSpec: QuickSpec {
                         expect(displayedTooltip.frame.origin).toEventually(equal(lastTooltipPosition.applying(translation)))
                     }
 
+                    it("will show tooltip's position in the correct position") {
+                        func comparePosition(displayedTooltip: TooltipView, targetView: UIView, superView: UIView, position: TooltipBodyData.Position) -> Bool {
+                            let targetViewFrame = superView.convert(targetView.frame, from: superView.superview)
+                            var targetPosition: CGPoint
+                            switch position {
+                            case .topCenter:
+                                targetPosition = CGPoint(x: targetViewFrame.midX - displayedTooltip.frame.width / 2.0,
+                                                         y: targetViewFrame.origin.y -
+                                                         displayedTooltip.frame.height -
+                                                         Router.UIConstants.Tooltip.targetViewSpacing)
+                            case .topLeft:
+                                targetPosition = CGPoint(x: targetViewFrame.minX - displayedTooltip.frame.width,
+                                                         y: targetViewFrame.origin.y -
+                                                         displayedTooltip.frame.height -
+                                                         Router.UIConstants.Tooltip.targetViewSpacing)
+                            case .topRight:
+                                targetPosition = CGPoint(x: targetViewFrame.maxX,
+                                                         y: targetViewFrame.origin.y -
+                                                         displayedTooltip.frame.height -
+                                                         Router.UIConstants.Tooltip.targetViewSpacing)
+                            case .bottomLeft:
+                                targetPosition = CGPoint(x: targetViewFrame.minX - displayedTooltip.frame.width,
+                                                         y: targetViewFrame.maxY +
+                                                         Router.UIConstants.Tooltip.targetViewSpacing)
+                            case .bottomRight:
+                                targetPosition = CGPoint(x: targetViewFrame.maxX,
+                                                         y: targetViewFrame.maxY +
+                                                         Router.UIConstants.Tooltip.targetViewSpacing)
+                            case .bottomCenter:
+                                targetPosition = CGPoint(x: targetViewFrame.midX -
+                                                         displayedTooltip.frame.width / 2.0,
+                                                         y: targetViewFrame.maxY +
+                                                         Router.UIConstants.Tooltip.targetViewSpacing)
+                            case .left:
+                                targetPosition = CGPoint(x: targetViewFrame.minX -
+                                                         displayedTooltip.frame.width -
+                                                         Router.UIConstants.Tooltip.targetViewSpacing,
+                                                         y: targetViewFrame.midY -
+                                                         displayedTooltip.frame.height / 2.0)
+                            case .right:
+                                targetPosition = CGPoint(x: targetViewFrame.maxX +
+                                                         Router.UIConstants.Tooltip.targetViewSpacing,
+                                                         y: targetViewFrame.midY -
+                                                         displayedTooltip.frame.height / 2.0)
+                            }
+                            return displayedTooltip.frame.origin.x == targetPosition.x &&
+                                   displayedTooltip.frame.origin.y == targetPosition.y
+                        }
+
+                        for position in [
+                            TooltipBodyData.Position.topLeft,
+                            TooltipBodyData.Position.topRight,
+                            TooltipBodyData.Position.topCenter,
+                            TooltipBodyData.Position.bottomLeft,
+                            TooltipBodyData.Position.bottomRight,
+                            TooltipBodyData.Position.bottomCenter,
+                            TooltipBodyData.Position.left,
+                            TooltipBodyData.Position.right
+                        ] {
+                            let window = UIApplication.shared.getKeyWindow()!
+                            let tooltipTargetView = UIView(frame: CGRect(x: 100, y: 100, width: 10, height: 10))
+                            window.addSubview(tooltipTargetView)
+                            let imageBlob: Data! = UIImage(named: "test-image", in: .unitTests, with: nil)?.pngData()
+                            let tooltip = TestHelpers.generateTooltip(id: "test", position: position.rawValue)
+                            router.displayTooltip(tooltip,
+                                                  targetView: tooltipTargetView,
+                                                  identifier: TooltipViewIdentifierMock,
+                                                  imageBlob: imageBlob,
+                                                  becameVisibleHandler: { _ in },
+                                                  confirmation: true,
+                                                  completion: { _ in })
+                            expect(window.findTooltipView()).toEventuallyNot(beNil())
+                            let displayedTooltip = window.findTooltipView()!
+                            expect(comparePosition(
+                                displayedTooltip: displayedTooltip,
+                                targetView: tooltipTargetView,
+                                superView: window,
+                                position: position)).toEventually(beTrue())
+                        }
+                    }
+
                     it("will remove the tooltip if targeted view changes its identifier to nil") {
                         router.displayTooltip(tooltip,
                                               targetView: targetView,
@@ -484,3 +670,4 @@ class RouterSpec: QuickSpec {
 }
 
 private final class UIScrollViewSubclass: UIScrollView { }
+private final class UIWindowSubclass: UIWindow { }
