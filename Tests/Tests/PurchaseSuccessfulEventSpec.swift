@@ -11,8 +11,8 @@ class PurchaseSuccessfulEventSpec: QuickSpec {
             context("PurchaseSuccessfulEvent.analyticsParameters") {
                 it("will return dictionary with eventName and timestamp values") {
                     expect(purchaseSuccessfulEvent.analyticsParameters).toNot(beNil())
-                    expect(purchaseSuccessfulEvent.analyticsParameters["eventName"]).to(beAKindOf(String.self))
-                    expect(purchaseSuccessfulEvent.analyticsParameters["timestamp"]).to(beAKindOf(Int64.self))
+                    expect(purchaseSuccessfulEvent.analyticsParameters["eventName"] as? String).to(equal("purchase_successful"))
+                    expect(purchaseSuccessfulEvent.analyticsParameters["timestamp"] as? Int64).to(beGreaterThan(0))
                 }
             }
 

@@ -10,8 +10,8 @@ class AppStartEventSpec: QuickSpec {
             context("AppStartEvent.analyticsParameters") {
                 it("will return dictionary with eventName and timestamp values") {
                     expect(appStartEvent.analyticsParameters).toNot(beNil())
-                    expect(appStartEvent.analyticsParameters["eventName"]).to(beAKindOf(String.self))
-                    expect(appStartEvent.analyticsParameters["timestamp"]).to(beAKindOf(Int64.self))
+                    expect(appStartEvent.analyticsParameters["eventName"] as? String).to(equal("app_start"))
+                    expect(appStartEvent.analyticsParameters["timestamp"] as? Int64).to(beGreaterThan(0))
                 }
             }
         }

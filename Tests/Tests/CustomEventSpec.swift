@@ -6,16 +6,17 @@ import Nimble
 class CustomEventSpec: QuickSpec {
     override func spec() {
         describe("CustomEvent") {
-            let customAttributes =  [CustomAttribute(withKeyName: "Key1", withBoolValue: false),
-                                     CustomAttribute(withKeyName: "Key2", withDoubleValue: 3),
-                                     CustomAttribute(withKeyName: "Key3", withIntValue: 1)]
+            let customAttributes = [CustomAttribute(withKeyName: "Key1", withBoolValue: false),
+                                    CustomAttribute(withKeyName: "Key2", withDoubleValue: 3),
+                                    CustomAttribute(withKeyName: "Key3", withIntValue: 1)]
             let customEvent = CustomEvent(withName: "Test", withCustomAttributes: customAttributes, timestamp: 60)
 
             context("CustomEvent.analyticsParameters") {
                 it("will return dictionary value with analytics parameters") {
                     expect(customEvent.analyticsParameters).toNot(beNil())
-                    expect(customEvent.analyticsParameters["eventName"]).to(beAKindOf(String.self))
-                    expect(customEvent.analyticsParameters["timestamp"]).to(beAKindOf(Int64.self))
+                    expect(customEvent.analyticsParameters["eventName"] as? String).to(equal("test"))
+                    expect(customEvent.analyticsParameters["timestamp"] as? Int64).to(beGreaterThan(0))
+                    expect(((customEvent.analyticsParameters["customAttributes"] as AnyObject).count)!).to(equal(3))
                 }
             }
 

@@ -11,8 +11,8 @@ class LoginSuccessfulEventSpec: QuickSpec {
             context("LoginSuccessfulEvent.analyticsParameters") {
                 it("will return dictionary with eventName and timestamp values") {
                     expect(loginSuccessfulEvent.analyticsParameters).toNot(beNil())
-                    expect(loginSuccessfulEvent.analyticsParameters["eventName"]).to(beAKindOf(String.self))
-                    expect(loginSuccessfulEvent.analyticsParameters["timestamp"]).to(beAKindOf(Int64.self))
+                    expect(loginSuccessfulEvent.analyticsParameters["eventName"] as? String).to(equal("login_successful"))
+                    expect(loginSuccessfulEvent.analyticsParameters["timestamp"] as? Int64).to(beGreaterThan(0))
                 }
             }
 
