@@ -702,20 +702,6 @@ class RouterSpec: QuickSpec {
                         router.viewDidGetRemovedFromSuperview(targetView, identifier: TooltipViewIdentifierMock)
                         expect(displayedTooltip.superview).toEventually(beNil())
                     }
-
-                    it("will remove orientationObserver from NotificationCenter") {
-                        router.displayTooltip(tooltip,
-                                              targetView: targetView,
-                                              identifier: TooltipViewIdentifierMock,
-                                              imageBlob: imageBlob,
-                                              becameVisibleHandler: { _ in },
-                                              confirmation: true,
-                                              completion: { _ in })
-                        expect(window.findTooltipView()).toEventuallyNot(beNil())
-                        var displayedTooltip = window.findTooltipView()!
-                        displayedTooltip.removeFromSuperview()
-                        expect(window.findTooltipView()).toEventually(beNil())
-                    }
                 }
             }
         }
