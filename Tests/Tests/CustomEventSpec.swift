@@ -23,8 +23,7 @@ class CustomEventSpec: QuickSpec {
             context("CustomEvent.getAttributeMap") {
                 it("will return non nil dictionary value with CustomAttribute values") {
                     customEvent.customAttributes = customAttributes
-                    expect(customEvent.getAttributeMap()).toNot(beNil())
-                    expect(customEvent.getAttributeMap()).to(beAKindOf([String: CustomAttribute]?.self))
+                    expect(((customEvent.getAttributeMap() as AnyObject).count)!).to(equal(3))
                 }
                 it("will return nil value when customAttributes values are nil") {
                     customEvent.customAttributes = nil
