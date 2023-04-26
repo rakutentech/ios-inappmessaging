@@ -109,11 +109,15 @@ internal class Router: RouterType, ViewListenerObserver {
             return
         }
 
+        guard let presenter = getPresenter(for: campaignViewType) else {
+            Logger.debug("Error: \(campaignViewType) couldn't be resolved")
+            assertionFailure()
+            completion(true)
+            return
+        }
+
         displayQueue.async {
-            guard let viewConstructor = self.createViewConstructor(for: campaign, associatedImageData: associatedImageData) else {
-                completion(true)
-                return
-            }
+            let viewConstructor = self.createViewConstructor(for: campaign, presenter: presenter, associatedImageData: associatedImageData)
 
             DispatchQueue.main.async {
                 guard let rootView = UIApplication.shared.getKeyWindow(),
@@ -131,46 +135,52 @@ internal class Router: RouterType, ViewListenerObserver {
         }
     }
 
-    private func createViewConstructor(for campaign: Campaign, associatedImageData: Data?) -> (() -> BaseView)? {
-        func getPresenter<T>(type: T.Type) -> T? {
-            guard let presenter = self.dependencyManager.resolve(type: type) else {
-                Logger.debug("Error: \(type) couldn't be resolved")
-                assertionFailure()
+    private func getPresenter(for type: CampaignDisplayType) -> BaseViewPresenterType? {
+        var presenter: BaseViewPresenterType?
+        switch type {
+        case .modal, .full:
+            guard let resolvedPresenter = resolvePresenter(type: FullViewPresenterType.self) else {
                 return nil
             }
-            return presenter
-        }
-
-        switch campaign.data.type {
-        case .modal:
-            guard let presenter = getPresenter(type: FullViewPresenterType.self) else {
-                break
-            }
-            presenter.campaign = campaign
-            if let associatedImageData = associatedImageData {
-                presenter.associatedImage = UIImage(data: associatedImageData)
-            }
-            return { ModalView(presenter: presenter) }
-        case .full:
-            guard let presenter = getPresenter(type: FullViewPresenterType.self) else {
-                break
-            }
-            presenter.campaign = campaign
-            if let associatedImageData = associatedImageData {
-                presenter.associatedImage = UIImage(data: associatedImageData)
-            }
-            return { FullScreenView(presenter: presenter) }
+            presenter = resolvedPresenter
         case .slide:
-            guard let presenter = getPresenter(type: SlideUpViewPresenterType.self) else {
-                break
+            guard let resolvedPresenter = resolvePresenter(type: SlideUpViewPresenterType.self) else {
+                return nil
             }
+            presenter = resolvedPresenter
+        default:
+            Logger.debug("Error: Campaign view type is not supported")
+        }
+        return presenter
+    }
+
+    private func resolvePresenter<T>(type: T.Type) -> T? {
+        guard let presenter = self.dependencyManager.resolve(type: type) else {
+            Logger.debug("Error: \(type) couldn't be resolved")
+            return nil
+        }
+        return presenter
+    }
+
+    private func createViewConstructor(for campaign: Campaign, presenter: BaseViewPresenterType, associatedImageData: Data?) -> (() -> BaseView) {
+        var view: (() -> BaseView)!
+        let type = campaign.data.type
+
+        if type == .modal || type == .full {
+            let presenter = presenter as! FullViewPresenterType
             presenter.campaign = campaign
-            return { SlideUpView(presenter: presenter) }
-        case .invalid, .html:
-            Logger.debug("Error: Campaign view type not supported")
+            if let associatedImageData = associatedImageData {
+                presenter.associatedImage = UIImage(data: associatedImageData)
+            }
+            view = type == .modal ? { ModalView(presenter: presenter) } : { FullScreenView(presenter: presenter) }
         }
 
-        return nil
+        if type == .slide {
+            let presenter = presenter as! SlideUpViewPresenterType
+            presenter.campaign = campaign
+            view = { SlideUpView(presenter: presenter) }
+        }
+        return view
     }
 
     // swiftlint:disable:next function_parameter_count

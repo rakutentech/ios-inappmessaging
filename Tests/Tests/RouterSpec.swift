@@ -62,23 +62,25 @@ class RouterSpec: QuickSpec {
 
                 context("and display is confirmed") {
 
+                    let imageBlob: Data! = UIImage(named: "test-image", in: .unitTests, with: nil)?.pngData()
+
                     it("will show ModalView for modal campaign type") {
                         let campaign = TestHelpers.generateCampaign(id: "test", type: .modal)
-                        router.displayCampaign(campaign, associatedImageData: nil, confirmation: true, completion: { _ in })
+                        router.displayCampaign(campaign, associatedImageData: imageBlob, confirmation: true, completion: { _ in })
                         expect(window.subviews)
                             .toEventually(containElementSatisfying({ $0 is ModalView }))
                     }
 
                     it("will show FullScreenView for full campaign type") {
                         let campaign = TestHelpers.generateCampaign(id: "test", type: .full)
-                        router.displayCampaign(campaign, associatedImageData: nil, confirmation: true, completion: { _ in })
+                        router.displayCampaign(campaign, associatedImageData: imageBlob, confirmation: true, completion: { _ in })
                         expect(window.subviews)
                             .toEventually(containElementSatisfying({ $0 is FullScreenView }))
                     }
 
                     it("will show SlideUpView for slide campaign type") {
                         let campaign = TestHelpers.generateCampaign(id: "test", type: .slide)
-                        router.displayCampaign(campaign, associatedImageData: nil, confirmation: true, completion: { _ in })
+                        router.displayCampaign(campaign, associatedImageData: imageBlob, confirmation: true, completion: { _ in })
                         expect(window.subviews)
                             .toEventually(containElementSatisfying({ $0 is SlideUpView }))
                     }
@@ -91,7 +93,11 @@ class RouterSpec: QuickSpec {
 
                     it("will not show any view for html campaign type") {
                         let campaign = TestHelpers.generateCampaign(id: "test", type: .html)
-                        router.displayCampaign(campaign, associatedImageData: nil, confirmation: true, completion: { _ in })
+                        expect(router.displayCampaign(
+                            campaign,
+                            associatedImageData: nil,
+                            confirmation: true,
+                            completion: { _ in })).to(throwAssertion())
                         expect(window.findIAMView()).toAfterTimeout(beNil())
                     }
 
@@ -106,6 +112,38 @@ class RouterSpec: QuickSpec {
                             .toAfterTimeoutNot(containElementSatisfying({ $0 is FullScreenView }))
                         expect(window.subviews)
                             .to(containElementSatisfying({ $0 is ModalView }))
+                    }
+
+                    it("will throw assertion if the campaign presenter cannot found") {
+                        let router = Router(dependencyManager: TypedDependencyManager(), viewListener: ViewListenerMock())
+                        let campaign = TestHelpers.generateCampaign(id: "test", type: .modal)
+                        expect(router.displayCampaign(
+                            campaign,
+                            associatedImageData: nil,
+                            confirmation: false,
+                            completion: { _ in })).to(throwAssertion())
+                    }
+
+                    it("will not display a fullview type campaign if the campaign presenter cannot found") {
+                        let router = Router(dependencyManager: TypedDependencyManager(), viewListener: ViewListenerMock())
+                        let campaign = TestHelpers.generateCampaign(id: "test", type: .full)
+                        expect(router.displayCampaign(
+                            campaign,
+                            associatedImageData: nil,
+                            confirmation: false,
+                            completion: { _ in })).to(throwAssertion())
+                        expect(window.findIAMView()).toAfterTimeout(beNil())
+                    }
+
+                    it("will not display a slide type campaign if the campaign presenter cannot found") {
+                        let router = Router(dependencyManager: TypedDependencyManager(), viewListener: ViewListenerMock())
+                        let campaign = TestHelpers.generateCampaign(id: "test", type: .slide)
+                        expect(router.displayCampaign(
+                            campaign,
+                            associatedImageData: nil,
+                            confirmation: false,
+                            completion: { _ in })).to(throwAssertion())
+                        expect(window.findIAMView()).toAfterTimeout(beNil())
                     }
 
                     it("will add a view to the UIWindow's view when `accessibilityCompatible` is false") {
@@ -339,7 +377,8 @@ class RouterSpec: QuickSpec {
                                               confirmation: true,
                                               completion: { _ in })
                         expect(window.findTooltipView()).toEventuallyNot(beNil())
-                        rootView.findIAMView()?.removeFromSuperview()
+                        window.findTooltipView()?.removeFromSuperview()
+                        window.findIAMView()?.removeFromSuperview()
                     }
 
                     it("will not display a tooltip campaign with no tooltip data") {
@@ -662,6 +701,20 @@ class RouterSpec: QuickSpec {
                         let displayedTooltip = window.findTooltipView()!
                         router.viewDidGetRemovedFromSuperview(targetView, identifier: TooltipViewIdentifierMock)
                         expect(displayedTooltip.superview).toEventually(beNil())
+                    }
+
+                    it("will remove orientationObserver from NotificationCenter") {
+                        router.displayTooltip(tooltip,
+                                              targetView: targetView,
+                                              identifier: TooltipViewIdentifierMock,
+                                              imageBlob: imageBlob,
+                                              becameVisibleHandler: { _ in },
+                                              confirmation: true,
+                                              completion: { _ in })
+                        expect(window.findTooltipView()).toEventuallyNot(beNil())
+                        var displayedTooltip = window.findTooltipView()!
+                        displayedTooltip.removeFromSuperview()
+                        expect(window.findTooltipView()).toEventually(beNil())
                     }
                 }
             }
