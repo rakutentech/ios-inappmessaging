@@ -20,19 +20,21 @@ class HttpRequestableSpec: QuickSpec {
 
             let requestQueue = DispatchQueue(label: "iam.test.request")
             var httpRequestable: HttpRequestableObject!
+            let url = URL(string: "https://test.url")!
 
             beforeEach {
                 httpRequestable = HttpRequestableObject()
             }
 
             afterEach {
-                httpRequestable = nil // force deallocation of .httpSessionMock
+                httpRequestable.httpSessionMock.responseData = nil
+                httpRequestable.httpSessionMock.responseError = nil
+                httpRequestable.httpSessionMock.sentRequest = nil
             }
 
             context("when calling requestFromServerSync") {
 
                 it("will send a reqest using provided URL") {
-                    let url = URL(string: "https://test.url")!
                     waitUntil { done in
                         requestQueue.async {
                             _ = httpRequestable.requestFromServerSync(url: url,
@@ -51,7 +53,7 @@ class HttpRequestableSpec: QuickSpec {
                 it("will send a reqest using provided method") {
                     waitUntil { done in
                         requestQueue.async {
-                            _ = httpRequestable.requestFromServerSync(url: URL(string: "https://test.url")!,
+                            _ = httpRequestable.requestFromServerSync(url: url,
                                                                       httpMethod: .put,
                                                                       parameters: nil,
                                                                       addtionalHeaders: nil)
@@ -69,7 +71,7 @@ class HttpRequestableSpec: QuickSpec {
                     httpRequestable.bodyData = data
                     waitUntil { done in
                         requestQueue.async {
-                            _ = httpRequestable.requestFromServerSync(url: URL(string: "https://test.url")!,
+                            _ = httpRequestable.requestFromServerSync(url: url,
                                                                       httpMethod: .put,
                                                                       parameters: nil,
                                                                       addtionalHeaders: nil)
@@ -85,7 +87,7 @@ class HttpRequestableSpec: QuickSpec {
                 it("will always send requests with application/json Content-Type header") {
                     waitUntil { done in
                         requestQueue.async {
-                            _ = httpRequestable.requestFromServerSync(url: URL(string: "https://test.url")!,
+                            _ = httpRequestable.requestFromServerSync(url: url,
                                                                       httpMethod: .put,
                                                                       parameters: nil,
                                                                       addtionalHeaders: nil)
@@ -103,7 +105,7 @@ class HttpRequestableSpec: QuickSpec {
                                     HeaderAttribute(key: "a", value: "2")]
                     waitUntil { done in
                         requestQueue.async {
-                            _ = httpRequestable.requestFromServerSync(url: URL(string: "https://test.url")!,
+                            _ = httpRequestable.requestFromServerSync(url: url,
                                                                       httpMethod: .put,
                                                                       parameters: nil,
                                                                       addtionalHeaders: headers)
@@ -125,7 +127,7 @@ class HttpRequestableSpec: QuickSpec {
                     waitUntil { done in
                         requestQueue.async {
                             let result = httpRequestable.requestFromServerSync(
-                                url: URL(string: "https://test.url")!,
+                                url: url,
                                 httpMethod: .put,
                                 parameters: nil,
                                 addtionalHeaders: nil)
@@ -153,7 +155,7 @@ class HttpRequestableSpec: QuickSpec {
                     waitUntil { done in
                         requestQueue.async {
                             let result = httpRequestable.requestFromServerSync(
-                                url: URL(string: "https://test.url")!,
+                                url: url,
                                 httpMethod: .put,
                                 parameters: nil,
                                 addtionalHeaders: nil)
@@ -180,7 +182,7 @@ class HttpRequestableSpec: QuickSpec {
 
                         httpRequestable.httpSessionMock.responseData = "data".data(using: .ascii)!
                         httpRequestable.httpSessionMock.httpResponse = HTTPURLResponse(
-                            url: URL(string: "https://test.url")!,
+                            url: url,
                             statusCode: Int(code),
                             httpVersion: nil,
                             headerFields: nil)
@@ -188,7 +190,7 @@ class HttpRequestableSpec: QuickSpec {
                         waitUntil { done in
                             requestQueue.async {
                                 let result = httpRequestable.requestFromServerSync(
-                                    url: URL(string: "https://test.url")!,
+                                    url: url,
                                     httpMethod: .put,
                                     parameters: nil,
                                     addtionalHeaders: nil)
@@ -217,7 +219,7 @@ class HttpRequestableSpec: QuickSpec {
                     waitUntil { done in
                         requestQueue.async {
                             let result = httpRequestable.requestFromServerSync(
-                                url: URL(string: "https://test.url")!,
+                                url: url,
                                 httpMethod: .put,
                                 parameters: nil,
                                 addtionalHeaders: nil)
@@ -239,7 +241,7 @@ class HttpRequestableSpec: QuickSpec {
                 it("will return an error if no data was returned") {
                     httpRequestable.httpSessionMock.responseData = nil
                     httpRequestable.httpSessionMock.httpResponse = HTTPURLResponse(
-                        url: URL(string: "https://test.url")!,
+                        url: url,
                         statusCode: 200,
                         httpVersion: nil,
                         headerFields: nil)
@@ -247,7 +249,7 @@ class HttpRequestableSpec: QuickSpec {
                     waitUntil { done in
                         requestQueue.async {
                             let result = httpRequestable.requestFromServerSync(
-                                url: URL(string: "https://test.url")!,
+                                url: url,
                                 httpMethod: .put,
                                 parameters: nil,
                                 addtionalHeaders: nil)
@@ -271,7 +273,7 @@ class HttpRequestableSpec: QuickSpec {
 
                         httpRequestable.httpSessionMock.responseData = "data".data(using: .ascii)!
                         httpRequestable.httpSessionMock.httpResponse = HTTPURLResponse(
-                            url: URL(string: "https://test.url")!,
+                            url: url,
                             statusCode: code,
                             httpVersion: nil,
                             headerFields: nil)
@@ -279,7 +281,7 @@ class HttpRequestableSpec: QuickSpec {
                         waitUntil { done in
                             requestQueue.async {
                                 let result = httpRequestable.requestFromServerSync(
-                                    url: URL(string: "https://test.url")!,
+                                    url: url,
                                     httpMethod: .put,
                                     parameters: nil,
                                     addtionalHeaders: nil)
@@ -296,7 +298,7 @@ class HttpRequestableSpec: QuickSpec {
                 it("will return response and data objects when call succeeded") {
                     let data = "data".data(using: .ascii)!
                     let response = HTTPURLResponse(
-                        url: URL(string: "https://test.url")!,
+                        url: url,
                         statusCode: 200,
                         httpVersion: nil,
                         headerFields: nil)
@@ -307,7 +309,7 @@ class HttpRequestableSpec: QuickSpec {
                     waitUntil { done in
                         requestQueue.async {
                             let result = httpRequestable.requestFromServerSync(
-                                url: URL(string: "https://test.url")!,
+                                url: url,
                                 httpMethod: .put,
                                 parameters: nil,
                                 addtionalHeaders: nil)
@@ -320,12 +322,48 @@ class HttpRequestableSpec: QuickSpec {
                         }
                     }
                 }
+
+                it("will using empty string for error message as a default when failed to encode error message as .utf8") {
+                    let data = "テスト".data(using: .japaneseEUC)!
+                    let response = HTTPURLResponse(
+                        url: url,
+                        statusCode: 404,
+                        httpVersion: nil,
+                        headerFields: nil)
+
+                    httpRequestable.httpSessionMock.responseData = data
+                    httpRequestable.httpSessionMock.httpResponse = response
+
+                    waitUntil { done in
+                        requestQueue.async {
+                            let result = httpRequestable.requestFromServerSync(
+                                url: url,
+                                httpMethod: .put,
+                                parameters: nil,
+                                addtionalHeaders: nil)
+
+                            expect {
+                                try result.get()
+                            }.to(throwError())
+                            done()
+                        }
+                    }
+                }
+
+                // throwAssertion() captures a strong reference to the httpRequestable and never releases it
+                // making it impossible to deallocate the httpSessionMock reusable instance
+                it("will throw assertion if calling the method on the main thread") {
+                    expect(httpRequestable.requestFromServerSync(
+                        url: url,
+                        httpMethod: .get,
+                        parameters: nil,
+                        addtionalHeaders: nil)).to(throwAssertion())
+                }
             }
 
             context("when calling requestFromServer") {
 
                 it("will send a reqest using provided URL") {
-                    let url = URL(string: "https://test.url")!
                     waitUntil { done in
                         httpRequestable.requestFromServer(url: url,
                                                           httpMethod: .put,
@@ -341,7 +379,7 @@ class HttpRequestableSpec: QuickSpec {
 
                 it("will send a reqest using provided method") {
                     waitUntil { done in
-                        httpRequestable.requestFromServer(url: URL(string: "https://test.url")!,
+                        httpRequestable.requestFromServer(url: url,
                                                           httpMethod: .put,
                                                           parameters: nil,
                                                           addtionalHeaders: nil,
@@ -357,7 +395,7 @@ class HttpRequestableSpec: QuickSpec {
                     let data = "data".data(using: .ascii)!
                     httpRequestable.bodyData = data
                     waitUntil { done in
-                        httpRequestable.requestFromServer(url: URL(string: "https://test.url")!,
+                        httpRequestable.requestFromServer(url: url,
                                                           httpMethod: .put,
                                                           parameters: nil,
                                                           addtionalHeaders: nil,
@@ -371,7 +409,7 @@ class HttpRequestableSpec: QuickSpec {
 
                 it("will always send requests with application/json Content-Type header") {
                     waitUntil { done in
-                        httpRequestable.requestFromServer(url: URL(string: "https://test.url")!,
+                        httpRequestable.requestFromServer(url: url,
                                                           httpMethod: .put,
                                                           parameters: nil,
                                                           addtionalHeaders: nil,
@@ -387,7 +425,7 @@ class HttpRequestableSpec: QuickSpec {
                     let headers = [HeaderAttribute(key: "1", value: "abc"),
                                    HeaderAttribute(key: "a", value: "2")]
                     waitUntil { done in
-                        httpRequestable.requestFromServer(url: URL(string: "https://test.url")!,
+                        httpRequestable.requestFromServer(url: url,
                                                           httpMethod: .put,
                                                           parameters: nil,
                                                           addtionalHeaders: headers,
@@ -408,7 +446,7 @@ class HttpRequestableSpec: QuickSpec {
                     var result: HttpRequestable.RequestResult?
                     waitUntil { done in
                         httpRequestable.requestFromServer(
-                            url: URL(string: "https://test.url")!,
+                            url: url,
                             httpMethod: .put,
                             parameters: nil,
                             addtionalHeaders: nil,
@@ -437,7 +475,7 @@ class HttpRequestableSpec: QuickSpec {
                     var result: HttpRequestable.RequestResult?
                     waitUntil { done in
                         httpRequestable.requestFromServer(
-                            url: URL(string: "https://test.url")!,
+                            url: url,
                             httpMethod: .put,
                             parameters: nil,
                             addtionalHeaders: nil,
@@ -465,7 +503,7 @@ class HttpRequestableSpec: QuickSpec {
 
                         httpRequestable.httpSessionMock.responseData = "data".data(using: .ascii)!
                         httpRequestable.httpSessionMock.httpResponse = HTTPURLResponse(
-                            url: URL(string: "https://test.url")!,
+                            url: url,
                             statusCode: Int(code),
                             httpVersion: nil,
                             headerFields: nil)
@@ -473,7 +511,7 @@ class HttpRequestableSpec: QuickSpec {
                         var result: HttpRequestable.RequestResult?
                         waitUntil { done in
                             httpRequestable.requestFromServer(
-                                url: URL(string: "https://test.url")!,
+                                url: url,
                                 httpMethod: .put,
                                 parameters: nil,
                                 addtionalHeaders: nil,
@@ -503,7 +541,7 @@ class HttpRequestableSpec: QuickSpec {
                     var result: HttpRequestable.RequestResult?
                     waitUntil { done in
                         httpRequestable.requestFromServer(
-                            url: URL(string: "https://test.url")!,
+                            url: url,
                             httpMethod: .put,
                             parameters: nil,
                             addtionalHeaders: nil,
@@ -526,7 +564,7 @@ class HttpRequestableSpec: QuickSpec {
                 it("will return an error if no data was returned") {
                     httpRequestable.httpSessionMock.responseData = nil
                     httpRequestable.httpSessionMock.httpResponse = HTTPURLResponse(
-                        url: URL(string: "https://test.url")!,
+                        url: url,
                         statusCode: 200,
                         httpVersion: nil,
                         headerFields: nil)
@@ -534,7 +572,7 @@ class HttpRequestableSpec: QuickSpec {
                     var result: HttpRequestable.RequestResult?
                     waitUntil { done in
                         httpRequestable.requestFromServer(
-                            url: URL(string: "https://test.url")!,
+                            url: url,
                             httpMethod: .put,
                             parameters: nil,
                             addtionalHeaders: nil,
@@ -559,7 +597,7 @@ class HttpRequestableSpec: QuickSpec {
 
                         httpRequestable.httpSessionMock.responseData = "data".data(using: .ascii)!
                         httpRequestable.httpSessionMock.httpResponse = HTTPURLResponse(
-                            url: URL(string: "https://test.url")!,
+                            url: url,
                             statusCode: code,
                             httpVersion: nil,
                             headerFields: nil)
@@ -567,7 +605,7 @@ class HttpRequestableSpec: QuickSpec {
                         var result: HttpRequestable.RequestResult?
                         waitUntil { done in
                             httpRequestable.requestFromServer(
-                                url: URL(string: "https://test.url")!,
+                                url: url,
                                 httpMethod: .put,
                                 parameters: nil,
                                 addtionalHeaders: nil,
@@ -587,7 +625,7 @@ class HttpRequestableSpec: QuickSpec {
                 it("will return response and data objects when call succeeded") {
                     let data = "data".data(using: .ascii)!
                     let response = HTTPURLResponse(
-                        url: URL(string: "https://test.url")!,
+                        url: url,
                         statusCode: 200,
                         httpVersion: nil,
                         headerFields: nil)
@@ -598,7 +636,7 @@ class HttpRequestableSpec: QuickSpec {
                     var result: HttpRequestable.RequestResult?
                     waitUntil { done in
                         httpRequestable.requestFromServer(
-                            url: URL(string: "https://test.url")!,
+                            url: url,
                             httpMethod: .put,
                             parameters: nil,
                             addtionalHeaders: nil,
