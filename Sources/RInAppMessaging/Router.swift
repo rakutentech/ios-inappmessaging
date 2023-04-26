@@ -43,7 +43,7 @@ internal protocol RouterType: ErrorReportable {
 /// Handles all the displaying logic of the SDK.
 internal class Router: RouterType, ViewListenerObserver {
 
-    private enum UIConstants {
+    enum UIConstants {
         enum Tooltip {
             static let minDistFromEdge: CGFloat = 20.0
             static let targetViewSpacing: CGFloat = 0.0
@@ -313,7 +313,6 @@ internal class Router: RouterType, ViewListenerObserver {
             guard accessibilityCompatibleDisplay,
                let transitionViewClass = NSClassFromString("UITransitionView"),
                let transitionView = superview.subviews.first(where: { !$0.isKind(of: transitionViewClass) }) else {
-                
                 return superview
             }
             return transitionView
@@ -332,9 +331,6 @@ internal class Router: RouterType, ViewListenerObserver {
     }
 
     private func updateFrame(targetView: UIView, tooltipView: TooltipView, superview: UIView, position: TooltipBodyData.Position) {
-        guard targetView.superview != nil else {
-            return
-        }
         let targetViewFrame = superview.convert(targetView.frame, from: targetView.superview)
 
         switch position {
