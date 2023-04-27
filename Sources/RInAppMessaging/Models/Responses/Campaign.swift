@@ -52,10 +52,10 @@ internal struct Campaign: Codable, Hashable {
         try container.encode(isOptedOut, forKey: .isOptedOut)
     }
 
-    init(data: CampaignData, asTooltip isTooltip: Bool = true) {
+    init(data: CampaignData) {
         self.data = data
         impressionsLeft = data.maxImpressions
-        tooltipData = isTooltip ? Campaign.parseTooltipData(messagePayload: data.messagePayload) : nil
+        tooltipData = Campaign.parseTooltipData(messagePayload: data.messagePayload)
     }
 
     static func == (lhs: Campaign, rhs: Campaign) -> Bool {

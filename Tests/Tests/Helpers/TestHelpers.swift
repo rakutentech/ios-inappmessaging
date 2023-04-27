@@ -81,9 +81,8 @@ struct TestHelpers {
                                 maxImpressions: Int = 2,
                                 autoCloseSeconds: Int = 0,
                                 redirectURL: String = "",
-                                position: String = "top-center",
-                                triggers: [Trigger] = [],
-                                isTooltip: Bool = true) -> Campaign {
+                                position: TooltipBodyData.Position = .topCenter,
+                                triggers: [Trigger] = []) -> Campaign {
         Campaign(
             data: CampaignData(
                 campaignId: id,
@@ -97,7 +96,7 @@ struct TestHelpers {
                 messagePayload: MessagePayload(
                     title: title,
                     messageBody: """
-                    {\"UIElement\" : \"\(targetViewID ?? TooltipViewIdentifierMock)\", \"position\": \"\(position)\", \"auto-disappear\": \(autoCloseSeconds), \"redirectURL\": \"\(redirectURL)\"}
+                    {\"UIElement\" : \"\(targetViewID ?? TooltipViewIdentifierMock)\", \"position\": \"\(position.rawValue)\", \"auto-disappear\": \(autoCloseSeconds), \"redirectURL\": \"\(redirectURL)\"}
                     """, // swiftlint:disable:previous line_length
                     header: "testHeader",
                     titleColor: "color",
@@ -121,8 +120,7 @@ struct TestHelpers {
                             buttons: [],
                             content: nil))
                 )
-            ),
-            asTooltip: isTooltip
+            )
         )
     }
 
