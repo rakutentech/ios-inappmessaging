@@ -13,17 +13,25 @@ class CustomEventSpec: QuickSpec {
 
             context("CustomEvent.analyticsParameters") {
                 it("will return dictionary value with analytics parameters") {
+                    let expectedAttributesRep: [NSDictionary] = [["name": "key1", "value": false],
+                                                                 ["name": "key2", "value": 3],
+                                                                 ["name": "key3", "value": 1]]
                     expect(customEvent.analyticsParameters).toNot(beNil())
                     expect(customEvent.analyticsParameters["eventName"] as? String).to(equal("test"))
                     expect(customEvent.analyticsParameters["timestamp"] as? Int64).to(beGreaterThan(0))
-                    expect(((customEvent.analyticsParameters["customAttributes"] as AnyObject).count)!).to(equal(3))
+                    expect(customEvent.analyticsParameters["customAttributes"] as? [NSDictionary]).to(equal(expectedAttributesRep))
                 }
             }
 
             context("CustomEvent.getAttributeMap") {
                 it("will return non nil dictionary value with CustomAttribute values") {
                     customEvent.customAttributes = customAttributes
-                    expect(((customEvent.getAttributeMap() as AnyObject).count)!).to(equal(3))
+                    expect(customEvent.getAttributeMap()?["key1"]?.name).to(equal("key1"))
+                    expect(customEvent.getAttributeMap()?["key1"]?.value as? Bool).to(equal(false))
+                    expect(customEvent.getAttributeMap()?["key2"]?.name).to(equal("key2"))
+                    expect(customEvent.getAttributeMap()?["key2"]?.value as? Double).to(equal(3))
+                    expect(customEvent.getAttributeMap()?["key3"]?.name).to(equal("key3"))
+                    expect(customEvent.getAttributeMap()?["key3"]?.value as? Int).to(equal(1))
                 }
                 it("will return nil value when customAttributes values are nil") {
                     customEvent.customAttributes = nil
