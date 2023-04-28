@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="tHZ-Bq-PXh">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="Pcn-TK-8Mx">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
@@ -178,10 +178,62 @@
             </objects>
             <point key="canvasLocation" x="-445.03816793893128" y="-401.40845070422534"/>
         </scene>
+        <!--App Starter View Controller-->
+        <scene sceneID="Ynr-oy-HoK">
+            <objects>
+                <viewController id="Pcn-TK-8Mx" customClass="AppStarterViewController" customModule="RInAppMessaging_Example" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="SrN-gK-Yt9"/>
+                        <viewControllerLayoutGuide type="bottom" id="4ee-B7-1jh"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="OOE-nl-tPf">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="m40-Xx-6XO">
+                                <rect key="frame" x="122.66666666666667" y="301.66666666666669" width="147.66666666666663" height="129"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Choose framework" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BvS-I7-FjB">
+                                        <rect key="frame" x="0.0" y="0.0" width="147.66666666666666" height="20.333333333333332"/>
+                                        <fontDescription key="fontDescription" type="system" weight="medium" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="djB-t0-M8Q">
+                                        <rect key="frame" x="0.0" y="40.333333333333314" width="147.66666666666666" height="34.333333333333343"/>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="tinted" title="UIKit"/>
+                                        <connections>
+                                            <action selector="uiKitDidTap:" destination="Pcn-TK-8Mx" eventType="touchUpInside" id="lFy-OX-1GW"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="orX-gZ-OUy">
+                                        <rect key="frame" x="0.0" y="94.666666666666629" width="147.66666666666666" height="34.333333333333343"/>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="filled" title="SwiftUI"/>
+                                        <connections>
+                                            <action selector="swiftUiDidTap:" destination="Pcn-TK-8Mx" eventType="touchUpInside" id="fVT-Ct-EoP"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                            </stackView>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="m40-Xx-6XO" firstAttribute="centerY" secondItem="OOE-nl-tPf" secondAttribute="centerY" constant="-60" id="Sce-Y4-Qu8"/>
+                            <constraint firstItem="m40-Xx-6XO" firstAttribute="centerX" secondItem="OOE-nl-tPf" secondAttribute="centerX" id="ZXN-pg-pQP"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="LsK-kC-6ud" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-2865" y="-99"/>
+        </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="LLw-nk-TUm">
             <objects>
-                <tabBarController id="tHZ-Bq-PXh" sceneMemberID="viewController">
+                <tabBarController storyboardIdentifier="UIKitTabBar" id="tHZ-Bq-PXh" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="cHT-bD-kEP"/>
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="oZx-lQ-nu2">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="49"/>
                         <autoresizingMask key="autoresizingMask"/>
