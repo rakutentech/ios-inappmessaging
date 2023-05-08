@@ -7,7 +7,7 @@ project 'RInAppMessaging', 'UITests' => :debug
 
 target 'RInAppMessaging_Example' do
   pod 'RInAppMessaging', :path => '.'
-  pod 'SwiftLint', '~> 0.48.0' # Version 0.49+ requires macOS 12 and Swift 5.6
+  pod 'SwiftLint', '~> 0.50'
   pod 'RSDKUtils', '~> 4.0', :testspecs => ['Nimble', 'TestHelpers']
   pod 'Shock', '~> 6.1.2'
 

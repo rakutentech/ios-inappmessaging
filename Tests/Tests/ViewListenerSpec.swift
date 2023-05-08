@@ -262,7 +262,6 @@ private class ViewListenerObserverObject: ViewListenerObserver {
     var wasViewDidChangeSuperviewCalled = false
     var wasViewDidMoveToWindowCalled = false
     var wasViewDidGetRemovedFromSuperview = false
-    // swiftlint:disable:next large_tuple
     var wasViewDidUpdateIdentifierCalledWithArgs: (from: String?, to: String?, view: UIView)?
 
     func viewDidChangeSuperview(_ view: UIView, identifier: String) {

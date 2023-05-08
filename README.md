@@ -10,9 +10,12 @@ This module supports iOS 12.0 and above. It has been tested with iOS 12.5 and ab
 
 # Requirements
 
-Xcode 12.5.x or Xcode 13+
+Xcode >= 14.1 is supported.
 
-Swift >= 5.4 is supported.
+Swift >= 5.7.1 is supported.
+
+Xcode >= 14.1 and Swift >= 5.7.1 are required to build RInAppMessaging SDK version 7.4.x.
+[Apple's App Store submission requirement starts April 25, 2023](https://developer.apple.com/news/?id=jd9wcyov)
 
 Note: The SDK may build on earlier Xcode versions but it is not officially supported or tested.
 

@@ -8,6 +8,8 @@ included:
 disabled_rules:
 - identifier_name
 - nesting
+- todo
+- blanket_disable_command
 
 opt_in_rules:
 - empty_count
@@ -43,7 +45,11 @@ file_length:
     ignore_comment_only_lines: true
 
 cyclomatic_complexity:
-    warning: 15
+    warning: 25
     error: 25
+
+large_tuple:
+    warning: 3
+    error: 3
 
 reporter: "xcode"

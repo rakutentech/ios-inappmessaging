@@ -1,4 +1,4 @@
-// swift-tools-version:5.4
+// swift-tools-version:5.7.1
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -15,12 +15,12 @@ let package = Package(
             targets: ["RInAppMessaging"])
     ],
     dependencies: [
-        .package(name: "RSDKUtils", url: "https://github.com/rakutentech/ios-sdkutils.git", .upToNextMajor(from: "4.0.0"))
+        .package(url: "https://github.com/rakutentech/ios-sdkutils.git", .upToNextMajor(from: "4.0.0"))
     ],
     targets: [
         .target(
             name: "RInAppMessaging",
-            dependencies: [.product(name: "RSDKUtilsMain", package: "RSDKUtils")],
+            dependencies: [.product(name: "RSDKUtilsMain", package: "ios-sdkutils")],
             resources: [.process("Resources")]
         )
     ],
