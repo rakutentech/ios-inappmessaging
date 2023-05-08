@@ -392,6 +392,18 @@ class RouterSpec: QuickSpec {
                         window.findIAMView()?.removeFromSuperview()
                     }
 
+                    it("will not display a tooltip campaign with no tooltip data") {
+                        let tooltip = TestHelpers.generateTooltip(id: "test", messageBody: "")
+                        router.displayTooltip(tooltip,
+                                              targetView: targetView,
+                                              identifier: TooltipViewIdentifierMock,
+                                              imageBlob: imageBlob,
+                                              becameVisibleHandler: { _ in },
+                                              confirmation: true,
+                                              completion: { _ in })
+                        expect(window.findTooltipView()).toEventually(beNil())
+                    }
+
                     it("will call completion with false flag when tooltip was closed") {
                         var completionCalled = false
                         router.displayTooltip(tooltip,
