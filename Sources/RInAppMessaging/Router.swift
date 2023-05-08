@@ -43,7 +43,7 @@ internal protocol RouterType: ErrorReportable {
 /// Handles all the displaying logic of the SDK.
 internal class Router: RouterType, ViewListenerObserver {
 
-    enum UIConstants {
+    private enum UIConstants {
         enum Tooltip {
             static let minDistFromEdge: CGFloat = 20.0
             static let targetViewSpacing: CGFloat = 0.0
@@ -166,19 +166,20 @@ internal class Router: RouterType, ViewListenerObserver {
         var view: (() -> BaseView)!
         let type = campaign.data.type
 
-        if type == .modal || type == .full {
+        switch type {
+        case .modal, .full:
             let presenter = presenter as! FullViewPresenterType
             presenter.campaign = campaign
             if let associatedImageData = associatedImageData {
                 presenter.associatedImage = UIImage(data: associatedImageData)
             }
             view = type == .modal ? { ModalView(presenter: presenter) } : { FullScreenView(presenter: presenter) }
-        }
-
-        if type == .slide {
+        case .slide:
             let presenter = presenter as! SlideUpViewPresenterType
             presenter.campaign = campaign
             view = { SlideUpView(presenter: presenter) }
+        case .invalid, .html:
+            Logger.debug("Error: Campaign view type not supported")
         }
         return view
     }
