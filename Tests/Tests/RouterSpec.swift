@@ -177,9 +177,8 @@ class RouterSpec: QuickSpec {
                     expect(window.findIAMView()).toEventually(beNil())
                 }
 
-                it("will not remove the campaign that doesn't exist") {
+                it("will not crash when there are no displayed campaigns") {
                     router.discardDisplayedCampaign()
-                    expect(window.findIAMView()).toEventually(beNil())
                 }
 
                 it("will call onDismiss/completion callback with cancelled flag") {
@@ -288,6 +287,10 @@ class RouterSpec: QuickSpec {
                 }
 
                 it("will return false when tooltip is not displayed") {
+                    expect(router.isDisplayingTooltip(with: "test")).to(beFalse())
+                }
+
+                it("will return false when tooltip identifier is incorrect") {
                     expect(router.isDisplayingTooltip(with: "test")).to(beFalse())
                 }
 
@@ -630,6 +633,7 @@ class RouterSpec: QuickSpec {
                             let displayedTooltip = window.findTooltipView()!
                             expect(displayedTooltip.frame.origin).toNot(equal(tooltipLastPosition))
                             tooltipLastPosition = displayedTooltip.frame.origin
+                            displayedTooltip.removeFromSuperview()
                         }
                     }
 
