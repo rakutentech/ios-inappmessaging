@@ -3,14 +3,6 @@ import RInAppMessaging
 
 final class CustomEventViewController: UIViewController {
 
-    enum AttributeTypeKeys: String, CaseIterable {
-        case string = "String"
-        case boolean = "Boolean"
-        case integer = "Integer"
-        case double = "Double"
-        case date = "Date (ms)"
-    }
-
     @IBOutlet private weak var eventNameTextField: UITextField!
     @IBOutlet private weak var attributesStackView: UIStackView!
 
@@ -155,5 +147,27 @@ extension CustomEventViewController: UITextFieldDelegate {
             textField.text = selectedType
         }
         return false
+    }
+}
+
+enum AttributeTypeKeys: String, CaseIterable, Identifiable {
+    case string = "String"
+    case boolean = "Boolean"
+    case integer = "Integer"
+    case double = "Double"
+    case date = "Date (ms)"
+    case none = ""
+
+    var id: String { self.rawValue }
+}
+
+extension AttributeTypeKeys {
+    var text: String {
+        get {
+            return self.rawValue
+        }
+        set {
+            self = AttributeTypeKeys(rawValue: newValue)!
+        }
     }
 }

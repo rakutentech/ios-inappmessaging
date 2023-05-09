@@ -12,9 +12,11 @@ struct TabBarView: View {
                 MainView().tabItem {
                     Text("Main")
                 }
+                .accessibility(identifier: "tabbar.button.1")
                 CustomEventView().tabItem {
                     Text("Custom Event")
                 }
+                .accessibility(identifier: "tabbar.button.2")
             }
         }
     }
