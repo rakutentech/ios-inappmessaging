@@ -91,11 +91,10 @@ internal class Router: RouterType, ViewListenerObserver {
         let result = {
             return self.displayedTooltips[uiElementIdentifier] != nil
         }
-        if Thread.current == .main {
-            return result()
-        } else {
+        guard Thread.current == .main else {
             return DispatchQueue.main.sync(execute: result)
         }
+        return result()
     }
 
     func displayCampaign(_ campaign: Campaign,
@@ -110,11 +109,15 @@ internal class Router: RouterType, ViewListenerObserver {
             return
         }
 
+        guard let presenter = getPresenter(for: campaignViewType) else {
+            Logger.debug("Error: \(campaignViewType) couldn't be resolved")
+            assertionFailure()
+            completion(true)
+            return
+        }
+
         displayQueue.async {
-            guard let viewConstructor = self.createViewConstructor(for: campaign, associatedImageData: associatedImageData) else {
-                completion(true)
-                return
-            }
+            let viewConstructor = self.createViewConstructor(for: campaign, presenter: presenter, associatedImageData: associatedImageData)
 
             DispatchQueue.main.async {
                 guard let rootView = UIApplication.shared.getKeyWindow(),
@@ -132,46 +135,53 @@ internal class Router: RouterType, ViewListenerObserver {
         }
     }
 
-    private func createViewConstructor(for campaign: Campaign, associatedImageData: Data?) -> (() -> BaseView)? {
-        func getPresenter<T>(type: T.Type) -> T? {
-            guard let presenter = self.dependencyManager.resolve(type: type) else {
-                Logger.debug("Error: \(type) couldn't be resolved")
-                assertionFailure()
+    private func getPresenter(for type: CampaignDisplayType) -> BaseViewPresenterType? {
+        var presenter: BaseViewPresenterType?
+        switch type {
+        case .modal, .full:
+            guard let resolvedPresenter = resolvePresenter(type: FullViewPresenterType.self) else {
                 return nil
             }
-            return presenter
-        }
-
-        switch campaign.data.type {
-        case .modal:
-            guard let presenter = getPresenter(type: FullViewPresenterType.self) else {
-                break
-            }
-            presenter.campaign = campaign
-            if let associatedImageData = associatedImageData {
-                presenter.associatedImage = UIImage(data: associatedImageData)
-            }
-            return { ModalView(presenter: presenter) }
-        case .full:
-            guard let presenter = getPresenter(type: FullViewPresenterType.self) else {
-                break
-            }
-            presenter.campaign = campaign
-            if let associatedImageData = associatedImageData {
-                presenter.associatedImage = UIImage(data: associatedImageData)
-            }
-            return { FullScreenView(presenter: presenter) }
+            presenter = resolvedPresenter
         case .slide:
-            guard let presenter = getPresenter(type: SlideUpViewPresenterType.self) else {
-                break
+            guard let resolvedPresenter = resolvePresenter(type: SlideUpViewPresenterType.self) else {
+                return nil
             }
+            presenter = resolvedPresenter
+        default:
+            Logger.debug("Error: Campaign view type is not supported")
+        }
+        return presenter
+    }
+
+    private func resolvePresenter<T>(type: T.Type) -> T? {
+        guard let presenter = self.dependencyManager.resolve(type: type) else {
+            Logger.debug("Error: \(type) couldn't be resolved")
+            return nil
+        }
+        return presenter
+    }
+
+    private func createViewConstructor(for campaign: Campaign, presenter: BaseViewPresenterType, associatedImageData: Data?) -> (() -> BaseView) {
+        var view: (() -> BaseView)!
+        let type = campaign.data.type
+
+        switch type {
+        case .modal, .full:
+            let presenter = presenter as! FullViewPresenterType
             presenter.campaign = campaign
-            return { SlideUpView(presenter: presenter) }
+            if let associatedImageData = associatedImageData {
+                presenter.associatedImage = UIImage(data: associatedImageData)
+            }
+            view = type == .modal ? { ModalView(presenter: presenter) } : { FullScreenView(presenter: presenter) }
+        case .slide:
+            let presenter = presenter as! SlideUpViewPresenterType
+            presenter.campaign = campaign
+            view = { SlideUpView(presenter: presenter) }
         case .invalid, .html:
             Logger.debug("Error: Campaign view type not supported")
         }
-
-        return nil
+        return view
     }
 
     // swiftlint:disable:next function_parameter_count
@@ -293,14 +303,13 @@ internal class Router: RouterType, ViewListenerObserver {
         // For accessibilityCompatible option, campaign view must be inserted to
         // UIWindow's main subview. Private instance of UITransitionView
         // shouldn't be used for that - that's why it's omitted.
-        if accessibilityCompatibleDisplay,
+        
+        guard accessibilityCompatibleDisplay,
            let transitionViewClass = NSClassFromString("UITransitionView"),
-           let mainSubview = rootView.subviews.first(where: { !$0.isKind(of: transitionViewClass) }) {
-
-            return mainSubview
-        } else {
+           let mainSubview = rootView.subviews.first(where: { !$0.isKind(of: transitionViewClass) }) else {
             return rootView
         }
+        return mainSubview
     }
 
     private func findParentViewForTooltip(_ sourceView: UIView) -> UIView {
@@ -312,14 +321,12 @@ internal class Router: RouterType, ViewListenerObserver {
         case is UIScrollView:
             return superview
         case is UIWindow:
-            if accessibilityCompatibleDisplay,
+            guard accessibilityCompatibleDisplay,
                let transitionViewClass = NSClassFromString("UITransitionView"),
-               let transitionView = superview.subviews.first(where: { !$0.isKind(of: transitionViewClass) }) {
-
-                return transitionView
-            } else {
+               let transitionView = superview.subviews.first(where: { !$0.isKind(of: transitionViewClass) }) else {
                 return superview
             }
+            return transitionView
         default:
             return findParentViewForTooltip(superview)
         }
@@ -335,9 +342,6 @@ internal class Router: RouterType, ViewListenerObserver {
     }
 
     private func updateFrame(targetView: UIView, tooltipView: TooltipView, superview: UIView, position: TooltipBodyData.Position) {
-        guard targetView.superview != nil else {
-            return
-        }
         let targetViewFrame = superview.convert(targetView.frame, from: targetView.superview)
 
         switch position {
