@@ -297,6 +297,7 @@ class RouterSpec: QuickSpec {
                                           becameVisibleHandler: { _ in },
                                           confirmation: true,
                                           completion: { _ in })
+                    expect(window.findTooltipView()).toEventuallyNot(beNil())
                     expect(router.isDisplayingTooltip(with: "incorrect_id")).to(beFalse())
                 }
 
