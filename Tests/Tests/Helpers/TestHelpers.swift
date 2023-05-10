@@ -84,10 +84,7 @@ struct TestHelpers {
                                 position: TooltipBodyData.Position = .topCenter,
                                 messageBody: String? = nil,
                                 triggers: [Trigger] = []) -> Campaign {
-        let messageBodyContent = messageBody != nil ? messageBody : """
-                    {\"UIElement\" : \"\(targetViewID ?? TooltipViewIdentifierMock)\", \"position\": \"\(position.rawValue)\", \"auto-disappear\": \(autoCloseSeconds), \"redirectURL\": \"\(redirectURL)\"}
-                    """ // swiftlint:disable:previous line_length
-        return Campaign(
+        Campaign(
             data: CampaignData(
                 campaignId: id,
                 maxImpressions: maxImpressions,
@@ -99,7 +96,9 @@ struct TestHelpers {
                 isCampaignDismissable: true,
                 messagePayload: MessagePayload(
                     title: title,
-                    messageBody: messageBodyContent,
+                    messageBody: messageBody ?? """
+                    {\"UIElement\" : \"\(targetViewID ?? TooltipViewIdentifierMock)\", \"position\": \"\(position.rawValue)\", \"auto-disappear\": \(autoCloseSeconds), \"redirectURL\": \"\(redirectURL)\"}
+                    """, // swiftlint:disable:previous line_length
                     header: "testHeader",
                     titleColor: "color",
                     headerColor: "color2",

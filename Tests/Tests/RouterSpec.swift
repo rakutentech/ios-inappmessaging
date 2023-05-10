@@ -291,7 +291,13 @@ class RouterSpec: QuickSpec {
                 }
 
                 it("will return false when tooltip identifier is incorrect") {
-                    expect(router.isDisplayingTooltip(with: "test")).to(beFalse())
+                    router.displayTooltip(tooltip, targetView: tooltipTargetView,
+                                          identifier: TooltipViewIdentifierMock,
+                                          imageBlob: imageBlob,
+                                          becameVisibleHandler: { _ in },
+                                          confirmation: true,
+                                          completion: { _ in })
+                    expect(router.isDisplayingTooltip(with: "incorrect_id")).to(beFalse())
                 }
 
                 it("will keep return Bool value when calling the from background thread") {
