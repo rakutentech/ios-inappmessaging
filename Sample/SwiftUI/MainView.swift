@@ -5,6 +5,7 @@ struct MainView: View {
 
     @State private var isErrorAlertPresented = false
     @State private var isOnFinishedAlertPresented = false
+    @State private var isPresentSecondView = false
 
     var body: some View {
         ScrollView {
@@ -48,11 +49,14 @@ struct MainView: View {
                     initSDK(enableTooltipFeature: false)
                 }
                 Button("Open modal page") {
-                    // TODO: Add second page
+                    isPresentSecondView = true
                 }
             }
             Spacer().frame(height: 250)
         }
+        .sheet(isPresented: $isPresentSecondView, content: {
+            SecondView()
+        })
         .alert(isPresented: $isErrorAlertPresented) {
             Alert(title: Text("Error"), message: Text("IAM SDK is already initialized"))
         }
