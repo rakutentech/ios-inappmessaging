@@ -1,6 +1,7 @@
 import SwiftUI
 @testable import RInAppMessaging
 
+@available(iOS 13.0, *)
 struct MainView: View {
 
     @State private var isErrorAlertPresented = false
@@ -75,6 +76,7 @@ struct MainView: View {
     }
 }
 
+@available(iOS 13.0, *)
 struct MainView_Previews: PreviewProvider {
     static var previews: some View {
         MainView()
