@@ -41,7 +41,7 @@ struct MainView: View {
             Divider()
                 .padding(.horizontal, 40)
                 .padding(.bottom, 10)
-            VStack (spacing: 35) {
+            VStack(spacing: 35) {
                 Button("Init with Tooltip") {
                     initSDK(enableTooltipFeature: true)
                 }

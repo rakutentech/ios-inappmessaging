@@ -23,7 +23,7 @@ struct CustomEventView: View {
                 .foregroundColor(.red)
                 .font(.system(size: 22))
                 .padding()
-            HStack (spacing: 10) {
+            HStack(spacing: 10) {
                 Group {
                     Text("NAME")
                         .fontWeight(.bold)
@@ -36,7 +36,7 @@ struct CustomEventView: View {
                 .opacity(0.75)
             }.padding(.horizontal, 20)
             ForEach($attributes) { $attribute in
-                HStack (spacing: 10) {
+                HStack(spacing: 10) {
                     Group {
                         TextField("", text: $attribute.name)
                         TextField("", text: $attribute.value)
@@ -63,7 +63,7 @@ struct CustomEventView: View {
                     }.textFieldStyle(.roundedBorder)
                 }.padding(.horizontal, 10)
             }
-            HStack () {
+            HStack {
                 Button("Add") {
                     attributes.append(
                         EventAttribute())
