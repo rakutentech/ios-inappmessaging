@@ -9,15 +9,15 @@ class AppStarterViewController: UIViewController {
         guard let uiKitTabBarController = storyboard.instantiateViewController(identifier: "UIKitTabBar") as? UITabBarController else {
             return
         }
-        uiKitTabBarController.modalPresentationStyle = .fullScreen
-        self.present(uiKitTabBarController, animated: false, completion: nil)
+        UIApplication.shared.windows.first?.rootViewController = uiKitTabBarController
+        UIApplication.shared.windows.first?.makeKeyAndVisible()
     }
 
     @available(iOS 13.0, *)
     @IBAction func swiftUiDidTap(_ sender: Any) {
         let swiftUITabBarController = UIHostingController(rootView: TabBarView())
-        swiftUITabBarController.modalPresentationStyle = .fullScreen
-        self.present(swiftUITabBarController, animated: false, completion: nil)
+        UIApplication.shared.windows.first?.rootViewController = swiftUITabBarController
+        UIApplication.shared.windows.first?.makeKeyAndVisible()
     }
 
 }
