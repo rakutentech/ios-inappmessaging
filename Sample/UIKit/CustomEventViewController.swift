@@ -160,14 +160,3 @@ enum AttributeTypeKeys: String, CaseIterable, Identifiable {
 
     var id: String { self.rawValue }
 }
-
-extension AttributeTypeKeys {
-    var text: String {
-        get {
-            return self.rawValue
-        }
-        set {
-            self = AttributeTypeKeys(rawValue: newValue)!
-        }
-    }
-}

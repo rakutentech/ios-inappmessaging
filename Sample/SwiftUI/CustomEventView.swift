@@ -8,7 +8,7 @@ struct CustomEventView: View {
     @State private var isErrorAlertPresented = false
     @State private var eventName: String = ""
     /// Init with one empty attribute for UI purpose
-    @State private var attributes: [EventAttribute] = [EventAttribute()]
+    @State private var attributes = [EventAttribute()]
     @State private var editingTextFieldIndex = 0
 
     var body: some View {
@@ -41,7 +41,7 @@ struct CustomEventView: View {
                     Group {
                         TextField("", text: $attribute.name)
                         TextField("", text: $attribute.value)
-                        TextField("", text: $attribute.type.text, onEditingChanged: { state in
+                        TextField("", text: $attribute.type, onEditingChanged: { state in
                             if state {isAlertPresented = true }
                             if let index = attributes.firstIndex(where: {$0.id == attribute.id}) {
                                 editingTextFieldIndex = index
@@ -55,8 +55,8 @@ struct CustomEventView: View {
                                         if type == .none {
                                             return ActionSheet.Button.cancel(Text("Cancel"))
                                         }
-                                        return ActionSheet.Button.default(Text(type.text)) {
-                                            attributes[editingTextFieldIndex].type = type
+                                        return ActionSheet.Button.default(Text(type.rawValue)) {
+                                            attributes[editingTextFieldIndex].type = type.rawValue
                                         }
                                     }))
                             )
@@ -79,7 +79,7 @@ struct CustomEventView: View {
         .alert(isPresented: $isErrorAlertPresented, content: {
             Alert(title: Text("Invalid input format"))
         }).onDisappear {
-            /// re-init to resent attribute content and filled with one empty attribute for UI purpose
+            /// re-init to reset attribute content and filled with one empty attribute for UI purpose
             attributes = [
                 EventAttribute()
             ]
@@ -88,15 +88,15 @@ struct CustomEventView: View {
     }
 
     private func sendEvent() {
-        var attributes = [CustomAttribute]()
+        var eventAttributes = [CustomAttribute]()
         for attribute in self.attributes {
             guard let customAttribute = customAttributeFromData(name: attribute.name,
                                                                 value: attribute.value,
-                                                                type: attribute.type.text) else {
+                                                                type: attribute.type) else {
                 isErrorAlertPresented = true
                 return
             }
-            attributes.append(customAttribute)
+            eventAttributes.append(customAttribute)
         }
 
         guard !eventName.isEmpty else {
@@ -106,7 +106,7 @@ struct CustomEventView: View {
 
         RInAppMessaging.logEvent(
             CustomEvent(withName: eventName,
-                        withCustomAttributes: attributes)
+                        withCustomAttributes: eventAttributes)
         )
     }
 
@@ -149,8 +149,8 @@ struct CustomEventView_Previews: PreviewProvider {
     }
 }
 
-struct EventAttribute: Hashable, Identifiable {
-    init(name: String = "", value: String = "", type: AttributeTypeKeys = .none) {
+private struct EventAttribute: Hashable, Identifiable {
+    init(name: String = "", value: String = "", type: String = "") {
         self.name = name
         self.value = value
         self.type = type
@@ -159,5 +159,5 @@ struct EventAttribute: Hashable, Identifiable {
     let id = UUID()
     var name: String
     var value: String
-    var type: AttributeTypeKeys
+    var type: String
 }
