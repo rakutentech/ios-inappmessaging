@@ -90,7 +90,7 @@ struct CustomEventView: View {
     private func sendEvent() {
         var eventAttributes = [CustomAttribute]()
         for attribute in self.attributes {
-            guard let customAttribute = customAttributeFromData(name: attribute.name,
+            guard let customAttribute = EventHelper.customAttributeFromData(name: attribute.name,
                                                                 value: attribute.value,
                                                                 type: attribute.type) else {
                 isErrorAlertPresented = true
@@ -108,37 +108,6 @@ struct CustomEventView: View {
             CustomEvent(withName: eventName,
                         withCustomAttributes: eventAttributes)
         )
-    }
-
-    private func customAttributeFromData(name: String, value: String, type: String) -> CustomAttribute? {
-        guard !name.isEmpty && !value.isEmpty && !type.isEmpty else {
-            return nil
-        }
-
-        switch type {
-        case AttributeTypeKeys.string.rawValue:
-            return CustomAttribute(withKeyName: name,
-                                   withStringValue: value as String)
-
-        case AttributeTypeKeys.boolean.rawValue where value.hasBoolValue:
-            return CustomAttribute(withKeyName: name,
-                                   withBoolValue: value.boolValue)
-
-        case AttributeTypeKeys.integer.rawValue where value.hasIntegerValue:
-            return CustomAttribute(withKeyName: name,
-                                   withIntValue: value.integerValue)
-
-        case AttributeTypeKeys.double.rawValue where value.hasDoubleValue:
-            return CustomAttribute(withKeyName: name,
-                                   withDoubleValue: value.doubleValue)
-
-        case AttributeTypeKeys.date.rawValue where value.hasIntegerValue:
-            return CustomAttribute(withKeyName: name,
-                                   withTimeInMilliValue: value.integerValue)
-
-        default:
-            return nil
-        }
     }
 }
 

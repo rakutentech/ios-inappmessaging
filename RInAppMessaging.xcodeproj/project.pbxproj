@@ -111,6 +111,7 @@
 		E642A21629E7D40900F6DF60 /* AppStartEventSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E642A21129E7D40900F6DF60 /* AppStartEventSpec.swift */; };
 		E642A21729E7D40900F6DF60 /* EventSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E642A21229E7D40900F6DF60 /* EventSpec.swift */; };
 		E642A21829E7D40900F6DF60 /* LoginSuccessfulEventSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E642A21329E7D40900F6DF60 /* LoginSuccessfulEventSpec.swift */; };
+		FC6C13C32A11D32D00758AF2 /* EventHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC6C13C22A11D32D00758AF2 /* EventHelper.swift */; };
 		FC92B45B29DBDEBE0053CF0E /* UILabelExtensionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC92B45A29DBDEBE0053CF0E /* UILabelExtensionSpec.swift */; };
 		FCEB554129E5482200E60481 /* AlertPresentableSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC92B45E29DFC5C10053CF0E /* AlertPresentableSpec.swift */; };
 		FCEB554229E5482F00E60481 /* modal-controls-invalid-url.json in Resources */ = {isa = PBXBuildFile; fileRef = FCCDBF7129E0083A002EE447 /* modal-controls-invalid-url.json */; };
@@ -253,6 +254,7 @@
 		FC2CA4A32A0CDE250096EAF7 /* SecondPageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SecondPageViewController.swift; sourceTree = "<group>"; };
 		FC2CA4A42A0CDE250096EAF7 /* CustomEventViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomEventViewController.swift; sourceTree = "<group>"; };
 		FC2CA4A52A0CDE250096EAF7 /* SecondPageViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SecondPageViewController.xib; sourceTree = "<group>"; };
+		FC6C13C22A11D32D00758AF2 /* EventHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventHelper.swift; sourceTree = "<group>"; };
 		FC92B45A29DBDEBE0053CF0E /* UILabelExtensionSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UILabelExtensionSpec.swift; sourceTree = "<group>"; };
 		FC92B45E29DFC5C10053CF0E /* AlertPresentableSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertPresentableSpec.swift; sourceTree = "<group>"; };
 		FCCDBF7129E0083A002EE447 /* modal-controls-invalid-url.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "modal-controls-invalid-url.json"; sourceTree = "<group>"; };
@@ -528,6 +530,7 @@
 			isa = PBXGroup;
 			children = (
 				D24EDF732941459700F9EC5E /* String+Conversion.swift */,
+				FC6C13C22A11D32D00758AF2 /* EventHelper.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -805,6 +808,7 @@
 				FC2CA4AA2A0CDE250096EAF7 /* ViewController.swift in Sources */,
 				FC2CA4A82A0CDE250096EAF7 /* TabBarView.swift in Sources */,
 				45073FA4277CDA70007CB732 /* MockServerHelper.swift in Sources */,
+				FC6C13C32A11D32D00758AF2 /* EventHelper.swift in Sources */,
 				FC2CA4AC2A0CDE250096EAF7 /* CustomEventViewController.swift in Sources */,
 				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,
 				FC2CA49B2A0CDE110096EAF7 /* AppStarterViewController.swift in Sources */,

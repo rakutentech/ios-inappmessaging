@@ -50,37 +50,6 @@ final class CustomEventViewController: UIViewController {
         return stackView
     }
 
-    private func customAttributeFromData(name: String, value: String, type: String) -> CustomAttribute? {
-        guard !name.isEmpty && !value.isEmpty && !type.isEmpty else {
-            return nil
-        }
-
-        switch type {
-        case AttributeTypeKeys.string.rawValue:
-            return CustomAttribute(withKeyName: name,
-                                   withStringValue: value as String)
-
-        case AttributeTypeKeys.boolean.rawValue where value.hasBoolValue:
-            return CustomAttribute(withKeyName: name,
-                                   withBoolValue: value.boolValue)
-
-        case AttributeTypeKeys.integer.rawValue where value.hasIntegerValue:
-            return CustomAttribute(withKeyName: name,
-                                   withIntValue: value.integerValue)
-
-        case AttributeTypeKeys.double.rawValue where value.hasDoubleValue:
-            return CustomAttribute(withKeyName: name,
-                                   withDoubleValue: value.doubleValue)
-
-        case AttributeTypeKeys.date.rawValue where value.hasIntegerValue:
-            return CustomAttribute(withKeyName: name,
-                                   withTimeInMilliValue: value.integerValue)
-
-        default:
-            return nil
-        }
-    }
-
     fileprivate func showAttributeTypeSelection(callback: @escaping (String) -> Void) {
         let alert = UIAlertController(title: "Select attribute type", message: nil, preferredStyle: .alert)
 
@@ -120,7 +89,7 @@ final class CustomEventViewController: UIViewController {
                 assertionFailure("Unexpected view hierarchy")
                 return
             }
-            guard let customAttribute = customAttributeFromData(name: nameTextField.text ?? "",
+            guard let customAttribute = EventHelper.customAttributeFromData(name: nameTextField.text ?? "",
                                                                 value: valueTextField.text ?? "",
                                                                 type: typeTextField.text ?? "") else {
                 showInvalidInputError()
