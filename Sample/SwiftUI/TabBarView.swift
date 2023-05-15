@@ -23,7 +23,7 @@ struct TabBarView: View {
     }
 }
 
-    @available(iOS 13.0, *)
+@available(iOS 13.0, *)
 struct TabView_Previews: PreviewProvider {
     static var previews: some View {
         TabBarView()

@@ -3,6 +3,16 @@ import SwiftUI
 
 class AppStarterViewController: UIViewController {
 
+    @IBOutlet weak var swiftUIButton: UIButton!
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        guard #available(iOS 13, *) else {
+            swiftUIButton.isEnabled = false
+            return
+        }
+    }
+
     @available(iOS 13.0, *)
     @IBAction func uiKitDidTap(_ sender: Any) {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)

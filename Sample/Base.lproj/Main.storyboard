@@ -224,6 +224,9 @@
                             <constraint firstItem="m40-Xx-6XO" firstAttribute="centerX" secondItem="OOE-nl-tPf" secondAttribute="centerX" id="ZXN-pg-pQP"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="swiftUIButton" destination="orX-gZ-OUy" id="cCP-os-Fr1"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="LsK-kC-6ud" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
