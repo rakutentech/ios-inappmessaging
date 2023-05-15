@@ -15,11 +15,6 @@ opt_in_rules:
 - empty_count
 - empty_string
 
-excluded:
-- Carthage
-- Pods
-- SwiftLint/Common/3rdPartyLib
-
 line_length:
     warning: 150
     error: 200

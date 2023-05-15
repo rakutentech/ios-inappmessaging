@@ -30,6 +30,7 @@
 		- AlertPresentable [SDKCF-6375]
 		- ConfigurationManager [SDKCF-6451]
 		- HTTPRequestable [SDKCF-6389]
+		- Router [SDKCF-6382]
 
 ### 7.3.0 (2023-01-11)
 - Features:

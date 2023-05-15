@@ -81,6 +81,8 @@ struct TestHelpers {
                                 maxImpressions: Int = 2,
                                 autoCloseSeconds: Int = 0,
                                 redirectURL: String = "",
+                                position: TooltipBodyData.Position = .topCenter,
+                                messageBody: String? = nil,
                                 triggers: [Trigger] = []) -> Campaign {
         Campaign(
             data: CampaignData(
@@ -94,8 +96,8 @@ struct TestHelpers {
                 isCampaignDismissable: true,
                 messagePayload: MessagePayload(
                     title: title,
-                    messageBody: """
-                    {\"UIElement\" : \"\(targetViewID ?? TooltipViewIdentifierMock)\", \"position\": \"top-center\", \"auto-disappear\": \(autoCloseSeconds), \"redirectURL\": \"\(redirectURL)\"}
+                    messageBody: messageBody ?? """
+                    {\"UIElement\" : \"\(targetViewID ?? TooltipViewIdentifierMock)\", \"position\": \"\(position.rawValue)\", \"auto-disappear\": \(autoCloseSeconds), \"redirectURL\": \"\(redirectURL)\"}
                     """, // swiftlint:disable:previous line_length
                     header: "testHeader",
                     titleColor: "color",
