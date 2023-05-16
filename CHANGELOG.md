@@ -1,6 +1,8 @@
 ## Changelog
 
 ### Unreleased
+- **Breaking changes:**
+    - Update Swift version support for package to 5.7.1 [SDKCF-6515]
 - Bug fixes:
 	- Removed "last user" cache to avoid overwriting anonymous user cache during init [SDKCF-6409]
 	- Added display permission service to perform ping on tooltip dispatcher [SDKCF-4964]
