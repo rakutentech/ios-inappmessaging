@@ -90,8 +90,8 @@ final class CustomEventViewController: UIViewController {
                 return
             }
             guard let customAttribute = EventHelper.customAttributeFromData(name: nameTextField.text ?? "",
-                                                                value: valueTextField.text ?? "",
-                                                                type: typeTextField.text ?? "") else {
+                                                                            value: valueTextField.text ?? "",
+                                                                            type: typeTextField.text ?? "") else {
                 showInvalidInputError()
                 return
             }

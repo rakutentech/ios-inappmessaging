@@ -91,8 +91,8 @@ struct CustomEventView: View {
         var eventAttributes = [CustomAttribute]()
         for attribute in self.attributes {
             guard let customAttribute = EventHelper.customAttributeFromData(name: attribute.name,
-                                                                value: attribute.value,
-                                                                type: attribute.type) else {
+                                                                            value: attribute.value,
+                                                                            type: attribute.type) else {
                 isErrorAlertPresented = true
                 return
             }
