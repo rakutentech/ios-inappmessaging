@@ -7,7 +7,7 @@ struct CustomEventView: View {
     @State private var isAlertPresented = false
     @State private var isErrorAlertPresented = false
     @State private var eventName: String = ""
-    /// Init with one empty attribute for UI purpose
+    /// - Note: Init with one empty attribute for UI purpose
     @State private var attributes = [EventAttribute()]
     @State private var editingTextFieldIndex = 0
 
@@ -119,14 +119,14 @@ struct CustomEventView_Previews: PreviewProvider {
 }
 
 private struct EventAttribute: Hashable, Identifiable {
+    let id = UUID()
+    var name: String
+    var value: String
+    var type: String
+
     init(name: String = "", value: String = "", type: String = "") {
         self.name = name
         self.value = value
         self.type = type
     }
-
-    let id = UUID()
-    var name: String
-    var value: String
-    var type: String
 }
