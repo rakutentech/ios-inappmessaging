@@ -1,4 +1,11 @@
 import UIKit
+import SwiftUI
+
+#if SWIFT_PACKAGE
+import RSDKUtilsMain
+#else
+import RSDKUtils
+#endif
 
 internal struct TooltipViewModel {
     let position: TooltipBodyData.Position
@@ -36,16 +43,24 @@ internal class TooltipView: UIView {
                                           height: ceil(tipSize.height / sqrt(2)))
     }
     
-    let presenter: TooltipPresenterType
+    var presenter: TooltipPresenterType?
     var onDeinit: (() -> Void)?
-    private var position: TooltipBodyData.Position?
+    private var position: TooltipBodyData.Position? {
+        didSet {
+            if #available(iOS 15.0, *), let position = position {
+                (coordinator as? TooltipViewSwiftUI.Coordinator)?.setPosition(position)
+            }
+        }
+    }
     private var imageBgColor: UIColor?
-    private(set) var autoCloseTimer: Timer?
     private let exitButton = ExitButton()
+
+    // Erased type to keep TooltipView compatible with older iOS versions
+    fileprivate var coordinator: Any?
 
     // MARK: - Init
 
-    init(presenter: TooltipPresenterType) {
+    init(presenter: TooltipPresenterType?) {
         self.presenter = presenter
         super.init(frame: .zero)
 
@@ -89,19 +104,7 @@ internal class TooltipView: UIView {
         setupImageView(image: model.image, position: model.position, size: imageViewSize)
         setupExitButton()
         setupShadowOffset(position: model.position)
-    }
-
-    func startAutoDisappearIfNeeded(seconds: UInt) {
-        guard autoCloseTimer == nil else {
-            return
-        }
-
-        let timer = Timer(fire: Date().addingTimeInterval(TimeInterval(seconds)), interval: 0, repeats: false, block: { [weak self] _ in
-            self?.presenter.didTapExitButton()
-        })
-
-        autoCloseTimer = timer
-        RunLoop.current.add(timer, forMode: .common)
+        didAppearAsSwiftUI()
     }
 
     // MARK: - UIView overrides
@@ -209,43 +212,20 @@ internal class TooltipView: UIView {
 
     override func didMoveToSuperview() {
         super.didMoveToSuperview()
-        guard let superview = superview else {
-            return
-        }
-
-        exitButton.removeFromSuperview()
-        superview.addSubview(exitButton)
-        var constraints = [
-            exitButton.widthAnchor.constraint(equalToConstant: UIConstants.exitButtonSize),
-            exitButton.heightAnchor.constraint(equalToConstant: UIConstants.exitButtonSize)
-        ]
-
-        if [.left, .topLeft, .bottomLeft].contains(position) {
-            constraints.append(exitButton.rightAnchor.constraint(equalTo: self.leftAnchor,
-                                                                 constant: -UIConstants.exitButtonRightMargin))
-        } else {
-            constraints.append(exitButton.leftAnchor.constraint(equalTo: self.rightAnchor,
-                                                                constant: UIConstants.exitButtonRightMargin))
-        }
-        if [.bottomRight, .bottomLeft].contains(position) {
-            constraints.append(exitButton.bottomAnchor.constraint(equalTo: self.topAnchor,
-                                                                  constant: -UIConstants.exitButtonTopMargin + UIConstants.tipSize.height))
-        }
-        else if position == .bottomCenter {
-            constraints.append(exitButton.bottomAnchor.constraint(equalTo: self.bottomAnchor,
-                                                                  constant: -UIConstants.exitButtonTopMargin + UIConstants.tipSize.height))
-
-        } else {
-            constraints.append(exitButton.bottomAnchor.constraint(equalTo: self.topAnchor,
-                                                                  constant: -UIConstants.exitButtonTopMargin))
-        }
-        NSLayoutConstraint.activate(constraints)
+        updateExitButtonPosition()
     }
 
     override func removeFromSuperview() {
         super.removeFromSuperview()
-        autoCloseTimer?.invalidate()
         exitButton.removeFromSuperview()
+        presenter?.didRemoveFromSuperview()
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        if #available(iOS 15.0, *) {
+            (coordinator as? TooltipViewSwiftUI.Coordinator)?.updateSize(bounds.size)
+        }
     }
 
     override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
@@ -298,6 +278,40 @@ internal class TooltipView: UIView {
         exitButton.layer.shadowOpacity = UIConstants.shadowOpacity
     }
 
+    fileprivate func updateExitButtonPosition() {
+        guard let superview = superview else {
+            return
+        }
+
+        exitButton.removeFromSuperview()
+        superview.addSubview(exitButton)
+        var constraints = [
+            exitButton.widthAnchor.constraint(equalToConstant: UIConstants.exitButtonSize),
+            exitButton.heightAnchor.constraint(equalToConstant: UIConstants.exitButtonSize)
+        ]
+
+        if [.left, .topLeft, .bottomLeft].contains(position) {
+            constraints.append(exitButton.rightAnchor.constraint(equalTo: self.leftAnchor,
+                                                                 constant: -UIConstants.exitButtonRightMargin))
+        } else {
+            constraints.append(exitButton.leftAnchor.constraint(equalTo: self.rightAnchor,
+                                                                constant: UIConstants.exitButtonRightMargin))
+        }
+        if [.bottomRight, .bottomLeft].contains(position) {
+            constraints.append(exitButton.bottomAnchor.constraint(equalTo: self.topAnchor,
+                                                                  constant: -UIConstants.exitButtonTopMargin + UIConstants.tipSize.height))
+        }
+        else if position == .bottomCenter {
+            constraints.append(exitButton.bottomAnchor.constraint(equalTo: self.bottomAnchor,
+                                                                  constant: -UIConstants.exitButtonTopMargin + UIConstants.tipSize.height))
+
+        } else {
+            constraints.append(exitButton.bottomAnchor.constraint(equalTo: self.topAnchor,
+                                                                  constant: -UIConstants.exitButtonTopMargin))
+        }
+        NSLayoutConstraint.activate(constraints)
+    }
+
     private func setupShadowOffset(position: TooltipBodyData.Position) {
         let shadowOffset: CGSize
         switch position {
@@ -323,13 +337,148 @@ internal class TooltipView: UIView {
         layer.shadowOffset = shadowOffset
     }
 
+    private func didAppearAsSwiftUI() {
+        isHidden = false
+        presenter?.startAutoDisappearIfNeeded()
+        if #available(iOS 15.0, *) {
+            (coordinator as? TooltipViewSwiftUI.Coordinator)?.updateSize(bounds.size)
+            (coordinator as? TooltipViewSwiftUI.Coordinator)?.updateVisibility(true)
+        }
+    }
+
     @objc private func didTapImage() {
-        autoCloseTimer?.invalidate()
-        presenter.didTapImage()
+        presenter?.didTapImage()
     }
 
     @objc private func didTapExitButton() {
-        autoCloseTimer?.invalidate()
-        presenter.didTapExitButton()
+        presenter?.didTapExitButton()
+        if #available(iOS 15.0, *) {
+            (coordinator as? TooltipViewSwiftUI.Coordinator)?.updateVisibility(false)
+        }
+    }
+}
+
+@available(iOS 15.0, *)
+struct TooltipViewSwiftUI: UIViewRepresentable {
+
+    let identifier: String
+    @ObservedObject private var state: TooltipViewState
+
+    init(identifier: String, state: TooltipViewState) {
+        self.identifier = identifier
+        self.state = state
+    }
+
+    func makeUIView(context: Context) -> TooltipView {
+        let tooltipView = TooltipView(presenter: nil)
+        RInAppMessaging.registerSwiftUITooltip(identifier: identifier, uiView: tooltipView)
+        tooltipView.coordinator = context.coordinator
+        tooltipView.isHidden = true
+        return tooltipView
+    }
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(state: state)
+    }
+
+    func updateUIView(_ uiView: TooltipView, context: Context) {
+        uiView.setNeedsDisplay()
+        uiView.updateExitButtonPosition()
+    }
+}
+
+@available(iOS 15.0, *)
+extension TooltipViewSwiftUI {
+    struct Coordinator {
+        @ObservedObject private var state: TooltipViewState
+
+        init(state: TooltipViewState) {
+            self.state = state
+        }
+
+        func updateOrigin(_ newOrigin: CGPoint) {
+            state.origin = newOrigin
+        }
+
+        func updateVisibility(_ newValue: Bool) {
+            state.isVisible = newValue
+        }
+
+        func setPosition(_ position: TooltipBodyData.Position) {
+            state.position = position
+        }
+
+        func updateSize(_ size: CGSize) {
+            state.size = size
+        }
+    }
+}
+
+@available(iOS 15.0, *)
+class TooltipViewState: ObservableObject {
+    // For some reason if the first state is hidden (isVisible = false), the tooltip will never appear even if the state changes.
+    // As a workaround, the first isVisible value is true with UIView's `isHidden` value set to true.
+    @Published var isVisible: Bool = true
+    @Published var origin: CGPoint = .zero
+    @Published var position: TooltipBodyData.Position = .bottomCenter
+    @Published var size: CGSize = .zero
+}
+
+@available(iOS 15.0, *)
+struct TooltipViewModifier: ViewModifier {
+
+    let identifier: String
+    @StateObject private var state = TooltipViewState()
+
+    func body(content: Self.Content) -> some View {
+        content.overlay {
+            GeometryReader { geometry in
+                TooltipViewSwiftUI(identifier: identifier, state: state)
+                    .onAppear {
+                        RInAppMessaging.logEvent(ViewAppearedEvent(viewIdentifier: identifier))
+                    }
+                    .isHidden(!state.isVisible)
+                    .position(getOrigin(geometry: geometry))
+                    .fixedSize()
+            }
+        }
+    }
+
+    private func getOrigin(geometry: GeometryProxy) -> CGPoint {
+        let targetViewFrame = geometry.frame(in: .local)
+
+        switch state.position {
+        case .topCenter:
+            return CGPoint(x: targetViewFrame.midX - state.size.width / 2.0,
+                           y: targetViewFrame.origin.y - state.size.height - Router.UIConstants.Tooltip.targetViewSpacing)
+        case .topLeft:
+            return CGPoint(x: targetViewFrame.minX - state.size.width,
+                           y: targetViewFrame.origin.y - state.size.height - Router.UIConstants.Tooltip.targetViewSpacing)
+        case .topRight:
+            return CGPoint(x: targetViewFrame.maxX,
+                           y: targetViewFrame.origin.y - state.size.height - Router.UIConstants.Tooltip.targetViewSpacing)
+        case .bottomLeft:
+            return CGPoint(x: targetViewFrame.minX - state.size.width,
+                           y: targetViewFrame.maxY + Router.UIConstants.Tooltip.targetViewSpacing)
+        case .bottomRight:
+            return CGPoint(x: targetViewFrame.maxX,
+                           y: targetViewFrame.maxY + Router.UIConstants.Tooltip.targetViewSpacing)
+        case .bottomCenter:
+            return CGPoint(x: targetViewFrame.midX - state.size.width / 2.0,
+                           y: targetViewFrame.maxY + Router.UIConstants.Tooltip.targetViewSpacing)
+        case .left:
+            return CGPoint(x: targetViewFrame.minX - state.size.width - Router.UIConstants.Tooltip.targetViewSpacing,
+                           y: targetViewFrame.midY - state.size.height / 2.0)
+        case .right:
+            return CGPoint(x: targetViewFrame.maxX + Router.UIConstants.Tooltip.targetViewSpacing,
+                           y: targetViewFrame.midY - state.size.height / 2.0)
+        }
+    }
+}
+
+@available(iOS 15.0, *)
+public extension View {
+    func canHaveTooltip(identifier: String) -> some View {
+        modifier(TooltipViewModifier(identifier: identifier))
     }
 }

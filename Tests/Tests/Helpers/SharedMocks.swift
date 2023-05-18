@@ -387,6 +387,14 @@ class RouterMock: RouterType {
         }
     }
 
+    func displaySwiftUITooltip(_ tooltip: Campaign,
+                               tooltipView: TooltipView,
+                               identifier: String,
+                               imageBlob: Data,
+                               confirmation: @autoclosure @escaping () -> Bool,
+                               completion: @escaping (Bool) -> Void) {
+    }
+
     func discardDisplayedCampaign() {
         wasDiscardCampaignCalled = true
     }
@@ -549,6 +557,9 @@ final class TooltipDispatcherMock: TooltipDispatcherType {
     func setNeedsDisplay(tooltip: Campaign) {
         needsDisplayTooltips.append(tooltip)
     }
+
+    func registerSwiftUITooltip(identifier: String, uiView: TooltipView) {
+    }
 }
 
 final class ViewListenerMock: ViewListenerType {
@@ -592,6 +603,7 @@ final class TooltipPresenterMock: TooltipPresenterType {
     private(set) var wasDidTapImageCalled = false
     private(set) var wasDidTapExitButtonCalled = false
     private(set) var wasDismissCalled = false
+    private(set) var startedAutoDisappearing = false
 
     func set(view: TooltipView, dataModel data: Campaign, image: UIImage) {
 
@@ -608,6 +620,13 @@ final class TooltipPresenterMock: TooltipPresenterType {
     func dismiss() {
         wasDismissCalled = true
     }
+
+    func startAutoDisappearIfNeeded() {
+        startedAutoDisappearing = true
+    }
+
+    func didRemoveFromSuperview() {
+    }
 }
 
 final class TooltipViewMock: TooltipView {
@@ -621,10 +640,6 @@ final class TooltipViewMock: TooltipView {
 
     override func setup(model: TooltipViewModel) {
         setupModel = model
-    }
-
-    override func startAutoDisappearIfNeeded(seconds: UInt) {
-        startedAutoDisappearing = true
     }
 
     override func removeFromSuperview() {

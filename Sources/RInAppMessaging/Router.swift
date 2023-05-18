@@ -28,6 +28,13 @@ internal protocol RouterType: ErrorReportable {
                         becameVisibleHandler: @escaping (_ tooltipView: TooltipView) -> Void,
                         confirmation: @escaping @autoclosure () -> Bool,
                         completion: @escaping (_ cancelled: Bool) -> Void)
+
+    func displaySwiftUITooltip(_ tooltip: Campaign,
+                               tooltipView: TooltipView,
+                               identifier: String,
+                               imageBlob: Data,
+                               confirmation: @escaping @autoclosure () -> Bool,
+                               completion: @escaping (_ cancelled: Bool) -> Void)
     
     /// Removes displayed campaign view from the stack
     func discardDisplayedCampaign()
@@ -43,7 +50,7 @@ internal protocol RouterType: ErrorReportable {
 /// Handles all the displaying logic of the SDK.
 internal class Router: RouterType, ViewListenerObserver {
 
-    private enum UIConstants {
+    enum UIConstants {
         enum Tooltip {
             static let minDistFromEdge: CGFloat = 20.0
             static let targetViewSpacing: CGFloat = 0.0
@@ -81,7 +88,7 @@ internal class Router: RouterType, ViewListenerObserver {
         displayQueue.sync {
             DispatchQueue.main.async {
                 let displayedToolip = self.displayedTooltips[uiElementIdentifier]
-                displayedToolip?.presenter.onDismiss?(true)
+                displayedToolip?.presenter?.onDismiss?(true)
                 displayedToolip?.removeFromSuperview()
             }
         }
@@ -240,6 +247,49 @@ internal class Router: RouterType, ViewListenerObserver {
                                       data: tooltipData,
                                       image: image,
                                       becameVisibleHandler: becameVisibleHandler)
+        }
+    }
+
+    func displaySwiftUITooltip(_ tooltip: Campaign,
+                               tooltipView: TooltipView,
+                               identifier: String,
+                               imageBlob: Data,
+                               confirmation: @escaping @autoclosure () -> Bool,
+                               completion: @escaping (_ cancelled: Bool) -> Void) {
+        guard let presenter = self.dependencyManager.resolve(type: TooltipPresenterType.self) else {
+            Logger.debug("Error: TooltipPresenterType couldn't be resolved")
+            assertionFailure()
+            return
+        }
+        guard let tooltipData = tooltip.tooltipData else {
+            completion(true)
+            return
+        }
+
+        DispatchQueue.main.async {
+            self.displayedTooltips[identifier]?.removeFromSuperview()
+            self.displayedTooltips[identifier] = nil
+
+            guard let image = UIImage(data: imageBlob) else {
+                self.reportError(description: "Invalid image data for tooltip targeting \(tooltipData.bodyData.uiElementIdentifier)", data: nil)
+                completion(true)
+                return
+            }
+
+            guard confirmation() else {
+                completion(true)
+                return
+            }
+
+            tooltipView.presenter = presenter
+            presenter.set(view: tooltipView, dataModel: tooltip, image: image)
+            presenter.onDismiss = { [weak self] cancelled in
+                self?.displayedTooltips[identifier]?.removeFromSuperview()
+                self?.displayedTooltips[identifier] = nil
+                completion(cancelled)
+            }
+
+            self.displayedTooltips[identifier] = tooltipView
         }
     }
 

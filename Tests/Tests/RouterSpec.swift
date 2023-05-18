@@ -428,7 +428,7 @@ class RouterSpec: QuickSpec {
                         })
                         expect(window.findTooltipView()).toEventuallyNot(beNil())
                         let displayedTooltip = window.findTooltipView()
-                        displayedTooltip?.presenter.didTapExitButton()
+                        displayedTooltip?.presenter?.didTapExitButton()
                         expect(completionCalled).toEventually(beTrue())
                     }
 

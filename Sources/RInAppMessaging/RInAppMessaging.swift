@@ -208,6 +208,16 @@ import RSDKUtils
         return configURL
     }
 
+    @available(iOS 15.0, *)
+    internal static func registerSwiftUITooltip(identifier: String,
+                                                uiView: TooltipView) {
+        inAppQueue.async {
+            notifyIfModuleNotInitialized()
+            let dispatcher = dependencyManager?.resolve(type: TooltipDispatcherType.self)
+            dispatcher?.registerSwiftUITooltip(identifier: identifier, uiView: uiView)
+        }
+    }
+
     // MARK: - Unit tests helpers
     internal static func deinitializeModule() {
         inAppQueue.sync {
