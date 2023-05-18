@@ -21,6 +21,7 @@ class AlertPresentableSpec: QuickSpec {
             app.launchArguments.append("--uitesting")
             app.launchArguments.append("-context \(context)")
             app.launch()
+            app.buttons["UIKit"].tap()
         }
 
         beforeEach {
