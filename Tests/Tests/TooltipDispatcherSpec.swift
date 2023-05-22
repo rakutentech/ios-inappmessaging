@@ -121,9 +121,10 @@ class TooltipDispatcherSpec: QuickSpec {
                 }
 
                 it("will start auto-disappear when tooltip becomes visible") {
-                    let tooltipView = TooltipViewMock()
+                    let presenter = TooltipPresenterMock()
+                    let tooltipView = TooltipViewMock(presenter: presenter)
                     router.callTooltipBecameVisibleHandler(tooltipView: tooltipView)
-                    expect(tooltipView.startedAutoDisappearing).toEventually(beTrue())
+                    expect(presenter.startedAutoDisappearing).toEventually(beTrue())
                 }
 
                 it("will not start auto-disappear if delay is 0") {
@@ -135,9 +136,10 @@ class TooltipDispatcherSpec: QuickSpec {
                     dispatcher.viewDidMoveToWindow(targetView, identifier: "view.another.id")
                     expect(router.displayedTooltips.last?.id).toEventually(equal("test.auto"))
 
+                    let presenter = TooltipPresenterMock()
                     let tooltipView = TooltipViewMock()
                     router.callTooltipBecameVisibleHandler(tooltipView: tooltipView)
-                    expect(tooltipView.startedAutoDisappearing).toAfterTimeout(beFalse())
+                    expect(presenter.startedAutoDisappearing).toAfterTimeout(beFalse())
 
                     anotherTargetView.removeFromSuperview()
                 }
