@@ -1,7 +1,9 @@
 import Foundation
 import class UIKit.UIView
 
-protocol TooltipManagerType: AnyObject { }
+protocol TooltipManagerType: AnyObject {
+    func verifySwiftUITooltip(identifier: String)
+}
 
 class TooltipManager: TooltipManagerType, ViewListenerObserver, CampaignRepositoryDelegate {
 
@@ -16,6 +18,21 @@ class TooltipManager: TooltipManagerType, ViewListenerObserver, CampaignReposito
         self.campaignRepository = campaignRepository
         self.campaignRepository.delegate = self
         viewListener.addObserver(self)
+    }
+
+    func verifySwiftUITooltip(identifier: String) {
+        guard let tooltip = campaignRepository.tooltipsList.first(where: {
+                  guard let tooltipData = $0.tooltipData else {
+                      return false
+                  }
+                  return identifier.contains(tooltipData.bodyData.uiElementIdentifier)
+              }),
+              !triggeredTooltipIds.contains(tooltip.id) else {
+            return
+        }
+
+        triggeredTooltipIds.append(tooltip.id)
+        RInAppMessaging.logEvent(ViewAppearedEvent(viewIdentifier: identifier))
     }
 
     private func verify(view: UIView, identifier: String) {

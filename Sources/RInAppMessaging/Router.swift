@@ -50,13 +50,6 @@ internal protocol RouterType: ErrorReportable {
 /// Handles all the displaying logic of the SDK.
 internal class Router: RouterType, ViewListenerObserver {
 
-    enum UIConstants {
-        enum Tooltip {
-            static let minDistFromEdge: CGFloat = 20.0
-            static let targetViewSpacing: CGFloat = 0.0
-        }
-    }
-
     private let dependencyManager: TypedDependencyManager
     private let displayQueue = DispatchQueue(label: "IAM.MessageLoader")
     private var displayedTooltips = [String: TooltipView]()
@@ -393,31 +386,32 @@ internal class Router: RouterType, ViewListenerObserver {
 
     private func updateFrame(targetView: UIView, tooltipView: TooltipView, superview: UIView, position: TooltipBodyData.Position) {
         let targetViewFrame = superview.convert(targetView.frame, from: targetView.superview)
+        let cornerSpacing = TooltipLayoutConstants.targetViewSpacing / sqrt(2)
 
         switch position {
         case .topCenter:
             tooltipView.frame.origin = CGPoint(x: targetViewFrame.midX - tooltipView.frame.width / 2.0,
-                                               y: targetViewFrame.origin.y - tooltipView.frame.height - UIConstants.Tooltip.targetViewSpacing)
+                                               y: targetViewFrame.origin.y - tooltipView.frame.height - TooltipLayoutConstants.targetViewSpacing)
         case .topLeft:
-            tooltipView.frame.origin = CGPoint(x: targetViewFrame.minX - tooltipView.frame.width,
-                                               y: targetViewFrame.origin.y - tooltipView.frame.height - UIConstants.Tooltip.targetViewSpacing)
+            tooltipView.frame.origin = CGPoint(x: targetViewFrame.minX - tooltipView.frame.width - cornerSpacing,
+                                               y: targetViewFrame.origin.y - tooltipView.frame.height - cornerSpacing)
         case .topRight:
-            tooltipView.frame.origin = CGPoint(x: targetViewFrame.maxX,
-                                               y: targetViewFrame.origin.y - tooltipView.frame.height - UIConstants.Tooltip.targetViewSpacing)
+            tooltipView.frame.origin = CGPoint(x: targetViewFrame.maxX + cornerSpacing,
+                                               y: targetViewFrame.origin.y - tooltipView.frame.height - cornerSpacing)
         case .bottomLeft:
-            tooltipView.frame.origin = CGPoint(x: targetViewFrame.minX - tooltipView.frame.width,
-                                               y: targetViewFrame.maxY + UIConstants.Tooltip.targetViewSpacing)
+            tooltipView.frame.origin = CGPoint(x: targetViewFrame.minX - tooltipView.frame.width - cornerSpacing,
+                                               y: targetViewFrame.maxY + cornerSpacing)
         case .bottomRight:
-            tooltipView.frame.origin = CGPoint(x: targetViewFrame.maxX,
-                                               y: targetViewFrame.maxY + UIConstants.Tooltip.targetViewSpacing)
+            tooltipView.frame.origin = CGPoint(x: targetViewFrame.maxX + cornerSpacing,
+                                               y: targetViewFrame.maxY + cornerSpacing)
         case .bottomCenter:
             tooltipView.frame.origin = CGPoint(x: targetViewFrame.midX - tooltipView.frame.width / 2.0,
-                                               y: targetViewFrame.maxY + UIConstants.Tooltip.targetViewSpacing)
+                                               y: targetViewFrame.maxY + TooltipLayoutConstants.targetViewSpacing)
         case .left:
-            tooltipView.frame.origin = CGPoint(x: targetViewFrame.minX - tooltipView.frame.width - UIConstants.Tooltip.targetViewSpacing,
+            tooltipView.frame.origin = CGPoint(x: targetViewFrame.minX - tooltipView.frame.width - TooltipLayoutConstants.targetViewSpacing,
                                                y: targetViewFrame.midY - tooltipView.frame.height / 2.0)
         case .right:
-            tooltipView.frame.origin = CGPoint(x: targetViewFrame.maxX + UIConstants.Tooltip.targetViewSpacing,
+            tooltipView.frame.origin = CGPoint(x: targetViewFrame.maxX + TooltipLayoutConstants.targetViewSpacing,
                                                y: targetViewFrame.midY - tooltipView.frame.height / 2.0)
         }
     }
