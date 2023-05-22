@@ -630,7 +630,6 @@ final class TooltipPresenterMock: TooltipPresenterType {
 }
 
 final class TooltipViewMock: TooltipView {
-    private(set) var startedAutoDisappearing = false
     private(set) var setupModel: TooltipViewModel?
     private(set) var didCallRemoveFromSuperview = false
 

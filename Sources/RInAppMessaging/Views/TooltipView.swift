@@ -329,9 +329,9 @@ internal class TooltipView: UIView {
         isHidden = false
         presenter?.startAutoDisappearIfNeeded()
         if #available(iOS 15.0, *) {
-            let coordinator = coordinator as? TooltipViewSwiftUI.Coordinator
-            coordinator?.updateSize(bounds.size)
-            coordinator?.updateVisibility(true)
+            let viewCoordinator = coordinator as? TooltipViewSwiftUI.Coordinator
+            viewCoordinator?.updateSize(bounds.size)
+            viewCoordinator?.updateVisibility(true)
         }
     }
 
