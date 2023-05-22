@@ -1,6 +1,12 @@
 import Foundation
 import UIKit
 
+#if SWIFT_PACKAGE
+import RSDKUtilsMain
+#else
+import RSDKUtils
+#endif
+
 internal protocol TooltipDispatcherDelegate: AnyObject {
     func performPing()
     func shouldShowTooltip(title: String, contexts: [String]) -> Bool
@@ -10,6 +16,7 @@ internal protocol TooltipDispatcherType: AnyObject {
     var delegate: TooltipDispatcherDelegate? { get set }
 
     func setNeedsDisplay(tooltip: Campaign)
+    func registerSwiftUITooltip(identifier: String, uiView: TooltipView)
 }
 
 internal class TooltipDispatcher: TooltipDispatcherType, ViewListenerObserver {
@@ -21,6 +28,7 @@ internal class TooltipDispatcher: TooltipDispatcherType, ViewListenerObserver {
     private let dispatchQueue = DispatchQueue(label: "IAM.TooltipDisplay", qos: .userInteractive)
     private(set) var httpSession: URLSession
     private(set) var queuedTooltips = Set<Campaign>() // ensure to access only in dispatchQueue
+    private var swiftUITooltips = [String: WeakWrapper<TooltipView>]()
 
     weak var delegate: TooltipDispatcherDelegate?
 
@@ -59,24 +67,32 @@ internal class TooltipDispatcher: TooltipDispatcherType, ViewListenerObserver {
         }
     }
 
+    func registerSwiftUITooltip(identifier: String, uiView: TooltipView) {
+        swiftUITooltips[identifier] = WeakWrapper(value: uiView)
+    }
+
     private func findViewAndDisplay(tooltip: Campaign) {
         guard let tooltipData = tooltip.tooltipData else {
             return
         }
-        viewListener.iterateOverDisplayedViews { view, identifier, stop in
-            if identifier.contains(tooltipData.bodyData.uiElementIdentifier) {
-                stop = true
-                self.dispatchQueue.async {
-                    self.displayTooltip(tooltip, targetView: view, identifier: identifier)
+        let tooltipIdentifier = tooltipData.bodyData.uiElementIdentifier
+        guard let tooltipView = swiftUITooltips[tooltipIdentifier]?.value else {
+            viewListener.iterateOverDisplayedViews { view, identifier, stop in
+                if identifier.contains(tooltipIdentifier) {
+                    stop = true
+                    self.dispatchQueue.async {
+                        self.displayTooltip(tooltip, targetView: view, identifier: identifier)
+                    }
                 }
             }
+            return
         }
+        displaySwiftUITooltip(tooltip, tooltipView: tooltipView, identifier: tooltipIdentifier)
     }
 
-    private func displayTooltip(_ tooltip: Campaign,
-                                targetView: UIView,
-                                identifier: String) {
-        
+    private func prepareTooltipDisplay(_ tooltip: Campaign,
+                                       identifier: String,
+                                       success: @escaping (_ imageBlob: Data) -> Void) {
         guard !router.isDisplayingTooltip(with: identifier) else {
             return
         }
@@ -103,33 +119,57 @@ internal class TooltipDispatcher: TooltipDispatcherType, ViewListenerObserver {
                 // TOOLTIP: add retry?
                 return
             }
+            success(imageBlob)
+            waitForImageDispatchGroup.leave()
+        }
+    }
+
+    private func displaySwiftUITooltip(_ tooltip: Campaign,
+                                       tooltipView: TooltipView,
+                                       identifier: String) {
+        prepareTooltipDisplay(tooltip, identifier: identifier) { imageBlob in
+            self.router.displaySwiftUITooltip(
+                tooltip,
+                tooltipView: tooltipView,
+                identifier: identifier,
+                imageBlob: imageBlob,
+                confirmation: self.shouldCommitTooltipDisplay(tooltip),
+                completion: { cancelled in
+                    self.handleDisplayCompletion(cancelled: cancelled, tooltip: tooltip)
+                }
+            )
+        }
+    }
+
+    private func displayTooltip(_ tooltip: Campaign,
+                                targetView: UIView,
+                                identifier: String) {
+        prepareTooltipDisplay(tooltip, identifier: identifier) { imageBlob in
             self.router.displayTooltip(
                 tooltip,
                 targetView: targetView,
                 identifier: identifier,
                 imageBlob: imageBlob,
                 becameVisibleHandler: { tooltipView in
-                    guard let autoCloseSeconds = tooltip.tooltipData?.bodyData.autoCloseSeconds, autoCloseSeconds > 0 else {
-                        return
-                    }
-                    tooltipView.startAutoDisappearIfNeeded(seconds: autoCloseSeconds)
+                    tooltipView.presenter?.startAutoDisappearIfNeeded()
                 },
-                confirmation: {
-                    let contexts = Array(tooltip.contexts.dropFirst()) // first context will always be "Tooltip"
-                    let tooltipTitle = tooltip.data.messagePayload.title
-                    guard let delegate = self.delegate, !contexts.isEmpty, !tooltip.data.isTest else {
-                        return true
-                    }
-                    let shouldShow = delegate.shouldShowTooltip(title: tooltipTitle,
-                                                                contexts: contexts)
-                    return shouldShow
-                }(),
+                confirmation: self.shouldCommitTooltipDisplay(tooltip),
                 completion: { cancelled in
                     self.handleDisplayCompletion(cancelled: cancelled, tooltip: tooltip)
                 }
             )
-            waitForImageDispatchGroup.leave()
         }
+    }
+
+    private func shouldCommitTooltipDisplay(_ tooltip: Campaign) -> Bool {
+        let contexts = Array(tooltip.contexts.dropFirst()) // first context will always be "Tooltip"
+        let tooltipTitle = tooltip.data.messagePayload.title
+        guard let delegate = self.delegate, !contexts.isEmpty, !tooltip.data.isTest else {
+            return true
+        }
+        let shouldShow = delegate.shouldShowTooltip(title: tooltipTitle,
+                                                    contexts: contexts)
+        return shouldShow
     }
 
     private func handleDisplayCompletion(cancelled: Bool, tooltip: Campaign) {

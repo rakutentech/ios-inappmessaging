@@ -7,6 +7,11 @@ import RSDKUtilsMain
 import RSDKUtils
 #endif
 
+internal protocol SwiftUITooltipManageable: AnyObject {
+    static func registerSwiftUITooltip(identifier: String, uiView: TooltipView)
+    static func verifySwiftUITooltip(identifier: String)
+}
+
 /// Class that contains the public methods for host application to call.
 /// Entry point for host application to communicate with InAppMessaging.
 /// Conforms to NSObject and exposed with objc tag to make it work with Obj-c projects.
@@ -219,5 +224,19 @@ import RSDKUtils
 
     internal static func setModule(_ iamModule: InAppMessagingModule?) {
         initializedModule = iamModule
+    }
+}
+
+@available(iOS 15.0, *)
+extension RInAppMessaging: SwiftUITooltipManageable {
+    static func registerSwiftUITooltip(identifier: String,
+                                                uiView: TooltipView) {
+        let dispatcher = dependencyManager?.resolve(type: TooltipDispatcherType.self)
+        dispatcher?.registerSwiftUITooltip(identifier: identifier, uiView: uiView)
+    }
+
+    static func verifySwiftUITooltip(identifier: String) {
+        let manager = dependencyManager?.resolve(type: TooltipManagerType.self)
+        manager?.verifySwiftUITooltip(identifier: identifier)
     }
 }

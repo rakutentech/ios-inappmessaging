@@ -145,6 +145,55 @@ class TooltipPresenterSpec: QuickSpec {
                     expect(view.didCallRemoveFromSuperview).to(beTrue())
                 }
             }
+
+            context("when calling startAutoDisappearIfNeeded") {
+                let tooltip = TestHelpers.generateTooltip(id: "test", autoCloseSeconds: 5)
+
+                beforeEach {
+                    presenter.set(view: TooltipViewMock(), dataModel: tooltip, image: UIImage())
+                }
+
+                it("will have nil timer before calling the method") {
+                    expect(presenter.autoCloseTimer).to(beNil())
+                }
+
+                it("will start the timer") {
+                    presenter.startAutoDisappearIfNeeded()
+                    expect(presenter.autoCloseTimer).toNot(beNil())
+                }
+
+                it("will ignore subsequent calls") {
+                    presenter.startAutoDisappearIfNeeded()
+                    let firstTimer = presenter.autoCloseTimer
+                    presenter.startAutoDisappearIfNeeded()
+                    expect(presenter.autoCloseTimer).to(equal(firstTimer))
+                }
+
+                context("when timer fires") {
+                    beforeEach {
+                        presenter.startAutoDisappearIfNeeded()
+                    }
+
+                    it("will call onDismiss") {
+                        var wasOnDismissCalled = false
+                        presenter.onDismiss = { _ in
+                            wasOnDismissCalled = true
+                        }
+                        presenter.autoCloseTimer?.fire()
+                        expect(wasOnDismissCalled).to(beTrue())
+                    }
+
+                    it("will log exit impression") {
+                        presenter.autoCloseTimer?.fire()
+                        expect(impressionService.sentImpressions?.list.last).to(equal(.exit))
+                    }
+
+                    it("will send impressions") {
+                        presenter.autoCloseTimer?.fire()
+                        expect(impressionService.sentImpressions).toNot(beNil())
+                    }
+                }
+            }
         }
     }
 }

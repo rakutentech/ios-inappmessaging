@@ -282,8 +282,26 @@ To enable tooltips you must set `enableTooltipFeature` flag to true when calling
 ```swift
 RInAppMessaging.configure(enableTooltipFeature: true)
 ```
+##### UIKit:
+To attach tooltip to a UIView instance, set its `accessibilityIdentifier` value to tooltip's `UIElement` identifier.
+```swift
+let actionButton = UIButton()
+actionButton.accessibilityIdentifier = "tooltip.1"
+```
+##### SwiftUI:
+To attach tooltip to a SwiftUI view, use `canHaveTooltip()` modifier.
+```swift
+import RInAppMessaging
+(...)
+var body: some View {
+    Button("Action")
+        .canHaveTooltip(identifier: "tooltip.1")
+}
+```
+**Note:** This feature requires minimum iOS version of 15.0
 
 #### **Displaying Tooltips on tab bar buttons**
+(Applicable only to UIKit integration)  
 To be able to display tooltips on UITabBar items/buttons you need to set `accessibilityIdentifier` of UITabBarItem object associated with your tab view controller. Then you need to call `updateItemIdentifiers()` method on `UITabBar` object.
 
 A code example from UIViewController's `viewDidLoad()` method

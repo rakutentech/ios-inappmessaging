@@ -28,6 +28,13 @@ internal protocol RouterType: ErrorReportable {
                         becameVisibleHandler: @escaping (_ tooltipView: TooltipView) -> Void,
                         confirmation: @escaping @autoclosure () -> Bool,
                         completion: @escaping (_ cancelled: Bool) -> Void)
+
+    func displaySwiftUITooltip(_ tooltip: Campaign,
+                               tooltipView: TooltipView,
+                               identifier: String,
+                               imageBlob: Data,
+                               confirmation: @escaping @autoclosure () -> Bool,
+                               completion: @escaping (_ cancelled: Bool) -> Void)
     
     /// Removes displayed campaign view from the stack
     func discardDisplayedCampaign()
@@ -42,13 +49,6 @@ internal protocol RouterType: ErrorReportable {
 
 /// Handles all the displaying logic of the SDK.
 internal class Router: RouterType, ViewListenerObserver {
-
-    private enum UIConstants {
-        enum Tooltip {
-            static let minDistFromEdge: CGFloat = 20.0
-            static let targetViewSpacing: CGFloat = 0.0
-        }
-    }
 
     private let dependencyManager: TypedDependencyManager
     private let displayQueue = DispatchQueue(label: "IAM.MessageLoader")
@@ -81,7 +81,7 @@ internal class Router: RouterType, ViewListenerObserver {
         displayQueue.sync {
             DispatchQueue.main.async {
                 let displayedToolip = self.displayedTooltips[uiElementIdentifier]
-                displayedToolip?.presenter.onDismiss?(true)
+                displayedToolip?.presenter?.onDismiss?(true)
                 displayedToolip?.removeFromSuperview()
             }
         }
@@ -243,6 +243,49 @@ internal class Router: RouterType, ViewListenerObserver {
         }
     }
 
+    func displaySwiftUITooltip(_ tooltip: Campaign,
+                               tooltipView: TooltipView,
+                               identifier: String,
+                               imageBlob: Data,
+                               confirmation: @escaping @autoclosure () -> Bool,
+                               completion: @escaping (_ cancelled: Bool) -> Void) {
+        guard let presenter = self.dependencyManager.resolve(type: TooltipPresenterType.self) else {
+            Logger.debug("Error: TooltipPresenterType couldn't be resolved")
+            assertionFailure()
+            return
+        }
+        guard let tooltipData = tooltip.tooltipData else {
+            completion(true)
+            return
+        }
+
+        DispatchQueue.main.async {
+            self.displayedTooltips[identifier]?.removeFromSuperview()
+            self.displayedTooltips[identifier] = nil
+
+            guard let image = UIImage(data: imageBlob) else {
+                self.reportError(description: "Invalid image data for tooltip targeting \(tooltipData.bodyData.uiElementIdentifier)", data: nil)
+                completion(true)
+                return
+            }
+
+            guard confirmation() else {
+                completion(true)
+                return
+            }
+
+            tooltipView.presenter = presenter
+            presenter.set(view: tooltipView, dataModel: tooltip, image: image)
+            presenter.onDismiss = { [weak self] cancelled in
+                self?.displayedTooltips[identifier]?.removeFromSuperview()
+                self?.displayedTooltips[identifier] = nil
+                completion(cancelled)
+            }
+
+            self.displayedTooltips[identifier] = tooltipView
+        }
+    }
+
     private func commitTooltipDisplay(tooltipView: TooltipView,
                                       targetView: UIView,
                                       superview: UIView,
@@ -343,31 +386,32 @@ internal class Router: RouterType, ViewListenerObserver {
 
     private func updateFrame(targetView: UIView, tooltipView: TooltipView, superview: UIView, position: TooltipBodyData.Position) {
         let targetViewFrame = superview.convert(targetView.frame, from: targetView.superview)
+        let cornerSpacing = TooltipLayoutConstants.targetViewSpacing / sqrt(2)
 
         switch position {
         case .topCenter:
             tooltipView.frame.origin = CGPoint(x: targetViewFrame.midX - tooltipView.frame.width / 2.0,
-                                               y: targetViewFrame.origin.y - tooltipView.frame.height - UIConstants.Tooltip.targetViewSpacing)
+                                               y: targetViewFrame.origin.y - tooltipView.frame.height - TooltipLayoutConstants.targetViewSpacing)
         case .topLeft:
-            tooltipView.frame.origin = CGPoint(x: targetViewFrame.minX - tooltipView.frame.width,
-                                               y: targetViewFrame.origin.y - tooltipView.frame.height - UIConstants.Tooltip.targetViewSpacing)
+            tooltipView.frame.origin = CGPoint(x: targetViewFrame.minX - tooltipView.frame.width - cornerSpacing,
+                                               y: targetViewFrame.origin.y - tooltipView.frame.height - cornerSpacing)
         case .topRight:
-            tooltipView.frame.origin = CGPoint(x: targetViewFrame.maxX,
-                                               y: targetViewFrame.origin.y - tooltipView.frame.height - UIConstants.Tooltip.targetViewSpacing)
+            tooltipView.frame.origin = CGPoint(x: targetViewFrame.maxX + cornerSpacing,
+                                               y: targetViewFrame.origin.y - tooltipView.frame.height - cornerSpacing)
         case .bottomLeft:
-            tooltipView.frame.origin = CGPoint(x: targetViewFrame.minX - tooltipView.frame.width,
-                                               y: targetViewFrame.maxY + UIConstants.Tooltip.targetViewSpacing)
+            tooltipView.frame.origin = CGPoint(x: targetViewFrame.minX - tooltipView.frame.width - cornerSpacing,
+                                               y: targetViewFrame.maxY + cornerSpacing)
         case .bottomRight:
-            tooltipView.frame.origin = CGPoint(x: targetViewFrame.maxX,
-                                               y: targetViewFrame.maxY + UIConstants.Tooltip.targetViewSpacing)
+            tooltipView.frame.origin = CGPoint(x: targetViewFrame.maxX + cornerSpacing,
+                                               y: targetViewFrame.maxY + cornerSpacing)
         case .bottomCenter:
             tooltipView.frame.origin = CGPoint(x: targetViewFrame.midX - tooltipView.frame.width / 2.0,
-                                               y: targetViewFrame.maxY + UIConstants.Tooltip.targetViewSpacing)
+                                               y: targetViewFrame.maxY + TooltipLayoutConstants.targetViewSpacing)
         case .left:
-            tooltipView.frame.origin = CGPoint(x: targetViewFrame.minX - tooltipView.frame.width - UIConstants.Tooltip.targetViewSpacing,
+            tooltipView.frame.origin = CGPoint(x: targetViewFrame.minX - tooltipView.frame.width - TooltipLayoutConstants.targetViewSpacing,
                                                y: targetViewFrame.midY - tooltipView.frame.height / 2.0)
         case .right:
-            tooltipView.frame.origin = CGPoint(x: targetViewFrame.maxX + UIConstants.Tooltip.targetViewSpacing,
+            tooltipView.frame.origin = CGPoint(x: targetViewFrame.maxX + TooltipLayoutConstants.targetViewSpacing,
                                                y: targetViewFrame.midY - tooltipView.frame.height / 2.0)
         }
     }

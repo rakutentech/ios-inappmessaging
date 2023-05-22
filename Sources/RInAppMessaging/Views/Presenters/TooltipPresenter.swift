@@ -8,6 +8,8 @@ internal protocol TooltipPresenterType: ImpressionTrackable {
     func didTapExitButton()
     func didTapImage()
     func dismiss()
+    func startAutoDisappearIfNeeded()
+    func didRemoveFromSuperview()
 }
 
 internal class TooltipPresenter: TooltipPresenterType {
@@ -16,6 +18,7 @@ internal class TooltipPresenter: TooltipPresenterType {
     var onDismiss: ((_ cancelled: Bool) -> Void)?
     private(set) var impressionService: ImpressionServiceType
     private(set) var tooltip: Campaign?
+    private(set) var autoCloseTimer: Timer?
     private weak var view: TooltipView?
 
     init(impressionService: ImpressionServiceType) {
@@ -34,12 +37,29 @@ internal class TooltipPresenter: TooltipPresenterType {
         logImpression(type: .impression)
     }
 
+    func startAutoDisappearIfNeeded() {
+        guard let autoCloseSeconds = tooltip?.tooltipData?.bodyData.autoCloseSeconds, autoCloseSeconds > 0 else {
+            return
+        }
+        guard autoCloseTimer == nil else {
+            return
+        }
+
+        let timer = Timer(fire: Date().addingTimeInterval(TimeInterval(autoCloseSeconds)), interval: 0, repeats: false, block: { [weak self] _ in
+            self?.didTapExitButton()
+        })
+
+        autoCloseTimer = timer
+        RunLoop.current.add(timer, forMode: .common)
+    }
+
     func didTapImage() {
         guard let tooltipData = tooltip?.tooltipData,
               let uriToOpen = URL(string: tooltipData.bodyData.redirectURL ?? "") else {
                   return
               }
 
+        autoCloseTimer?.invalidate()
         logImpression(type: .clickContent)
         sendImpressions()
         UIApplication.shared.open(uriToOpen)
@@ -47,6 +67,7 @@ internal class TooltipPresenter: TooltipPresenterType {
     }
 
     func didTapExitButton() {
+        autoCloseTimer?.invalidate()
         logImpression(type: .exit)
         sendImpressions()
         dismiss()
@@ -55,6 +76,10 @@ internal class TooltipPresenter: TooltipPresenterType {
     func dismiss() {
         onDismiss?(false)
         view?.removeFromSuperview()
+    }
+
+    func didRemoveFromSuperview() {
+        autoCloseTimer?.invalidate()
     }
 
     private func sendImpressions() {
