@@ -46,8 +46,14 @@ struct MainView: View {
                 Button("Init with Tooltip") {
                     initSDK(enableTooltipFeature: true)
                 }
+                .alert(isPresented: $isErrorAlertPresented) {
+                    Alert(title: Text("Error"), message: Text("IAM SDK is already initialized"))
+                }
                 Button("Init w/o Tooltip") {
                     initSDK(enableTooltipFeature: false)
+                }
+                .alert(isPresented: $isOnFinishedAlertPresented) {
+                    Alert(title: Text("Init successful"))
                 }
                 Button("Open modal page") {
                     isPresentSecondView = true
@@ -58,12 +64,6 @@ struct MainView: View {
         .sheet(isPresented: $isPresentSecondView, content: {
             SecondView()
         })
-        .alert(isPresented: $isErrorAlertPresented) {
-            Alert(title: Text("Error"), message: Text("IAM SDK is already initialized"))
-        }
-        .alert(isPresented: $isErrorAlertPresented) {
-            Alert(title: Text("Init successful"))
-        }
     }
 
     private func initSDK(enableTooltipFeature: Bool) {
