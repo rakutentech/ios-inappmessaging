@@ -7,8 +7,7 @@ struct CustomEventView: View {
     @State private var isAlertPresented = false
     @State private var isErrorAlertPresented = false
     @State private var eventName: String = ""
-    /// - Note: Init with one empty attribute for UI purpose
-    @State private var attributes = [EventAttribute()]
+    @State private var attributes: [EventAttribute] = []
     @State private var editingTextFieldIndex = 0
 
     var body: some View {
@@ -72,6 +71,7 @@ struct CustomEventView: View {
                 Spacer()
             }
             Button("SEND") {
+                hideKeyboard()
                 sendEvent()
             }.padding()
             Spacer().frame(height: 400)
@@ -79,10 +79,7 @@ struct CustomEventView: View {
         .alert(isPresented: $isErrorAlertPresented, content: {
             Alert(title: Text("Invalid input format"))
         }).onDisappear {
-            /// re-init to reset attribute content and filled with one empty attribute for UI purpose
-            attributes = [
-                EventAttribute()
-            ]
+            attributes = []
             eventName = ""
         }
     }
