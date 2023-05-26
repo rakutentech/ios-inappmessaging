@@ -114,6 +114,7 @@
 		D920D8CB2277B965008FB38D /* SecondPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D920D8CA2277B965008FB38D /* SecondPageViewController.swift */; };
 		D924268722D91C15002F50D3 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = D924268522D91C15002F50D3 /* Localizable.strings */; };
 		D92D1F262224A269008EA748 /* TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = D92D1F242224A265008EA748 /* TestHelpers.swift */; };
+		FC6E19412A2087FC00B89165 /* View+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC6E19402A2087FC00B89165 /* View+Extension.swift */; };
 		FC817F0D2A0A2D8E00EE3919 /* SecondView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC817F0C2A0A2D8E00EE3919 /* SecondView.swift */; };
 		FC92B45D29DD27670053CF0E /* UILabelExtensionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC92B45C29DD27670053CF0E /* UILabelExtensionSpec.swift */; };
 		FCCEE5D12A11D4C8002ADC8C /* EventHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCCEE5D02A11D4C7002ADC8C /* EventHelper.swift */; };
@@ -257,6 +258,7 @@
 		D924268622D91C15002F50D3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
 		D924268822D91C19002F50D3 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
 		D92D1F242224A265008EA748 /* TestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestHelpers.swift; sourceTree = "<group>"; };
+		FC6E19402A2087FC00B89165 /* View+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "View+Extension.swift"; sourceTree = "<group>"; };
 		FC817F0C2A0A2D8E00EE3919 /* SecondView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondView.swift; sourceTree = "<group>"; };
 		FC92B45C29DD27670053CF0E /* UILabelExtensionSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UILabelExtensionSpec.swift; sourceTree = "<group>"; };
 		FCCEE5D02A11D4C7002ADC8C /* EventHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventHelper.swift; sourceTree = "<group>"; };
@@ -552,6 +554,7 @@
 			isa = PBXGroup;
 			children = (
 				FCCEE5D02A11D4C7002ADC8C /* EventHelper.swift */,
+				FC6E19402A2087FC00B89165 /* View+Extension.swift */,
 				D24EDF782941512D00F9EC5E /* String+Conversion.swift */,
 			);
 			path = Helpers;
@@ -839,6 +842,7 @@
 				D234A747291C63000086AC80 /* MockServerHelper.swift in Sources */,
 				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,
 				D24EDF792941512D00F9EC5E /* String+Conversion.swift in Sources */,
+				FC6E19412A2087FC00B89165 /* View+Extension.swift in Sources */,
 				FCD21A2C29FBBBB50056237E /* TabBarView.swift in Sources */,
 				D24EDF762941506000F9EC5E /* CustomEventViewController.swift in Sources */,
 			);
