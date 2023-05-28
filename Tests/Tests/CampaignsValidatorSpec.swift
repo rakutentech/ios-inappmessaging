@@ -71,7 +71,7 @@ class CampaignsValidatorSpec: QuickSpec {
                 syncRepository(with: [campaign])
                 eventMatcher.matchAndStore(event: LoginSuccessfulEvent())
                 campaignsValidator.validate(validatedCampaignHandler: validatorHandler.closure)
-                expect(validatorHandler.validatedCampaigns).toEventuallyNot(contain(campaign))
+                expect(validatorHandler.validatedCampaigns).toNot(contain(campaign))
             }
 
             it("won't accept outdated campaigns") {
@@ -89,7 +89,7 @@ class CampaignsValidatorSpec: QuickSpec {
                 eventMatcher.matchAndStore(event: LoginSuccessfulEvent())
                 _ = campaignRepository.optOutCampaign(campaign)
                 campaignsValidator.validate(validatedCampaignHandler: validatorHandler.closure)
-                expect(validatorHandler.validatedCampaigns).toEventuallyNot(contain(campaign))
+                expect(validatorHandler.validatedCampaigns).toNot(contain(campaign))
             }
 
             context("when evaluating triggers") {
@@ -176,7 +176,52 @@ class CampaignsValidatorSpec: QuickSpec {
                     syncRepository(with: [campaign])
                     eventMatcher.matchAndStore(event: LoginSuccessfulEvent())
                     campaignsValidator.validate(validatedCampaignHandler: validatorHandler.closure)
-                    expect(validatorHandler.validatedCampaigns).toEventuallyNot(contain(campaign))
+                    expect(validatorHandler.validatedCampaigns).toNot(contain(campaign))
+                }
+
+                context("when tooltip campaign has all triggers satisfied") {
+                    let tooltip = TestHelpers.generateTooltip(
+                        id: "test", maxImpressions: 2,
+                        triggers: [
+                            Trigger(
+                                type: .event,
+                                eventType: .loginSuccessful,
+                                eventName: "testevent",
+                                attributes: []),
+                            Trigger(
+                                type: .event,
+                                eventType: .appStart,
+                                eventName: "testevent2",
+                                attributes: []
+                            )])
+                    let tooltipViewElementID = tooltip.tooltipData!.bodyData.uiElementIdentifier
+
+                    beforeEach {
+                        syncRepository(with: [tooltip])
+                    }
+
+                    it("will not accept tooltip campaign without ViewAppeared event") {
+                        eventMatcher.matchAndStore(event: LoginSuccessfulEvent())
+                        eventMatcher.matchAndStore(event: AppStartEvent())
+                        campaignsValidator.validate(validatedCampaignHandler: validatorHandler.closure)
+                        expect(validatorHandler.validatedCampaigns).toNot(contain(tooltip))
+                    }
+
+                    it("will not accept tooltip campaign with not-matching ViewAppeared") {
+                        eventMatcher.matchAndStore(event: LoginSuccessfulEvent())
+                        eventMatcher.matchAndStore(event: AppStartEvent())
+                        eventMatcher.matchAndStore(event: ViewAppearedEvent(viewIdentifier: "wrong-id"))
+                        campaignsValidator.validate(validatedCampaignHandler: validatorHandler.closure)
+                        expect(validatorHandler.validatedCampaigns).toNot(contain(tooltip))
+                    }
+
+                    it("will accept tooltip campaign with matching ViewAppeared event") {
+                        eventMatcher.matchAndStore(event: LoginSuccessfulEvent())
+                        eventMatcher.matchAndStore(event: AppStartEvent())
+                        eventMatcher.matchAndStore(event: ViewAppearedEvent(viewIdentifier: tooltipViewElementID))
+                        campaignsValidator.validate(validatedCampaignHandler: validatorHandler.closure)
+                        expect(validatorHandler.validatedCampaigns).to(contain(tooltip))
+                    }
                 }
             }
         }

@@ -336,6 +336,7 @@ class RouterMock: RouterType {
     var displayedCampaignsCount = 0
     var wasDiscardCampaignCalled = false
     var wasDisplayCampaignCalled = false
+    var wasHideTooltipCalled = false
     var lastIdentifierOfDiscardedTooltip: String?
     var displayTime = TimeInterval(0.1)
     weak var errorDelegate: ErrorDelegate?
@@ -415,6 +416,10 @@ class RouterMock: RouterType {
 
     func isDisplayingTooltip(with uiElementIdentifier: String) -> Bool {
         false
+    }
+
+    func hideDisplayedTooltip(with uiElementIdentifier: String) {
+        wasHideTooltipCalled = true
     }
 }
 
@@ -551,6 +556,7 @@ final class UNUserNotificationCenterMock: RemoteNotificationRequestable {
 }
 
 final class TooltipDispatcherMock: TooltipDispatcherType {
+
     private(set) var needsDisplayTooltips = [Campaign]()
     weak var delegate: TooltipDispatcherDelegate?
 
@@ -559,6 +565,9 @@ final class TooltipDispatcherMock: TooltipDispatcherType {
     }
 
     func registerSwiftUITooltip(identifier: String, uiView: TooltipView) {
+    }
+
+    func refreshActiveTooltip(identifier: String, targetView: UIView?) {
     }
 }
 

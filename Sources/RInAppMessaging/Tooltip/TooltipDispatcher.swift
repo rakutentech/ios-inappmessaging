@@ -17,6 +17,7 @@ internal protocol TooltipDispatcherType: AnyObject {
 
     func setNeedsDisplay(tooltip: Campaign)
     func registerSwiftUITooltip(identifier: String, uiView: TooltipView)
+    func refreshActiveTooltip(identifier: String, targetView: UIView?)
 }
 
 internal class TooltipDispatcher: TooltipDispatcherType, ViewListenerObserver {
@@ -27,7 +28,7 @@ internal class TooltipDispatcher: TooltipDispatcherType, ViewListenerObserver {
     private let viewListener: ViewListenerType
     private let dispatchQueue = DispatchQueue(label: "IAM.TooltipDisplay", qos: .userInteractive)
     private(set) var httpSession: URLSession
-    private(set) var queuedTooltips = Set<Campaign>() // ensure to access only in dispatchQueue
+    private(set) var activeTooltips = Set<Campaign>() // ensure to access only in dispatchQueue
     private var swiftUITooltips = [String: WeakWrapper<TooltipView>]()
 
     weak var delegate: TooltipDispatcherDelegate?
@@ -59,10 +60,10 @@ internal class TooltipDispatcher: TooltipDispatcherType, ViewListenerObserver {
     func setNeedsDisplay(tooltip: Campaign) {
         dispatchQueue.async { [weak self] in
             guard let self = self,
-                  !self.queuedTooltips.contains(tooltip) else {
+                  !self.activeTooltips.contains(tooltip) else {
                 return
             }
-            self.queuedTooltips.insert(tooltip)
+            self.activeTooltips.insert(tooltip)
             self.findViewAndDisplay(tooltip: tooltip)
         }
     }
@@ -71,12 +72,38 @@ internal class TooltipDispatcher: TooltipDispatcherType, ViewListenerObserver {
         swiftUITooltips[identifier] = WeakWrapper(value: uiView)
     }
 
+    func refreshActiveTooltip(identifier: String, targetView: UIView?) {
+        dispatchQueue.async { [weak self] in
+            guard let self = self else {
+                return
+            }
+            for tooltip in self.activeTooltips {
+                guard let uiElementIdentifier = tooltip.tooltipData?.bodyData.uiElementIdentifier,
+                      identifier.contains(uiElementIdentifier) else {
+                    continue
+                }
+
+                guard let tooltipView = self.swiftUITooltips[uiElementIdentifier]?.value else {
+                    // UIKit
+                    if let view = targetView {
+                        self.displayTooltip(tooltip, targetView: view, identifier: uiElementIdentifier)
+                    }
+                    break
+                }
+
+                self.displaySwiftUITooltip(tooltip, tooltipView: tooltipView, identifier: uiElementIdentifier)
+                break
+            }
+        }
+    }
+
     private func findViewAndDisplay(tooltip: Campaign) {
         guard let tooltipData = tooltip.tooltipData else {
             return
         }
         let tooltipIdentifier = tooltipData.bodyData.uiElementIdentifier
         guard let tooltipView = swiftUITooltips[tooltipIdentifier]?.value else {
+            // UIKit tooltip
             viewListener.iterateOverDisplayedViews { view, identifier, stop in
                 if identifier.contains(tooltipIdentifier) {
                     stop = true
@@ -177,7 +204,7 @@ internal class TooltipDispatcher: TooltipDispatcherType, ViewListenerObserver {
             if !cancelled {
                 self.campaignRepository.decrementImpressionsLeftInCampaign(id: tooltip.id)
             }
-            self.queuedTooltips.remove(tooltip)
+            self.activeTooltips.remove(tooltip)
         }
     }
 
@@ -202,16 +229,7 @@ extension TooltipDispatcher {
 
         // refresh currently displayed tooltip or
         // restore tooltip if view appeared again
-        dispatchQueue.async { [weak self] in
-            if let tooltip = self?.queuedTooltips.first(where: {
-                guard let tooltipData = $0.tooltipData else {
-                    return false
-                }
-                return identifier.contains(tooltipData.bodyData.uiElementIdentifier)
-            }) {
-                self?.displayTooltip(tooltip, targetView: view, identifier: identifier)
-            }
-        }
+        refreshActiveTooltip(identifier: identifier, targetView: view)
     }
 
     func viewDidMoveToWindow(_ view: UIView, identifier: String) {

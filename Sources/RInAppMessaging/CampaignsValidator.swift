@@ -43,10 +43,22 @@ internal struct CampaignsValidator: CampaignsValidatorType {
                 continue
             }
 
+            let matchedEvents = eventMatcher.matchedEvents(for: campaign)
             guard eventMatcher.containsAllMatchedEvents(for: campaign),
-                let triggeredEvents = triggerEvents(triggers: campaignTriggers,
-                                                    loggedEvents: eventMatcher.matchedEvents(for: campaign)) else {
+                var triggeredEvents = triggerEvents(triggers: campaignTriggers,
+                                                    loggedEvents: matchedEvents) else {
                 continue
+            }
+
+            // ViewAppearedEvent doesn't have its Trigger counterpart - it's an internal event.
+            if campaign.isTooltip, let tooltipViewID = campaign.tooltipData?.bodyData.uiElementIdentifier {
+                guard let viewAppearedEvent = matchedEvents.first(where: {
+                    ($0 as? ViewAppearedEvent)?.viewIdentifier == tooltipViewID
+                }) else {
+                    continue
+                }
+
+                triggeredEvents.insert(viewAppearedEvent)
             }
 
             validatedCampaignHandler(campaign, triggeredEvents)

@@ -1,11 +1,11 @@
 import Foundation
 import class UIKit.UIView
 
-protocol TooltipManagerType: AnyObject {
-    func verifySwiftUITooltip(identifier: String)
+protocol TooltipEventSenderType: AnyObject {
+    func verifySwiftUIViewAppearance(identifier: String)
 }
 
-class TooltipManager: TooltipManagerType, ViewListenerObserver, CampaignRepositoryDelegate {
+class TooltipEventSender: TooltipEventSenderType, ViewListenerObserver, CampaignRepositoryDelegate {
 
     private let viewListener: ViewListenerType
     private let campaignRepository: CampaignRepositoryType
@@ -20,7 +20,7 @@ class TooltipManager: TooltipManagerType, ViewListenerObserver, CampaignReposito
         viewListener.addObserver(self)
     }
 
-    func verifySwiftUITooltip(identifier: String) {
+    func verifySwiftUIViewAppearance(identifier: String) {
         guard let tooltip = campaignRepository.tooltipsList.first(where: {
                   guard let tooltipData = $0.tooltipData else {
                       return false
@@ -35,7 +35,7 @@ class TooltipManager: TooltipManagerType, ViewListenerObserver, CampaignReposito
         RInAppMessaging.logEvent(ViewAppearedEvent(viewIdentifier: identifier))
     }
 
-    private func verify(view: UIView, identifier: String) {
+    private func verifyAppearance(of view: UIView, identifier: String) {
         guard view.superview != nil,
               let tooltip = campaignRepository.tooltipsList.first(where: {
                   guard let tooltipData = $0.tooltipData else {
@@ -56,24 +56,24 @@ class TooltipManager: TooltipManagerType, ViewListenerObserver, CampaignReposito
 }
 
 // MARK: - CampaignRepositoryDelegate
-extension TooltipManager {
+extension TooltipEventSender {
 
     func didUpdateCampaignList() {
         viewListener.iterateOverDisplayedViews { view, identifier, _ in
-            self.verify(view: view, identifier: identifier)
+            self.verifyAppearance(of: view, identifier: identifier)
         }
     }
 }
 
 // MARK: - ViewListenerObserver
-extension TooltipManager {
+extension TooltipEventSender {
 
     func viewDidChangeSuperview(_ view: UIView, identifier: String) {
-        verify(view: view, identifier: identifier)
+        verifyAppearance(of: view, identifier: identifier)
     }
 
     func viewDidMoveToWindow(_ view: UIView, identifier: String) {
-        verify(view: view, identifier: identifier)
+        verifyAppearance(of: view, identifier: identifier)
     }
 
     func viewDidGetRemovedFromSuperview(_ view: UIView, identifier: String) {
@@ -84,6 +84,6 @@ extension TooltipManager {
         guard let identifier = to else {
             return
         }
-        verify(view: view, identifier: identifier)
+        verifyAppearance(of: view, identifier: identifier)
     }
 }

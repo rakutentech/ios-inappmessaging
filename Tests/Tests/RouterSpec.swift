@@ -673,6 +673,70 @@ class RouterSpec: QuickSpec {
                     }
                 }
             }
+
+            context("when calling hideDisplayedTooltip") {
+
+                let tooltipTargetView = UIView(frame: CGRect(x: 100, y: 100, width: 10, height: 10))
+                let tooltip = TestHelpers.generateTooltip(id: "test")
+                let imageBlob: Data! = UIImage(named: "test-image", in: .unitTests, with: nil)?.pngData()
+
+                beforeEach {
+                    tooltipTargetView.accessibilityIdentifier = TooltipViewIdentifierMock
+                    window.addSubview(tooltipTargetView)
+                }
+
+                afterEach {
+                    tooltipTargetView.removeFromSuperview()
+                    window.findTooltipView()?.removeFromSuperview()
+                }
+
+                context("with matching identifier") {
+                    it("will remove displayed tooltp") {
+                        router.displayTooltip(tooltip, targetView: tooltipTargetView,
+                                              identifier: TooltipViewIdentifierMock,
+                                              imageBlob: imageBlob,
+                                              becameVisibleHandler: { _ in },
+                                              confirmation: true,
+                                              completion: { _ in })
+
+                        expect(window.findTooltipView()).toEventuallyNot(beNil())
+                        router.hideDisplayedTooltip(with: TooltipViewIdentifierMock)
+                        expect(window.findTooltipView()).toEventually(beNil())
+                    }
+
+                    it("will not call onDismiss/completion callback with cancelled flag") {
+                        var completionCalled = false
+                        router.displayTooltip(tooltip, targetView: tooltipTargetView,
+                                              identifier: TooltipViewIdentifierMock,
+                                              imageBlob: imageBlob,
+                                              becameVisibleHandler: { _ in },
+                                              confirmation: true,
+                                              completion: { cancelled in
+                            expect(cancelled).to(beTrue())
+                            completionCalled = true
+                        })
+
+                        expect(window.findTooltipView()).toEventuallyNot(beNil())
+                        router.hideDisplayedTooltip(with: TooltipViewIdentifierMock)
+                        expect(completionCalled).toAfterTimeout(beFalse())
+                    }
+                }
+
+                context("and identifier does not match") {
+                    it("will not remove displayed tooltip") {
+                        router.displayTooltip(tooltip, targetView: tooltipTargetView,
+                                              identifier: TooltipViewIdentifierMock,
+                                              imageBlob: imageBlob,
+                                              becameVisibleHandler: { _ in },
+                                              confirmation: true,
+                                              completion: { _ in })
+
+                        expect(window.findTooltipView()).toEventuallyNot(beNil())
+                        router.hideDisplayedTooltip(with: "other-id")
+                        expect(window.findTooltipView()).toAfterTimeoutNot(beNil())
+                    }
+                }
+            }
         }
     }
 }

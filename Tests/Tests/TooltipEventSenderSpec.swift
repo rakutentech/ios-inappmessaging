@@ -5,12 +5,12 @@ import class UIKit.UIView
 
 @testable import RInAppMessaging
 
-class TooltipManagerSpec: QuickSpec {
+class TooltipEventSenderSpec: QuickSpec {
 
     override func spec() {
-        describe("TooltipManager") {
+        describe("TooltipEventSender") {
 
-            var manager: TooltipManager!
+            var eventSender: TooltipEventSender!
             var iamModule: InAppMessagingModuleMock!
             var viewListener: ViewListenerMock!
             var campaignRepository: CampaignRepositoryMock!
@@ -19,8 +19,8 @@ class TooltipManagerSpec: QuickSpec {
                 viewListener = ViewListenerMock()
                 iamModule = InAppMessagingModuleMock()
                 campaignRepository = CampaignRepositoryMock()
-                manager = TooltipManager(viewListener: viewListener,
-                                         campaignRepository: campaignRepository)
+                eventSender = TooltipEventSender(viewListener: viewListener,
+                                             campaignRepository: campaignRepository)
                 RInAppMessaging.setModule(iamModule)
             }
 
@@ -31,7 +31,7 @@ class TooltipManagerSpec: QuickSpec {
             context("when calling didUpdateCampaignList") {
 
                 it("will iterate over displayed views") {
-                    manager.didUpdateCampaignList()
+                    eventSender.didUpdateCampaignList()
                     expect(viewListener.wasIterateOverDisplayedViewsCalled).to(beTrue())
                 }
 
@@ -46,7 +46,7 @@ class TooltipManagerSpec: QuickSpec {
                     viewListener.displayedViews = [view1, view2]
                     campaignRepository.list = [TestHelpers.generateTooltip(id: "test")]
 
-                    manager.didUpdateCampaignList()
+                    eventSender.didUpdateCampaignList()
                     expect(iamModule.loggedEvent).toEventuallyNot(beNil())
                     expect(iamModule.loggedEvent?.type).to(equal(.viewAppeared))
                     expect((iamModule.loggedEvent as? ViewAppearedEvent)?.viewIdentifier).to(equal(TooltipViewIdentifierMock))
@@ -55,7 +55,7 @@ class TooltipManagerSpec: QuickSpec {
 
             context("when calling viewDidChangeSuperview") {
                 it("will not iterate over displayed views") {
-                    manager.viewDidChangeSuperview(UIView(), identifier: "id")
+                    eventSender.viewDidChangeSuperview(UIView(), identifier: "id")
                     expect(viewListener.wasIterateOverDisplayedViewsCalled).to(beFalse())
                 }
 
@@ -66,7 +66,7 @@ class TooltipManagerSpec: QuickSpec {
                     superview.addSubview(view)
                     campaignRepository.list = [TestHelpers.generateTooltip(id: "test")]
 
-                    manager.viewDidChangeSuperview(view, identifier: TooltipViewIdentifierMock)
+                    eventSender.viewDidChangeSuperview(view, identifier: TooltipViewIdentifierMock)
                     expect(iamModule.loggedEvent).toEventuallyNot(beNil())
                     expect(iamModule.loggedEvent?.type).to(equal(.viewAppeared))
                     expect((iamModule.loggedEvent as? ViewAppearedEvent)?.viewIdentifier).to(equal(TooltipViewIdentifierMock))
@@ -75,7 +75,7 @@ class TooltipManagerSpec: QuickSpec {
 
             context("when calling viewDidMoveToWindow") {
                 it("will not iterate over displayed views") {
-                    manager.viewDidMoveToWindow(UIView(), identifier: "id")
+                    eventSender.viewDidMoveToWindow(UIView(), identifier: "id")
                     expect(viewListener.wasIterateOverDisplayedViewsCalled).to(beFalse())
                 }
 
@@ -86,7 +86,7 @@ class TooltipManagerSpec: QuickSpec {
                     superview.addSubview(view)
                     campaignRepository.list = [TestHelpers.generateTooltip(id: "test")]
 
-                    manager.viewDidMoveToWindow(view, identifier: TooltipViewIdentifierMock)
+                    eventSender.viewDidMoveToWindow(view, identifier: TooltipViewIdentifierMock)
                     expect(iamModule.loggedEvent).toEventuallyNot(beNil())
                     expect(iamModule.loggedEvent?.type).to(equal(.viewAppeared))
                     expect((iamModule.loggedEvent as? ViewAppearedEvent)?.viewIdentifier).to(equal(TooltipViewIdentifierMock))
@@ -95,7 +95,7 @@ class TooltipManagerSpec: QuickSpec {
 
             context("when calling viewDidUpdateIdentifier") {
                 it("will not iterate over displayed views") {
-                    manager.viewDidUpdateIdentifier(from: nil, to: "id", view: UIView())
+                    eventSender.viewDidUpdateIdentifier(from: nil, to: "id", view: UIView())
                     expect(viewListener.wasIterateOverDisplayedViewsCalled).to(beFalse())
                 }
 
@@ -106,7 +106,7 @@ class TooltipManagerSpec: QuickSpec {
                     superview.addSubview(view)
                     campaignRepository.list = [TestHelpers.generateTooltip(id: "test")]
 
-                    manager.viewDidUpdateIdentifier(from: "old-id", to: TooltipViewIdentifierMock, view: view)
+                    eventSender.viewDidUpdateIdentifier(from: "old-id", to: TooltipViewIdentifierMock, view: view)
                     expect(iamModule.loggedEvent).toEventuallyNot(beNil())
                     expect(iamModule.loggedEvent?.type).to(equal(.viewAppeared))
                     expect((iamModule.loggedEvent as? ViewAppearedEvent)?.viewIdentifier).to(equal(TooltipViewIdentifierMock))

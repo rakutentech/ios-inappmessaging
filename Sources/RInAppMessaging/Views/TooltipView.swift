@@ -355,7 +355,7 @@ internal struct TooltipViewSwiftUI: UIViewRepresentable {
     }
 
     let identifier: String
-    var iamModule: SwiftUITooltipManageable.Type = RInAppMessaging.self
+    var swiftUIEventHandler = RInAppMessaging.swiftUIEventHandler
     @ObservedObject private var state: TooltipViewState
 
     init(identifier: String, state: TooltipViewState) {
@@ -372,7 +372,7 @@ internal struct TooltipViewSwiftUI: UIViewRepresentable {
         tooltipView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor).isActive = true
         tooltipView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
 
-        iamModule.registerSwiftUITooltip(identifier: identifier, uiView: tooltipView)
+        swiftUIEventHandler?.didCreateTooltipView(tooltipView, identifier: identifier)
         tooltipView.coordinator = context.coordinator
         tooltipView.isHidden = true
         return containerView
@@ -427,7 +427,7 @@ class TooltipViewState: ObservableObject {
 struct TooltipViewModifier: ViewModifier {
 
     let identifier: String
-    var iamModule: SwiftUITooltipManageable.Type = RInAppMessaging.self
+    var swiftUIEventHandler = RInAppMessaging.swiftUIEventHandler
     private var tooltipContainerSize: CGSize {
         // To keep exit button tappable, its bounds (and touch area) must fit inside the container view bounds
         .init(width: state.innerSize.width + TooltipViewSwiftUI.UIConstants.containerViewPadding * 2,
@@ -441,7 +441,10 @@ struct TooltipViewModifier: ViewModifier {
             GeometryReader { geometry in
                 TooltipViewSwiftUI(identifier: identifier, state: state)
                     .onAppear {
-                        iamModule.verifySwiftUITooltip(identifier: identifier)
+                        swiftUIEventHandler?.didAppear(identifier: identifier)
+                    }
+                    .onDisappear {
+                        swiftUIEventHandler?.didDisappear(identifier: identifier)
                     }
                     .isHidden(!state.isVisible)
                     .position(getCenter(geometry: geometry))
@@ -481,12 +484,5 @@ struct TooltipViewModifier: ViewModifier {
             return CGPoint(x: targetViewFrame.maxX + tooltipSize.width / 2.0 + TooltipLayoutConstants.targetViewSpacing,
                            y: targetViewFrame.midY)
         }
-    }
-}
-
-@available(iOS 15.0, *)
-public extension View {
-    func canHaveTooltip(identifier: String) -> some View {
-        modifier(TooltipViewModifier(identifier: identifier))
     }
 }

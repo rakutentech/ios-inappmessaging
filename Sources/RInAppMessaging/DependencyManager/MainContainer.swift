@@ -80,13 +80,19 @@ internal enum MainContainerFactory {
                                   campaignRepository: manager.resolve(type: CampaignRepositoryType.self)!,
                                   viewListener: manager.resolve(type: ViewListenerType.self)!)
             }),
-            ContainerElement(type: TooltipManagerType.self, factory: {
-                TooltipManager(viewListener: manager.resolve(type: ViewListenerType.self)!,
-                               campaignRepository: manager.resolve(type: CampaignRepositoryType.self)!)
+            ContainerElement(type: TooltipEventSenderType.self, factory: {
+                TooltipEventSender(viewListener: manager.resolve(type: ViewListenerType.self)!,
+                                   campaignRepository: manager.resolve(type: CampaignRepositoryType.self)!)
             }),
             ContainerElement(type: ViewListenerType.self, factory: {
                 ViewListener.currentInstance
-            })]
+            }),
+            ContainerElement(type: SwiftUIViewEventHandlerType.self, factory: {
+                SwiftUIViewEventHandler(router: manager.resolve(type: RouterType.self)!,
+                                        dispatcher: manager.resolve(type: TooltipDispatcherType.self)!,
+                                        eventSender: manager.resolve(type: TooltipEventSenderType.self)!)
+            })
+        ]
 
         // transient containers
         elements.append(contentsOf: [

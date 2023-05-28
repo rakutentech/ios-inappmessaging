@@ -164,7 +164,7 @@ class TooltipDispatcherSpec: QuickSpec {
 
                 it("will remove the tooltip from queue") {
                     router.completeDisplayingTooltip(cancelled: false)
-                    expect(dispatcher.queuedTooltips).toEventuallyNot(contain(tooltip))
+                    expect(dispatcher.activeTooltips).toEventuallyNot(contain(tooltip))
                 }
             }
 

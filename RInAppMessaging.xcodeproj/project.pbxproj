@@ -76,7 +76,7 @@
 		45D4DA4F240F5597009B9B37 /* ViewPresenterSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D4DA4E240F5597009B9B37 /* ViewPresenterSpec.swift */; };
 		45DA01AD23D5831900A27CC6 /* ConfigurationManagerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA01AC23D5831900A27CC6 /* ConfigurationManagerSpec.swift */; };
 		45DC6D0127A33BB300B28C13 /* TooltipDispatcherSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DC6D0027A33BB300B28C13 /* TooltipDispatcherSpec.swift */; };
-		45DC6D0327A41CE700B28C13 /* TooltipManagerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DC6D0227A41CE700B28C13 /* TooltipManagerSpec.swift */; };
+		45DC6D0327A41CE700B28C13 /* TooltipEventSenderSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DC6D0227A41CE700B28C13 /* TooltipEventSenderSpec.swift */; };
 		45DC6D0527A426C000B28C13 /* ViewListenerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DC6D0427A426C000B28C13 /* ViewListenerSpec.swift */; };
 		45DC6D0727A44CA900B28C13 /* TooltipViewSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DC6D0627A44CA800B28C13 /* TooltipViewSpec.swift */; };
 		45DC6D0927A4501300B28C13 /* TooltipPresenterSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DC6D0827A4501300B28C13 /* TooltipPresenterSpec.swift */; };
@@ -211,7 +211,7 @@
 		45D4DA4E240F5597009B9B37 /* ViewPresenterSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewPresenterSpec.swift; sourceTree = "<group>"; };
 		45DA01AC23D5831900A27CC6 /* ConfigurationManagerSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationManagerSpec.swift; sourceTree = "<group>"; };
 		45DC6D0027A33BB300B28C13 /* TooltipDispatcherSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TooltipDispatcherSpec.swift; sourceTree = "<group>"; };
-		45DC6D0227A41CE700B28C13 /* TooltipManagerSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TooltipManagerSpec.swift; sourceTree = "<group>"; };
+		45DC6D0227A41CE700B28C13 /* TooltipEventSenderSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TooltipEventSenderSpec.swift; sourceTree = "<group>"; };
 		45DC6D0427A426C000B28C13 /* ViewListenerSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewListenerSpec.swift; sourceTree = "<group>"; };
 		45DC6D0627A44CA800B28C13 /* TooltipViewSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TooltipViewSpec.swift; sourceTree = "<group>"; };
 		45DC6D0827A4501300B28C13 /* TooltipPresenterSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TooltipPresenterSpec.swift; sourceTree = "<group>"; };
@@ -471,7 +471,7 @@
 				45ADA541247D206B00A9E2A3 /* RouterSpec.swift */,
 				4534947123C6ABF700189A81 /* SerializationSpec.swift */,
 				45DC6D0027A33BB300B28C13 /* TooltipDispatcherSpec.swift */,
-				45DC6D0227A41CE700B28C13 /* TooltipManagerSpec.swift */,
+				45DC6D0227A41CE700B28C13 /* TooltipEventSenderSpec.swift */,
 				45DC6D0827A4501300B28C13 /* TooltipPresenterSpec.swift */,
 				45DC6D0627A44CA800B28C13 /* TooltipViewSpec.swift */,
 				45EA720425B71FA2001B2049 /* UIApplicationExtensionSpec.swift */,
@@ -833,7 +833,7 @@
 				45357AF7245AD49E007D8FDC /* HttpRequestableSpec.swift in Sources */,
 				459B227C245289F300D218CE /* ConfigurationServiceSpec.swift in Sources */,
 				45DA01AD23D5831900A27CC6 /* ConfigurationManagerSpec.swift in Sources */,
-				45DC6D0327A41CE700B28C13 /* TooltipManagerSpec.swift in Sources */,
+				45DC6D0327A41CE700B28C13 /* TooltipEventSenderSpec.swift in Sources */,
 				45DC6D0927A4501300B28C13 /* TooltipPresenterSpec.swift in Sources */,
 				FC92B45B29DBDEBE0053CF0E /* UILabelExtensionSpec.swift in Sources */,
 				4BBE7EAF274F1A6A0039D2BF /* UIFontExtensionSpec.swift in Sources */,
