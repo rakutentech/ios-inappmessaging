@@ -9,6 +9,7 @@
 - Bug fixes:
 	- Removed "last user" cache to avoid overwriting anonymous user cache during init [SDKCF-6409]
 	- Added display permission service to perform ping on tooltip dispatcher [SDKCF-4964]
+	- Fix broken UIKit framework UI on dark mode [SDKCF-6587]
 - Improvements:
 	- Created new test scheme to combine unit test and UI test results [SDKCF-6356]
 	- Refactored Event classes and removed unused code [SDKCF-6376]
