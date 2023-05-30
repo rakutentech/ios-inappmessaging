@@ -392,7 +392,7 @@
                                 </constraints>
                             </scrollView>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="IoV-pG-Oba" firstAttribute="centerX" secondItem="kh9-bI-dsS" secondAttribute="centerX" id="6Fp-h2-2c8"/>
                             <constraint firstItem="IoV-pG-Oba" firstAttribute="width" secondItem="kh9-bI-dsS" secondAttribute="width" multiplier="0.9" id="9gV-No-WQo"/>
