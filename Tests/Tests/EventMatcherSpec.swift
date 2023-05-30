@@ -267,7 +267,7 @@ class EventMatcherSpec: QuickSpec {
                     eventMatcher.matchAndStore(event: AppStartEvent())
                     eventMatcher.matchAndStore(event: LoginSuccessfulEvent())
                     eventMatcher.matchAndStore(event: CustomEvent(withName: "customEventTest", withCustomAttributes: []))
-                    expect(eventMatcher.containsAllMatchedEvents(for: testCampaign)).to(beTrue())
+                    expect(eventMatcher.containsAllRequiredEvents(for: testCampaign)).to(beTrue())
                 }
 
                 it("will return true if more events than required were stored") {
@@ -276,16 +276,16 @@ class EventMatcherSpec: QuickSpec {
                     eventMatcher.matchAndStore(event: LoginSuccessfulEvent())
                     eventMatcher.matchAndStore(event: PurchaseSuccessfulEvent())
                     eventMatcher.matchAndStore(event: CustomEvent(withName: "customEventTest", withCustomAttributes: []))
-                    expect(eventMatcher.containsAllMatchedEvents(for: testCampaign)).to(beTrue())
+                    expect(eventMatcher.containsAllRequiredEvents(for: testCampaign)).to(beTrue())
                 }
 
                 it("will return false if not all required events were stored") {
                     eventMatcher.matchAndStore(event: AppStartEvent())
-                    expect(eventMatcher.containsAllMatchedEvents(for: testCampaign)).to(beFalse())
+                    expect(eventMatcher.containsAllRequiredEvents(for: testCampaign)).to(beFalse())
                 }
 
                 it("will return false if none of required events were stored") {
-                    expect(eventMatcher.containsAllMatchedEvents(for: testCampaign)).to(beFalse())
+                    expect(eventMatcher.containsAllRequiredEvents(for: testCampaign)).to(beFalse())
                 }
 
                 it("will return false campaign has no triggers (which is an invalid state)") {
@@ -293,7 +293,7 @@ class EventMatcherSpec: QuickSpec {
                     campaignRepository.list = [campaign]
                     eventMatcher.matchAndStore(event: AppStartEvent())
                     eventMatcher.matchAndStore(event: LoginSuccessfulEvent())
-                    expect(eventMatcher.containsAllMatchedEvents(for: campaign)).to(beFalse())
+                    expect(eventMatcher.containsAllRequiredEvents(for: campaign)).to(beFalse())
                 }
 
                 context("with a tooltip") {
@@ -304,19 +304,19 @@ class EventMatcherSpec: QuickSpec {
                     it("will return false if has all events matching triggers but without matching ViewAppearedEvent") {
                         eventMatcher.matchAndStore(event: AppStartEvent())
                         eventMatcher.matchAndStore(event: LoginSuccessfulEvent())
-                        expect(eventMatcher.containsAllMatchedEvents(for: testTooltip)).to(beFalse())
+                        expect(eventMatcher.containsAllRequiredEvents(for: testTooltip)).to(beFalse())
                     }
 
                     it("will return false if has matching ViewAppearedEvent but without events matching triggers") {
                         eventMatcher.matchAndStore(event: ViewAppearedEvent(viewIdentifier: TooltipViewIdentifierMock))
-                        expect(eventMatcher.containsAllMatchedEvents(for: testTooltip)).to(beFalse())
+                        expect(eventMatcher.containsAllRequiredEvents(for: testTooltip)).to(beFalse())
                     }
 
                     it("will return true if all required events are stored") {
                         eventMatcher.matchAndStore(event: AppStartEvent())
                         eventMatcher.matchAndStore(event: ViewAppearedEvent(viewIdentifier: TooltipViewIdentifierMock))
                         eventMatcher.matchAndStore(event: LoginSuccessfulEvent())
-                        expect(eventMatcher.containsAllMatchedEvents(for: testTooltip)).to(beTrue())
+                        expect(eventMatcher.containsAllRequiredEvents(for: testTooltip)).to(beTrue())
                     }
                 }
             }

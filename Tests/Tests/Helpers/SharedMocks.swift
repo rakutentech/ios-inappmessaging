@@ -117,7 +117,7 @@ class EventMatcherMock: EventMatcherType {
 
     func matchedEvents(for campaign: Campaign) -> [Event] { return [] }
 
-    func containsAllMatchedEvents(for campaign: Campaign) -> Bool {
+    func containsAllRequiredEvents(for: Campaign) -> Bool {
         simulateMatchingSuccess
     }
 

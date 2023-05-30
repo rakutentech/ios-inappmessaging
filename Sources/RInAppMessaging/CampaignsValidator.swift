@@ -30,35 +30,25 @@ internal struct CampaignsValidator: CampaignsValidatorType {
 
     func validate(validatedCampaignHandler: (_ campaign: Campaign, _ events: Set<Event>) -> Void) {
 
-        for campaign in campaignRepository.list {
+        campaignRepository.list.forEach { campaign in
             guard campaign.impressionsLeft > 0 else {
-                continue
+                return
             }
             
             guard campaign.data.isTest || (!campaign.isOptedOut && !campaign.isOutdated) else {
-                continue
+                return
             }
             guard let campaignTriggers = campaign.data.triggers else {
                 Logger.debug("campaign (\(campaign.id)) has no triggers.")
-                continue
+                return
             }
 
             let matchedEvents = eventMatcher.matchedEvents(for: campaign)
-            guard eventMatcher.containsAllMatchedEvents(for: campaign),
-                var triggeredEvents = triggerEvents(triggers: campaignTriggers,
-                                                    loggedEvents: matchedEvents) else {
-                continue
-            }
-
-            // ViewAppearedEvent doesn't have its Trigger counterpart - it's an internal event.
-            if campaign.isTooltip, let tooltipViewID = campaign.tooltipData?.bodyData.uiElementIdentifier {
-                guard let viewAppearedEvent = matchedEvents.first(where: {
-                    ($0 as? ViewAppearedEvent)?.viewIdentifier == tooltipViewID
-                }) else {
-                    continue
-                }
-
-                triggeredEvents.insert(viewAppearedEvent)
+            guard eventMatcher.containsAllRequiredEvents(for: campaign),
+                let triggeredEvents = triggerEvents(triggers: campaignTriggers,
+                                                    loggedEvents: matchedEvents,
+                                                    isTooltip: campaign.isTooltip) else {
+                return
             }
 
             validatedCampaignHandler(campaign, triggeredEvents)
@@ -68,7 +58,9 @@ internal struct CampaignsValidator: CampaignsValidatorType {
     /// Finds set of events that match all triggers
     /// - Returns: A set of events that satisfy all triggers
     /// or `nil` if even one trigger was not satisfied
-    private func triggerEvents(triggers: [Trigger], loggedEvents: [Event]) -> Set<Event>? {
+    private func triggerEvents(triggers: [Trigger],
+                               loggedEvents: [Event],
+                               isTooltip: Bool) -> Set<Event>? {
         guard !loggedEvents.isEmpty else {
             return nil
         }
@@ -85,6 +77,15 @@ internal struct CampaignsValidator: CampaignsValidatorType {
             }
 
             triggeredEvents.insert(event)
+        }
+
+        if isTooltip {
+            // ViewAppearedEvent doesn't have its Trigger counterpart - it's an internal event.
+            guard let viewAppearedEvent = loggedEvents.first(where: { $0 is ViewAppearedEvent }) else {
+                return nil
+            }
+
+            triggeredEvents.insert(viewAppearedEvent)
         }
 
         return triggeredEvents
