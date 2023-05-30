@@ -36,15 +36,20 @@ internal protocol RouterType: ErrorReportable {
                                confirmation: @escaping @autoclosure () -> Bool,
                                completion: @escaping (_ cancelled: Bool) -> Void)
     
-    /// Removes displayed campaign view from the stack
+    /// Cancels display of current campaign and removes it from the view stack
     func discardDisplayedCampaign()
 
-    /// Removes all tooltips attached to a view with matching uiElementIdentifier
+    /// Removes all tooltips attached to a view with matching uiElementIdentifier with a cancelled status
+    /// - Parameter uiElementIdentifier: identifier of the tooltip's target view
     func discardDisplayedTooltip(with uiElementIdentifier: String)
 
     /// Checks if given tooltip is already displayed.
     /// - Returns: true if the tooltip is currently displayed. `displayTooltip()` shouldn't be called in this case.
     func isDisplayingTooltip(with uiElementIdentifier: String) -> Bool
+
+    /// Removes tooltip view from the view stack (w/o completion handling)
+    /// - Parameter uiElementIdentifier: identifier of the tooltip's target view
+    func hideDisplayedTooltip(with uiElementIdentifier: String)
 }
 
 /// Handles all the displaying logic of the SDK.
@@ -228,8 +233,7 @@ internal class Router: RouterType, ViewListenerObserver {
             let tooltipView = TooltipView(presenter: presenter)
             presenter.set(view: tooltipView, dataModel: tooltip, image: image)
             presenter.onDismiss = { [weak self] cancelled in
-                self?.displayedTooltips[identifier]?.removeFromSuperview()
-                self?.displayedTooltips[identifier] = nil
+                self?.hideDisplayedTooltip(with: identifier)
                 completion(cancelled)
             }
 
@@ -277,12 +281,20 @@ internal class Router: RouterType, ViewListenerObserver {
             tooltipView.presenter = presenter
             presenter.set(view: tooltipView, dataModel: tooltip, image: image)
             presenter.onDismiss = { [weak self] cancelled in
-                self?.displayedTooltips[identifier]?.removeFromSuperview()
-                self?.displayedTooltips[identifier] = nil
+                self?.hideDisplayedTooltip(with: identifier)
                 completion(cancelled)
             }
 
             self.displayedTooltips[identifier] = tooltipView
+        }
+    }
+
+    func hideDisplayedTooltip(with uiElementIdentifier: String) {
+        displayQueue.sync {
+            DispatchQueue.main.async {
+                self.displayedTooltips[uiElementIdentifier]?.removeFromSuperview()
+                self.displayedTooltips[uiElementIdentifier] = nil
+            }
         }
     }
 
@@ -428,8 +440,7 @@ extension Router {
     }
 
     func viewDidGetRemovedFromSuperview(_ view: UIView, identifier: String) {
-        displayedTooltips[identifier]?.removeFromSuperview()
-        displayedTooltips[identifier] = nil
+        hideDisplayedTooltip(with: identifier)
     }
 
     func viewDidUpdateIdentifier(from: String?, to: String?, view: UIView) {

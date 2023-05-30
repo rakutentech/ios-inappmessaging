@@ -64,7 +64,7 @@
 		D234A71A291C62CE0086AC80 /* HttpRequestableSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = D234A6EC291C62C90086AC80 /* HttpRequestableSpec.swift */; };
 		D234A71B291C62CE0086AC80 /* MainContainerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = D234A6ED291C62C90086AC80 /* MainContainerSpec.swift */; };
 		D234A71C291C62CE0086AC80 /* RouterSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = D234A6EE291C62C90086AC80 /* RouterSpec.swift */; };
-		D234A71D291C62CE0086AC80 /* TooltipManagerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = D234A6EF291C62C90086AC80 /* TooltipManagerSpec.swift */; };
+		D234A71D291C62CE0086AC80 /* TooltipEventSenderSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = D234A6EF291C62C90086AC80 /* TooltipEventSenderSpec.swift */; };
 		D234A71E291C62CE0086AC80 /* ViewPresenterSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = D234A6F0291C62C90086AC80 /* ViewPresenterSpec.swift */; };
 		D234A71F291C62CE0086AC80 /* HeaderAttributesBuilderSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = D234A6F1291C62CA0086AC80 /* HeaderAttributesBuilderSpec.swift */; };
 		D234A720291C62CE0086AC80 /* CustomEventValidationSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = D234A6F2291C62CA0086AC80 /* CustomEventValidationSpec.swift */; };
@@ -206,7 +206,7 @@
 		D234A6EC291C62C90086AC80 /* HttpRequestableSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HttpRequestableSpec.swift; sourceTree = "<group>"; };
 		D234A6ED291C62C90086AC80 /* MainContainerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainContainerSpec.swift; sourceTree = "<group>"; };
 		D234A6EE291C62C90086AC80 /* RouterSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RouterSpec.swift; sourceTree = "<group>"; };
-		D234A6EF291C62C90086AC80 /* TooltipManagerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TooltipManagerSpec.swift; sourceTree = "<group>"; };
+		D234A6EF291C62C90086AC80 /* TooltipEventSenderSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TooltipEventSenderSpec.swift; sourceTree = "<group>"; };
 		D234A6F0291C62C90086AC80 /* ViewPresenterSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewPresenterSpec.swift; sourceTree = "<group>"; };
 		D234A6F1291C62CA0086AC80 /* HeaderAttributesBuilderSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeaderAttributesBuilderSpec.swift; sourceTree = "<group>"; };
 		D234A6F2291C62CA0086AC80 /* CustomEventValidationSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomEventValidationSpec.swift; sourceTree = "<group>"; };
@@ -512,7 +512,7 @@
 				D234A6EE291C62C90086AC80 /* RouterSpec.swift */,
 				D234A717291C62CE0086AC80 /* SerializationSpec.swift */,
 				D234A6FC291C62CB0086AC80 /* TooltipDispatcherSpec.swift */,
-				D234A6EF291C62C90086AC80 /* TooltipManagerSpec.swift */,
+				D234A6EF291C62C90086AC80 /* TooltipEventSenderSpec.swift */,
 				D234A711291C62CE0086AC80 /* TooltipPresenterSpec.swift */,
 				D234A708291C62CD0086AC80 /* TooltipViewSpec.swift */,
 				D234A709291C62CD0086AC80 /* UIApplicationExtensionSpec.swift */,
@@ -888,7 +888,7 @@
 				D234A744291C62CF0086AC80 /* UIFontExtensionSpec.swift in Sources */,
 				D234A739291C62CF0086AC80 /* CampaignsListManagerSpec.swift in Sources */,
 				D234A72C291C62CF0086AC80 /* ViewSpec.swift in Sources */,
-				D234A71D291C62CE0086AC80 /* TooltipManagerSpec.swift in Sources */,
+				D234A71D291C62CE0086AC80 /* TooltipEventSenderSpec.swift in Sources */,
 				D234A729291C62CF0086AC80 /* ErrorReportableSpec.swift in Sources */,
 				D234A73A291C62CF0086AC80 /* InAppMessagingModuleSpec.swift in Sources */,
 				D234A73D291C62CF0086AC80 /* ConfigurationRepositorySpec.swift in Sources */,

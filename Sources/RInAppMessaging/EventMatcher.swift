@@ -14,7 +14,7 @@ internal protocol EventMatcherType: AnyObject, Lockable {
     /// - Parameter event: An event to store
     func matchAndStore(event: Event)
     func matchedEvents(for campaign: Campaign) -> [Event]
-    func containsAllMatchedEvents(for campaign: Campaign) -> Bool
+    func containsAllRequiredEvents(for campaign: Campaign) -> Bool
 
     /// Function tries to find and remove one record for each event in set for provided campaign.
     /// Operation succeeds only if there is at least one record of each event.
@@ -73,17 +73,17 @@ internal class EventMatcher: EventMatcherType {
         matchedEvents.get()[campaign.id, default: []] + persistentEvents
     }
 
-    func containsAllMatchedEvents(for campaign: Campaign) -> Bool {
+    func containsAllRequiredEvents(for campaign: Campaign) -> Bool {
         guard let triggers = campaign.data.triggers, !triggers.isEmpty else {
             return false
         }
-        let events = matchedEvents.get()[campaign.id, default: []] + persistentEvents
-        let allTriggersSatisfied = triggers.allSatisfy { isTriggerMatchingOneOfEvents($0, events: events) }
+        let events = matchedEvents(for: campaign)
+        let allTriggersHaveMatchingEvent = triggers.allSatisfy { isTriggerMatchingOneOfEvents($0, events: events) }
         
         guard campaign.isTooltip else {
-            return allTriggersSatisfied
+            return allTriggersHaveMatchingEvent
         }
-        return allTriggersSatisfied && events.contains(where: { $0.type == .viewAppeared })
+        return allTriggersHaveMatchingEvent && events.contains(where: { $0.type == .viewAppeared })
     }
 
     func removeSetOfMatchedEvents(_ eventsToRemove: Set<Event>, for campaign: Campaign) throws {

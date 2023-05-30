@@ -7,11 +7,6 @@ import RSDKUtilsMain
 import RSDKUtils
 #endif
 
-internal protocol SwiftUITooltipManageable: AnyObject {
-    static func registerSwiftUITooltip(identifier: String, uiView: TooltipView)
-    static func verifySwiftUITooltip(identifier: String)
-}
-
 /// Class that contains the public methods for host application to call.
 /// Entry point for host application to communicate with InAppMessaging.
 /// Conforms to NSObject and exposed with objc tag to make it work with Obj-c projects.
@@ -20,6 +15,9 @@ internal protocol SwiftUITooltipManageable: AnyObject {
     internal private(set) static var initializedModule: InAppMessagingModule?
     private(set) static var dependencyManager: TypedDependencyManager?
     internal static let inAppQueue = DispatchQueue(label: "IAM.Main", qos: .utility, attributes: [])
+    internal static var swiftUIEventHandler: SwiftUIViewEventHandlerType? {
+        dependencyManager?.resolve(type: SwiftUIViewEventHandlerType.self)
+    }
 
     private override init() { super.init() }
 
@@ -102,7 +100,7 @@ internal protocol SwiftUITooltipManageable: AnyObject {
                   let randomizer = dependencyManager.resolve(type: Randomizer.self),
                   let displayPermissionService = dependencyManager.resolve(type: DisplayPermissionServiceType.self),
                   let viewListener = dependencyManager.resolve(type: ViewListenerType.self),
-                  let _ = dependencyManager.resolve(type: TooltipManagerType.self),
+                  let _ = dependencyManager.resolve(type: TooltipEventSenderType.self),
                   let tooltipDispatcher = dependencyManager.resolve(type: TooltipDispatcherType.self) else {
 
                 assertionFailure("In-App Messaging SDK module initialization failure: Dependencies could not be resolved")
@@ -187,7 +185,7 @@ internal protocol SwiftUITooltipManageable: AnyObject {
         }
     }
 
-    private static func notifyIfModuleNotInitialized() {
+    internal static func notifyIfModuleNotInitialized() {
         guard initializedModule == nil else {
             return
         }
@@ -224,19 +222,5 @@ internal protocol SwiftUITooltipManageable: AnyObject {
 
     internal static func setModule(_ iamModule: InAppMessagingModule?) {
         initializedModule = iamModule
-    }
-}
-
-@available(iOS 15.0, *)
-extension RInAppMessaging: SwiftUITooltipManageable {
-    static func registerSwiftUITooltip(identifier: String,
-                                                uiView: TooltipView) {
-        let dispatcher = dependencyManager?.resolve(type: TooltipDispatcherType.self)
-        dispatcher?.registerSwiftUITooltip(identifier: identifier, uiView: uiView)
-    }
-
-    static func verifySwiftUITooltip(identifier: String) {
-        let manager = dependencyManager?.resolve(type: TooltipManagerType.self)
-        manager?.verifySwiftUITooltip(identifier: identifier)
     }
 }

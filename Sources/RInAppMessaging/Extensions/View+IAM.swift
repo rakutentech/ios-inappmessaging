@@ -2,7 +2,7 @@ import Foundation
 import SwiftUI
 
 @available(iOS 13.0, *)
-extension View {
+internal extension View {
     /// Hide or show the view based on a boolean value.
     ///
     /// Example for visibility:
@@ -26,5 +26,13 @@ extension View {
         } else {
             self
         }
+    }
+}
+
+@available(iOS 15.0, *)
+public extension View {
+    func canHaveTooltip(identifier: String) -> some View {
+        RInAppMessaging.notifyIfModuleNotInitialized()
+        return modifier(TooltipViewModifier(identifier: identifier))
     }
 }

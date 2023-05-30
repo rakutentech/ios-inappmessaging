@@ -24,6 +24,7 @@ internal protocol ViewListenerObserver: AnyObject {
 /// A class responsible for tracking UIView changes in the hierarchy.
 /// All changes are reported to registered ViewListenerObserver objects.
 /// This class is based on swizzling and MUST be used as a singleton to aviod unexpected behaviour.
+/// - Note: SwiftUI owned windows are not supported.
 internal final class ViewListener: ViewListenerType {
 
     // A static singleton-like value is necessary for UIView methods to access this class

@@ -289,7 +289,8 @@ let actionButton = UIButton()
 actionButton.accessibilityIdentifier = "tooltip.1"
 ```
 ##### SwiftUI:
-To attach tooltip to a SwiftUI view, use `canHaveTooltip()` modifier.
+To attach tooltip to a SwiftUI view, use `canHaveTooltip()` modifier.  
+**Important:** This modifier must be called AFTER `RInAppMessaging.configure()`. Otherwise the tooltip will not appear.
 ```swift
 import RInAppMessaging
 (...)

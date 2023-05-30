@@ -39,8 +39,9 @@ class MainContainerSpec: QuickSpec {
                     dependencyManager.resolve(type: UserDataCacheable.self),
                     dependencyManager.resolve(type: ViewListenerType.self),
                     dependencyManager.resolve(type: TooltipDispatcherType.self),
-                    dependencyManager.resolve(type: TooltipManagerType.self),
-                    dependencyManager.resolve(type: TooltipPresenterType.self)
+                    dependencyManager.resolve(type: TooltipEventSenderType.self),
+                    dependencyManager.resolve(type: TooltipPresenterType.self),
+                    dependencyManager.resolve(type: SwiftUIViewEventHandlerType.self)
                 ]
             }
 
