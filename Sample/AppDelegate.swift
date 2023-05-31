@@ -18,7 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             // MockServerHelper.setupForSampleApp()
         }
         if CommandLine.arguments.contains("--uitesting") {
-            RInAppMessaging.configure()
+            RInAppMessaging.configure(enableTooltipFeature: true)
         }
 
         return true

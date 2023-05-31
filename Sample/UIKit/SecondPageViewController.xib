@@ -20,14 +20,15 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="roI-sB-TSB">
-                    <rect key="frame" x="137" y="834" width="140" height="30"/>
+                    <rect key="frame" x="137" y="800" width="140" height="30"/>
+                    <accessibility key="accessibilityConfiguration" identifier="return_to_home"/>
                     <state key="normal" title="Return to homepage"/>
                     <connections>
                         <action selector="returnToHomepage:" destination="-1" eventType="touchUpInside" id="amB-Mg-c5j"/>
                     </connections>
                 </button>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Second page" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ys1-Pr-pdf">
-                    <rect key="frame" x="156.5" y="76" width="101" height="21"/>
+                    <rect key="frame" x="156.5" y="80" width="101" height="21"/>
                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
