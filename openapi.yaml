@@ -83,11 +83,6 @@ paths:
         schema:
           type: string
           example: App subscription key
-      - name: easy_id
-        in: header
-        schema:
-          type: integer
-          example: 1234567890
       - name: device_id
         in: header
         schema:
@@ -370,6 +365,7 @@ components:
                             example: 3000
                           html:
                             type: boolean
+                            description: If true, the messageBody value is treated as HTML content
                       controlSettings:
                         type: object
                         properties:
@@ -409,7 +405,7 @@ components:
         action:
           type: integer
           example: 3
-          description: Actions -> 0 - INVALID, 1 - Redirect, 2 - Deeplink, 3 - Close, 4 - Push Premier
+          description: Actions -> 0 - INVALID, 1 - Redirect, 2 - Deeplink, 3 - Close, 4 - Push Primer
         uri:
           type: string
           description: URI for redirect or deeplink
