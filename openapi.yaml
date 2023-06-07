@@ -124,6 +124,12 @@ paths:
         schema:
           type: string
           example: App subscription key
+      - name: device_id
+        in: header
+        schema:
+          type: string
+          format: uuid
+          example: Device id of user's device
       - name: Authorization
         in: header
         schema:
@@ -216,6 +222,12 @@ components:
         appVersion:
           type: string
           example: "1.0"
+        supportedCampaignTypes:
+          type: array
+          items:
+            type: integer
+            example: 1
+            description: 1 - Regular, 2 - Push Primer
         userIdentifiers:
           type: array
           items:
@@ -242,6 +254,14 @@ components:
                 properties:
                   campaignId: 
                     type: string
+                  maxImpressions:
+                    type: integer
+                  infiniteImpressions:
+                    type: boolean
+                  hasNoEndDate:
+                    type: boolean
+                  isCampaignDismissable:
+                    type: boolean
                   type: 
                     type: integer
                     description: Type of this in-app message. 0 - INVALID, 1 - Modal View, 2 - Full Screen, 3 - Slide Banner, 4 - Html
@@ -333,6 +353,9 @@ components:
                             type: integer
                             description: Min time between consecutive messages. Milliseconds.
                             example: 3000
+                          html:
+                            type: boolean
+                            description: If true, the messageBody value is treated as HTML content
                       controlSettings:
                         type: object
                         properties:
@@ -372,7 +395,7 @@ components:
         action:
           type: integer
           example: 3
-          description: Actions -> 0 - INVALID, 1 - Redirect, 2 - Deeplink, 3 - Close
+          description: Actions -> 0 - INVALID, 1 - Redirect, 2 - Deeplink, 3 - Close, 4 - Push Primer
         uri:
           type: string
           description: URI for redirect or deeplink
