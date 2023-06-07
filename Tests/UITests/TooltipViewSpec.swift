@@ -28,7 +28,6 @@ class ToolTipViewSpec: QuickSpec {
             app.launchArguments.append("-context \(context)")
             app.launch()
             app.buttons["UIKit"].tap()
-            app.buttons["app_launch"].tap()
         }
         beforeEach {
             mockServer = MockServerHelper.setupNewServer(route: MockServerHelper.standardRouting)
@@ -37,83 +36,69 @@ class ToolTipViewSpec: QuickSpec {
         afterEach {
             mockServer.stop()
         }
+        func launchToolTip() {
+            app.buttons["app_launch"].tap()
+            if !iamView.exists {
+                app.buttons["open_modal_page"].tap()
+                expect(iamView.exists).toEventually(beTrue(), timeout: .seconds(2))
+            }
+        }
         describe("Tooltip View") {
             context("when clicking X button") {
                 beforeEach {
                     launchAppIfNecessary(context: "tooltip-data")
-                    if !iamView.exists {
-                        app.buttons["open_modal_page"].tap()
-                        expect(iamView.exists).toEventually(beTrue(), timeout: .seconds(2))
-                    }
+                }
+                afterEach {
+                    app = nil
                 }
                 it("should close the tooltip") {
+                    launchToolTip()
                     expect(iamView.buttons["IAM.tooltip.exitButton"].exists).to(beTrue())
                     iamView.buttons["IAM.tooltip.exitButton"].tap()
                     expect(iamView.exists).to(beFalse())
                 }
-            }
-            context("when clicking X button for testing touch area") {
-                beforeEach {
-                    launchAppIfNecessary(context: "tooltip-toucharea")
-                    if !iamView.exists {
-                        app.buttons["open_modal_page"].tap()
-                        expect(iamView.exists).toEventually(beTrue(), timeout: .seconds(2))
-                    }
-                }
                 it("should have 44pt touch area") {
+                    launchToolTip()
                     let exitButtonCenter = iamView.buttons["IAM.tooltip.exitButton"].coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
                     let upperLeftCorner = exitButtonCenter.withOffset(
                         CGVector(dx: -21.5, dy: -21.5)) // reduced by .5 for cases when exit button has x.5 x/y position
                     upperLeftCorner.tap()
                     expect(iamView.exists).to(beFalse())
                 }
-            }
-            context("when trigering tooltip after closing") {
-                beforeEach {
-                    launchAppIfNecessary(context: "tooltip-autodisappear")
-                    if !iamView.exists {
-                        app.buttons["open_modal_page"].tap()
-                        expect(iamView.exists).toEventually(beTrue(), timeout: .seconds(2))
-                    }
-                }
-                it("tooltip should not reappear") {
+                it("should not reappear after closing") {
+                    launchToolTip()
                     expect(iamView.buttons["IAM.tooltip.exitButton"].exists).to(beTrue())
                     iamView.buttons["IAM.tooltip.exitButton"].tap()
                     expect(iamView.exists).to(beFalse())
                     app.buttons["return_to_home"].tap()
                     app.buttons["open_modal_page"].tap()
-                    expect(iamView.buttons["IAM.tooltip.exitButton"].exists).to(beFalse())
+                    expect(iamView.exists).to(beFalse())
+                }
+                it("should not reappear after closing on logging a different event") {
+                    app.buttons["login_successful"].tap()
+                    if !iamView.exists {
+                        app.buttons["open_modal_page"].tap()
+                        expect(iamView.exists).toEventually(beTrue(), timeout: .seconds(2))
+                    }
+                    expect(iamView.buttons["IAM.tooltip.exitButton"].exists).to(beTrue())
+                    iamView.buttons["IAM.tooltip.exitButton"].tap()
+                    app.buttons["return_to_home"].tap()
+                    app.buttons["login_successful"].tap()
+                    app.buttons["open_modal_page"].tap()
                     expect(iamView.exists).to(beFalse())
                 }
             }
-            context("when trigering tooltip after closing") {
+            context("when autodisppear is enabled") {
                 beforeEach {
                     launchAppIfNecessary(context: "tooltip-data")
-                    if !iamView.exists {
-                        app.buttons["open_modal_page"].tap()
-                        expect(iamView.exists).toEventually(beTrue(), timeout: .seconds(2))
-                    }
                 }
-                it("tooltip should not reappear") {
-                    expect(iamView.buttons["IAM.tooltip.exitButton"].exists).to(beTrue())
-                    iamView.buttons["IAM.tooltip.exitButton"].tap()
-                    expect(iamView.exists).to(beFalse())
-                    app.buttons["return_to_home"].tap()
-                    app.buttons["open_modal_page"].tap()
-                    expect(iamView.buttons["IAM.tooltip.exitButton"].exists).to(beFalse())
-                    expect(iamView.exists).to(beFalse())
-                }
-            }
-            context("when trigering tooltip with autodisppear") {
-                beforeEach {
-                    launchAppIfNecessary(context: "tooltip-autodisappear")
-                    if !iamView.exists {
-                        app.buttons["open_modal_page"].tap()
-                        expect(iamView.exists).toEventually(beTrue(), timeout: .seconds(2))
-                    }
-                }
-                it("tooltip should autodisappear after the specified time") {
+                it("should disappear after the specified duration") {
+                    launchToolTip()
+                    expect(iamView.exists).toEventually(beTrue(), timeout: .seconds(3))
                     expect(iamView.exists).toEventually(beFalse(), timeout: .seconds(6))
+                }
+                afterEach {
+                    app = nil
                 }
             }
         }

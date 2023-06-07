@@ -99,8 +99,6 @@
 		D92D1F262224A269008EA748 /* TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = D92D1F242224A265008EA748 /* TestHelpers.swift */; };
 		E686BF522A2692CD00D4E3E9 /* TooltipViewSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E686BF512A2692CD00D4E3E9 /* TooltipViewSpec.swift */; };
 		E686BF562A2692DD00D4E3E9 /* tooltip-data.json in Resources */ = {isa = PBXBuildFile; fileRef = E686BF532A2692DD00D4E3E9 /* tooltip-data.json */; };
-		E686BF572A2692DD00D4E3E9 /* tooltip-autodisappear.json in Resources */ = {isa = PBXBuildFile; fileRef = E686BF542A2692DD00D4E3E9 /* tooltip-autodisappear.json */; };
-		E686BF582A2692DD00D4E3E9 /* tooltip-toucharea.json in Resources */ = {isa = PBXBuildFile; fileRef = E686BF552A2692DD00D4E3E9 /* tooltip-toucharea.json */; };
 		FC2CA49B2A0CDE110096EAF7 /* AppStarterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC2CA49A2A0CDE110096EAF7 /* AppStarterViewController.swift */; };
 		FC6C13C32A11D32D00758AF2 /* EventHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC6C13C22A11D32D00758AF2 /* EventHelper.swift */; };
 		FC92B45B29DBDEBE0053CF0E /* UILabelExtensionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC92B45A29DBDEBE0053CF0E /* UILabelExtensionSpec.swift */; };
@@ -247,8 +245,6 @@
 		D9F418282110FD9F00E2158F /* ConfigurationSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationSpec.swift; sourceTree = "<group>"; };
 		E686BF512A2692CD00D4E3E9 /* TooltipViewSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TooltipViewSpec.swift; sourceTree = "<group>"; };
 		E686BF532A2692DD00D4E3E9 /* tooltip-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "tooltip-data.json"; sourceTree = "<group>"; };
-		E686BF542A2692DD00D4E3E9 /* tooltip-autodisappear.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "tooltip-autodisappear.json"; sourceTree = "<group>"; };
-		E686BF552A2692DD00D4E3E9 /* tooltip-toucharea.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "tooltip-toucharea.json"; sourceTree = "<group>"; };
 		FC2CA49A2A0CDE110096EAF7 /* AppStarterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppStarterViewController.swift; sourceTree = "<group>"; };
 		FC6C13C22A11D32D00758AF2 /* EventHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventHelper.swift; sourceTree = "<group>"; };
 		FC92B45A29DBDEBE0053CF0E /* UILabelExtensionSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UILabelExtensionSpec.swift; sourceTree = "<group>"; };
@@ -350,9 +346,7 @@
 				45ECADDE29DD6B95003F75B2 /* slide-up-trigger-without-messageBody.json */,
 				4592B4B2270229D1004FF27B /* config.json */,
 				4592B4B927024D0C004FF27B /* display-permission.json */,
-				E686BF542A2692DD00D4E3E9 /* tooltip-autodisappear.json */,
 				E686BF532A2692DD00D4E3E9 /* tooltip-data.json */,
-				E686BF552A2692DD00D4E3E9 /* tooltip-toucharea.json */,
 			);
 			path = ResponseStubs;
 			sourceTree = "<group>";
@@ -706,13 +700,11 @@
 				453D245026A4DCD800FB9E6A /* slide-up-trigger.json in Resources */,
 				FCEB554229E5482F00E60481 /* modal-controls-invalid-url.json in Resources */,
 				453D243726A4ABD000FB9E6A /* modal-text-image.json in Resources */,
-				E686BF572A2692DD00D4E3E9 /* tooltip-autodisappear.json in Resources */,
 				4592B4BA27024D0C004FF27B /* display-permission.json in Resources */,
 				453D243C26A4B83E00FB9E6A /* modal-controls.json in Resources */,
 				E686BF562A2692DD00D4E3E9 /* tooltip-data.json in Resources */,
 				453D244926A4DBDC00FB9E6A /* full-image-only.json in Resources */,
 				453D243926A4ABD000FB9E6A /* modal-image-only.json in Resources */,
-				E686BF582A2692DD00D4E3E9 /* tooltip-toucharea.json in Resources */,
 				453D243226A172F600FB9E6A /* modal-text-only.json in Resources */,
 				453D244726A4DBDC00FB9E6A /* full-controls.json in Resources */,
 				453D245326A4DF1D00FB9E6A /* slide-up-close.json in Resources */,
