@@ -280,6 +280,7 @@
                                                 <subviews>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pHi-wC-cSo">
                                                         <rect key="frame" x="9" y="0.0" width="104" height="30"/>
+                                                        <accessibility key="accessibilityConfiguration" identifier="init_with_tooltip"/>
                                                         <state key="normal" title="Init with Tooltip"/>
                                                         <connections>
                                                             <action selector="initWithTooltip:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="MmU-cH-QvK"/>
@@ -287,6 +288,7 @@
                                                     </button>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rGN-bk-9l1">
                                                         <rect key="frame" x="11" y="48" width="100" height="30"/>
+                                                        <accessibility key="accessibilityConfiguration" identifier="init_without_tooltip"/>
                                                         <state key="normal" title="Init w/o Tooltip"/>
                                                         <connections>
                                                             <action selector="initWithoutTooltip:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="PBI-rg-BOL"/>
@@ -294,6 +296,7 @@
                                                     </button>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="v1Y-eE-Q4A">
                                                         <rect key="frame" x="0.0" y="96" width="122" height="30"/>
+                                                        <accessibility key="accessibilityConfiguration" identifier="open_modal_page"/>
                                                         <state key="normal" title="Open modal page"/>
                                                         <connections>
                                                             <action selector="goToSecondPage:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="1kW-Yy-s23"/>

@@ -1,0 +1,100 @@
+{
+    "currentPingMillis": 0,
+    "nextPingMillis": 3600000,
+    "data": [
+        {
+            "campaignData": {
+                "campaignId": "t1",
+                "maxImpressions": 999,
+                "type": 2,
+                "isTest": false,
+                "isCampaignDismissable": true,
+                "hasNoEndDate": true,
+                "infiniteImpressions": true,
+                "triggers": [
+                    {
+                        "type": 1,
+                        "eventType": 1,
+                        "eventName": "app_start",
+                        "attributes": []
+                    }
+                ],
+                "messagePayload": {
+                    "title": "[Tooltip] tooltip 1",
+                    "messageBody": "{\"UIElement\" : \"tooltip.test.1\", \"position\": \"top-left\", \"auto-disappear\": 5, \"redirectURL\": \"https://www.google.com\"}",
+                    "header": "Test Campaign",
+                    "titleColor": "#000000",
+                    "headerColor": "#000000",
+                    "messageBodyColor": "#000000",
+                    "backgroundColor": "#FFD9D9",
+                    "frameColor": "#ffffff",
+                    "resource": {
+                        "imageUrl": "https://static.id.rakuten.co.jp/static/com/img/id/Rakuten_pc_20px@2x.png",
+                        "cropType": 2
+                    },
+                    "messageSettings": {
+                        "displaySettings": {
+                            "slideFrom": 1,
+                            "endTimeMillis": 9999999999999,
+                            "orientation": 1,
+                            "textAlign": 2,
+                            "optOut": true,
+                            "delay": 100,
+                            "html": false
+                        },
+                        "controlSettings": {
+                            "buttons": []
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "campaignData": {
+                "campaignId": "t2",
+                "maxImpressions": 999,
+                "type": 2,
+                "isTest": false,
+                "isCampaignDismissable": true,
+                "hasNoEndDate": true,
+                "infiniteImpressions": true,
+                "triggers": [
+                    {
+                        "type": 1,
+                        "eventType": 2,
+                        "eventName": "login_successful",
+                        "attributes": []
+                    }
+                ],
+                "messagePayload": {
+                    "title": "[Tooltip] tooltip 2",
+                    "messageBody": "{\"UIElement\" : \"tooltip.test.1\", \"position\": \"top-left\", \"auto-disappear\": 5, \"redirectURL\": \"https://www.google.com\"}",
+                    "header": "Test Campaign",
+                    "titleColor": "#000000",
+                    "headerColor": "#000000",
+                    "messageBodyColor": "#000000",
+                    "backgroundColor": "#FFD9D9",
+                    "frameColor": "#ffffff",
+                    "resource": {
+                        "imageUrl": "https://static.id.rakuten.co.jp/static/com/img/id/Rakuten_pc_20px@2x.png",
+                        "cropType": 2
+                    },
+                    "messageSettings": {
+                        "displaySettings": {
+                            "slideFrom": 1,
+                            "endTimeMillis": 9999999999999,
+                            "orientation": 1,
+                            "textAlign": 2,
+                            "optOut": true,
+                            "delay": 100,
+                            "html": false
+                        },
+                        "controlSettings": {
+                            "buttons": []
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

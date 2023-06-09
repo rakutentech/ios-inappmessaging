@@ -36,6 +36,7 @@
 		- ConfigurationManager [SDKCF-6451]
 		- HTTPRequestable [SDKCF-6389]
 		- Router [SDKCF-6382]
+		- ToolTipView [SDKCF-6377]
 
 ### 7.3.0 (2023-01-11)
 - Features:
