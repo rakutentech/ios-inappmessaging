@@ -22,6 +22,26 @@ platform :ios do
     sh 'git config --global --unset url."https://github.com/".insteadOf'
   end
 
+  desc "Commit version bump in _versions"
+    lane :commit_sdk_ver_bump do |options|
+      target_version = options[:version]
+      UI.user_error!("version param must be passed in") unless !target_version.to_s.empty?
+      replacing = "static let sdkVersion = \"#{target_version}\""
+      regex = "static let sdkVersion = .*"
+      constant_file = "Constants.swift"
+      sh "find .. -type f -name '#{constant_file}' -exec sed -i '' -e 's/#{regex}/#{replacing}/g' {} ';'"
+      if target_version["snapshot"]
+        UI.message "Skipping docs version bump because of snapshot version"
+      else
+        sh "echo #{target_version} >>../_versions 2>&1"
+      end
+      update_marketing_version(version_number: target_version, xcodeproj: './RInAppMessaging.xcodeproj')
+      version_bump_podspec(path: "RInAppMessaging.podspec", version_number: target_version)
+      git_commit(
+        path: ["./Sources/RInAppMessaging/Constants.swift", "_versions", "RInAppMessaging.podspec", "RInAppMessaging.xcodeproj/project.pbxproj"],
+        message: "chore: bump sdkVersion to #{target_version}")
+    end
+
   lane :run_xcov do
     xcov(
       workspace: "RInAppMessaging.xcworkspace",
