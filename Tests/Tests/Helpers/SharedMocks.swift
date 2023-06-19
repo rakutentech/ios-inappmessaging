@@ -285,13 +285,11 @@ class ImpressionServiceMock: ImpressionServiceType {
 class BundleInfoMock: BundleInfo {
     static var applicationIdMock: String? = "app.id"
     static var appVersionMock: String? = "1.2.3"
-    static var inAppSdkVersionMock: String? = "0.0.5"
     static var customFontMock: String? = "blank-Bold"
 
     static func reset() {
         applicationIdMock = "app.id"
         appVersionMock = "1.2.3"
-        inAppSdkVersionMock = "0.0.5"
         customFontMock = "blank-Bold"
     }
 
@@ -301,10 +299,6 @@ class BundleInfoMock: BundleInfo {
 
     override class var appVersion: String? {
         appVersionMock
-    }
-
-    override class var inAppSdkVersion: String? {
-        inAppSdkVersionMock
     }
 
     override class var customFontNameTitle: String? {

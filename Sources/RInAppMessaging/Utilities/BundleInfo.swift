@@ -20,16 +20,6 @@ internal class BundleInfo {
         bundle.infoDictionary?["CFBundleShortVersionString"] as? String
     }
 
-    class var inAppSdkVersion: String? {
-        guard let versionsPlistURL = Bundle.sdkAssets?.url(forResource: "Versions", withExtension: "plist"),
-              let plistData = try? Data(contentsOf: versionsPlistURL),
-              let versions = try? PropertyListSerialization.propertyList(from: plistData, format: nil) as? [String: Any] else {
-                  assertionFailure("Can't read Versions.plist in Resources folder")
-                  return nil
-              }
-        return versions[Constants.Versions.sdkVersionKey] as? String
-    }
-
     class var inAppSubscriptionId: String? {
         bundle.infoDictionary?[Constants.Info.subscriptionIDKey] as? String
     }

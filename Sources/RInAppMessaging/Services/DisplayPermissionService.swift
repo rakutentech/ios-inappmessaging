@@ -83,9 +83,7 @@ extension DisplayPermissionService {
     func buildHttpBody(with parameters: [String: Any]?) -> Result<Data, Error> {
 
         guard let subscriptionId = configurationRepository.getSubscriptionID(),
-              let appVersion = bundleInfo.appVersion,
-              let sdkVersion = bundleInfo.inAppSdkVersion
-        else {
+              let appVersion = bundleInfo.appVersion else {
             Logger.debug("error while building request body for display permssion - missing metadata")
             return .failure(RequestError.missingMetadata)
         }
@@ -99,7 +97,7 @@ extension DisplayPermissionService {
                                                          userIdentifiers: accountRepository.getUserIdentifiers(),
                                                          platform: .ios,
                                                          appVersion: appVersion,
-                                                         sdkVersion: sdkVersion,
+                                                         sdkVersion: Constants.Versions.sdkVersion,
                                                          locale: Locale.current.normalizedIdentifier,
                                                          lastPingInMilliseconds: campaignRepository.lastSyncInMilliseconds ?? 0)
         do {

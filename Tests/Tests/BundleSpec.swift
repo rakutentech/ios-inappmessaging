@@ -26,12 +26,6 @@ class BundleSpec: QuickSpec {
                 expect(bundleInfo.appVersion).to(equal("1.2.3"))
             }
 
-            it("should return a valid inAppSdkVersion") {
-                // swiftlint:disable:next line_length
-                let semverRegex = #"^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$"#
-                expect(bundleInfo.inAppSdkVersion).to(match(semverRegex))
-            }
-
             it("should return expected inAppSubscriptionId") {
                 bundleMock.infoDictionaryMock[Constants.Info.subscriptionIDKey] = "sub-id"
                 expect(bundleInfo.inAppSubscriptionId).to(equal("sub-id"))
