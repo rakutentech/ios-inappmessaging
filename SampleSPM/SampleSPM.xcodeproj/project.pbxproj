@@ -116,6 +116,7 @@
 		D92D1F262224A269008EA748 /* TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = D92D1F242224A265008EA748 /* TestHelpers.swift */; };
 		E6DDD1222A2F3A44005365DA /* TooltipViewSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6DDD1212A2F3A44005365DA /* TooltipViewSpec.swift */; };
 		E6DDD1242A2F3A64005365DA /* tooltip-data.json in Resources */ = {isa = PBXBuildFile; fileRef = E6DDD1232A2F3A64005365DA /* tooltip-data.json */; };
+		FC22BEEA2A4155AD004F637B /* ConstantSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC22BEE92A4155AD004F637B /* ConstantSpec.swift */; };
 		FC6E19412A2087FC00B89165 /* View+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC6E19402A2087FC00B89165 /* View+Extension.swift */; };
 		FC817F0D2A0A2D8E00EE3919 /* SecondView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC817F0C2A0A2D8E00EE3919 /* SecondView.swift */; };
 		FC92B45D29DD27670053CF0E /* UILabelExtensionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC92B45C29DD27670053CF0E /* UILabelExtensionSpec.swift */; };
@@ -262,6 +263,7 @@
 		D92D1F242224A265008EA748 /* TestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestHelpers.swift; sourceTree = "<group>"; };
 		E6DDD1212A2F3A44005365DA /* TooltipViewSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TooltipViewSpec.swift; sourceTree = "<group>"; };
 		E6DDD1232A2F3A64005365DA /* tooltip-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "tooltip-data.json"; sourceTree = "<group>"; };
+		FC22BEE92A4155AD004F637B /* ConstantSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConstantSpec.swift; sourceTree = "<group>"; };
 		FC6E19402A2087FC00B89165 /* View+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "View+Extension.swift"; sourceTree = "<group>"; };
 		FC817F0C2A0A2D8E00EE3919 /* SecondView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondView.swift; sourceTree = "<group>"; };
 		FC92B45C29DD27670053CF0E /* UILabelExtensionSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UILabelExtensionSpec.swift; sourceTree = "<group>"; };
@@ -487,6 +489,7 @@
 				D234A6FA291C62CB0086AC80 /* AccountRepositorySpec.swift */,
 				D234A700291C62CB0086AC80 /* BackoffSpec.swift */,
 				D234A6EA291C62C90086AC80 /* BundleSpec.swift */,
+				FC22BEE92A4155AD004F637B /* ConstantSpec.swift */,
 				D234A6F7291C62CA0086AC80 /* CampaignRepositorySpec.swift */,
 				D234A70B291C62CD0086AC80 /* CampaignsListManagerSpec.swift */,
 				D234A714291C62CE0086AC80 /* CampaignsValidatorSpec.swift */,
@@ -902,6 +905,7 @@
 				D234A73D291C62CF0086AC80 /* ConfigurationRepositorySpec.swift in Sources */,
 				D92D1F262224A269008EA748 /* TestHelpers.swift in Sources */,
 				D234A734291C62CF0086AC80 /* CommonUtilitySpec.swift in Sources */,
+				FC22BEEA2A4155AD004F637B /* ConstantSpec.swift in Sources */,
 				D234A719291C62CE0086AC80 /* ImpressionServiceSpec.swift in Sources */,
 				D234A722291C62CF0086AC80 /* CustomAttributeSpec.swift in Sources */,
 				D234A721291C62CF0086AC80 /* ConfigEndpointResponseSpec.swift in Sources */,

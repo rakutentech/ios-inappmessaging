@@ -99,6 +99,7 @@
 		D92D1F262224A269008EA748 /* TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = D92D1F242224A265008EA748 /* TestHelpers.swift */; };
 		E686BF522A2692CD00D4E3E9 /* TooltipViewSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E686BF512A2692CD00D4E3E9 /* TooltipViewSpec.swift */; };
 		E686BF562A2692DD00D4E3E9 /* tooltip-data.json in Resources */ = {isa = PBXBuildFile; fileRef = E686BF532A2692DD00D4E3E9 /* tooltip-data.json */; };
+		FC22BEE82A4153AD004F637B /* ConstantSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC22BEE72A4153AD004F637B /* ConstantSpec.swift */; };
 		FC2CA49B2A0CDE110096EAF7 /* AppStarterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC2CA49A2A0CDE110096EAF7 /* AppStarterViewController.swift */; };
 		FC6C13C32A11D32D00758AF2 /* EventHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC6C13C22A11D32D00758AF2 /* EventHelper.swift */; };
 		FC92B45B29DBDEBE0053CF0E /* UILabelExtensionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC92B45A29DBDEBE0053CF0E /* UILabelExtensionSpec.swift */; };
@@ -245,6 +246,7 @@
 		D9F418282110FD9F00E2158F /* ConfigurationSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationSpec.swift; sourceTree = "<group>"; };
 		E686BF512A2692CD00D4E3E9 /* TooltipViewSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TooltipViewSpec.swift; sourceTree = "<group>"; };
 		E686BF532A2692DD00D4E3E9 /* tooltip-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "tooltip-data.json"; sourceTree = "<group>"; };
+		FC22BEE72A4153AD004F637B /* ConstantSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConstantSpec.swift; sourceTree = "<group>"; };
 		FC2CA49A2A0CDE110096EAF7 /* AppStarterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppStarterViewController.swift; sourceTree = "<group>"; };
 		FC6C13C22A11D32D00758AF2 /* EventHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventHelper.swift; sourceTree = "<group>"; };
 		FC92B45A29DBDEBE0053CF0E /* UILabelExtensionSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UILabelExtensionSpec.swift; sourceTree = "<group>"; };
@@ -448,6 +450,7 @@
 				4557A8B0257E544C00C9D241 /* AccountRepositorySpec.swift */,
 				C9827557262C423C00476505 /* BackoffSpec.swift */,
 				45B3CC8327871C01005BA3F7 /* BundleSpec.swift */,
+				FC22BEE72A4153AD004F637B /* ConstantSpec.swift */,
 				45563B0624064D78004EAFD3 /* CampaignRepositorySpec.swift */,
 				45BDFD022421D311004DEA0C /* CampaignsListManagerSpec.swift */,
 				D92D1F2122249833008EA748 /* CampaignsValidatorSpec.swift */,
@@ -864,6 +867,7 @@
 				45DC6D0727A44CA900B28C13 /* TooltipViewSpec.swift in Sources */,
 				459DE86C2407B5750002F451 /* CustomEventValidationSpec.swift in Sources */,
 				45563B0724064D78004EAFD3 /* CampaignRepositorySpec.swift in Sources */,
+				FC22BEE82A4153AD004F637B /* ConstantSpec.swift in Sources */,
 				455FEBE227F214640064470D /* UIColorExtensionSpec.swift in Sources */,
 				456FE1EB2428C51E00304872 /* CommonUtilitySpec.swift in Sources */,
 				4538BAE326282DE4009952BE /* ConfigEndpointResponseSpec.swift in Sources */,
