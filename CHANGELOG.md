@@ -1,6 +1,6 @@
 ## Changelog
 
-### 8.0.0 (2023-06-12)
+### 8.0.0 (2023-06-21)
 - **Breaking changes:**
     - Update Swift version support for package to 5.7.1 [SDKCF-6515]
 - Features:
