@@ -301,7 +301,7 @@ class ConfigurationServiceSpec: QuickSpec {
                     expect(request?.appVersion).to(equal(BundleInfoMock.appVersion))
                     expect(request?.platform).to(equal(.ios))
                     expect(request?.appId).to(equal(BundleInfoMock.applicationId))
-                    expect(request?.sdkVersion).to(equal(BundleInfoMock.inAppSdkVersion))
+                    expect(request?.sdkVersion).to(equal(Constants.Versions.sdkVersion))
                 }
 
                 it("will send subscription id in header") {
@@ -341,11 +341,6 @@ class ConfigurationServiceSpec: QuickSpec {
 
                     it("will return RequestError.missingMetadata error if application id is missing") {
                         BundleInfoMock.applicationIdMock = nil
-                        makeRequestAndEvaluateMetadataError()
-                    }
-
-                    it("will return RequestError.missingMetadata error if sdk version is missing") {
-                        BundleInfoMock.inAppSdkVersionMock = nil
                         makeRequestAndEvaluateMetadataError()
                     }
 

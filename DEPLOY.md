@@ -10,7 +10,7 @@ Create pull request to make the following changes:
 1. Update version number in `openapi.yaml`
 1. Update version number in `.jazzy.yaml`
 1. Update version number in `RInAppMessaging.podspec`
-1. Update version number in `Sources/RInAppMessaging/Resources/Versions.plist` under `IAMCurrentModuleVersion` key
+1. Update version number in `Sources/RInAppMessaging/Constants.swift` under `sdkVersion` constant
 1. Add version number to `_versions` file
 
 ## Deploy

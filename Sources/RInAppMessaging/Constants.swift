@@ -44,7 +44,7 @@ internal enum Constants {
     }
 
     enum Versions {
-        static let sdkVersionKey = "IAMCurrentModuleVersion"
+        static let sdkVersion = "8.1.0-snapshot"
     }
 
     enum RAnalytics {

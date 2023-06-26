@@ -234,7 +234,7 @@ class DisplayPermissionServiceSpec: QuickSpec {
                     expect(request?.campaignId).to(equal(campaign.id))
                     expect(request?.platform).to(equal(.ios))
                     expect(request?.appVersion).to(equal(BundleInfoMock.appVersion))
-                    expect(request?.sdkVersion).to(equal(BundleInfoMock.inAppSdkVersion))
+                    expect(request?.sdkVersion).to(equal(Constants.Versions.sdkVersion))
                     expect(request?.locale).to(equal(Locale.current.normalizedIdentifier))
                     expect(request?.lastPingInMilliseconds).to(equal(111))
                 }
@@ -288,15 +288,6 @@ class DisplayPermissionServiceSpec: QuickSpec {
 
                     it("will return RequestError.missingMetadata error if host app version is missing") {
                         BundleInfoMock.appVersionMock = nil
-
-                        sendRequestAndWaitForResponse()
-
-                        let error = service.lastResponse?.getError()
-                        evaluateMetadataError(error)
-                    }
-
-                    it("will return RequestError.missingMetadata error if sdk version is missing") {
-                        BundleInfoMock.inAppSdkVersionMock = nil
 
                         sendRequestAndWaitForResponse()
 

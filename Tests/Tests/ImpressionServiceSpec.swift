@@ -183,7 +183,7 @@ class ImpressionServiceSpec: QuickSpec {
                     let request = httpSession.decodeSentData(modelType: ImpressionRequest.self)
                     expect(request?.campaignId).to(equal(campaign.id))
                     expect(request?.appVersion).to(equal(BundleInfoMock.appVersion))
-                    expect(request?.sdkVersion).to(equal(BundleInfoMock.inAppSdkVersion))
+                    expect(request?.sdkVersion).to(equal(Constants.Versions.sdkVersion))
                 }
 
                 it("will send impressions in the request") {
@@ -279,13 +279,6 @@ class ImpressionServiceSpec: QuickSpec {
 
                 it("will return RequestError.missingMetadata error if host app version is missing") {
                     BundleInfoMock.appVersionMock = nil
-
-                    let error = service.buildHttpBody(with: nil).getError() as? RequestError
-                    evaluateMetadataError(error)
-                }
-
-                it("will return RequestError.missingMetadata error if sdk version is missing") {
-                    BundleInfoMock.inAppSdkVersionMock = nil
 
                     let error = service.buildHttpBody(with: nil).getError() as? RequestError
                     evaluateMetadataError(error)

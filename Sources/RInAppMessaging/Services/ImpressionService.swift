@@ -108,8 +108,7 @@ extension ImpressionService {
 
     func buildHttpBody(with parameters: [String: Any]?) -> Result<Data, Error> {
 
-        guard let appVersion = bundleInfo.appVersion,
-              let sdkVersion = bundleInfo.inAppSdkVersion
+        guard let appVersion = bundleInfo.appVersion
         else {
             reportError(description: "Error building impressions request body", data: nil)
             return .failure(RequestError.missingMetadata)
@@ -120,12 +119,11 @@ extension ImpressionService {
             reportError(description: "Error building impressions request body", data: nil)
             return .failure(RequestError.missingParameters)
         }
-
         let impressionRequest = ImpressionRequest(
             campaignId: campaign.campaignId,
             isTest: campaign.isTest,
             appVersion: appVersion,
-            sdkVersion: sdkVersion,
+            sdkVersion: Constants.Versions.sdkVersion,
             impressions: impressions,
             userIdentifiers: accountRepository.getUserIdentifiers()
         )
