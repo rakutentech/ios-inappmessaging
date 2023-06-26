@@ -119,6 +119,9 @@
 		FC22BEEA2A4155AD004F637B /* ConstantSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC22BEE92A4155AD004F637B /* ConstantSpec.swift */; };
 		FC6E19412A2087FC00B89165 /* View+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC6E19402A2087FC00B89165 /* View+Extension.swift */; };
 		FC817F0D2A0A2D8E00EE3919 /* SecondView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC817F0C2A0A2D8E00EE3919 /* SecondView.swift */; };
+		FC82C7062A49598000A1556E /* UserInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC82C7052A49598000A1556E /* UserInfoViewController.swift */; };
+		FC82C7092A4960A600A1556E /* UserInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC82C7082A4960A600A1556E /* UserInfo.swift */; };
+		FC82C7102A496C5D00A1556E /* UIViewController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC82C70F2A496C5D00A1556E /* UIViewController+Extension.swift */; };
 		FC92B45D29DD27670053CF0E /* UILabelExtensionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC92B45C29DD27670053CF0E /* UILabelExtensionSpec.swift */; };
 		FCCEE5D12A11D4C8002ADC8C /* EventHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCCEE5D02A11D4C7002ADC8C /* EventHelper.swift */; };
 		FCD21A2629FBB2020056237E /* AppStarterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCD21A2529FBB2020056237E /* AppStarterViewController.swift */; };
@@ -266,6 +269,9 @@
 		FC22BEE92A4155AD004F637B /* ConstantSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConstantSpec.swift; sourceTree = "<group>"; };
 		FC6E19402A2087FC00B89165 /* View+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "View+Extension.swift"; sourceTree = "<group>"; };
 		FC817F0C2A0A2D8E00EE3919 /* SecondView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondView.swift; sourceTree = "<group>"; };
+		FC82C7052A49598000A1556E /* UserInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoViewController.swift; sourceTree = "<group>"; };
+		FC82C7082A4960A600A1556E /* UserInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfo.swift; sourceTree = "<group>"; };
+		FC82C70F2A496C5D00A1556E /* UIViewController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extension.swift"; sourceTree = "<group>"; };
 		FC92B45C29DD27670053CF0E /* UILabelExtensionSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UILabelExtensionSpec.swift; sourceTree = "<group>"; };
 		FCCEE5D02A11D4C7002ADC8C /* EventHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventHelper.swift; sourceTree = "<group>"; };
 		FCD21A2529FBB2020056237E /* AppStarterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStarterViewController.swift; sourceTree = "<group>"; };
@@ -454,6 +460,7 @@
 		607FACD21AFB9204008FA782 /* Sample */ = {
 			isa = PBXGroup;
 			children = (
+				FC82C7072A49609A00A1556E /* Shared */,
 				FCD21A2829FBBAA10056237E /* UIKit */,
 				FCD21A2729FBBA960056237E /* SwiftUI */,
 				607FACD51AFB9204008FA782 /* AppDelegate.swift */,
@@ -565,8 +572,17 @@
 				FCCEE5D02A11D4C7002ADC8C /* EventHelper.swift */,
 				FC6E19402A2087FC00B89165 /* View+Extension.swift */,
 				D24EDF782941512D00F9EC5E /* String+Conversion.swift */,
+				FC82C70F2A496C5D00A1556E /* UIViewController+Extension.swift */,
 			);
 			path = Helpers;
+			sourceTree = "<group>";
+		};
+		FC82C7072A49609A00A1556E /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				FC82C7082A4960A600A1556E /* UserInfo.swift */,
+			);
+			path = Shared;
 			sourceTree = "<group>";
 		};
 		FCD21A2729FBBA960056237E /* SwiftUI */ = {
@@ -584,6 +600,7 @@
 			isa = PBXGroup;
 			children = (
 				D24EDF752941506000F9EC5E /* CustomEventViewController.swift */,
+				FC82C7052A49598000A1556E /* UserInfoViewController.swift */,
 				607FACD71AFB9204008FA782 /* ViewController.swift */,
 				D920D8CA2277B965008FB38D /* SecondPageViewController.swift */,
 				D920D8C82277B80F008FB38D /* SecondPageViewController.xib */,
@@ -843,7 +860,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FC82C7102A496C5D00A1556E /* UIViewController+Extension.swift in Sources */,
 				FCD21A2E29FBC0010056237E /* CustomEventView.swift in Sources */,
+				FC82C7062A49598000A1556E /* UserInfoViewController.swift in Sources */,
 				D920D8CB2277B965008FB38D /* SecondPageViewController.swift in Sources */,
 				FCD21A2A29FBBAD60056237E /* MainView.swift in Sources */,
 				FCD21A2629FBB2020056237E /* AppStarterViewController.swift in Sources */,
@@ -855,6 +874,7 @@
 				D24EDF792941512D00F9EC5E /* String+Conversion.swift in Sources */,
 				FC6E19412A2087FC00B89165 /* View+Extension.swift in Sources */,
 				FCD21A2C29FBBBB50056237E /* TabBarView.swift in Sources */,
+				FC82C7092A4960A600A1556E /* UserInfo.swift in Sources */,
 				D24EDF762941506000F9EC5E /* CustomEventViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
