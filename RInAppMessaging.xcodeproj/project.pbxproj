@@ -99,6 +99,8 @@
 		D92D1F262224A269008EA748 /* TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = D92D1F242224A265008EA748 /* TestHelpers.swift */; };
 		E686BF522A2692CD00D4E3E9 /* TooltipViewSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E686BF512A2692CD00D4E3E9 /* TooltipViewSpec.swift */; };
 		E686BF562A2692DD00D4E3E9 /* tooltip-data.json in Resources */ = {isa = PBXBuildFile; fileRef = E686BF532A2692DD00D4E3E9 /* tooltip-data.json */; };
+		FC1872382A49B7C0005EB10B /* UserInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC1872372A49B7C0005EB10B /* UserInfoView.swift */; };
+		FC18723A2A49B7D3005EB10B /* UserInfoHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC1872392A49B7D3005EB10B /* UserInfoHelper.swift */; };
 		FC22BEE82A4153AD004F637B /* ConstantSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC22BEE72A4153AD004F637B /* ConstantSpec.swift */; };
 		FC2CA49B2A0CDE110096EAF7 /* AppStarterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC2CA49A2A0CDE110096EAF7 /* AppStarterViewController.swift */; };
 		FC6C13C32A11D32D00758AF2 /* EventHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC6C13C22A11D32D00758AF2 /* EventHelper.swift */; };
@@ -249,7 +251,8 @@
 		D9F418282110FD9F00E2158F /* ConfigurationSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationSpec.swift; sourceTree = "<group>"; };
 		E686BF512A2692CD00D4E3E9 /* TooltipViewSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TooltipViewSpec.swift; sourceTree = "<group>"; };
 		E686BF532A2692DD00D4E3E9 /* tooltip-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "tooltip-data.json"; sourceTree = "<group>"; };
-		FC22BEE72A4153AD004F637B /* ConstantSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConstantSpec.swift; sourceTree = "<group>"; };
+		FC1872372A49B7C0005EB10B /* UserInfoView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserInfoView.swift; sourceTree = "<group>"; };
+		FC1872392A49B7D3005EB10B /* UserInfoHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserInfoHelper.swift; sourceTree = "<group>"; };
 		FC2CA49A2A0CDE110096EAF7 /* AppStarterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppStarterViewController.swift; sourceTree = "<group>"; };
 		FC6C13C22A11D32D00758AF2 /* EventHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventHelper.swift; sourceTree = "<group>"; };
 		FC82C70B2A49621500A1556E /* UserInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserInfo.swift; sourceTree = "<group>"; };
@@ -539,6 +542,7 @@
 			children = (
 				D24EDF732941459700F9EC5E /* String+Conversion.swift */,
 				FCD01EB02A1F32F3005BC09A /* View+Extension.swift */,
+				FC1872392A49B7D3005EB10B /* UserInfoHelper.swift */,
 				FC82C7112A4971B000A1556E /* UIViewController+Extension.swift */,
 				FC6C13C22A11D32D00758AF2 /* EventHelper.swift */,
 			);
@@ -568,6 +572,7 @@
 		FCCEE5DB2A11DE2E002ADC8C /* SwiftUI */ = {
 			isa = PBXGroup;
 			children = (
+				FC1872372A49B7C0005EB10B /* UserInfoView.swift */,
 				FCCEE5DC2A11DE2E002ADC8C /* CustomEventView.swift */,
 				FCCEE5DD2A11DE2E002ADC8C /* SecondView.swift */,
 				FCCEE5DE2A11DE2E002ADC8C /* TabBarView.swift */,
@@ -834,9 +839,11 @@
 				FC2CA49B2A0CDE110096EAF7 /* AppStarterViewController.swift in Sources */,
 				FCCEE5E12A11DE2E002ADC8C /* SecondView.swift in Sources */,
 				FCCEE5D92A11DE27002ADC8C /* CustomEventViewController.swift in Sources */,
+				FC18723A2A49B7D3005EB10B /* UserInfoHelper.swift in Sources */,
 				FCD01EB12A1F32F3005BC09A /* View+Extension.swift in Sources */,
 				D24EDF742941459700F9EC5E /* String+Conversion.swift in Sources */,
 				FC82C70C2A49621500A1556E /* UserInfo.swift in Sources */,
+				FC1872382A49B7C0005EB10B /* UserInfoView.swift in Sources */,
 				FCCEE5E02A11DE2E002ADC8C /* CustomEventView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

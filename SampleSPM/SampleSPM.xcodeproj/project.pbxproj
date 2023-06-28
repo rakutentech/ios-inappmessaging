@@ -116,6 +116,8 @@
 		D92D1F262224A269008EA748 /* TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = D92D1F242224A265008EA748 /* TestHelpers.swift */; };
 		E6DDD1222A2F3A44005365DA /* TooltipViewSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6DDD1212A2F3A44005365DA /* TooltipViewSpec.swift */; };
 		E6DDD1242A2F3A64005365DA /* tooltip-data.json in Resources */ = {isa = PBXBuildFile; fileRef = E6DDD1232A2F3A64005365DA /* tooltip-data.json */; };
+		FC1872342A498749005EB10B /* UserInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC1872332A498749005EB10B /* UserInfoView.swift */; };
+		FC1872362A49A393005EB10B /* UserInfoHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC1872352A49A393005EB10B /* UserInfoHelper.swift */; };
 		FC22BEEA2A4155AD004F637B /* ConstantSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC22BEE92A4155AD004F637B /* ConstantSpec.swift */; };
 		FC6E19412A2087FC00B89165 /* View+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC6E19402A2087FC00B89165 /* View+Extension.swift */; };
 		FC817F0D2A0A2D8E00EE3919 /* SecondView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC817F0C2A0A2D8E00EE3919 /* SecondView.swift */; };
@@ -266,7 +268,8 @@
 		D92D1F242224A265008EA748 /* TestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestHelpers.swift; sourceTree = "<group>"; };
 		E6DDD1212A2F3A44005365DA /* TooltipViewSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TooltipViewSpec.swift; sourceTree = "<group>"; };
 		E6DDD1232A2F3A64005365DA /* tooltip-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "tooltip-data.json"; sourceTree = "<group>"; };
-		FC22BEE92A4155AD004F637B /* ConstantSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConstantSpec.swift; sourceTree = "<group>"; };
+		FC1872332A498749005EB10B /* UserInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoView.swift; sourceTree = "<group>"; };
+		FC1872352A49A393005EB10B /* UserInfoHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoHelper.swift; sourceTree = "<group>"; };
 		FC6E19402A2087FC00B89165 /* View+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "View+Extension.swift"; sourceTree = "<group>"; };
 		FC817F0C2A0A2D8E00EE3919 /* SecondView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondView.swift; sourceTree = "<group>"; };
 		FC82C7052A49598000A1556E /* UserInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoViewController.swift; sourceTree = "<group>"; };
@@ -570,6 +573,7 @@
 			isa = PBXGroup;
 			children = (
 				FCCEE5D02A11D4C7002ADC8C /* EventHelper.swift */,
+				FC1872352A49A393005EB10B /* UserInfoHelper.swift */,
 				FC6E19402A2087FC00B89165 /* View+Extension.swift */,
 				D24EDF782941512D00F9EC5E /* String+Conversion.swift */,
 				FC82C70F2A496C5D00A1556E /* UIViewController+Extension.swift */,
@@ -590,6 +594,7 @@
 			children = (
 				FCD21A2929FBBAD60056237E /* MainView.swift */,
 				FC817F0C2A0A2D8E00EE3919 /* SecondView.swift */,
+				FC1872332A498749005EB10B /* UserInfoView.swift */,
 				FCD21A2D29FBC0010056237E /* CustomEventView.swift */,
 				FCD21A2B29FBBBB50056237E /* TabBarView.swift */,
 			);
@@ -872,9 +877,11 @@
 				D234A747291C63000086AC80 /* MockServerHelper.swift in Sources */,
 				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,
 				D24EDF792941512D00F9EC5E /* String+Conversion.swift in Sources */,
+				FC1872362A49A393005EB10B /* UserInfoHelper.swift in Sources */,
 				FC6E19412A2087FC00B89165 /* View+Extension.swift in Sources */,
 				FCD21A2C29FBBBB50056237E /* TabBarView.swift in Sources */,
 				FC82C7092A4960A600A1556E /* UserInfo.swift in Sources */,
+				FC1872342A498749005EB10B /* UserInfoView.swift in Sources */,
 				D24EDF762941506000F9EC5E /* CustomEventViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

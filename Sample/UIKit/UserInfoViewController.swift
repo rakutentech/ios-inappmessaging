@@ -17,27 +17,29 @@ class UserInfoViewController: UIViewController {
         guard validateInput() else {
             return
         }
-        let userInfo = UserInfo()
-        userInfo.userID = userIDTextField.text
-        userInfo.accessToken = accessTokenTextField.text
-        userInfo.idTrackingIdentifier = idTrackingIdentifierTextField.text
+        let userInfo = UserInfo(
+            userID: userIDTextField.text,
+            idTrackingIdentifier: idTrackingIdentifierTextField.text,
+            accessToken: accessTokenTextField.text
+        )
         RInAppMessaging.registerPreference(userInfo)
         showAlert(title: "Saved Successful")
     }
 
-    /// Checking the correct input data
-    /// - Returns: Bool of is access token and ID traking identifier has value at the same time
     private func validateInput() -> Bool {
-        if userIDTextField.text.isEmpty,
-           accessTokenTextField.text.isEmpty,
-           idTrackingIdentifierTextField.text.isEmpty {
-            showAlert(title: "Invalid input format", message: "Fill least one field ")
-            return false
-        }
+        let validate = UserInfoHelper.validateInput(
+            userID: userIDTextField.text,
+            idTracker: idTrackingIdentifierTextField.text,
+            token: accessTokenTextField.text)
 
-        if !accessTokenTextField.text.isEmpty && !idTrackingIdentifierTextField.text.isEmpty {
-            showAlert(title: "Invalid input format",
-                      message: "Couldn't use access token and ID tracking identifier at the same time")
+        if let validate {
+            switch validate {
+            case .emptyInput:
+                showAlert(title: "Invalid input format", message: "Fill least one field")
+            case .duplicateTracker:
+                showAlert(title: "Invalid input format",
+                          message: "Couldn't use access token and ID tracking identifier at the same time")
+            }
             return false
         }
         return true
