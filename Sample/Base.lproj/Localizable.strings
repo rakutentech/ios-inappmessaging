@@ -1,1 +1,5 @@
 "test" = "Base";
+"alert_invalid_input_title" = "Invalid input format";
+"alert_fill_at_least_one_field" = "Fill at least one field";
+"alert_duplicate_identifier" = "Couldn't use access token and ID tracking identifier at the same time";
+"alert_saved_successful_title" = "Saved Successful";

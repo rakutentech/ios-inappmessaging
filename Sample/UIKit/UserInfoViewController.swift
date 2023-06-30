@@ -31,7 +31,7 @@ class UserInfoViewController: UIViewController {
         } else {
             updateUserInfoValue()
         }
-        showAlert(title: "Saved Successful")
+        showAlert(title: "alert_saved_successful_title".localized)
     }
 
     private func updateUserInfoValue() {
@@ -51,10 +51,10 @@ class UserInfoViewController: UIViewController {
         if let validate {
             switch validate {
             case .emptyInput:
-                showAlert(title: "Invalid input format", message: "Fill least one field")
+                showAlert(title: "alert_invalid_input_title".localized, message: "alert_fill_at_least_one_field".localized)
             case .duplicateTracker:
-                showAlert(title: "Invalid input format",
-                          message: "Couldn't use access token and ID tracking identifier at the same time")
+                showAlert(title: "alert_invalid_input_title".localized,
+                          message: "alert_duplicate_identifier".localized)
             }
             return false
         }

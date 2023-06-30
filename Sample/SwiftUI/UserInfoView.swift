@@ -24,7 +24,7 @@ struct UserInfoView: View {
                 .textFieldStyle(.roundedBorder)
             }
             .alert(isPresented: $isEmptyTextFieldAlertPresented) {
-                Alert(title: Text("Invalid input format"), message: Text("Fill least one field"))
+                Alert(title: Text("alert_invalid_input_title"), message: Text("alert_fill_at_least_one_field"))
             }
             VStack(alignment: .leading) {
                 Text("ID TRACKING IDENTIFIER:")
@@ -36,7 +36,7 @@ struct UserInfoView: View {
                 .textFieldStyle(.roundedBorder)
             }
             .alert(isPresented: $isDuplicateTrackerAlertPresented) {
-                Alert(title: Text("Invalid input format"), message: Text("Couldn't use access token and ID tracking identifier at the same time"))
+                Alert(title: Text("alert_invalid_input_title"), message: Text("alert_duplicate_identifier"))
             }
             VStack(alignment: .leading) {
                 Text("ACCESS TOKEN:")
@@ -62,7 +62,7 @@ struct UserInfoView: View {
                 isSuccessAlertPresented = true
             }
             .alert(isPresented: $isSuccessAlertPresented) {
-                Alert(title: Text("Saved Successful"))
+                Alert(title: Text("alert_saved_successful_title".localized))
             }
         }
         .padding(32)
