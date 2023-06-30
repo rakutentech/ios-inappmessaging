@@ -53,12 +53,12 @@ struct UserInfoView: View {
                 guard validateInput() else {
                     return
                 }
-                userInfo = UserInfo(
-                    userID: userIDTextFieldText,
-                    idTrackingIdentifier: idTrackerTextFieldText,
-                    accessToken: accessTokenuserIDTextFieldText
-                )
-                RInAppMessaging.registerPreference(userInfo!)
+                if userInfo == nil {
+                    updateUserInfoValue()
+                    RInAppMessaging.registerPreference(userInfo!)
+                } else {
+                    updateUserInfoValue()
+                }
                 isSuccessAlertPresented = true
             }
             .alert(isPresented: $isSuccessAlertPresented) {
@@ -71,6 +71,14 @@ struct UserInfoView: View {
             idTrackerTextFieldText = userInfo?.getIDTrackingIdentifier() ?? ""
             accessTokenuserIDTextFieldText = userInfo?.getAccessToken() ?? ""
         }
+    }
+
+    private func updateUserInfoValue() {
+        userInfo = UserInfo(
+            userID: userIDTextFieldText,
+            idTrackingIdentifier: idTrackerTextFieldText,
+            accessToken: accessTokenuserIDTextFieldText
+        )
     }
 
     private func validateInput() -> Bool {

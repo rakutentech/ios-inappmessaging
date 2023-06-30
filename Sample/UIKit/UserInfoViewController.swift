@@ -25,13 +25,21 @@ class UserInfoViewController: UIViewController {
         guard validateInput() else {
             return
         }
+        if userInfo == nil {
+            updateUserInfoValue()
+            RInAppMessaging.registerPreference(userInfo!)
+        } else {
+            updateUserInfoValue()
+        }
+        showAlert(title: "Saved Successful")
+    }
+
+    private func updateUserInfoValue() {
         userInfo = UserInfo(
             userID: userIDTextField.text,
             idTrackingIdentifier: idTrackingIdentifierTextField.text,
             accessToken: accessTokenTextField.text
         )
-        RInAppMessaging.registerPreference(userInfo!)
-        showAlert(title: "Saved Successful")
     }
 
     private func validateInput() -> Bool {
