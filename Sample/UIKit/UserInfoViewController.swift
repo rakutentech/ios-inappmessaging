@@ -6,10 +6,18 @@ class UserInfoViewController: UIViewController {
     @IBOutlet private weak var userIDTextField: UITextField!
     @IBOutlet private weak var idTrackingIdentifierTextField: UITextField!
     @IBOutlet private weak var accessTokenTextField: UITextField!
+    private var userInfo: UserInfo?
 
     override func viewDidLoad() {
         super.viewDidLoad()
         view.addGestureRecognizer(UITapGestureRecognizer(target: view, action: #selector(view.endEditing)))
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        userIDTextField.text = userInfo?.getUserID()
+        idTrackingIdentifierTextField.text = userInfo?.getIDTrackingIdentifier()
+        accessTokenTextField.text = userInfo?.getAccessToken()
     }
 
     @IBAction private func saveUserInfoAction() {
@@ -17,12 +25,12 @@ class UserInfoViewController: UIViewController {
         guard validateInput() else {
             return
         }
-        let userInfo = UserInfo(
+        userInfo = UserInfo(
             userID: userIDTextField.text,
             idTrackingIdentifier: idTrackingIdentifierTextField.text,
             accessToken: accessTokenTextField.text
         )
-        RInAppMessaging.registerPreference(userInfo)
+        RInAppMessaging.registerPreference(userInfo!)
         showAlert(title: "Saved Successful")
     }
 

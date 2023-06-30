@@ -10,6 +10,7 @@ struct UserInfoView: View {
     @State private var isEmptyTextFieldAlertPresented = false
     @State private var isDuplicateTrackerAlertPresented = false
     @State private var isSuccessAlertPresented = false
+    @State private var userInfo: UserInfo?
 
     var body: some View {
         VStack(alignment: .center) {
@@ -52,12 +53,12 @@ struct UserInfoView: View {
                 guard validateInput() else {
                     return
                 }
-                let userInfo = UserInfo(
+                userInfo = UserInfo(
                     userID: userIDTextFieldText,
                     idTrackingIdentifier: idTrackerTextFieldText,
                     accessToken: accessTokenuserIDTextFieldText
                 )
-                RInAppMessaging.registerPreference(userInfo)
+                RInAppMessaging.registerPreference(userInfo!)
                 isSuccessAlertPresented = true
             }
             .alert(isPresented: $isSuccessAlertPresented) {
@@ -66,9 +67,9 @@ struct UserInfoView: View {
         }
         .padding(32)
         .onAppear {
-            userIDTextFieldText = ""
-            idTrackerTextFieldText = ""
-            accessTokenuserIDTextFieldText = ""
+            userIDTextFieldText = userInfo?.getUserID() ?? ""
+            idTrackerTextFieldText = userInfo?.getIDTrackingIdentifier() ?? ""
+            accessTokenuserIDTextFieldText = userInfo?.getAccessToken() ?? ""
         }
     }
 
