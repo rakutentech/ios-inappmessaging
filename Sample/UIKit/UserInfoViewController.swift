@@ -6,18 +6,19 @@ class UserInfoViewController: UIViewController {
     @IBOutlet private weak var userIDTextField: UITextField!
     @IBOutlet private weak var idTrackingIdentifierTextField: UITextField!
     @IBOutlet private weak var accessTokenTextField: UITextField!
-    private var userInfo: UserInfo?
+    private var userInfo = UserInfo()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         view.addGestureRecognizer(UITapGestureRecognizer(target: view, action: #selector(view.endEditing)))
+        RInAppMessaging.registerPreference(userInfo)
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        userIDTextField.text = userInfo?.getUserID()
-        idTrackingIdentifierTextField.text = userInfo?.getIDTrackingIdentifier()
-        accessTokenTextField.text = userInfo?.getAccessToken()
+        userIDTextField.text = userInfo.getUserID()
+        idTrackingIdentifierTextField.text = userInfo.getIDTrackingIdentifier()
+        accessTokenTextField.text = userInfo.getAccessToken()
     }
 
     @IBAction private func saveUserInfoAction() {
@@ -25,21 +26,12 @@ class UserInfoViewController: UIViewController {
         guard validateInput() else {
             return
         }
-        if userInfo == nil {
-            updateUserInfoValue()
-            RInAppMessaging.registerPreference(userInfo!)
-        } else {
-            updateUserInfoValue()
-        }
-        showAlert(title: "alert_saved_successful_title".localized)
-    }
-
-    private func updateUserInfoValue() {
         userInfo = UserInfo(
             userID: userIDTextField.text,
             idTrackingIdentifier: idTrackingIdentifierTextField.text,
             accessToken: accessTokenTextField.text
         )
+        showAlert(title: "alert_saved_successful_title".localized)
     }
 
     private func validateInput() -> Bool {
