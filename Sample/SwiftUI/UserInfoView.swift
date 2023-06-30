@@ -26,7 +26,7 @@ struct UserInfoView: View {
                 Alert(title: Text("Invalid input format"), message: Text("Fill least one field"))
             }
             VStack(alignment: .leading) {
-                Text("ID TRACKER IDENTIFIER:")
+                Text("ID TRACKING IDENTIFIER:")
                     .fontWeight(.bold)
                     .foregroundColor(Color(.darkGray))
                 TextField("", text: $idTrackerTextFieldText, onCommit: {
