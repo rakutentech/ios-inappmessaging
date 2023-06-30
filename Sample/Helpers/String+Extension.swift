@@ -3,6 +3,13 @@ import Foundation
 /// Bridges NSString functions to help with conversion to Foundation primitive types
 extension String {
 
+    /// Returns the localized string provided by IAM's resource file.
+    /// Provided value is used to match the keys in resource file.
+    /// - Returns: The localized string.
+    var localized: String {
+        return NSLocalizedString(self, bundle: Bundle.main, comment: "")
+    }
+
     /// broadly matches NSString.boolValue behaviour
     var hasBoolValue: Bool {
         Set<Character?>([
