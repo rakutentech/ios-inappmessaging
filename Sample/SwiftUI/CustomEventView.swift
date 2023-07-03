@@ -77,7 +77,7 @@ struct CustomEventView: View {
             Spacer().frame(height: 400)
         }
         .alert(isPresented: $isErrorAlertPresented, content: {
-            Alert(title: Text("Invalid input format"))
+            Alert(title: Text("alert_title_invalid_input".localized))
         }).onDisappear {
             attributes = []
             eventName = ""

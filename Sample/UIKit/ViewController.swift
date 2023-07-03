@@ -53,28 +53,11 @@ class ViewController: UIViewController {
 
     private func initSDK(enableTooltipFeature: Bool) {
         guard !SDKInitHelper.isSDKInitialized else {
-            showInitFailedAlert()
+            showAlert(title: "alert_title_error".localized,
+                      message: "alert_message_already_initialized".localized)
             return
         }
         RInAppMessaging.configure(enableTooltipFeature: enableTooltipFeature)
-        showInitFinishedAlert()
-    }
-
-    private func showInitFinishedAlert() {
-        let alert = UIAlertController(title: "alert_message_init_successful".localized,
-                                      message: nil,
-                                      preferredStyle: .alert)
-        let confirmAction = UIAlertAction(title: "OK", style: .default, handler: nil)
-        alert.addAction(confirmAction)
-        present(alert, animated: true)
-    }
-
-    private func showInitFailedAlert() {
-        let alert = UIAlertController(title: "alert_title_error".localized,
-                                      message: "alert_message_already_initialized".localized,
-                                      preferredStyle: .alert)
-        let confirmAction = UIAlertAction(title: "OK", style: .default, handler: nil)
-        alert.addAction(confirmAction)
-        present(alert, animated: true)
+        showAlert(title: "alert_message_init_successful".localized)
     }
 }

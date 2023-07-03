@@ -66,12 +66,7 @@ final class CustomEventViewController: UIViewController {
     }
 
     private func showInvalidInputError() {
-        let alert = UIAlertController(title: "Invalid input format",
-                                      message: nil,
-                                      preferredStyle: .alert)
-        let confirmAction = UIAlertAction(title: "OK", style: .default, handler: nil)
-        alert.addAction(confirmAction)
-        present(alert, animated: true)
+        showAlert(title: "alert_title_invalid_input".localized)
     }
 
     @IBAction private func addAttributeAction() {
