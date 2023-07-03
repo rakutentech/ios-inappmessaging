@@ -1,5 +1,7 @@
-"test" = "Base";
-"alert_invalid_input_title" = "Invalid input format";
-"alert_fill_at_least_one_field" = "Fill at least one field";
-"alert_duplicate_identifier" = "Couldn't use access token and ID tracking identifier at the same time";
-"alert_saved_successful_title" = "Saved Successful";
+"alert_title_invalid_input" = "Invalid input format";
+"alert_message_duplicate_identifier" = "Access token and ID tracking identifier cannot be used at the same time";
+"alert_title_save_successful" = "Save Successful";
+"alert_title_error" = "Error";
+"alert_message_init_successful" = "Init successful";
+"alert_message_already_initialized" = "IAM SDK is already initialized";
+"alert_message_not_initialized" = "IAM SDK is not initialized";

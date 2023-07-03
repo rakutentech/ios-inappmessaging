@@ -4,13 +4,19 @@ import RInAppMessaging
 @available(iOS 13.0, *)
 struct UserInfoView: View {
 
-    @State private var userIDTextFieldText: String = ""
-    @State private var idTrackerTextFieldText: String = ""
-    @State private var accessTokenUserIDTextFieldText: String = ""
-    @State private var isEmptyTextFieldAlertPresented = false
+    @State private var userIDText: String = ""
+    @State private var idTrackerText: String = ""
+    @State private var accessTokenText: String = ""
+    @State private var isSDKNotInitializedAlertPresented = false
     @State private var isDuplicateTrackerAlertPresented = false
     @State private var isSuccessAlertPresented = false
-    @State private var userInfo = UserInfo()
+
+    private let userInfo = UserInfo()
+    private var textFields: [(title: String, text: Binding<String>)] {
+        [("USER ID:", $userIDText),
+         ("ID TRACKING IDENTIFIER:", $idTrackerText),
+         ("ACCESS TOKEN:", $accessTokenText)]
+    }
 
     init() {
         RInAppMessaging.registerPreference(userInfo)
@@ -18,82 +24,70 @@ struct UserInfoView: View {
 
     var body: some View {
         VStack(alignment: .center) {
-            VStack(alignment: .leading) {
-                Text("USER ID:")
-                    .fontWeight(.bold)
-                    .foregroundColor(Color(.darkGray))
-                TextField("", text: $userIDTextFieldText, onCommit: {
-                    hideKeyboard()
-                })
-                .textFieldStyle(.roundedBorder)
-            }
-            .alert(isPresented: $isEmptyTextFieldAlertPresented) {
-                Alert(title: Text("alert_invalid_input_title".localized), message: Text("alert_fill_at_least_one_field".localized))
-            }
-            VStack(alignment: .leading) {
-                Text("ID TRACKING IDENTIFIER:")
-                    .fontWeight(.bold)
-                    .foregroundColor(Color(.darkGray))
-                TextField("", text: $idTrackerTextFieldText, onCommit: {
-                    hideKeyboard()
-                })
-                .textFieldStyle(.roundedBorder)
-            }
-            .alert(isPresented: $isDuplicateTrackerAlertPresented) {
-                Alert(title: Text("alert_invalid_input_title".localized), message: Text("alert_duplicate_identifier".localized))
-            }
-            VStack(alignment: .leading) {
-                Text("ACCESS TOKEN:")
-                    .fontWeight(.bold)
-                    .foregroundColor(Color(.darkGray))
-                TextField("", text: $accessTokenUserIDTextFieldText, onCommit: {
-                    hideKeyboard()
-                })
+            ForEach(textFields, id: \.title) { textField in
+                VStack(alignment: .leading) {
+                    Text(textField.title)
+                        .fontWeight(.bold)
+                        .foregroundColor(Color(.darkGray))
+                    TextField("", text: textField.text) {
+                        hideKeyboard()
+                    }
                     .textFieldStyle(.roundedBorder)
+                    .autocorrectionDisabled()
+                }
             }
             Spacer()
-            Button("SAVE") {
-                hideKeyboard()
-                guard validateInput() else {
-                    return
-                }
-                userInfo = UserInfo(
-                    userID: userIDTextFieldText,
-                    idTrackingIdentifier: idTrackerTextFieldText,
-                    accessToken: accessTokenUserIDTextFieldText
-                )
-                isSuccessAlertPresented = true
+            Button("SAVE", action: save)
+            // using Text("") as a host view for each alert
+            Text("").alert(isPresented: $isDuplicateTrackerAlertPresented) {
+                Alert(title: Text("alert_title_invalid_input".localized),
+                      message: Text("alert_message_duplicate_identifier".localized))
             }
-            .alert(isPresented: $isSuccessAlertPresented) {
-                Alert(title: Text("alert_saved_successful_title".localized))
+            Text("").alert(isPresented: $isSDKNotInitializedAlertPresented) {
+                Alert(title: Text("alert_title_error".localized),
+                      message: Text("alert_message_not_initialized".localized))
+            }
+            Text("").alert(isPresented: $isSuccessAlertPresented) {
+                Alert(title: Text("alert_title_save_successful".localized))
             }
         }
         .padding(32)
         .onAppear {
-            userIDTextFieldText = userInfo.getUserID() ?? ""
-            idTrackerTextFieldText = userInfo.getIDTrackingIdentifier() ?? ""
-            accessTokenUserIDTextFieldText = userInfo.getAccessToken() ?? ""
+            userIDText = userInfo.getUserID() ?? ""
+            idTrackerText = userInfo.getIDTrackingIdentifier() ?? ""
+            accessTokenText = userInfo.getAccessToken() ?? ""
         }
+    }
+
+    private func save() {
+        hideKeyboard()
+        guard SDKInitHelper.isSDKInitialized else {
+            isSDKNotInitializedAlertPresented = true
+            return
+        }
+        guard validateInput() else {
+            return
+        }
+        userInfo.userID = userIDText
+        userInfo.idTrackingIdentifier = idTrackerText
+        userInfo.accessToken = accessTokenText
+
+        isSuccessAlertPresented = true
     }
 
     private func validateInput() -> Bool {
-        let validate = UserInfoHelper.validateInput(
-            userID: userIDTextFieldText,
-            idTracker: idTrackerTextFieldText,
-            token: accessTokenUserIDTextFieldText)
+        let inputError = UserInfoHelper.validateInput(
+            userID: userIDText,
+            idTracker: idTrackerText,
+            token: accessTokenText)
 
-        if let validate {
-            switch validate {
-            case .emptyInput:
-                isEmptyTextFieldAlertPresented = true
-            case .duplicateTracker:
-                isDuplicateTrackerAlertPresented = true
-            }
+        if inputError == .duplicateTracker {
+            isDuplicateTrackerAlertPresented = true
             return false
         }
+
         return true
     }
-
 }
 
 @available(iOS 13.0, *)

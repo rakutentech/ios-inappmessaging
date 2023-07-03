@@ -84,6 +84,7 @@
 		45EA720D25B72002001B2049 /* UIViewExtensionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45EA720C25B72002001B2049 /* UIViewExtensionSpec.swift */; };
 		45ECADDF29DD6B96003F75B2 /* slide-up-trigger-without-messageBody.json in Resources */ = {isa = PBXBuildFile; fileRef = 45ECADDE29DD6B95003F75B2 /* slide-up-trigger-without-messageBody.json */; };
 		45ECADE029DD6B96003F75B2 /* slide-up-trigger-without-messageBody.json in Resources */ = {isa = PBXBuildFile; fileRef = 45ECADDE29DD6B95003F75B2 /* slide-up-trigger-without-messageBody.json */; };
+		45EFE1B92A5329CA003DF928 /* SDKInitHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45EFE1B82A5329CA003DF928 /* SDKInitHelper.swift */; };
 		4B1A88AB274F6896002724B6 /* dummy-font.otf in Resources */ = {isa = PBXBuildFile; fileRef = 4B1A88AA274F6891002724B6 /* dummy-font.otf */; };
 		4BBE7EAF274F1A6A0039D2BF /* UIFontExtensionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BBE7EAE274F1A6A0039D2BF /* UIFontExtensionSpec.swift */; };
 		607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD51AFB9204008FA782 /* AppDelegate.swift */; };
@@ -227,6 +228,7 @@
 		45EA720425B71FA2001B2049 /* UIApplicationExtensionSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIApplicationExtensionSpec.swift; sourceTree = "<group>"; };
 		45EA720C25B72002001B2049 /* UIViewExtensionSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewExtensionSpec.swift; sourceTree = "<group>"; };
 		45ECADDE29DD6B95003F75B2 /* slide-up-trigger-without-messageBody.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "slide-up-trigger-without-messageBody.json"; sourceTree = "<group>"; };
+		45EFE1B82A5329CA003DF928 /* SDKInitHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDKInitHelper.swift; sourceTree = "<group>"; };
 		4B1A88AA274F6891002724B6 /* dummy-font.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "dummy-font.otf"; sourceTree = "<group>"; };
 		4BBE7EAE274F1A6A0039D2BF /* UIFontExtensionSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIFontExtensionSpec.swift; sourceTree = "<group>"; };
 		607FACD01AFB9204008FA782 /* RInAppMessaging_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RInAppMessaging_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -432,7 +434,6 @@
 				607FACD51AFB9204008FA782 /* AppDelegate.swift */,
 				FC2CA49A2A0CDE110096EAF7 /* AppStarterViewController.swift */,
 				607FACD91AFB9204008FA782 /* Main.storyboard */,
-				D24EDF722941457800F9EC5E /* Helpers */,
 				607FACDC1AFB9204008FA782 /* Images.xcassets */,
 				607FACDE1AFB9204008FA782 /* LaunchScreen.xib */,
 				607FACD31AFB9204008FA782 /* Supporting Files */,
@@ -546,6 +547,7 @@
 				FC1872392A49B7D3005EB10B /* UserInfoHelper.swift */,
 				FC82C7112A4971B000A1556E /* UIViewController+Extension.swift */,
 				FC6C13C22A11D32D00758AF2 /* EventHelper.swift */,
+				45EFE1B82A5329CA003DF928 /* SDKInitHelper.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -554,6 +556,7 @@
 			isa = PBXGroup;
 			children = (
 				FC82C70B2A49621500A1556E /* UserInfo.swift */,
+				D24EDF722941457800F9EC5E /* Helpers */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -832,6 +835,7 @@
 				FCCEE5D72A11DE27002ADC8C /* ViewController.swift in Sources */,
 				FCCEE5E32A11DE2E002ADC8C /* MainView.swift in Sources */,
 				FCCEE5E22A11DE2E002ADC8C /* TabBarView.swift in Sources */,
+				45EFE1B92A5329CA003DF928 /* SDKInitHelper.swift in Sources */,
 				45073FA4277CDA70007CB732 /* MockServerHelper.swift in Sources */,
 				FC6C13C32A11D32D00758AF2 /* EventHelper.swift in Sources */,
 				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,

@@ -52,7 +52,7 @@ class ViewController: UIViewController {
     }
 
     private func initSDK(enableTooltipFeature: Bool) {
-        guard RInAppMessaging.initializedModule == nil else {
+        guard !SDKInitHelper.isSDKInitialized else {
             showInitFailedAlert()
             return
         }
@@ -61,7 +61,7 @@ class ViewController: UIViewController {
     }
 
     private func showInitFinishedAlert() {
-        let alert = UIAlertController(title: "Init successful",
+        let alert = UIAlertController(title: "alert_message_init_successful".localized,
                                       message: nil,
                                       preferredStyle: .alert)
         let confirmAction = UIAlertAction(title: "OK", style: .default, handler: nil)
@@ -70,8 +70,8 @@ class ViewController: UIViewController {
     }
 
     private func showInitFailedAlert() {
-        let alert = UIAlertController(title: "Error",
-                                      message: "IAM SDK is already initialized",
+        let alert = UIAlertController(title: "alert_title_error".localized,
+                                      message: "alert_message_already_initialized".localized,
                                       preferredStyle: .alert)
         let confirmAction = UIAlertAction(title: "OK", style: .default, handler: nil)
         alert.addAction(confirmAction)
