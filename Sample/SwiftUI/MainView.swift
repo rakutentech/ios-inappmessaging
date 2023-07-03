@@ -47,13 +47,13 @@ struct MainView: View {
                     initSDK(enableTooltipFeature: true)
                 }
                 .alert(isPresented: $isErrorAlertPresented) {
-                    Alert(title: Text("Error"), message: Text("IAM SDK is already initialized"))
+                    Alert(title: Text("alert_title_error".localized), message: Text("alert_message_already_initialized".localized))
                 }
                 Button("Init w/o Tooltip") {
                     initSDK(enableTooltipFeature: false)
                 }
                 .alert(isPresented: $isOnFinishedAlertPresented) {
-                    Alert(title: Text("Init successful"))
+                    Alert(title: Text("alert_message_init_successful".localized))
                 }
                 Button("Open modal page") {
                     isPresentSecondView = true

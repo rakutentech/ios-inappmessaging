@@ -20,6 +20,11 @@ struct TabBarView: View {
                 }
                 .accessibility(identifier: "tabbar.button.2")
                 .canHaveTooltipIfAvailable(identifier: "tabbar.button.2")
+                UserInfoView().tabItem {
+                    Text("User Info")
+                }
+                .accessibility(identifier: "tabbar.button.3")
+                .canHaveTooltipIfAvailable(identifier: "tabbar.button.3")
             }
         }
     }

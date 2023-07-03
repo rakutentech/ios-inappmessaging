@@ -3,6 +3,10 @@ import Foundation
 /// Bridges NSString functions to help with conversion to Foundation primitive types
 extension String {
 
+    var localized: String {
+        NSLocalizedString(self, bundle: Bundle.main, comment: "")
+    }
+
     /// broadly matches NSString.boolValue behaviour
     var hasBoolValue: Bool {
         Set<Character?>([

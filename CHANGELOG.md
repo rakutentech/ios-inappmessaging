@@ -1,6 +1,8 @@
 ## Changelog
 
 ### Unreleased
+- Features:
+	- Added User preference input in Sample App [SDKCF-6641]
 
 ### 8.0.0 (2023-06-21)
 - **Breaking changes:**
