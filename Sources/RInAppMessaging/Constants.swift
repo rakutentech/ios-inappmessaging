@@ -47,9 +47,9 @@ internal enum Constants {
         static let sdkVersion = "8.1.0-snapshot"
     }
 
-    enum RAnalytics {
-        static let impressionsEventName = "_rem_iam_impressions"
-        static let pushPrimerEventName = "_rem_iam_pushprimer"
+    enum RAnalytics: String {
+        case impressionsEventName = "_rem_iam_impressions"
+        case pushPrimerEventName = "_rem_iam_pushprimer"
 
         enum Keys {
             static let action = "action"
@@ -58,6 +58,7 @@ internal enum Constants {
             static let campaignID = "campaign_id"
             static let subscriptionID = "subscription_id"
             static let pushPermission = "push_permission"
+            static let deviceID = "device_id"
         }
     }
 

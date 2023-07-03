@@ -1,11 +1,5 @@
 import Foundation
 
-#if SWIFT_PACKAGE
-import class RSDKUtilsMain.AnalyticsBroadcaster
-#else
-import class RSDKUtils.AnalyticsBroadcaster
-#endif
-
 internal protocol ImpressionServiceType: ErrorReportable {
     func pingImpression(impressions: [Impression], campaignData: CampaignData)
 }
@@ -53,7 +47,7 @@ internal class ImpressionService: ImpressionServiceType, HttpRequestable, TaskSc
         // Broadcast impression data to RAnalytics.
         // `impression` type is sent separately, just after campaign is displayed.
         let impressionData = impressions.filter({ $0.type != .impression }).encodeForAnalytics()
-        AnalyticsBroadcaster.sendEventName(Constants.RAnalytics.impressionsEventName,
+        AnalyticsTracker.sendEventName(Constants.RAnalytics.impressionsEventName,
                                            dataObject: [Constants.RAnalytics.Keys.impressions: impressionData,
                                                         Constants.RAnalytics.Keys.campaignID: campaignData.campaignId,
                                                         Constants.RAnalytics.Keys.subscriptionID: configurationRepository.getSubscriptionID() ?? "n/a"])
