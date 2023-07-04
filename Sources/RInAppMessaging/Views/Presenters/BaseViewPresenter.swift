@@ -81,8 +81,8 @@ extension BaseViewPresenter {
         // Broadcast only `impression` type here. Other types are sent after campaign is closed.
         let impressionData = [impression].encodeForAnalytics()
         AnalyticsTracker.sendEventName(Constants.RAnalytics.impressionsEventName,
-                                           dataObject: [Constants.RAnalytics.Keys.impressions: impressionData,
-                                                        Constants.RAnalytics.Keys.campaignID: campaign.id,
-                                                        Constants.RAnalytics.Keys.subscriptionID: configurationRepository.getSubscriptionID() ?? "n/a"])
+                                       dataObject: [Constants.RAnalytics.Keys.impressions: impressionData,
+                                                    Constants.RAnalytics.Keys.campaignID: campaign.id,
+                                                    Constants.RAnalytics.Keys.subscriptionID: configurationRepository.getSubscriptionID() ?? "n/a"])
     }
 }

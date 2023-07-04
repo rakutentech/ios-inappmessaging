@@ -48,9 +48,9 @@ internal class ImpressionService: ImpressionServiceType, HttpRequestable, TaskSc
         // `impression` type is sent separately, just after campaign is displayed.
         let impressionData = impressions.filter({ $0.type != .impression }).encodeForAnalytics()
         AnalyticsTracker.sendEventName(Constants.RAnalytics.impressionsEventName,
-                                           dataObject: [Constants.RAnalytics.Keys.impressions: impressionData,
-                                                        Constants.RAnalytics.Keys.campaignID: campaignData.campaignId,
-                                                        Constants.RAnalytics.Keys.subscriptionID: configurationRepository.getSubscriptionID() ?? "n/a"])
+                                       dataObject: [Constants.RAnalytics.Keys.impressions: impressionData,
+                                                    Constants.RAnalytics.Keys.campaignID: campaignData.campaignId,
+                                                    Constants.RAnalytics.Keys.subscriptionID: configurationRepository.getSubscriptionID() ?? "n/a"])
         
         sendImpressionRequest(endpoint: impressionEndpoint, parameters: parameters)
     }

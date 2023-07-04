@@ -150,8 +150,8 @@ internal class FullViewPresenter: BaseViewPresenter, FullViewPresenterType, Erro
 
     private func trackPushPrimerAction(didOptIn: Bool) {
         AnalyticsTracker.sendEventName(Constants.RAnalytics.pushPrimerEventName,
-                                           dataObject: [Constants.RAnalytics.Keys.pushPermission: didOptIn ? 1 : 0,
-                                                        Constants.RAnalytics.Keys.campaignID: campaign.id,
-                                                        Constants.RAnalytics.Keys.subscriptionID: configurationRepository.getSubscriptionID() ?? "n/a"])
+                                       dataObject: [Constants.RAnalytics.Keys.pushPermission: didOptIn ? 1 : 0,
+                                                    Constants.RAnalytics.Keys.campaignID: campaign.id,
+                                                    Constants.RAnalytics.Keys.subscriptionID: configurationRepository.getSubscriptionID() ?? "n/a"])
     }
 }
