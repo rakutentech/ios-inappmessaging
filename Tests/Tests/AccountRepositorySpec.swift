@@ -268,6 +268,12 @@ class AccountRepositorySpec: QuickSpec {
                     it("will not throw an error for empty preference") {
                         expect(accountRepository.checkAssertions()).toNot(throwAssertion())
                     }
+
+                    it("will not throw an error if idTrackingIdentifier is specified and accessToken is empty") {
+                        userInfoProvider.accessToken = ""
+                        userInfoProvider.idTrackingIdentifier = "tracking-id"
+                        expect(accountRepository.checkAssertions()).toNot(throwAssertion())
+                    }
                 }
             }
         }

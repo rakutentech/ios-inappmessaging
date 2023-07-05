@@ -58,6 +58,7 @@ class ViewController: UIViewController {
             return
         }
         RInAppMessaging.configure(enableTooltipFeature: enableTooltipFeature)
+        RInAppMessaging.registerPreference(UserInfoHelper.sharedPreference)
         showAlert(title: "alert_message_init_successful".localized)
     }
 }

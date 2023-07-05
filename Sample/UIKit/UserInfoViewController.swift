@@ -7,12 +7,11 @@ class UserInfoViewController: UIViewController {
     @IBOutlet private weak var idTrackingIdentifierTextField: UITextField!
     @IBOutlet private weak var accessTokenTextField: UITextField!
 
-    private let userInfo = UserInfo()
+    private let userInfo = UserInfoHelper.sharedPreference
 
     override func viewDidLoad() {
         super.viewDidLoad()
         view.addGestureRecognizer(UITapGestureRecognizer(target: view, action: #selector(view.endEditing)))
-        RInAppMessaging.registerPreference(userInfo)
     }
 
     override func viewDidAppear(_ animated: Bool) {
