@@ -76,7 +76,7 @@ final class AccountRepository: AccountRepositoryType {
     func checkAssertions() {
         assert(!(userInfoProvider?.getAccessToken()?.isEmpty == false && userInfoProvider?.getUserID()?.isEmpty != false),
                "userId must be present and not empty when accessToken is specified")
-        assert(!(userInfoProvider?.getIDTrackingIdentifier() != nil && userInfoProvider?.getAccessToken() != nil),
+        assert(!(userInfoProvider?.getIDTrackingIdentifier().isEmpty == false && userInfoProvider?.getAccessToken().isEmpty == false),
                "accessToken and idTrackingIdentifier shouldn't be used at the same time")
     }
 }

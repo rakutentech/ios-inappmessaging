@@ -11,15 +11,11 @@ struct UserInfoView: View {
     @State private var isDuplicateTrackerAlertPresented = false
     @State private var isSuccessAlertPresented = false
 
-    private let userInfo = UserInfo()
+    private let userInfo = UserInfoHelper.sharedPreference
     private var textFields: [(title: String, text: Binding<String>)] {
         [("USER ID:", $userIDText),
          ("ID TRACKING IDENTIFIER:", $idTrackerText),
          ("ACCESS TOKEN:", $accessTokenText)]
-    }
-
-    init() {
-        RInAppMessaging.registerPreference(userInfo)
     }
 
     var body: some View {
@@ -34,6 +30,7 @@ struct UserInfoView: View {
                     }
                     .textFieldStyle(.roundedBorder)
                     .autocorrectionDisabled()
+                    .autocapitalization(.none)
                 }
             }
             Spacer()

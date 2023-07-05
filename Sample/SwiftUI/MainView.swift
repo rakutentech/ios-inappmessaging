@@ -72,6 +72,7 @@ struct MainView: View {
             return
         }
         RInAppMessaging.configure(enableTooltipFeature: enableTooltipFeature)
+        RInAppMessaging.registerPreference(UserInfoHelper.sharedPreference)
         isOnFinishedAlertPresented = true
     }
 }
