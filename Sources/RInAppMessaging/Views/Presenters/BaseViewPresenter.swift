@@ -1,11 +1,5 @@
 import UIKit
 
-#if SWIFT_PACKAGE
-import class RSDKUtilsMain.AnalyticsBroadcaster
-#else
-import class RSDKUtils.AnalyticsBroadcaster
-#endif
-
 internal protocol BaseViewPresenterType: ImpressionTrackable {
     var campaign: Campaign! { get set }
     var associatedImage: UIImage? { get set }
@@ -86,9 +80,9 @@ extension BaseViewPresenter {
         }
         // Broadcast only `impression` type here. Other types are sent after campaign is closed.
         let impressionData = [impression].encodeForAnalytics()
-        AnalyticsBroadcaster.sendEventName(Constants.RAnalytics.impressionsEventName,
-                                           dataObject: [Constants.RAnalytics.Keys.impressions: impressionData,
-                                                        Constants.RAnalytics.Keys.campaignID: campaign.id,
-                                                        Constants.RAnalytics.Keys.subscriptionID: configurationRepository.getSubscriptionID() ?? "n/a"])
+        AnalyticsTracker.sendEventName(Constants.RAnalytics.impressionsEventName,
+                                       dataObject: [Constants.RAnalytics.Keys.impressions: impressionData,
+                                                    Constants.RAnalytics.Keys.campaignID: campaign.id,
+                                                    Constants.RAnalytics.Keys.subscriptionID: configurationRepository.getSubscriptionID() ?? "n/a"])
     }
 }

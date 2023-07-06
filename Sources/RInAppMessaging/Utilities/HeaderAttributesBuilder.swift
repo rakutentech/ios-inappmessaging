@@ -6,7 +6,7 @@ struct HeaderAttributesBuilder {
 
     @discardableResult
     mutating func addDeviceID() -> Bool {
-        guard let deviceId = UIDevice.current.identifierForVendor?.uuidString else {
+        guard let deviceId = UIDevice.deviceID else {
             return false
         }
         addedHeaders.append(HeaderAttribute(key: Keys.deviceID, value: deviceId))

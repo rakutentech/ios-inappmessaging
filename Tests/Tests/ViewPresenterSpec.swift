@@ -506,7 +506,7 @@ class ViewPresenterSpec: QuickSpec {
                             return false
                         }
 
-                        return params["eventName"] as? String == Constants.RAnalytics.pushPrimerEventName &&
+                        return params["eventName"] as? String == Constants.RAnalytics.pushPrimerEventName.rawValue &&
                         data[Constants.RAnalytics.Keys.pushPermission] as? Int == Int(booleanLiteral: expectedFlag) &&
                         data[Constants.RAnalytics.Keys.subscriptionID] as? String == configurationRepository.getSubscriptionID() &&
                         data[Constants.RAnalytics.Keys.campaignID] as? String == campaign.id
