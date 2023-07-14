@@ -260,6 +260,7 @@ class DisplayPermissionServiceSpec: QuickSpec {
                     let Keys = Constants.Request.Header.self
                     let headers = httpSession.sentRequest?.allHTTPHeaderFields
                     expect(headers).toNot(beEmpty())
+                    expect(headers?[Keys.deviceID]).toNot(beEmpty())
                     expect(headers?[Keys.subscriptionID]).to(equal(moduleConfig.subscriptionID))
                     expect(headers?[Keys.authorization]).to(equal("OAuth2 token"))
                 }
