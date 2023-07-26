@@ -76,10 +76,6 @@ internal class Checkbox: UIControl {
     /// **Default:** The current tintColor.
     var checkmarkColor: UIColor!
 
-    /// **Default:** White.
-    @available(swift, obsoleted: 4.1, renamed: "checkboxFillColor", message: "Defaults to a clear color")
-    var checkboxBackgroundColor: UIColor! = .white
-
     /// The checkboxes fill color.
     ///
     /// **Default:** `UIColoe.Clear`
