@@ -60,11 +60,14 @@ import RSDKUtils
     /// - Parameters:
     ///     - subscriptionKey: your app's subscription key. (This setting will override the `InAppMessagingAppSubscriptionID` value in Info.plist)
     ///     - configurationURL: a configuration URL. (This setting will override the `InAppMessagingConfigurationURL` value in Info.plist)
-    ///     - enableTooltipFeature: set to `true` to enable Tooltip campaigns. This feature is currently in beta phase. Default value: `false`
+    ///     - enableTooltipFeature: set to `true` to enable Tooltip campaigns. This feature is currently in beta phase. Default value: `false`.
+    ///     - caller: for internal use only.
     @objc public static func configure(subscriptionID: String? = nil,
                                        configurationURL: String? = nil,
-                                       enableTooltipFeature: Bool = false) {
-        guard initializedModule == nil else {
+                                       enableTooltipFeature: Bool = false,
+                                       caller: String = #file) {
+
+        guard verifyRMCEnvironment(caller: caller), initializedModule == nil else {
             return
         }
 
@@ -209,6 +212,17 @@ import RSDKUtils
         }
 
         return configURL
+    }
+
+    /// Checks the existence of RMC module and verifies the `configure()` caller.
+    /// - Parameter caller: a path to the source file that called `configure()`
+    /// - Returns: `false` if RMC module is integrated and the method wasn't called from the RMC module.
+    private static func verifyRMCEnvironment(caller: String) -> Bool {
+        guard NSClassFromString("RMCInAppMessaging.RMCInAppMessaging") != nil else {
+            return true
+        }
+
+        return caller.hasSuffix("RMCInAppMessaging/RMCInAppMessaging.swift") || caller.hasSuffix("RMC/RMC.swift")
     }
 
     // MARK: - Unit tests helpers
