@@ -5,4 +5,5 @@ internal struct ImpressionRequest: Codable {
     let sdkVersion: String
     let impressions: [Impression]
     let userIdentifiers: [UserIdentifier]
+    let rmcSdkVersion: String?
 }

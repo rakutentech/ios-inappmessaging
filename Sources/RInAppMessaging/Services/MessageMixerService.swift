@@ -87,7 +87,8 @@ extension MessageMixerService {
         let pingRequest = PingRequest(
             userIdentifiers: accountRepository.getUserIdentifiers(),
             appVersion: appVersion,
-            supportedCampaignTypes: [.pushPrimer, .regular])
+            supportedCampaignTypes: [.pushPrimer, .regular],
+            rmcSdkVersion: Constants.Versions.rmcSdkVersion)
 
         do {
             let body = try JSONEncoder().encode(pingRequest)

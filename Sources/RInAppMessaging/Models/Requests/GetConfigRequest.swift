@@ -7,6 +7,7 @@ internal struct GetConfigRequest: Codable {
         case platform
         case appId
         case sdkVersion
+        case rmcSDKVersion
     }
 
     let locale: String
@@ -14,6 +15,7 @@ internal struct GetConfigRequest: Codable {
     let platform: Platform
     let appId: String
     let sdkVersion: String
+    let rmcSDKVersion: String?
 }
 
 extension GetConfigRequest {
@@ -24,6 +26,7 @@ extension GetConfigRequest {
         queryItems.append(URLQueryItem(name: CodingKeys.appVersion.rawValue, value: appVersion))
         queryItems.append(URLQueryItem(name: CodingKeys.sdkVersion.rawValue, value: sdkVersion))
         queryItems.append(URLQueryItem(name: CodingKeys.locale.rawValue, value: locale))
+        queryItems.append(URLQueryItem(name: CodingKeys.locale.rawValue, value: rmcSDKVersion))
         return queryItems
     }
 }
