@@ -1,3 +1,4 @@
+import Foundation
 import typealias Foundation.TimeInterval
 
 internal enum Constants {
