@@ -47,7 +47,7 @@ internal enum Constants {
         static let sdkVersion = "8.1.0-snapshot"
         static var rmcSdkVersion: String? {
             if let rmcBundle = Bundle(identifier: "RMC-RMC-resources") {
-                return rmcBundle.bundleIdentifier
+                return rmcBundle.value(for: "CFBundleShortVersionString") ?? nil
             }
             return nil
         }
