@@ -2,8 +2,6 @@ import typealias Foundation.TimeInterval
 
 internal enum Constants {
 
-    static let rmcSubscriptionIDSuffix = "-rmc"
-
     enum CampaignMessage {
         static let imageRequestTimeoutSeconds: TimeInterval = 20
         static let imageResourceTimeoutSeconds: TimeInterval = 300
@@ -62,6 +60,10 @@ internal enum Constants {
             static let pushPermission = "push_permission"
             static let deviceID = "device_id"
         }
+    }
+
+    enum RMC {
+        static let subscriptionIDSuffix = "-rmc"
     }
 
     enum Retry {

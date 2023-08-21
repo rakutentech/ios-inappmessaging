@@ -224,7 +224,7 @@ import RSDKUtils
             return true
         }
 
-        return subscriptionID?.hasSuffix(Constants.rmcSubscriptionIDSuffix) == true
+        return subscriptionID?.hasSuffix(Constants.RMC.subscriptionIDSuffix) == true
     }
 
     /// Removes '-rmc' suffix from subscriptionId if it's present.
@@ -233,11 +233,11 @@ import RSDKUtils
             return nil
         }
 
-        guard subscriptionID.hasSuffix(Constants.rmcSubscriptionIDSuffix) else {
+        guard subscriptionID.hasSuffix(Constants.RMC.subscriptionIDSuffix) else {
             return subscriptionID
         }
 
-        return String(subscriptionID.prefix(subscriptionID.count - Constants.rmcSubscriptionIDSuffix.count))
+        return String(subscriptionID.prefix(subscriptionID.count - Constants.RMC.subscriptionIDSuffix.count))
     }
 
     // MARK: - Unit tests helpers
