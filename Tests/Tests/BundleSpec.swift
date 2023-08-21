@@ -73,9 +73,9 @@ class BundleMock: Bundle {
         infoDictionaryMock
     }
 
-    init() {
+    init(infoDictionary: [String: Any] = [:]) {
+        infoDictionaryMock = infoDictionary
         // super.init(path:) creates a new instance only if `path` is not bound to any existing Bundle instance
         super.init(path: Bundle.main.bundlePath + "/Frameworks")!
-        infoDictionaryMock.removeAll()
     }
 }

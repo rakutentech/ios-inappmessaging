@@ -20,7 +20,7 @@ import RSDKUtils
     }
     /// Returns `true` when RMC module is integrated in the host app
     internal static var isRMCEnvironment: Bool {
-        NSClassFromString("RMCInAppMessaging.RMCInAppMessaging") != nil
+        Bundle.rmcResources != nil
     }
 
     private override init() { super.init() }

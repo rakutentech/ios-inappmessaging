@@ -59,6 +59,10 @@ internal extension Bundle {
         .init(identifier: "jp.co.rakuten.inappmessaging.Tests") ?? .init(identifier: "Tests")
     }
 
+    static var rmcResources: Bundle? {
+        .init(identifier: "RMC-RMC-resources")
+    }
+
     private static var sdk: Bundle? {
         sdkBundle(name: "RInAppMessaging")
     }
