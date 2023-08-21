@@ -236,6 +236,21 @@ class PublicAPISpec: QuickSpec {
                 expect(UIApplication.shared.getKeyWindow()?.findIAMView()).toAfterTimeout(beNil())
             }
 
+            it("will not count an impression if message wasn't closed") {
+                generateAndDisplayLoginCampaigns(count: 1, addContexts: false)
+                let campaign = campaignRepository.list[0]
+                expect(campaign.impressionsLeft).to(equal(campaign.data.maxImpressions))
+                expect(UIApplication.shared.getKeyWindow()?.subviews).toEventually(containElementSatisfying({
+                    if let view = $0 as? BaseView {
+                        expect(campaign).to(equal(view.basePresenter.campaign))
+                        return true
+                    }
+                    return false
+                }))
+                let updatedCampaign = campaignRepository.list[0]
+                expect(updatedCampaign.impressionsLeft).to(equal(updatedCampaign.data.maxImpressions))
+            }
+
             context("when calling configure()") {
 
                 it("won't reinitialize module if configure() was called more than once") {
@@ -369,21 +384,6 @@ class PublicAPISpec: QuickSpec {
                         }
                     }
                 }
-            }
-
-            it("will not count an impression if message wasn't closed") {
-                generateAndDisplayLoginCampaigns(count: 1, addContexts: false)
-                let campaign = campaignRepository.list[0]
-                expect(campaign.impressionsLeft).to(equal(campaign.data.maxImpressions))
-                expect(UIApplication.shared.getKeyWindow()?.subviews).toEventually(containElementSatisfying({
-                    if let view = $0 as? BaseView {
-                        expect(campaign).to(equal(view.basePresenter.campaign))
-                        return true
-                    }
-                    return false
-                }))
-                let updatedCampaign = campaignRepository.list[0]
-                expect(updatedCampaign.impressionsLeft).to(equal(updatedCampaign.data.maxImpressions))
             }
 
             context("when calling closeMessage") {
@@ -657,6 +657,19 @@ class PublicAPISpec: QuickSpec {
                         RInAppMessaging.closeTooltip(with: "other-id")
                         expect(UIApplication.shared.getKeyWindow()?.findTooltipView()).toAfterTimeoutNot(beNil())
                     }
+                }
+            }
+
+            context("when calling sanitizeSubscriptionID()") {
+
+                it("will remove '-rmc' suffix") {
+                    let subscriptionID = "myKey-rmc"
+                    expect(RInAppMessaging.sanitizeSubscriptionID(subscriptionID)).toEventually(equal("myKey"))
+                }
+
+                it("will not remove '-rmc' substring if it's not at the and of the string") {
+                    let subscriptionID = "my-rmcKey"
+                    expect(RInAppMessaging.sanitizeSubscriptionID(subscriptionID)).toEventually(equal("my-rmcKey"))
                 }
             }
         }
