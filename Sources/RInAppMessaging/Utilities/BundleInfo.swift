@@ -68,9 +68,12 @@ internal extension Bundle {
     }
     
     static var rmcSdkVersion: String? {
-        if let path = rmcResources?.path(forResource: "Version", ofType: "plist") {
-                let versionDict = NSDictionary(contentsOfFile: path)
-                return versionDict?["rmcSdkVersion"] as? String
+        if let path = rmcResources?.path(forResource: "RmcInfo", ofType: "plist") {
+            if let versionDict = NSDictionary(contentsOfFile: path) {
+                if let rmcSdkVersion = versionDict["rmcSdkVersion"] as? String {
+                    return rmcSdkVersion
+                }
+            }
         }
         return nil
     }
