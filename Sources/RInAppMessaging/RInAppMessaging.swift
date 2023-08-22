@@ -18,6 +18,10 @@ import RSDKUtils
     internal static var swiftUIEventHandler: SwiftUIViewEventHandlerType? {
         dependencyManager?.resolve(type: SwiftUIViewEventHandlerType.self)
     }
+    /// Returns `true` when RMC module is integrated in the host app
+    internal static var isRMCEnvironment: Bool {
+        Bundle.rmcResources != nil
+    }
 
     private override init() { super.init() }
 
@@ -60,17 +64,18 @@ import RSDKUtils
     /// - Parameters:
     ///     - subscriptionKey: your app's subscription key. (This setting will override the `InAppMessagingAppSubscriptionID` value in Info.plist)
     ///     - configurationURL: a configuration URL. (This setting will override the `InAppMessagingConfigurationURL` value in Info.plist)
-    ///     - enableTooltipFeature: set to `true` to enable Tooltip campaigns. This feature is currently in beta phase. Default value: `false`
+    ///     - enableTooltipFeature: set to `true` to enable Tooltip campaigns. This feature is currently in beta phase. Default value: `false`.
     @objc public static func configure(subscriptionID: String? = nil,
                                        configurationURL: String? = nil,
                                        enableTooltipFeature: Bool = false) {
-        guard initializedModule == nil else {
+
+        guard verifyRMCEnvironment(subscriptionID: subscriptionID), initializedModule == nil else {
             return
         }
 
         let config = InAppMessagingModuleConfiguration(
             configURLString: configurationURL ?? BundleInfo.inAppConfigurationURL,
-            subscriptionID: subscriptionID ?? BundleInfo.inAppSubscriptionId,
+            subscriptionID: sanitizeSubscriptionID(subscriptionID) ?? BundleInfo.inAppSubscriptionId,
             isTooltipFeatureEnabled: enableTooltipFeature)
 
         let dependencyManager = TypedDependencyManager()
@@ -209,6 +214,30 @@ import RSDKUtils
         }
 
         return configURL
+    }
+
+    /// Checks the existence of RMC module and verifies the `configure()` caller.
+    /// - Parameter subscriptionID: a subscriptionID value from `configure()` call to check for '-rmc' suffix
+    /// - Returns: `false` if RMC module is integrated and the method wasn't called from the RMC module.
+    internal static func verifyRMCEnvironment(subscriptionID: String?) -> Bool {
+        guard isRMCEnvironment else {
+            return true
+        }
+
+        return subscriptionID?.hasSuffix(Constants.RMC.subscriptionIDSuffix) == true
+    }
+
+    /// Removes '-rmc' suffix from subscriptionId if it's present.
+    internal static func sanitizeSubscriptionID(_ subscriptionID: String?) -> String? {
+        guard let subscriptionID = subscriptionID else {
+            return nil
+        }
+
+        guard subscriptionID.hasSuffix(Constants.RMC.subscriptionIDSuffix) else {
+            return subscriptionID
+        }
+
+        return String(subscriptionID.prefix(subscriptionID.count - Constants.RMC.subscriptionIDSuffix.count))
     }
 
     // MARK: - Unit tests helpers

@@ -5,6 +5,7 @@
 	- Added User preference input in Sample App [SDKCF-6641]
 	- Added device_id to all the RAT events [SDKCF-6625]
 	- Added device_id to DisplayPermission request header [SDKCF-6624]
+	- Prevent calling `configure()` then RMC module is integrated [SDKCF-6710]
 - Fixes:
 	- Fixed Xcode 15 beta errors [SDKCF-6692]
         

@@ -62,6 +62,10 @@ internal enum Constants {
         }
     }
 
+    enum RMC {
+        static let subscriptionIDSuffix = "-rmc"
+    }
+
     enum Retry {
         static let retryCount = 3
 
