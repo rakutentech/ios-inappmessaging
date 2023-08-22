@@ -667,7 +667,7 @@ class PublicAPISpec: QuickSpec {
                     expect(RInAppMessaging.sanitizeSubscriptionID(subscriptionID)).toEventually(equal("myKey"))
                 }
 
-                it("will not remove '-rmc' substring if it's not at the and of the string") {
+                it("will not remove '-rmc' substring if it's not at the end of the string") {
                     let subscriptionID = "my-rmcKey"
                     expect(RInAppMessaging.sanitizeSubscriptionID(subscriptionID)).toEventually(equal("my-rmcKey"))
                 }
