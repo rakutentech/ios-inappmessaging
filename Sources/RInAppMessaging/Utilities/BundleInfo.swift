@@ -66,4 +66,14 @@ internal extension Bundle {
     private static var sdk: Bundle? {
         sdkBundle(name: "RInAppMessaging")
     }
+    
+    static var rmcSdkVersion: String? {
+        if let rmcBundle = Bundle(identifier: "RMC-RMC-resources") {
+            if let path = rmcBundle.path(forResource: "RMC/Resources/Version", ofType: "plist") {
+                let versionDict = NSDictionary(contentsOfFile: path)
+                return versionDict?["rmcSdkVersion"] as? String
+            }
+        }
+        return nil
+    }
 }
