@@ -100,7 +100,7 @@ extension DisplayPermissionService {
                                                          sdkVersion: Constants.Versions.sdkVersion,
                                                          locale: Locale.current.normalizedIdentifier,
                                                          lastPingInMilliseconds: campaignRepository.lastSyncInMilliseconds ?? 0,
-                                                         rmcSdkVersion: Bundle.rmcSdkVersion ?? ""
+                                                         rmcSdkVersion: Bundle.rmcSdkVersion
                                                          )
         do {
             let body = try JSONEncoder().encode(permissionRequest)

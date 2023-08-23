@@ -1,4 +1,3 @@
-import Foundation
 import struct Foundation.URLQueryItem
 
 internal struct GetConfigRequest: Codable {
@@ -27,7 +26,7 @@ extension GetConfigRequest {
         queryItems.append(URLQueryItem(name: CodingKeys.appVersion.rawValue, value: appVersion))
         queryItems.append(URLQueryItem(name: CodingKeys.sdkVersion.rawValue, value: sdkVersion))
         queryItems.append(URLQueryItem(name: CodingKeys.locale.rawValue, value: locale))
-        if Bundle.rmcSdkVersion != nil {
+        if let rmcSdkVersion = rmcSdkVersion {
             queryItems.append(URLQueryItem(name: CodingKeys.rmcSdkVersion.rawValue, value: rmcSdkVersion))
         }
         return queryItems
