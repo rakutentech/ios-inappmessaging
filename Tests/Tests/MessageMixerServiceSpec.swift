@@ -253,14 +253,25 @@ class MessageMixerServiceSpec: QuickSpec {
                     expect(httpSession.sentRequest?.url).to(equal(configData.endpoints?.ping))
                 }
 
-                it("will send a valid data object") {
+                it("will send a valid data object when rmcSdk integrated") {
                     sendRequestAndWaitForResponse()
 
                     let request = httpSession.decodeSentData(modelType: PingRequest.self)
-
                     expect(request).toNot(beNil())
                     expect(request?.appVersion).to(equal(BundleInfoMock.appVersion))
                     expect(request?.supportedCampaignTypes).to(elementsEqualOrderAgnostic([.regular, .pushPrimer]))
+                    expect(request?.rmcSdkVersion).to(equal(BundleInfoMock.rmcSdkVersion))
+                }
+
+                it("will send a valid data object when rmcSdk not integrated") {
+                    BundleInfoMock.rmcSdkVersionMock = nil
+                    sendRequestAndWaitForResponse()
+
+                    let request = httpSession.decodeSentData(modelType: PingRequest.self)
+                    expect(request).toNot(beNil())
+                    expect(request?.appVersion).to(equal(BundleInfoMock.appVersion))
+                    expect(request?.supportedCampaignTypes).to(elementsEqualOrderAgnostic([.regular, .pushPrimer]))
+                    expect(request?.rmcSdkVersion).to(beNil())
                 }
 
                 it("will send user preferences in the request") {

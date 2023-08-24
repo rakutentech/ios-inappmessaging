@@ -223,7 +223,7 @@ class DisplayPermissionServiceSpec: QuickSpec {
                     service.bundleInfo = BundleInfoMock.self
                 }
 
-                it("will send a valid data object") {
+                it("will send a valid data object when rmcSdk integrated") {
                     campaignRepository.lastSyncInMilliseconds = 111
                     sendRequestAndWaitForResponse()
 
@@ -237,6 +237,24 @@ class DisplayPermissionServiceSpec: QuickSpec {
                     expect(request?.sdkVersion).to(equal(Constants.Versions.sdkVersion))
                     expect(request?.locale).to(equal(Locale.current.normalizedIdentifier))
                     expect(request?.lastPingInMilliseconds).to(equal(111))
+                    expect(request?.rmcSdkVersion).to(equal(BundleInfoMock.rmcSdkVersion))
+                }
+
+                it("will send valid data object when rmcSdk not integrated") {
+                    campaignRepository.lastSyncInMilliseconds = 111
+                    BundleInfoMock.rmcSdkVersionMock = nil
+                    sendRequestAndWaitForResponse()
+                    let request = httpSession.decodeSentData(modelType: DisplayPermissionRequest.self)
+
+                    expect(request).toNot(beNil())
+                    expect(request?.subscriptionId).to(equal(moduleConfig.subscriptionID))
+                    expect(request?.campaignId).to(equal(campaign.id))
+                    expect(request?.platform).to(equal(.ios))
+                    expect(request?.appVersion).to(equal(BundleInfoMock.appVersion))
+                    expect(request?.sdkVersion).to(equal(Constants.Versions.sdkVersion))
+                    expect(request?.locale).to(equal(Locale.current.normalizedIdentifier))
+                    expect(request?.lastPingInMilliseconds).to(equal(111))
+                    expect(request?.rmcSdkVersion).to(beNil())
                 }
 
                 it("will send user preferences in the request") {

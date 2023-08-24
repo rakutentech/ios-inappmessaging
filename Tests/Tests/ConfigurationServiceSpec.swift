@@ -286,7 +286,7 @@ class ConfigurationServiceSpec: QuickSpec {
                     expect(httpSession.sentRequest?.url?.host).to(equal(configURL.host))
                 }
 
-                it("will send a valid data object") {
+                it("will send a valid data object when rmcSdk integrated") {
                     waitUntil { done in
                         requestQueue.async {
                             _ = service.getConfigData()
@@ -302,6 +302,26 @@ class ConfigurationServiceSpec: QuickSpec {
                     expect(request?.platform).to(equal(.ios))
                     expect(request?.appId).to(equal(BundleInfoMock.applicationId))
                     expect(request?.sdkVersion).to(equal(Constants.Versions.sdkVersion))
+                    expect(request?.rmcSdkVersion).to(equal(BundleInfoMock.rmcSdkVersion))
+                }
+                it("will send a valid data object when rmcSdk not integrated") {
+                    BundleInfoMock.rmcSdkVersionMock = nil
+                    waitUntil { done in
+                        requestQueue.async {
+                            _ = service.getConfigData()
+                            done()
+                        }
+                    }
+
+                    let request = httpSession.decodeQueryItems(modelType: GetConfigRequest.self)
+
+                    expect(request).toNot(beNil())
+                    expect(request?.locale).to(equal(Locale.current.normalizedIdentifier))
+                    expect(request?.appVersion).to(equal(BundleInfoMock.appVersion))
+                    expect(request?.platform).to(equal(.ios))
+                    expect(request?.appId).to(equal(BundleInfoMock.applicationId))
+                    expect(request?.sdkVersion).to(equal(Constants.Versions.sdkVersion))
+                    expect(request?.rmcSdkVersion).to(beNil())
                 }
 
                 it("will send subscription id in header") {

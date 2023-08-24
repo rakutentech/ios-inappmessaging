@@ -120,7 +120,7 @@ extension ImpressionService {
             sdkVersion: Constants.Versions.sdkVersion,
             impressions: impressions,
             userIdentifiers: accountRepository.getUserIdentifiers(),
-            rmcSdkVersion: Bundle.rmcSdkVersion
+            rmcSdkVersion: bundleInfo.rmcSdkVersion
         )
 
         do {
