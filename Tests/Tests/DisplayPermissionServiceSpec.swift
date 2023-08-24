@@ -223,7 +223,7 @@ class DisplayPermissionServiceSpec: QuickSpec {
                     service.bundleInfo = BundleInfoMock.self
                 }
 
-                it("will send a valid data object when rmcSdk integrated") {
+                it("will send a valid data object when rmcSdk is integrated") {
                     campaignRepository.lastSyncInMilliseconds = 111
                     sendRequestAndWaitForResponse()
 
@@ -240,7 +240,7 @@ class DisplayPermissionServiceSpec: QuickSpec {
                     expect(request?.rmcSdkVersion).to(equal(BundleInfoMock.rmcSdkVersion))
                 }
 
-                it("will send valid data object when rmcSdk not integrated") {
+                it("will send valid data object when rmcSdk is not integrated") {
                     campaignRepository.lastSyncInMilliseconds = 111
                     BundleInfoMock.rmcSdkVersionMock = nil
                     sendRequestAndWaitForResponse()

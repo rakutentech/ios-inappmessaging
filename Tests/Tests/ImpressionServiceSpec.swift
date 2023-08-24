@@ -175,7 +175,7 @@ class ImpressionServiceSpec: QuickSpec {
                     bundleInfo.reset()
                 }
 
-                it("will send a valid data object when rmcSdk integrated") {
+                it("will send a valid data object when rmcSdk is integrated") {
                     sendRequestAndWaitForResponse()
 
                     expect(httpSession.decodeSentData(modelType: ImpressionRequest.self))
@@ -186,7 +186,7 @@ class ImpressionServiceSpec: QuickSpec {
                     expect(request?.sdkVersion).to(equal(Constants.Versions.sdkVersion))
                     expect(request?.rmcSdkVersion).to(equal(BundleInfoMock.rmcSdkVersion))
                 }
-                it("will send a valid data object when rmcSdk integrated") {
+                it("will send a valid data object when rmcSdk is not integrated") {
                     BundleInfoMock.rmcSdkVersionMock = nil
                     sendRequestAndWaitForResponse()
 
