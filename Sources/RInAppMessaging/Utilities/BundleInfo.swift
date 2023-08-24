@@ -13,7 +13,7 @@ internal class BundleInfo {
     }
 
     class var rmcBundle: Bundle? {
-         .rmcResources
+        .rmcResources
     }
         
     class var applicationId: String? {
