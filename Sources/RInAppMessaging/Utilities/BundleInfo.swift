@@ -75,7 +75,7 @@ internal extension Bundle {
         sdkBundle(name: "RInAppMessaging")
     }
     
-    private func getRMCSdkVersion() -> String? {
+    fileprivate func getRMCSdkVersion() -> String? {
         guard let path = path(forResource: "RmcInfo", ofType: "plist"),
               let versionDict = NSDictionary(contentsOfFile: path),
               let rmcSdkVersion = versionDict["rmcSdkVersion"] as? String
