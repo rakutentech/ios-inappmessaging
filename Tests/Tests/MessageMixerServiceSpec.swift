@@ -253,25 +253,29 @@ class MessageMixerServiceSpec: QuickSpec {
                     expect(httpSession.sentRequest?.url).to(equal(configData.endpoints?.ping))
                 }
 
-                it("will send a valid data object when rmcSdk is integrated") {
-                    sendRequestAndWaitForResponse()
+                context("when rmc sdk is integrated") {
+                    it("will send a valid data object and will contain rmcSdk version") {
+                        sendRequestAndWaitForResponse()
 
-                    let request = httpSession.decodeSentData(modelType: PingRequest.self)
-                    expect(request).toNot(beNil())
-                    expect(request?.appVersion).to(equal(BundleInfoMock.appVersion))
-                    expect(request?.supportedCampaignTypes).to(elementsEqualOrderAgnostic([.regular, .pushPrimer]))
-                    expect(request?.rmcSdkVersion).to(equal(BundleInfoMock.rmcSdkVersion))
+                        let request = httpSession.decodeSentData(modelType: PingRequest.self)
+                        expect(request).toNot(beNil())
+                        expect(request?.appVersion).to(equal(BundleInfoMock.appVersion))
+                        expect(request?.supportedCampaignTypes).to(elementsEqualOrderAgnostic([.regular, .pushPrimer]))
+                        expect(request?.rmcSdkVersion).to(equal(BundleInfoMock.rmcSdkVersion))
+                    }
                 }
 
-                it("will send a valid data object when rmcSdk is not integrated") {
-                    BundleInfoMock.rmcSdkVersionMock = nil
-                    sendRequestAndWaitForResponse()
+                context("when rmc sdk is not integrated") {
+                    it("will send a valid data object and not contain rmcSdk version") {
+                        BundleInfoMock.rmcSdkVersionMock = nil
+                        sendRequestAndWaitForResponse()
 
-                    let request = httpSession.decodeSentData(modelType: PingRequest.self)
-                    expect(request).toNot(beNil())
-                    expect(request?.appVersion).to(equal(BundleInfoMock.appVersion))
-                    expect(request?.supportedCampaignTypes).to(elementsEqualOrderAgnostic([.regular, .pushPrimer]))
-                    expect(request?.rmcSdkVersion).to(beNil())
+                        let request = httpSession.decodeSentData(modelType: PingRequest.self)
+                        expect(request).toNot(beNil())
+                        expect(request?.appVersion).to(equal(BundleInfoMock.appVersion))
+                        expect(request?.supportedCampaignTypes).to(elementsEqualOrderAgnostic([.regular, .pushPrimer]))
+                        expect(request?.rmcSdkVersion).to(beNil())
+                    }
                 }
 
                 it("will send user preferences in the request") {

@@ -175,28 +175,33 @@ class ImpressionServiceSpec: QuickSpec {
                     bundleInfo.reset()
                 }
 
-                it("will send a valid data object when rmcSdk is integrated") {
-                    sendRequestAndWaitForResponse()
+                context("when rmc sdk is integrated") {
+                    it("will send a valid data object and will contain rmcSdk version") {
+                        sendRequestAndWaitForResponse()
 
-                    expect(httpSession.decodeSentData(modelType: ImpressionRequest.self))
-                        .toEventuallyNot(beNil())
-                    let request = httpSession.decodeSentData(modelType: ImpressionRequest.self)
-                    expect(request?.campaignId).to(equal(campaign.id))
-                    expect(request?.appVersion).to(equal(BundleInfoMock.appVersion))
-                    expect(request?.sdkVersion).to(equal(Constants.Versions.sdkVersion))
-                    expect(request?.rmcSdkVersion).to(equal(BundleInfoMock.rmcSdkVersion))
+                        expect(httpSession.decodeSentData(modelType: ImpressionRequest.self))
+                            .toEventuallyNot(beNil())
+                        let request = httpSession.decodeSentData(modelType: ImpressionRequest.self)
+                        expect(request?.campaignId).to(equal(campaign.id))
+                        expect(request?.appVersion).to(equal(BundleInfoMock.appVersion))
+                        expect(request?.sdkVersion).to(equal(Constants.Versions.sdkVersion))
+                        expect(request?.rmcSdkVersion).to(equal(BundleInfoMock.rmcSdkVersion))
+                    }
                 }
-                it("will send a valid data object when rmcSdk is not integrated") {
-                    BundleInfoMock.rmcSdkVersionMock = nil
-                    sendRequestAndWaitForResponse()
 
-                    expect(httpSession.decodeSentData(modelType: ImpressionRequest.self))
-                        .toEventuallyNot(beNil())
-                    let request = httpSession.decodeSentData(modelType: ImpressionRequest.self)
-                    expect(request?.campaignId).to(equal(campaign.id))
-                    expect(request?.appVersion).to(equal(BundleInfoMock.appVersion))
-                    expect(request?.sdkVersion).to(equal(Constants.Versions.sdkVersion))
-                    expect(request?.rmcSdkVersion).to(beNil())
+                context("when rmc sdk is not integrated") {
+                    it("will send a valid data object and not contain rmcSdk version") {
+                        BundleInfoMock.rmcSdkVersionMock = nil
+                        sendRequestAndWaitForResponse()
+
+                        expect(httpSession.decodeSentData(modelType: ImpressionRequest.self))
+                            .toEventuallyNot(beNil())
+                        let request = httpSession.decodeSentData(modelType: ImpressionRequest.self)
+                        expect(request?.campaignId).to(equal(campaign.id))
+                        expect(request?.appVersion).to(equal(BundleInfoMock.appVersion))
+                        expect(request?.sdkVersion).to(equal(Constants.Versions.sdkVersion))
+                        expect(request?.rmcSdkVersion).to(beNil())
+                    }
                 }
 
                 it("will send impressions in the request") {

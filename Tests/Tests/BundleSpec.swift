@@ -84,7 +84,7 @@ class BundleMock: Bundle {
     var infoDictionaryMock = [String: Any]()
     var resourceFiles = [String: [String: Any]]() {
         didSet {
-            recreteResourceFiles()
+            recreateResourceFiles()
         }
     }
     override var infoDictionary: [String: Any]? {
@@ -108,7 +108,7 @@ class BundleMock: Bundle {
         return path
     }
 
-    private func recreteResourceFiles() {
+    private func recreateResourceFiles() {
         let fileManager = FileManager.default
         let resourceURL: URL! = URL(string: "file://\(plistDirectory!)")
 
