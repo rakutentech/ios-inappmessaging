@@ -26,7 +26,7 @@ extension GetConfigRequest {
         queryItems.append(URLQueryItem(name: CodingKeys.appVersion.rawValue, value: appVersion))
         queryItems.append(URLQueryItem(name: CodingKeys.sdkVersion.rawValue, value: sdkVersion))
         queryItems.append(URLQueryItem(name: CodingKeys.locale.rawValue, value: locale))
-        if let rmcSdkVersion = rmcSdkVersion {
+        if let rmcSdkVersion {
             queryItems.append(URLQueryItem(name: CodingKeys.rmcSdkVersion.rawValue, value: rmcSdkVersion))
         }
         return queryItems
