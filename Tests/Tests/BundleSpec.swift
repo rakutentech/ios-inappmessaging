@@ -102,7 +102,7 @@ class BundleMock: Bundle {
             return nil
         }
         var path = plistDirectory?.appending("/\(name)")
-        if let ext = ext {
+        if let ext {
             path?.append(".\(ext)")
         }
         return path
