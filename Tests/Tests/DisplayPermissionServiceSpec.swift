@@ -223,20 +223,41 @@ class DisplayPermissionServiceSpec: QuickSpec {
                     service.bundleInfo = BundleInfoMock.self
                 }
 
-                it("will send a valid data object") {
-                    campaignRepository.lastSyncInMilliseconds = 111
-                    sendRequestAndWaitForResponse()
+                context("when rmc sdk is integrated") {
+                    it("will send a valid data object and will contain rmcSdk version") {
+                        campaignRepository.lastSyncInMilliseconds = 111
+                        sendRequestAndWaitForResponse()
+                        let request = httpSession.decodeSentData(modelType: DisplayPermissionRequest.self)
 
-                    let request = httpSession.decodeSentData(modelType: DisplayPermissionRequest.self)
+                        expect(request).toNot(beNil())
+                        expect(request?.subscriptionId).to(equal(moduleConfig.subscriptionID))
+                        expect(request?.campaignId).to(equal(campaign.id))
+                        expect(request?.platform).to(equal(.ios))
+                        expect(request?.appVersion).to(equal(BundleInfoMock.appVersion))
+                        expect(request?.sdkVersion).to(equal(Constants.Versions.sdkVersion))
+                        expect(request?.locale).to(equal(Locale.current.normalizedIdentifier))
+                        expect(request?.lastPingInMilliseconds).to(equal(111))
+                        expect(request?.rmcSdkVersion).to(equal(BundleInfoMock.rmcSdkVersion))
+                    }
+                }
 
-                    expect(request).toNot(beNil())
-                    expect(request?.subscriptionId).to(equal(moduleConfig.subscriptionID))
-                    expect(request?.campaignId).to(equal(campaign.id))
-                    expect(request?.platform).to(equal(.ios))
-                    expect(request?.appVersion).to(equal(BundleInfoMock.appVersion))
-                    expect(request?.sdkVersion).to(equal(Constants.Versions.sdkVersion))
-                    expect(request?.locale).to(equal(Locale.current.normalizedIdentifier))
-                    expect(request?.lastPingInMilliseconds).to(equal(111))
+                context("when rmc sdk is not integrated") {
+                    it("will send a valid data object and not contain rmc sdk version") {
+                        campaignRepository.lastSyncInMilliseconds = 111
+                        BundleInfoMock.rmcSdkVersionMock = nil
+                        sendRequestAndWaitForResponse()
+                        let request = httpSession.decodeSentData(modelType: DisplayPermissionRequest.self)
+
+                        expect(request).toNot(beNil())
+                        expect(request?.subscriptionId).to(equal(moduleConfig.subscriptionID))
+                        expect(request?.campaignId).to(equal(campaign.id))
+                        expect(request?.platform).to(equal(.ios))
+                        expect(request?.appVersion).to(equal(BundleInfoMock.appVersion))
+                        expect(request?.sdkVersion).to(equal(Constants.Versions.sdkVersion))
+                        expect(request?.locale).to(equal(Locale.current.normalizedIdentifier))
+                        expect(request?.lastPingInMilliseconds).to(equal(111))
+                        expect(request?.rmcSdkVersion).to(beNil())
+                    }
                 }
 
                 it("will send user preferences in the request") {

@@ -175,15 +175,33 @@ class ImpressionServiceSpec: QuickSpec {
                     bundleInfo.reset()
                 }
 
-                it("will send a valid data object") {
-                    sendRequestAndWaitForResponse()
+                context("when rmc sdk is integrated") {
+                    it("will send a valid data object and will contain rmcSdk version") {
+                        sendRequestAndWaitForResponse()
 
-                    expect(httpSession.decodeSentData(modelType: ImpressionRequest.self))
-                        .toEventuallyNot(beNil())
-                    let request = httpSession.decodeSentData(modelType: ImpressionRequest.self)
-                    expect(request?.campaignId).to(equal(campaign.id))
-                    expect(request?.appVersion).to(equal(BundleInfoMock.appVersion))
-                    expect(request?.sdkVersion).to(equal(Constants.Versions.sdkVersion))
+                        expect(httpSession.decodeSentData(modelType: ImpressionRequest.self))
+                            .toEventuallyNot(beNil())
+                        let request = httpSession.decodeSentData(modelType: ImpressionRequest.self)
+                        expect(request?.campaignId).to(equal(campaign.id))
+                        expect(request?.appVersion).to(equal(BundleInfoMock.appVersion))
+                        expect(request?.sdkVersion).to(equal(Constants.Versions.sdkVersion))
+                        expect(request?.rmcSdkVersion).to(equal(BundleInfoMock.rmcSdkVersion))
+                    }
+                }
+
+                context("when rmc sdk is not integrated") {
+                    it("will send a valid data object and not contain rmcSdk version") {
+                        BundleInfoMock.rmcSdkVersionMock = nil
+                        sendRequestAndWaitForResponse()
+
+                        expect(httpSession.decodeSentData(modelType: ImpressionRequest.self))
+                            .toEventuallyNot(beNil())
+                        let request = httpSession.decodeSentData(modelType: ImpressionRequest.self)
+                        expect(request?.campaignId).to(equal(campaign.id))
+                        expect(request?.appVersion).to(equal(BundleInfoMock.appVersion))
+                        expect(request?.sdkVersion).to(equal(Constants.Versions.sdkVersion))
+                        expect(request?.rmcSdkVersion).to(beNil())
+                    }
                 }
 
                 it("will send impressions in the request") {

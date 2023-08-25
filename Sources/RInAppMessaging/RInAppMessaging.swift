@@ -18,6 +18,7 @@ import RSDKUtils
     internal static var swiftUIEventHandler: SwiftUIViewEventHandlerType? {
         dependencyManager?.resolve(type: SwiftUIViewEventHandlerType.self)
     }
+
     /// Returns `true` when RMC module is integrated in the host app
     internal static var isRMCEnvironment: Bool {
         Bundle.rmcResources != nil

@@ -87,7 +87,8 @@ extension ConfigurationService {
             appVersion: appVersion,
             platform: .ios,
             appId: appId,
-            sdkVersion: Constants.Versions.sdkVersion
+            sdkVersion: Constants.Versions.sdkVersion,
+            rmcSdkVersion: bundleInfo.rmcSdkVersion
         )
     }
 

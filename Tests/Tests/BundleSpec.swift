@@ -50,6 +50,11 @@ class BundleSpec: QuickSpec {
                 bundleMock.infoDictionaryMock[Constants.Info.customFontNameButtonKey] = "font-button"
                 expect(bundleInfo.customFontNameButton).to(equal("font-button"))
             }
+
+            it("should return rmcSdk version from plist") {
+                bundleMock.resourceFiles = ["RmcInfo.plist": ["rmcSdkVersion": "1.0.1"]]
+                expect(bundleInfo.rmcSdkVersion).to(equal("1.0.1"))
+            }
         }
 
         describe("Bundle extensions") {
@@ -65,10 +70,23 @@ class BundleInfoMocked: BundleInfo {
     override class var bundle: Bundle {
         bundleMock
     }
+    override class var rmcBundle: Bundle? {
+        bundleMock
+    }
 }
 
 class BundleMock: Bundle {
+
+    private let plistDirectory: String! = {
+        let documentDirectory = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first
+        return documentDirectory?.appending("/PlistMocks")
+    }()
     var infoDictionaryMock = [String: Any]()
+    var resourceFiles = [String: [String: Any]]() {
+        didSet {
+            recreateResourceFiles()
+        }
+    }
     override var infoDictionary: [String: Any]? {
         infoDictionaryMock
     }
@@ -77,5 +95,33 @@ class BundleMock: Bundle {
         infoDictionaryMock = infoDictionary
         // super.init(path:) creates a new instance only if `path` is not bound to any existing Bundle instance
         super.init(path: Bundle.main.bundlePath + "/Frameworks")!
+    }
+
+    override func path(forResource name: String?, ofType ext: String?) -> String? {
+        guard let name = name else {
+            return nil
+        }
+        var path = plistDirectory?.appending("/\(name)")
+        if let ext {
+            path?.append(".\(ext)")
+        }
+        return path
+    }
+
+    private func recreateResourceFiles() {
+        let fileManager = FileManager.default
+        let resourceURL: URL! = URL(string: "file://\(plistDirectory!)")
+
+        try? fileManager.removeItem(at: resourceURL)
+        try? fileManager.createDirectory(at: resourceURL, withIntermediateDirectories: true)
+
+        resourceFiles.forEach { fileName, content in
+            let url = resourceURL.appendingPathComponent(fileName)
+            do {
+                try NSDictionary(dictionary: content).write(to: url)
+            } catch {
+                assertionFailure(error.localizedDescription)
+            }
+        }
     }
 }

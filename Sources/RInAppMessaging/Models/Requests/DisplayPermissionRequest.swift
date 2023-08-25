@@ -8,6 +8,7 @@ internal struct DisplayPermissionRequest: Codable {
         case sdkVersion
         case locale
         case lastPingInMilliseconds = "lastPingInMillis"
+        case rmcSdkVersion
     }
 
     let subscriptionId: String
@@ -18,4 +19,5 @@ internal struct DisplayPermissionRequest: Codable {
     let sdkVersion: String
     let locale: String
     let lastPingInMilliseconds: Int64
+    let rmcSdkVersion: String?
 }

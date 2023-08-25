@@ -12,6 +12,10 @@ internal class BundleInfo {
         .main
     }
 
+    class var rmcBundle: Bundle? {
+        .rmcResources
+    }
+        
     class var applicationId: String? {
         bundle.infoDictionary?["CFBundleIdentifier"] as? String
     }
@@ -39,6 +43,10 @@ internal class BundleInfo {
     class var customFontNameButton: String? {
         bundle.infoDictionary?[Constants.Info.customFontNameButtonKey] as? String
     }
+    
+    class var rmcSdkVersion: String? {
+        rmcBundle?.getRMCSdkVersion()
+    }
 }
 
 internal extension Bundle {
@@ -65,5 +73,13 @@ internal extension Bundle {
 
     private static var sdk: Bundle? {
         sdkBundle(name: "RInAppMessaging")
+    }
+    
+    fileprivate func getRMCSdkVersion() -> String? {
+        guard let path = path(forResource: "RmcInfo", ofType: "plist"),
+              let versionDict = NSDictionary(contentsOfFile: path),
+              let rmcSdkVersion = versionDict["rmcSdkVersion"] as? String
+        else { return nil }
+        return rmcSdkVersion
     }
 }
