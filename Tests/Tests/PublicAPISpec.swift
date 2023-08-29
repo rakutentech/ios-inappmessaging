@@ -64,8 +64,7 @@ class PublicAPISpec: QuickSpec {
             RInAppMessaging.configure(dependencyManager: dependencyManager,
                                       moduleConfig: config)
             if waitForInit {
-                // wait for initialization to finish
-                expect(RInAppMessaging.initializedModule).toEventuallyNot(beNil())
+                expect(RInAppMessaging.isInitialized).toEventually(beTrue())
             }
         }
 
@@ -121,45 +120,6 @@ class PublicAPISpec: QuickSpec {
 
         describe("RInAppMessaging") {
 
-            it("will not crash if api methods are called prior to configure()") {
-                RInAppMessaging.deinitializeModule()
-                expect(RInAppMessaging.initializedModule).to(beNil())
-
-                RInAppMessaging.onVerifyContext = { _, _ in
-                    true
-                }
-                RInAppMessaging.accessibilityCompatibleDisplay = true
-                RInAppMessaging.closeMessage(clearQueuedCampaigns: true)
-                RInAppMessaging.logEvent(LoginSuccessfulEvent())
-                RInAppMessaging.registerPreference(UserInfoProviderMock())
-            }
-
-            it("will send an error if api methods are called prior to configure()") {
-                RInAppMessaging.deinitializeModule()
-                expect(RInAppMessaging.initializedModule).to(beNil())
-                errorReceiver = ErrorReceiver()
-
-                RInAppMessaging.closeMessage(clearQueuedCampaigns: true) // 1st error sent
-                RInAppMessaging.logEvent(LoginSuccessfulEvent()) // 2nd error sent
-                RInAppMessaging.registerPreference(UserInfoProviderMock()) // 3rd error sent
-                expect(errorReceiver.totalErrorNumber).toEventually(equal(3))
-            }
-
-            it("will register userInfoProvider when registerPreference() is called") {
-                let userInfoProvider = UserInfoProviderMock()
-                userInfoProvider.userID = "userID"
-                userInfoProvider.idTrackingIdentifier = "tracking-id"
-
-                RInAppMessaging.registerPreference(userInfoProvider)
-                expect(accountRepository.userInfoProvider).toEventually(beIdenticalTo(userInfoProvider))
-            }
-
-            it("will log event when logEvent is called") {
-                let event = AppStartEvent()
-                RInAppMessaging.logEvent(event)
-                expect(eventMatcher.loggedEvents).toEventually(contain(event))
-            }
-
             it("will pass internal errors to errorCallback") {
                 messageMixerService.mockedError = .invalidConfiguration
                 campaignsListManager.refreshList()
@@ -178,16 +138,109 @@ class PublicAPISpec: QuickSpec {
                 expect(router.accessibilityCompatibleDisplay).toEventually(beFalse())
             }
 
-            it("won't send any events until configuration has finished") {
-                RInAppMessaging.deinitializeModule()
-                var resume: (() -> Void)!
-                reinitializeSDK(onDependenciesResolved: {
-                    resume = messageMixerService.suspendNextPingAndWaitForSignal()
-                })
-                RInAppMessaging.logEvent(LoginSuccessfulEvent())
-                expect(eventMatcher.loggedEvents).toAfterTimeout(beEmpty())
-                resume()
-                expect(eventMatcher.loggedEvents).toEventually(haveCount(1))
+            context("when calling logEvent()") {
+                context("and module is initialized") {
+
+                    it("will log event") {
+                        let event = AppStartEvent()
+                        RInAppMessaging.logEvent(event)
+                        expect(eventMatcher.loggedEvents).toEventually(contain(event))
+                    }
+                }
+
+                context("and module is not initialized") {
+                    beforeEach {
+                        RInAppMessaging.deinitializeModule()
+                    }
+
+                    context("and configure() was not called") {
+
+                        it("won't log any events") {
+                            RInAppMessaging.logEvent(LoginSuccessfulEvent())
+                            expect(eventMatcher.loggedEvents).toAfterTimeout(beEmpty())
+                        }
+
+                        it("will re-log all previous events when initialization is complete") {
+                            RInAppMessaging.logEvent(AppStartEvent())
+                            RInAppMessaging.logEvent(LoginSuccessfulEvent())
+                            RInAppMessaging.logEvent(PurchaseSuccessfulEvent())
+                            reinitializeSDK()
+                            expect(eventMatcher.loggedEvents).toEventually(haveCount(3))
+                        }
+                    }
+
+                    context("and configure() was called") {
+
+                        it("will process events once initialization is complete") {
+                            var resume: (() -> Void)!
+                            reinitializeSDK(onDependenciesResolved: {
+                                resume = messageMixerService.suspendNextPingAndWaitForSignal()
+                            })
+                            RInAppMessaging.logEvent(LoginSuccessfulEvent())
+                            expect(eventMatcher.loggedEvents).toAfterTimeout(beEmpty())
+                            resume()
+                            expect(eventMatcher.loggedEvents).toEventually(haveCount(1))
+                        }
+                    }
+                }
+            }
+
+            context("when calling registerPreference()") {
+
+                func newUserInfoProvider() -> UserInfoProvider {
+                    let userInfoProvider = UserInfoProviderMock()
+                    userInfoProvider.userID = "userID"
+                    userInfoProvider.idTrackingIdentifier = "tracking-id"
+                    return userInfoProvider
+                }
+
+                context("and module is initialized") {
+
+                    it("will register userInfoProvider object") {
+                        let userInfoProvider = newUserInfoProvider()
+
+                        RInAppMessaging.registerPreference(userInfoProvider)
+                        expect(accountRepository.userInfoProvider).toEventually(beIdenticalTo(userInfoProvider))
+                    }
+                }
+
+                context("and module is not initialized") {
+                    beforeEach {
+                        RInAppMessaging.deinitializeModule()
+                    }
+
+                    context("and configure() was not called") {
+
+                        it("will not register userInfoProvider object") {
+                            let userInfoProvider = newUserInfoProvider()
+
+                            RInAppMessaging.registerPreference(userInfoProvider)
+                            expect(accountRepository.userInfoProvider).toAfterTimeout(beNil())
+                        }
+
+                        it("will register previously retained value when initialization is complete") {
+                            let userInfoProvider = newUserInfoProvider()
+
+                            RInAppMessaging.registerPreference(userInfoProvider)
+                            reinitializeSDK()
+                            expect(accountRepository.userInfoProvider).toEventually(beIdenticalTo(userInfoProvider))
+                        }
+                    }
+
+                    context("and configure() was called") {
+
+                        it("will register userInfoProvider object") {
+                            let userInfoProvider = newUserInfoProvider()
+                            var resume: (() -> Void)!
+                            reinitializeSDK(onDependenciesResolved: {
+                                resume = messageMixerService.suspendNextPingAndWaitForSignal()
+                            })
+                            RInAppMessaging.registerPreference(userInfoProvider)
+                            resume()
+                            expect(accountRepository.userInfoProvider).toEventually(beIdenticalTo(userInfoProvider))
+                        }
+                    }
+                }
             }
 
             // This test checks if events logged after getConfig() failure (bufferedEvents)
@@ -254,24 +307,24 @@ class PublicAPISpec: QuickSpec {
             context("when calling configure()") {
 
                 it("won't reinitialize module if configure() was called more than once") {
-                    let expectedModule = RInAppMessaging.initializedModule
+                    let expectedModule = RInAppMessaging.interactor.iamModule
                     RInAppMessaging.configure()
-                    expect(RInAppMessaging.initializedModule).toAfterTimeout(beIdenticalTo(expectedModule))
+                    expect(RInAppMessaging.interactor.iamModule).toAfterTimeout(beIdenticalTo(expectedModule))
                 }
 
                 it("will deinitialize module when completion was called with shouldDeinit = true") {
                     RInAppMessaging.deinitializeModule()
-                    expect(RInAppMessaging.initializedModule).to(beNil())
+                    expect(RInAppMessaging.interactor.iamModule).to(beNil())
 
                     var resumeRetry: (() -> Void)!
                     reinitializeSDK(waitForInit: false) {
                         resumeRetry = configurationManager.prepareRetryDelayAndWaitForSignal() // added delay to capture initialized object
                         configurationManager.rolloutPercentage = 0 // triggers deinit
                     }
-                    expect(RInAppMessaging.initializedModule).toEventuallyNot(beNil())
-                    weak var initializedModule = RInAppMessaging.initializedModule
+                    expect(RInAppMessaging.isInitialized).toEventually(beTrue())
+                    weak var initializedModule = RInAppMessaging.interactor.iamModule
                     resumeRetry()
-                    expect(RInAppMessaging.initializedModule).toEventually(beNil())
+                    expect(RInAppMessaging.interactor.iamModule).toEventually(beNil())
                     expect(initializedModule).to(beNil())
                 }
 
@@ -381,6 +434,32 @@ class PublicAPISpec: QuickSpec {
 
                         it("will throw an assertion") {
                             expect(RInAppMessaging.tryGettingValidConfigURL(config)).to(throwAssertion())
+                        }
+                    }
+                }
+
+                context("when RMC module is integrated") {
+                    beforeEach {
+                        BundleInfoMocked.bundleMock = BundleMock()
+                        RInAppMessaging.bundleInfo = BundleInfoMocked.self
+                        RInAppMessaging.deinitializeModule()
+                    }
+
+                    afterEach {
+                        RInAppMessaging.bundleInfo = BundleInfo.self
+                    }
+
+                    context("and '-rmc' suffix is NOT added to subscription ID") {
+                        it("will not process configure() call") {
+                            RInAppMessaging.configure()
+                            expect(RInAppMessaging.isInitialized).toAfterTimeout(beFalse())
+                        }
+                    }
+
+                    context("and '-rmc' suffix is added to subscription ID") {
+                        it("will process configure() call") {
+                            RInAppMessaging.configure(subscriptionID: "sub-rmc")
+                            expect(RInAppMessaging.isInitialized).toEventually(beTrue())
                         }
                     }
                 }

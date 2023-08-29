@@ -67,7 +67,7 @@ struct MainView: View {
     }
 
     private func initSDK(enableTooltipFeature: Bool) {
-        guard RInAppMessaging.initializedModule == nil else {
+        guard !SDKInitHelper.isSDKInitialized else {
             isErrorAlertPresented = true
             return
         }

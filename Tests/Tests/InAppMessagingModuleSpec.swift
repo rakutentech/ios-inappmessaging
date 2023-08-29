@@ -60,10 +60,6 @@ class InAppMessagingModuleSpec: QuickSpec {
                                                  tooltipDispatcher: TooltipDispatcherMock())
             }
 
-            it("is enabled by deafult") {
-                expect(iamModule.isEnabled).to(beTrue())
-            }
-
             context("when calling initialize") {
 
                 it("will call fetchAndSaveConfigData in ConfigurationManager") {
@@ -199,18 +195,7 @@ class InAppMessagingModuleSpec: QuickSpec {
                         iamModule.initialize { _ in }
                     }
 
-                    it("will log all buferred events when module is enabled") {
-                        configurationManager.rolloutPercentage = 100
-                        iamModule.logEvent(AppStartEvent())
-                        iamModule.logEvent(LoginSuccessfulEvent())
-                        expect(eventMatcher.loggedEvents).to(beEmpty())
-                        expect(campaignsValidator.wasValidateCalled).to(beFalse())
-                        resume()
-                        expect(eventMatcher.loggedEvents).toEventually(haveCount(2))
-                        expect(campaignsValidator.wasValidateCalled).to(beTrue())
-                    }
-
-                    it("will not log buferred events when module is disabled") {
+                    it("will not log any events when module is disabled") {
                         configurationManager.rolloutPercentage = 0
                         iamModule.logEvent(AppStartEvent())
                         iamModule.logEvent(LoginSuccessfulEvent())
@@ -222,78 +207,45 @@ class InAppMessagingModuleSpec: QuickSpec {
 
                 context("when calling logEvent") {
 
-                    context("and module is enabled") {
+                    context("and module is initialized") {
                         beforeEach {
-                            configurationManager.rolloutPercentage = 100
+                            iamModule.initialize { _ in }
                         }
 
-                        context("and module is initialized") {
-                            beforeEach {
-                                iamModule.initialize { _ in }
-                            }
-
-                            it("will call EventMatcher") {
-                                iamModule.logEvent(PurchaseSuccessfulEvent())
-                                expect(eventMatcher.loggedEvents).toEventually(haveCount(1))
-                            }
-
-                            it("will validate campaigns") {
-                                iamModule.logEvent(PurchaseSuccessfulEvent())
-                                expect(campaignsValidator.wasValidateCalled).to(beTrue())
-                            }
-
-                            it("will trigger campaigns that should be triggered") {
-                                let campaigns = [TestHelpers.generateCampaign(id: "1"),
-                                                 TestHelpers.generateCampaign(id: "2")]
-                                campaignsValidator.campaignsToTrigger = campaigns
-                                iamModule.logEvent(PurchaseSuccessfulEvent())
-                                expect(readyCampaignDispatcher.addedCampaignIDs).to(equal(campaigns.map({ $0.id })))
-                            }
-
-                            it("will call dispatchAllIfNeeded") {
-                                iamModule.logEvent(PurchaseSuccessfulEvent())
-                                expect(readyCampaignDispatcher.wasDispatchCalled).to(beTrue())
-                            }
-
-                            it("will call checkUserChanges()") {
-                                iamModule.logEvent(PurchaseSuccessfulEvent())
-                                // checkUserChanges() always calls AccountRepository.updateUserInfo().
-                                // This is a workaround for checking if the method was called on a real InAppMessagingModule's instance.
-                                // Checking this method call instead of testing a cause will significantly reduce the amount
-                                // of test cases in this spec.
-                                expect(accountRepository.wasUpdateUserInfoCalled).to(beTrue())
-                            }
+                        it("will call EventMatcher") {
+                            iamModule.logEvent(PurchaseSuccessfulEvent())
+                            expect(eventMatcher.loggedEvents).toEventually(haveCount(1))
                         }
 
-                        context("and module is not initialized") {
+                        it("will validate campaigns") {
+                            iamModule.logEvent(PurchaseSuccessfulEvent())
+                            expect(campaignsValidator.wasValidateCalled).to(beTrue())
+                        }
 
-                            it("will not call EventMatcher") {
-                                iamModule.logEvent(PurchaseSuccessfulEvent())
-                                expect(eventMatcher.loggedEvents).to(beEmpty())
-                            }
+                        it("will trigger campaigns that should be triggered") {
+                            let campaigns = [TestHelpers.generateCampaign(id: "1"),
+                                             TestHelpers.generateCampaign(id: "2")]
+                            campaignsValidator.campaignsToTrigger = campaigns
+                            iamModule.logEvent(PurchaseSuccessfulEvent())
+                            expect(readyCampaignDispatcher.addedCampaignIDs).to(equal(campaigns.map({ $0.id })))
+                        }
 
-                            it("will not validate campaigns") {
-                                iamModule.logEvent(PurchaseSuccessfulEvent())
-                                expect(campaignsValidator.wasValidateCalled).to(beFalse())
-                            }
+                        it("will call dispatchAllIfNeeded") {
+                            iamModule.logEvent(PurchaseSuccessfulEvent())
+                            expect(readyCampaignDispatcher.wasDispatchCalled).to(beTrue())
+                        }
 
-                            it("will not call dispatchAllIfNeeded") {
-                                iamModule.logEvent(PurchaseSuccessfulEvent())
-                                expect(readyCampaignDispatcher.wasDispatchCalled).to(beFalse())
-                            }
-
-                            it("will not call checkUserChanges()") {
-                                iamModule.logEvent(PurchaseSuccessfulEvent())
-                                expect(accountRepository.wasUpdateUserInfoCalled).to(beFalse())
-                            }
+                        it("will call checkUserChanges()") {
+                            iamModule.logEvent(PurchaseSuccessfulEvent())
+                            // checkUserChanges() always calls AccountRepository.updateUserInfo().
+                            // This is a workaround for checking if the method was called on a real InAppMessagingModule's instance.
+                            // Checking this method call instead of testing a cause will significantly reduce the amount
+                            // of test cases in this spec.
+                            expect(accountRepository.wasUpdateUserInfoCalled).to(beTrue())
                         }
                     }
 
-                    context("and module is disabled") {
-                        beforeEach {
-                            configurationManager.rolloutPercentage = 0
-                            iamModule.initialize { _ in }
-                        }
+                    context("and module is not initialized") {
 
                         it("will not call EventMatcher") {
                             iamModule.logEvent(PurchaseSuccessfulEvent())
@@ -325,54 +277,31 @@ class InAppMessagingModuleSpec: QuickSpec {
                         return user
                     }()
 
-                    context("and module is enabled") {
+                    context("and module is initialized") {
                         beforeEach {
-                            configurationManager.rolloutPercentage = 100
-                        }
-
-                        context("and module is initialized") {
-                            beforeEach {
-                                iamModule.initialize { _ in }
-                            }
-
-                            it("will register preference data") {
-                                iamModule.registerPreference(aUser)
-                                expect(accountRepository.userInfoProvider).to(beIdenticalTo(aUser))
-                            }
-
-                            it("will call checkUserChanges()") {
-                                iamModule.registerPreference(aUser)
-                                // checkUserChanges() always calls AccountRepository.updateUserInfo().
-                                // This is a workaround for checking if the method was called on a real InAppMessagingModule's instance.
-                                // Checking this method call instead of testing a cause will significantly reduce the amount
-                                // of test cases in this spec.
-                                expect(accountRepository.wasUpdateUserInfoCalled).to(beTrue())
-                            }
-                        }
-
-                        context("and module is not initialized") {
-
-                            it("will register preference data") {
-                                iamModule.registerPreference(aUser)
-                                expect(accountRepository.userInfoProvider).to(beIdenticalTo(aUser))
-                            }
-
-                            it("will not call checkUserChanges()") {
-                                iamModule.registerPreference(aUser)
-                                expect(accountRepository.wasUpdateUserInfoCalled).to(beFalse())
-                            }
-                        }
-                    }
-
-                    context("and module is disabled") {
-                        beforeEach {
-                            configurationManager.rolloutPercentage = 0
                             iamModule.initialize { _ in }
                         }
 
-                        it("will not register preference data") {
+                        it("will register preference data") {
                             iamModule.registerPreference(aUser)
-                            expect(accountRepository.userInfoProvider).to(beNil())
+                            expect(accountRepository.userInfoProvider).to(beIdenticalTo(aUser))
+                        }
+
+                        it("will call checkUserChanges()") {
+                            iamModule.registerPreference(aUser)
+                            // checkUserChanges() always calls AccountRepository.updateUserInfo().
+                            // This is a workaround for checking if the method was called on a real InAppMessagingModule's instance.
+                            // Checking this method call instead of testing a cause will significantly reduce the amount
+                            // of test cases in this spec.
+                            expect(accountRepository.wasUpdateUserInfoCalled).to(beTrue())
+                        }
+                    }
+
+                    context("and module is not initialized") {
+
+                        it("will register preference data") {
+                            iamModule.registerPreference(aUser)
+                            expect(accountRepository.userInfoProvider).to(beIdenticalTo(aUser))
                         }
 
                         it("will not call checkUserChanges()") {
