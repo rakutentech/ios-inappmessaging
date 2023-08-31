@@ -31,6 +31,7 @@
 		4545631B29B955340080782E /* test-image.png in Resources */ = {isa = PBXBuildFile; fileRef = 4545631A29B955340080782E /* test-image.png */; };
 		4545631D29B955BE0080782E /* legacy_ping.json in Resources */ = {isa = PBXBuildFile; fileRef = 4545631C29B955BE0080782E /* legacy_ping.json */; };
 		454A2A352A535FB10005D986 /* SDKInitHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454A2A342A535FB10005D986 /* SDKInitHelper.swift */; };
+		457D2D692A9FF99500A913E6 /* dummy-font.otf in Resources */ = {isa = PBXBuildFile; fileRef = 457D2D682A9FF99500A913E6 /* dummy-font.otf */; };
 		4592B4B3270229D1004FF27B /* config.json in Resources */ = {isa = PBXBuildFile; fileRef = 4592B4B2270229D1004FF27B /* config.json */; };
 		4592B4B627024925004FF27B /* MockServerHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4592B4B527024925004FF27B /* MockServerHelper.swift */; };
 		4592B4BA27024D0C004FF27B /* display-permission.json in Resources */ = {isa = PBXBuildFile; fileRef = 4592B4B927024D0C004FF27B /* display-permission.json */; };
@@ -189,6 +190,7 @@
 		4545631A29B955340080782E /* test-image.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "test-image.png"; sourceTree = "<group>"; };
 		4545631C29B955BE0080782E /* legacy_ping.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = legacy_ping.json; sourceTree = "<group>"; };
 		454A2A342A535FB10005D986 /* SDKInitHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SDKInitHelper.swift; sourceTree = "<group>"; };
+		457D2D682A9FF99500A913E6 /* dummy-font.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "dummy-font.otf"; sourceTree = "<group>"; };
 		4592B4B2270229D1004FF27B /* config.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = config.json; sourceTree = "<group>"; };
 		4592B4B527024925004FF27B /* MockServerHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockServerHelper.swift; sourceTree = "<group>"; };
 		4592B4B927024D0C004FF27B /* display-permission.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "display-permission.json"; sourceTree = "<group>"; };
@@ -484,6 +486,7 @@
 			isa = PBXGroup;
 			children = (
 				D234A746291C63000086AC80 /* MockServerHelper.swift */,
+				457D2D682A9FF99500A913E6 /* dummy-font.otf */,
 				6DA608F3248603BA00A8260D /* Example-Debug.xcconfig */,
 				6DA608F424860B7F00A8260D /* Example-Release.xcconfig */,
 				4592B4C42702642F004FF27B /* Example-UITests.xcconfig */,
@@ -817,6 +820,7 @@
 				D924268722D91C15002F50D3 /* Localizable.strings in Resources */,
 				D920D8C92277B80F008FB38D /* SecondPageViewController.xib in Resources */,
 				607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */,
+				457D2D692A9FF99500A913E6 /* dummy-font.otf in Resources */,
 				607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */,
 				607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */,
 			);

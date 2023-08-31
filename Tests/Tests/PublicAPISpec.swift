@@ -43,9 +43,9 @@ class PublicAPISpec: QuickSpec {
             ])
         }
 
-        func reinitializeSDK(waitForInit: Bool = true,
-                             config: InAppMessagingModuleConfiguration = defaultConfig,
-                             onDependenciesResolved: (() -> Void)? = nil) {
+        func initializeSDK(waitForInit: Bool = true,
+                           config: InAppMessagingModuleConfiguration = defaultConfig,
+                           onDependenciesResolved: (() -> Void)? = nil) {
             let dependencyManager = TypedDependencyManager()
             dependencyManager.appendContainer(MainContainerFactory.create(dependencyManager: dependencyManager,
                                                                           configURL: URL(string: config.configURLString ?? "empty")!))
@@ -95,7 +95,8 @@ class PublicAPISpec: QuickSpec {
         }
 
         beforeEach {
-            reinitializeSDK()
+            RInAppMessaging.deinitializeModule()
+            initializeSDK()
             contextVerifier = ContextVerifier()
             RInAppMessaging.onVerifyContext = { contexts, campaignTitle in
                 contextVerifier.onVerifyContext(contexts: contexts, campaignTitle: campaignTitle)
@@ -164,7 +165,7 @@ class PublicAPISpec: QuickSpec {
                             RInAppMessaging.logEvent(AppStartEvent())
                             RInAppMessaging.logEvent(LoginSuccessfulEvent())
                             RInAppMessaging.logEvent(PurchaseSuccessfulEvent())
-                            reinitializeSDK()
+                            initializeSDK()
                             expect(eventMatcher.loggedEvents).toEventually(haveCount(3))
                         }
                     }
@@ -173,7 +174,7 @@ class PublicAPISpec: QuickSpec {
 
                         it("will process events once initialization is complete") {
                             var resume: (() -> Void)!
-                            reinitializeSDK(onDependenciesResolved: {
+                            initializeSDK(onDependenciesResolved: {
                                 resume = messageMixerService.suspendNextPingAndWaitForSignal()
                             })
                             RInAppMessaging.logEvent(LoginSuccessfulEvent())
@@ -222,7 +223,7 @@ class PublicAPISpec: QuickSpec {
                             let userInfoProvider = newUserInfoProvider()
 
                             RInAppMessaging.registerPreference(userInfoProvider)
-                            reinitializeSDK()
+                            initializeSDK()
                             expect(accountRepository.userInfoProvider).toEventually(beIdenticalTo(userInfoProvider))
                         }
                     }
@@ -232,7 +233,7 @@ class PublicAPISpec: QuickSpec {
                         it("will register userInfoProvider object") {
                             let userInfoProvider = newUserInfoProvider()
                             var resume: (() -> Void)!
-                            reinitializeSDK(onDependenciesResolved: {
+                            initializeSDK(onDependenciesResolved: {
                                 resume = messageMixerService.suspendNextPingAndWaitForSignal()
                             })
                             RInAppMessaging.registerPreference(userInfoProvider)
@@ -253,7 +254,7 @@ class PublicAPISpec: QuickSpec {
                 RInAppMessaging.deinitializeModule()
                 var resumeConfig: (() -> Void)!
                 var configCalled = false
-                reinitializeSDK(onDependenciesResolved: {
+                initializeSDK(onDependenciesResolved: {
                     resumeConfig = configurationManager.prepareRetryDelayAndWaitForSignal()
                     configurationManager.fetchCalledClosure = {
                         configCalled = true
@@ -317,7 +318,7 @@ class PublicAPISpec: QuickSpec {
                     expect(RInAppMessaging.interactor.iamModule).to(beNil())
 
                     var resumeRetry: (() -> Void)!
-                    reinitializeSDK(waitForInit: false) {
+                    initializeSDK(waitForInit: false) {
                         resumeRetry = configurationManager.prepareRetryDelayAndWaitForSignal() // added delay to capture initialized object
                         configurationManager.rolloutPercentage = 0 // triggers deinit
                     }
@@ -331,7 +332,7 @@ class PublicAPISpec: QuickSpec {
                 context("when configURLString argument is set") {
                     it("should set the same value in ConfigurationRepository (override Info.plist setting)") {
                         RInAppMessaging.deinitializeModule()
-                        reinitializeSDK(config: .init(configURLString: "overriden.url",
+                        initializeSDK(config: .init(configURLString: "overriden.url",
                                                       subscriptionID: nil,
                                                       isTooltipFeatureEnabled: true))
                         expect(configurationRepository.getConfigEndpointURLString()).toEventually(equal("overriden.url"))
@@ -341,7 +342,7 @@ class PublicAPISpec: QuickSpec {
                 context("when subscriptionID argument is set") {
                     it("should set the same value in ConfigurationRepository (override Info.plist setting)") {
                         RInAppMessaging.deinitializeModule()
-                        reinitializeSDK(config: .init(configURLString: nil,
+                        initializeSDK(config: .init(configURLString: nil,
                                                       subscriptionID: "overriden.id",
                                                       isTooltipFeatureEnabled: true))
                         expect(configurationRepository.getSubscriptionID()).toEventually(equal("overriden.id"))
@@ -353,7 +354,7 @@ class PublicAPISpec: QuickSpec {
                     it("will start ViewListener when completion was called with shouldDeinit = false") {
                         RInAppMessaging.deinitializeModule()
                         expect(ViewListener.currentInstance.isListening).toEventually(beFalse())
-                        reinitializeSDK(config: .init(configURLString: "https://config.test",
+                        initializeSDK(config: .init(configURLString: "https://config.test",
                                                       subscriptionID: nil,
                                                       isTooltipFeatureEnabled: true))
                         expect(ViewListener.currentInstance.isListening).to(beTrue())
@@ -361,7 +362,7 @@ class PublicAPISpec: QuickSpec {
 
                     it("will stop ViewListener when completion was called with shouldDeinit = true") {
                         RInAppMessaging.deinitializeModule()
-                        reinitializeSDK(waitForInit: false,
+                        initializeSDK(waitForInit: false,
                                         config: .init(configURLString: "https://config.test",
                                                       subscriptionID: nil,
                                                       isTooltipFeatureEnabled: true)) {
@@ -376,7 +377,7 @@ class PublicAPISpec: QuickSpec {
                     it("will not start ViewListener") {
                         RInAppMessaging.deinitializeModule()
                         expect(ViewListener.currentInstance.isListening).toEventually(beFalse())
-                        reinitializeSDK(config: .init(configURLString: "https://config.test",
+                        initializeSDK(config: .init(configURLString: "https://config.test",
                                                       subscriptionID: nil,
                                                       isTooltipFeatureEnabled: false))
                         expect(ViewListener.currentInstance.isListening).toAfterTimeout(beFalse())
@@ -574,7 +575,7 @@ class PublicAPISpec: QuickSpec {
                     waitForCache()
 
                     RInAppMessaging.deinitializeModule()
-                    reinitializeSDK()
+                    initializeSDK()
                     expect(campaignRepository.list).to(haveCount(1))
                     expect(campaignRepository.list.first?.impressionsLeft).to(equal(1))
                     generateAndDisplayLoginCampaigns(count: 1, addContexts: false)
@@ -598,7 +599,7 @@ class PublicAPISpec: QuickSpec {
                     waitForCache()
 
                     RInAppMessaging.deinitializeModule()
-                    reinitializeSDK()
+                    initializeSDK()
                     messageMixerService.mockedResponse = mockedResponse
                     campaignsListManager.refreshList()
                     expect(campaignRepository.list.first?.impressionsLeft).to(equal(0))
@@ -620,7 +621,7 @@ class PublicAPISpec: QuickSpec {
                     }))
 
                     RInAppMessaging.deinitializeModule()
-                    reinitializeSDK()
+                    initializeSDK()
                     expect(campaignRepository.list).to(haveCount(1))
                     generateAndDisplayLoginCampaigns(count: 1, addContexts: false)
 
@@ -694,7 +695,8 @@ class PublicAPISpec: QuickSpec {
 
                 it("will not re-set the value after calling configure()") {
                     RInAppMessaging.pushPrimerAuthorizationOptions = [.criticalAlert]
-                    reinitializeSDK()
+                    RInAppMessaging.deinitializeModule()
+                    initializeSDK()
                     expect(RInAppMessaging.pushPrimerAuthorizationOptions).to(equal([.criticalAlert]))
                 }
             }
