@@ -82,6 +82,10 @@ import RSDKUtils
                                        enableTooltipFeature: Bool = false) {
 
         guard verifyRMCEnvironment(subscriptionID: subscriptionID), !isInitialized else {
+            let description = "⚠️ SDK configure request rejected. Initialization status: \(isInitialized)"
+            let error = NSError.iamError(description: description)
+            Logger.debug(description)
+            errorCallback?(error)
             return
         }
 

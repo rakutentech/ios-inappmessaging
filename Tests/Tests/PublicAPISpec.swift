@@ -307,12 +307,6 @@ class PublicAPISpec: QuickSpec {
 
             context("when calling configure()") {
 
-                it("won't reinitialize module if configure() was called more than once") {
-                    let expectedModule = RInAppMessaging.interactor.iamModule
-                    RInAppMessaging.configure()
-                    expect(RInAppMessaging.interactor.iamModule).toAfterTimeout(beIdenticalTo(expectedModule))
-                }
-
                 it("will deinitialize module when completion was called with shouldDeinit = true") {
                     RInAppMessaging.deinitializeModule()
                     expect(RInAppMessaging.interactor.iamModule).to(beNil())
@@ -327,6 +321,19 @@ class PublicAPISpec: QuickSpec {
                     resumeRetry()
                     expect(RInAppMessaging.interactor.iamModule).toEventually(beNil())
                     expect(initializedModule).to(beNil())
+                }
+
+                context("when configure() was called more than once") {
+                    it("won't reinitialize the module") {
+                        let expectedModule = RInAppMessaging.interactor.iamModule
+                        RInAppMessaging.configure()
+                        expect(RInAppMessaging.interactor.iamModule).toAfterTimeout(beIdenticalTo(expectedModule))
+                    }
+
+                    it("will report an error") {
+                        RInAppMessaging.configure()
+                        expect(errorReceiver.returnedError).toNot(beNil())
+                    }
                 }
 
                 context("when configURLString argument is set") {
@@ -454,6 +461,11 @@ class PublicAPISpec: QuickSpec {
                         it("will not process configure() call") {
                             RInAppMessaging.configure()
                             expect(RInAppMessaging.isInitialized).toAfterTimeout(beFalse())
+                        }
+
+                        it("will report an error") {
+                            RInAppMessaging.configure()
+                            expect(errorReceiver.returnedError).toNot(beNil())
                         }
                     }
 
