@@ -35,7 +35,7 @@ class UIViewExtensionsSpec: QuickSpec {
 
                 it("will find an instance of FullScreenView") {
                     let testView = UIView()
-                    let fsView = FullScreenView(presenter: FullViewPresenterMock())
+                    let fsView = FullScreenView(presenter: OverlayViewPresenterMock())
                     testView.addSubview(fsView)
 
                     expect(testView.findIAMView()).to(beIdenticalTo(fsView))
@@ -51,7 +51,7 @@ class UIViewExtensionsSpec: QuickSpec {
 
                 it("will find an instance of ModalView") {
                     let testView = UIView()
-                    let moView = ModalView(presenter: FullViewPresenterMock())
+                    let moView = ModalView(presenter: OverlayViewPresenterMock())
                     testView.addSubview(moView)
 
                     expect(testView.findIAMView()).to(beIdenticalTo(moView))

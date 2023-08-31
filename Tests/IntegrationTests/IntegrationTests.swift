@@ -72,7 +72,7 @@ class IntegrationTests: XCTestCase {
         let expectation = XCTestExpectation(description: "Ping request")
 
         testQueue.async {
-            let service = self.dependencyManager.resolve(type: MessageMixerServiceType.self)
+            let service = self.dependencyManager.resolve(type: PingServiceType.self)
             XCTAssertNotNil(service)
 
             let result = service?.ping()

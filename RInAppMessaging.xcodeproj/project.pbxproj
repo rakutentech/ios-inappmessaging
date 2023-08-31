@@ -56,7 +56,7 @@
 		4592B4CA27026FB7004FF27B /* istockphoto-1047234038.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 4592B4C627026AE8004FF27B /* istockphoto-1047234038.jpg */; };
 		4595F4F4262DE12C0001F30B /* KeyHasherSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4595F4F3262DE12C0001F30B /* KeyHasherSpec.swift */; };
 		459B227C245289F300D218CE /* ConfigurationServiceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459B227B245289F300D218CE /* ConfigurationServiceSpec.swift */; };
-		459B227E24528A5100D218CE /* MessageMixerServiceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459B227D24528A5000D218CE /* MessageMixerServiceSpec.swift */; };
+		459B227E24528A5100D218CE /* PingServiceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459B227D24528A5000D218CE /* PingServiceSpec.swift */; };
 		459B228024528A6900D218CE /* ImpressionServiceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459B227F24528A6900D218CE /* ImpressionServiceSpec.swift */; };
 		459B228224528A7D00D218CE /* DisplayPermissionServiceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459B228124528A7D00D218CE /* DisplayPermissionServiceSpec.swift */; };
 		459C1FAB28572DD90019AB34 /* test-image.png in Resources */ = {isa = PBXBuildFile; fileRef = 459C1FAA28572DD90019AB34 /* test-image.png */; };
@@ -199,7 +199,7 @@
 		4592B4C627026AE8004FF27B /* istockphoto-1047234038.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "istockphoto-1047234038.jpg"; sourceTree = "<group>"; };
 		4595F4F3262DE12C0001F30B /* KeyHasherSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyHasherSpec.swift; sourceTree = "<group>"; };
 		459B227B245289F300D218CE /* ConfigurationServiceSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationServiceSpec.swift; sourceTree = "<group>"; };
-		459B227D24528A5000D218CE /* MessageMixerServiceSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageMixerServiceSpec.swift; sourceTree = "<group>"; };
+		459B227D24528A5000D218CE /* PingServiceSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PingServiceSpec.swift; sourceTree = "<group>"; };
 		459B227F24528A6900D218CE /* ImpressionServiceSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImpressionServiceSpec.swift; sourceTree = "<group>"; };
 		459B228124528A7D00D218CE /* DisplayPermissionServiceSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisplayPermissionServiceSpec.swift; sourceTree = "<group>"; };
 		459C1FAA28572DD90019AB34 /* test-image.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "test-image.png"; sourceTree = "<group>"; };
@@ -487,7 +487,7 @@
 				45AFB307246CFB640080D21B /* LocaleSpec.swift */,
 				4516601C23CD740300310181 /* MainContainerSpec.swift */,
 				45AFB2F5245C18660080D21B /* MatchingUtilitySpec.swift */,
-				459B227D24528A5000D218CE /* MessageMixerServiceSpec.swift */,
+				459B227D24528A5000D218CE /* PingServiceSpec.swift */,
 				455A7D4A2889D8550059F291 /* OptOutMessageViewSpec.swift */,
 				45BDFD0624232714004DEA0C /* PublicAPISpec.swift */,
 				45563B02240614AE004EAFD3 /* ReadyCampaignDispatcherSpec.swift */,
@@ -906,7 +906,7 @@
 				C9827558262C423C00476505 /* BackoffSpec.swift in Sources */,
 				45ADA53E247CFE9E00A9E2A3 /* ConfigurationRepositorySpec.swift in Sources */,
 				45EA720D25B72002001B2049 /* UIViewExtensionSpec.swift in Sources */,
-				459B227E24528A5100D218CE /* MessageMixerServiceSpec.swift in Sources */,
+				459B227E24528A5100D218CE /* PingServiceSpec.swift in Sources */,
 				4560062C26FB968B003227FE /* UserInfoProviderSpec.swift in Sources */,
 				45491059247F58660019864D /* CustomAttributeSpec.swift in Sources */,
 			);

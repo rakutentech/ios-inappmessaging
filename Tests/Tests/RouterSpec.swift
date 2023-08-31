@@ -124,7 +124,7 @@ class RouterSpec: QuickSpec {
                             completion: { _ in })).to(throwAssertion())
                     }
 
-                    it("will not display a fullview type campaign if the campaign presenter cannot found") {
+                    it("will not display an overlay view type campaign if the campaign presenter cannot found") {
                         let router = Router(dependencyManager: TypedDependencyManager(), viewListener: ViewListenerMock())
                         let campaign = TestHelpers.generateCampaign(id: "test", type: .full)
                         expect(router.displayCampaign(

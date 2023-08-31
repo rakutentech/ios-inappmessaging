@@ -11,7 +11,7 @@ import class RSDKUtilsTestHelpers.URLSessionMock
 
 @testable import RInAppMessaging
 
-class MessageMixerServiceSpec: QuickSpec {
+class PingServiceSpec: QuickSpec {
 
     override func spec() {
 
@@ -24,7 +24,7 @@ class MessageMixerServiceSpec: QuickSpec {
         let userInfoProvider = UserInfoProviderMock()
         accountRepository.setPreference(userInfoProvider)
 
-        var service: MessageMixerService!
+        var service: PingService!
         var configurationRepository: ConfigurationRepository!
         var httpSession: URLSessionMock!
 
@@ -37,7 +37,7 @@ class MessageMixerServiceSpec: QuickSpec {
             }
         }
 
-        describe("MessageMixerService") {
+        describe("PingService") {
 
             beforeEach {
                 URLSessionMock.startMockingURLSession()
@@ -46,8 +46,8 @@ class MessageMixerServiceSpec: QuickSpec {
                 configurationRepository = ConfigurationRepository()
                 configurationRepository.saveRemoteConfiguration(configData)
                 configurationRepository.saveIAMModuleConfiguration(moduleConfig)
-                service = MessageMixerService(accountRepository: accountRepository,
-                                              configurationRepository: configurationRepository)
+                service = PingService(accountRepository: accountRepository,
+                                      configurationRepository: configurationRepository)
                 httpSession = URLSessionMock.mock(originalInstance: service.httpSession)
             }
 
@@ -125,7 +125,7 @@ class MessageMixerServiceSpec: QuickSpec {
 
             context("when request fails") {
 
-                it("will return MessageMixerServiceError containing .requestError") {
+                it("will return PingServiceError containing .requestError") {
                     httpSession.responseError = NSError(domain: "config.error.test", code: 1, userInfo: nil)
 
                     waitUntil { done in
@@ -145,7 +145,7 @@ class MessageMixerServiceSpec: QuickSpec {
                 }
 
                 context("and the status code equals to 429") {
-                    it("will return MessageMixerServiceError containig .tooManyRequestsError") {
+                    it("will return PingServiceError containig .tooManyRequestsError") {
                         httpSession.httpResponse = HTTPURLResponse(url: URL(string: "https://ping.url")!,
                                                                    statusCode: 429,
                                                                    httpVersion: nil,
@@ -170,7 +170,7 @@ class MessageMixerServiceSpec: QuickSpec {
 
                 context("and the status code equals to 4xx") {
                     for code in [400, 401, 422] {
-                        it("will return MessageMixerServiceError containig .invalidRequestError with \(code) value") {
+                        it("will return PingServiceError containig .invalidRequestError with \(code) value") {
                             httpSession.httpResponse = HTTPURLResponse(url: URL(string: "https://ping.url")!,
                                                                        statusCode: code,
                                                                        httpVersion: nil,
@@ -197,7 +197,7 @@ class MessageMixerServiceSpec: QuickSpec {
 
                 context("and the status code equals to 5xx") {
                     for code in [500, 501, 520] {
-                        it("will return MessageMixerServiceError containig .internalServerError with \(code) value") {
+                        it("will return PingServiceError containig .internalServerError with \(code) value") {
                             httpSession.httpResponse = HTTPURLResponse(url: URL(string: "https://ping.url")!,
                                                                        statusCode: code,
                                                                        httpVersion: nil,
