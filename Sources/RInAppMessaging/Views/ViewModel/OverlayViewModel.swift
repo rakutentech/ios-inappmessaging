@@ -1,6 +1,6 @@
 import UIKit
 
-internal struct FullViewModel {
+internal struct OverlayViewModel {
     let image: UIImage?
     let backgroundColor: UIColor
     let title: String

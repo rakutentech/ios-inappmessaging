@@ -7,11 +7,11 @@ class ViewModelSpec: QuickSpec {
 
     override func spec() {
 
-        describe("FullViewModel") {
+        describe("OverlayViewModel") {
             context("when calling hasText") {
 
                 func createViewModel(header: String?,
-                                     messageBody: String?) -> FullViewModel {
+                                     messageBody: String?) -> OverlayViewModel {
                     .init(image: nil, backgroundColor: .black, title: "",
                           messageBody: messageBody,
                           header: header,

@@ -8,7 +8,7 @@ internal class CampaignsListManager: CampaignsListManagerType, TaskSchedulable {
 
     private var campaignRepository: CampaignRepositoryType
     private let campaignTriggerAgent: CampaignTriggerAgentType
-    private let messageMixerService: MessageMixerServiceType
+    private let pingService: PingServiceType
     private let configurationRepository: ConfigurationRepositoryType
 
     weak var errorDelegate: ErrorDelegate?
@@ -20,12 +20,12 @@ internal class CampaignsListManager: CampaignsListManagerType, TaskSchedulable {
 
     init(campaignRepository: CampaignRepositoryType,
          campaignTriggerAgent: CampaignTriggerAgentType,
-         messageMixerService: MessageMixerServiceType,
+         pingService: PingServiceType,
          configurationRepository: ConfigurationRepositoryType) {
 
         self.campaignRepository = campaignRepository
         self.campaignTriggerAgent = campaignTriggerAgent
-        self.messageMixerService = messageMixerService
+        self.pingService = pingService
         self.configurationRepository = configurationRepository
     }
 
@@ -45,7 +45,7 @@ internal class CampaignsListManager: CampaignsListManagerType, TaskSchedulable {
             return
         }
 
-        let pingResult = messageMixerService.ping()
+        let pingResult = pingService.ping()
         let decodedResponse: PingResponse
         do {
             decodedResponse = try pingResult.get()
@@ -74,16 +74,16 @@ internal class CampaignsListManager: CampaignsListManagerType, TaskSchedulable {
         responseStateMachine.push(state: .error)
 
         switch error {
-        case MessageMixerServiceError.invalidConfiguration:
+        case PingServiceError.invalidConfiguration:
             reportError(description: "Error retrieving InAppMessaging Mixer Server URL", data: nil)
 
-        case MessageMixerServiceError.jsonDecodingError(let decodingError):
+        case PingServiceError.jsonDecodingError(let decodingError):
             reportError(description: "Ping request error: Failed to parse json", data: decodingError)
 
-        case MessageMixerServiceError.tooManyRequestsError:
+        case PingServiceError.tooManyRequestsError:
             scheduleNextPingCallWithRandomizedBackoff()
 
-        case MessageMixerServiceError.internalServerError(let code):
+        case PingServiceError.internalServerError(let code):
             guard responseStateMachine.consecutiveErrorCount <= Constants.Retry.retryCount else {
                 reportError(description: "Ping request error: Response Code \(code): Internal server error", data: nil)
                 return
@@ -91,7 +91,7 @@ internal class CampaignsListManager: CampaignsListManagerType, TaskSchedulable {
             scheduleNextPingCallWithRandomizedBackoff()
             reportError(description: "Ping request error: Response Code \(code): Internal server error. Retry scheduled", data: nil)
 
-        case MessageMixerServiceError.invalidRequestError(let code):
+        case PingServiceError.invalidRequestError(let code):
             reportError(description: "Ping request error: Response Code \(code): Invalid request error", data: nil)
 
         default:

@@ -87,7 +87,7 @@
 		D234A72F291C62CF0086AC80 /* MatchingUtilitySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = D234A701291C62CB0086AC80 /* MatchingUtilitySpec.swift */; };
 		D234A730291C62CF0086AC80 /* KeyHasherSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = D234A702291C62CC0086AC80 /* KeyHasherSpec.swift */; };
 		D234A731291C62CF0086AC80 /* DisplayPermissionServiceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = D234A703291C62CC0086AC80 /* DisplayPermissionServiceSpec.swift */; };
-		D234A732291C62CF0086AC80 /* MessageMixerServiceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = D234A704291C62CC0086AC80 /* MessageMixerServiceSpec.swift */; };
+		D234A732291C62CF0086AC80 /* PingServiceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = D234A704291C62CC0086AC80 /* PingServiceSpec.swift */; };
 		D234A733291C62CF0086AC80 /* LocaleSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = D234A705291C62CC0086AC80 /* LocaleSpec.swift */; };
 		D234A734291C62CF0086AC80 /* CommonUtilitySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = D234A706291C62CC0086AC80 /* CommonUtilitySpec.swift */; };
 		D234A735291C62CF0086AC80 /* ConfigurationServiceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = D234A707291C62CD0086AC80 /* ConfigurationServiceSpec.swift */; };
@@ -239,7 +239,7 @@
 		D234A701291C62CB0086AC80 /* MatchingUtilitySpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MatchingUtilitySpec.swift; sourceTree = "<group>"; };
 		D234A702291C62CC0086AC80 /* KeyHasherSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyHasherSpec.swift; sourceTree = "<group>"; };
 		D234A703291C62CC0086AC80 /* DisplayPermissionServiceSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisplayPermissionServiceSpec.swift; sourceTree = "<group>"; };
-		D234A704291C62CC0086AC80 /* MessageMixerServiceSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageMixerServiceSpec.swift; sourceTree = "<group>"; };
+		D234A704291C62CC0086AC80 /* PingServiceSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PingServiceSpec.swift; sourceTree = "<group>"; };
 		D234A705291C62CC0086AC80 /* LocaleSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocaleSpec.swift; sourceTree = "<group>"; };
 		D234A706291C62CC0086AC80 /* CommonUtilitySpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommonUtilitySpec.swift; sourceTree = "<group>"; };
 		D234A707291C62CD0086AC80 /* ConfigurationServiceSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfigurationServiceSpec.swift; sourceTree = "<group>"; };
@@ -527,7 +527,7 @@
 				D234A705291C62CC0086AC80 /* LocaleSpec.swift */,
 				D234A6ED291C62C90086AC80 /* MainContainerSpec.swift */,
 				D234A701291C62CB0086AC80 /* MatchingUtilitySpec.swift */,
-				D234A704291C62CC0086AC80 /* MessageMixerServiceSpec.swift */,
+				D234A704291C62CC0086AC80 /* PingServiceSpec.swift */,
 				D234A70D291C62CD0086AC80 /* OptOutMessageViewSpec.swift */,
 				D234A6F6291C62CA0086AC80 /* PublicAPISpec.swift */,
 				D234A710291C62CE0086AC80 /* ReadyCampaignDispatcherSpec.swift */,
@@ -915,7 +915,7 @@
 				D234A72D291C62CF0086AC80 /* CampaignTriggerAgentSpec.swift in Sources */,
 				D234A724291C62CF0086AC80 /* PublicAPISpec.swift in Sources */,
 				D234A73C291C62CF0086AC80 /* ConfigurationManagerSpec.swift in Sources */,
-				D234A732291C62CF0086AC80 /* MessageMixerServiceSpec.swift in Sources */,
+				D234A732291C62CF0086AC80 /* PingServiceSpec.swift in Sources */,
 				D234A73F291C62CF0086AC80 /* TooltipPresenterSpec.swift in Sources */,
 				D234A73E291C62CF0086AC80 /* ReadyCampaignDispatcherSpec.swift in Sources */,
 				D234A741291C62CF0086AC80 /* ViewModelSpec.swift in Sources */,

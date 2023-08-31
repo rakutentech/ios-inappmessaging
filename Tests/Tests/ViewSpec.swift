@@ -87,18 +87,18 @@ class ViewSpec: QuickSpec {
             }
         }
 
-        describe("FullView (abstract implementation)") {
-            var view: FullView!
-            var presenter: FullViewPresenterMock!
+        describe("OverlayView (abstract implementation)") {
+            var view: OverlayView!
+            var presenter: OverlayViewPresenterMock!
 
             beforeEach {
-                presenter = FullViewPresenterMock()
-                view = FullView(presenter: presenter)
+                presenter = OverlayViewPresenterMock()
+                view = OverlayView(presenter: presenter)
                 presenter.view = view
             }
 
             it("will have .none mode set") {
-                expect(view.mode).to(equal(FullView.Mode.none))
+                expect(view.mode).to(equal(OverlayView.Mode.none))
             }
 
             it("will call viewDidInitialize on presenter after init") {
@@ -106,12 +106,12 @@ class ViewSpec: QuickSpec {
             }
 
             it("will ignore setup call") {
-                view.setup(viewModel: FullViewModel.empty)
+                view.setup(viewModel: OverlayViewModel.empty)
                 expect(view.subviews).to(beEmpty())
             }
 
             it("will not log impression when setup() is called") {
-                view.setup(viewModel: FullViewModel.empty)
+                view.setup(viewModel: OverlayViewModel.empty)
                 expect(presenter.impressions).to(beEmpty())
             }
 
@@ -151,10 +151,10 @@ class ViewSpec: QuickSpec {
 
         describe("ModalView") {
             var view: ModalView!
-            var presenter: FullViewPresenterMock!
+            var presenter: OverlayViewPresenterMock!
 
             beforeEach {
-                presenter = FullViewPresenterMock()
+                presenter = OverlayViewPresenterMock()
                 view = ModalView(presenter: presenter)
                 presenter.view = view
             }
@@ -168,7 +168,7 @@ class ViewSpec: QuickSpec {
             }
 
             it("will log impression when setup() is called") {
-                view.setup(viewModel: FullViewModel.empty)
+                view.setup(viewModel: OverlayViewModel.empty)
                 expect(presenter.impressions).to(haveCount(1))
                 expect(presenter.impressions).to(containElementSatisfying({ $0.type == .impression }))
             }
@@ -176,10 +176,10 @@ class ViewSpec: QuickSpec {
 
         describe("FullScreenView") {
             var view: FullScreenView!
-            var presenter: FullViewPresenterMock!
+            var presenter: OverlayViewPresenterMock!
 
             beforeEach {
-                presenter = FullViewPresenterMock()
+                presenter = OverlayViewPresenterMock()
                 view = FullScreenView(presenter: presenter)
                 presenter.view = view
             }
@@ -189,7 +189,7 @@ class ViewSpec: QuickSpec {
             }
 
             it("will log impression when setup() is called") {
-                view.setup(viewModel: FullViewModel.empty)
+                view.setup(viewModel: OverlayViewModel.empty)
                 expect(presenter.impressions).to(haveCount(1))
                 expect(presenter.impressions).to(containElementSatisfying({ $0.type == .impression }))
             }
@@ -226,8 +226,8 @@ class BaseViewPresenterMock: BaseViewPresenterType {
     func optOutCampaign() { }
 }
 
-class FullViewPresenterMock: FullViewPresenterType {
-    var view: FullViewType?
+class OverlayViewPresenterMock: OverlayViewPresenterType {
+    var view: OverlayViewType?
     var campaign: Campaign!
     var impressions: [Impression] = []
     var impressionService: ImpressionServiceType = ImpressionServiceMock()
@@ -263,8 +263,8 @@ class SlideUpViewPresenterMock: SlideUpViewPresenterType {
     func optOutCampaign() { }
 }
 
-extension FullViewModel {
-    static var empty: FullViewModel {
+extension OverlayViewModel {
+    static var empty: OverlayViewModel {
         .init(image: nil,
               backgroundColor: .black,
               title: "",

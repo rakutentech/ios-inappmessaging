@@ -1,7 +1,7 @@
 import UIKit
 
 /// Class that initializes the modal view using the passed in campaign information to build the UI.
-internal class FullScreenView: FullView {
+internal class FullScreenView: OverlayView {
 
     override class var viewIdentifier: String {
         "IAMView-FullScreen"
@@ -28,7 +28,7 @@ internal class FullScreenView: FullView {
         uiConstants.dialogViewWidthMultiplier = 1.0
     }
 
-    override func setup(viewModel: FullViewModel) {
+    override func setup(viewModel: OverlayViewModel) {
         super.setup(viewModel: viewModel)
 
         addSubview(statusBarBackgroundView)
