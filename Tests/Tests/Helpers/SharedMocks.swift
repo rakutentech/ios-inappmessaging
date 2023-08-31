@@ -676,8 +676,9 @@ final class InAppMessagingModuleMock: InAppMessagingModule {
         completion(false)
     }
 
-    override func logEvent(_ event: Event) {
+    override func logEvent(_ event: Event) -> Bool {
         loggedEvent = event
+        return true
     }
 }
 
