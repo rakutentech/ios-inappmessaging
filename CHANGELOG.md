@@ -9,6 +9,7 @@
 	- Added rmcsdk version parameter to all api calls [SDKCF-6709]
 - Fixes:
 	- Fixed Xcode 15 beta errors [SDKCF-6692]
+	- Fixed Finding RMC Bundle [SDKCF-6751]
         
 ### 8.0.0 (2023-06-21)
 - **Breaking changes:**

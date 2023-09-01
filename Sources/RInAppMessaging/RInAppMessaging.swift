@@ -21,7 +21,7 @@ import RSDKUtils
 
     /// Returns `true` when RMC module is integrated in the host app
     internal static var isRMCEnvironment: Bool {
-        Bundle.rmcResources != nil
+        BundleInfo.rmcBundle != nil
     }
 
     private override init() { super.init() }

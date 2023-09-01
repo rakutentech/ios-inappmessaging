@@ -68,7 +68,11 @@ internal extension Bundle {
     }
 
     static var rmcResources: Bundle? {
-        .init(identifier: "RMC-RMC-resources")
+        guard let rmcBundleUrl = main.resourceURL?.appendingPathComponent("RMC_RMC.bundle"),
+              let bundle = Bundle(url: rmcBundleUrl) else {
+            return nil
+        }
+        return bundle
     }
 
     private static var sdk: Bundle? {
