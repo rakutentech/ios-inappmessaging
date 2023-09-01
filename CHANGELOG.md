@@ -11,6 +11,7 @@
 	- Retaining API calls until `configure()` is called [SDKCF-6740]
 - Fixes:
 	- Fixed Xcode 15 beta errors [SDKCF-6692]
+	- Fixed Finding RMC Bundle [SDKCF-6751]
         
 ### 8.0.0 (2023-06-21)
 - **Breaking changes:**

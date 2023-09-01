@@ -20,12 +20,11 @@ import RSDKUtils
     internal static var isInitialized: Bool {
         interactor.iamModule != nil
     }
-    internal static var bundleInfo = BundleInfo.self
     internal static let interactor = InAppMessagingInteractor()
 
     /// Returns `true` when RMC module is integrated in the host app
     internal static var isRMCEnvironment: Bool {
-        bundleInfo.rmcBundle != nil
+        BundleInfo.rmcBundle != nil
     }
 
     private override init() { super.init() }
