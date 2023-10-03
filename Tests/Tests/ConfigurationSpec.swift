@@ -45,26 +45,21 @@ class ConfigurationSpec: QuickSpec {
 
                 beforeEach {
                     configurationManager.rolloutPercentage = 0
+                    waitUntil { done in
+                        RInAppMessaging.configure(dependencyManager: dependencyManager,
+                                                  moduleConfig: .empty) { shouldDeinit in
+                            expect(shouldDeinit).to(beTrue())
+                            done()
+                        }
+                    }
                 }
 
                 it("will disable module") {
-                    waitUntil { done in
-                        configurationManager.fetchCalledClosure = {
-                            expect(RInAppMessaging.initializedModule).toNot(beNil())
-                            done()
-                        }
-                        RInAppMessaging.configure(dependencyManager: dependencyManager,
-                                                  moduleConfig: .empty)
-                    }
-
-                    expect(RInAppMessaging.initializedModule).toEventually(beNil())
+                    expect(RInAppMessaging.interactor.iamModule).toEventually(beNil())
                     expect(RInAppMessaging.dependencyManager).toEventually(beNil())
                 }
 
                 it("will not call ping") {
-                    RInAppMessaging.configure(dependencyManager: dependencyManager,
-                                              moduleConfig: .empty)
-
                     expect(mockMessageMixer.wasPingCalled).toAfterTimeout(beFalse())
                 }
             }
@@ -73,8 +68,13 @@ class ConfigurationSpec: QuickSpec {
 
                 it("will call ping") {
                     configurationManager.rolloutPercentage = 100
-                    RInAppMessaging.configure(dependencyManager: dependencyManager,
-                                              moduleConfig: .empty)
+                    waitUntil { done in
+                        RInAppMessaging.configure(dependencyManager: dependencyManager,
+                                                  moduleConfig: .empty) { shouldDeinit in
+                            expect(shouldDeinit).to(beFalse())
+                            done()
+                        }
+                    }
 
                     expect(mockMessageMixer.wasPingCalled).toEventually(beTrue())
                 }

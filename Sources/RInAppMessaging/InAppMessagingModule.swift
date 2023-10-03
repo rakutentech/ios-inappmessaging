@@ -15,8 +15,6 @@ internal class InAppMessagingModule: ErrorDelegate, CampaignDispatcherDelegate, 
     private let randomizer: RandomizerType
 
     private var isInitialized = false
-    private(set) var isEnabled = true
-    private var eventBuffer = [Event]()
 
     var aggregatedErrorHandler: ((NSError) -> Void)?
     var onVerifyContext: ((_ contexts: [String], _ campaignTitle: String) -> Bool)?
@@ -66,42 +64,32 @@ internal class InAppMessagingModule: ErrorDelegate, CampaignDispatcherDelegate, 
                 return
             }
             let enabled = self.isEnabled(config: config)
-            self.isEnabled = enabled
             self.isInitialized = true
 
             if enabled {
                 self.campaignsListManager.refreshList()
-                self.flushEventBuffer(discardEvents: false)
                 completion(false)
             } else {
-                self.flushEventBuffer(discardEvents: true)
                 completion(true)
             }
         }
     }
 
-    func logEvent(_ event: Event) {
-        guard isEnabled else {
-            return
-        }
-
+    /// Stores passed event with matching campaign.
+    /// - Parameter event: event to be processed
+    /// - Returns: `false` if module is not initialized
+    func logEvent(_ event: Event) -> Bool {
         guard isInitialized else {
-            // Events that were logged after first getConfig request failed,
-            // are saved to this list to be processed later
-            eventBuffer.append(event)
-            return
+            return false
         }
 
         checkUserChanges()
         eventMatcher.matchAndStore(event: event)
         campaignTriggerAgent.validateAndTriggerCampaigns()
+        return true
     }
 
     func registerPreference(_ preference: UserInfoProvider) {
-        guard isEnabled else {
-            return
-        }
-
         accountRepository.setPreference(preference)
 
         guard isInitialized else {
@@ -122,22 +110,16 @@ internal class InAppMessagingModule: ErrorDelegate, CampaignDispatcherDelegate, 
         router.discardDisplayedTooltip(with: uiElementIdentifier)
     }
 
+    func setAccessibilityCompatibleDisplay(_ flag: Bool) {
+        router.accessibilityCompatibleDisplay = flag
+    }
+
     // visible for testing
     func checkUserChanges() {
         if accountRepository.updateUserInfo() {
             campaignRepository.loadCachedData()
             campaignsListManager.refreshList()
         }
-    }
-
-    private func flushEventBuffer(discardEvents: Bool) {
-        if !discardEvents {
-            eventBuffer.forEach { event in
-                self.eventMatcher.matchAndStore(event: event)
-                self.campaignTriggerAgent.validateAndTriggerCampaigns()
-            }
-        }
-        eventBuffer.removeAll()
     }
 }
 
