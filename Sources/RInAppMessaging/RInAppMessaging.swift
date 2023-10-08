@@ -12,16 +12,22 @@ import RSDKUtils
 /// Conforms to NSObject and exposed with objc tag to make it work with Obj-c projects.
 @objc public final class RInAppMessaging: NSObject {
 
-    internal private(set) static var initializedModule: InAppMessagingModule?
     private(set) static var dependencyManager: TypedDependencyManager?
     internal static let inAppQueue = DispatchQueue(label: "IAM.Main", qos: .utility, attributes: [])
     internal static var swiftUIEventHandler: SwiftUIViewEventHandlerType? {
         dependencyManager?.resolve(type: SwiftUIViewEventHandlerType.self)
     }
+    
+    internal static var bundleInfo = BundleInfo.self
+    
+    internal static var isInitialized: Bool {
+        interactor.iamModule != nil
+    }
+    internal static let interactor = InAppMessagingInteractor()
 
     /// Returns `true` when RMC module is integrated in the host app
     internal static var isRMCEnvironment: Bool {
-        BundleInfo.rmcBundle != nil
+        bundleInfo.rmcBundle != nil
     }
 
     private override init() { super.init() }
@@ -31,27 +37,34 @@ import RSDKUtils
     /// If you use Appium for UI tests automation - set this property to true.
     /// Default value is `false`
     /// - Note: There is a possibility that changing this property will cause campaigns to display incorrectly
-    @objc public static var accessibilityCompatibleDisplay = false {
-        didSet {
-            inAppQueue.async {
-                dependencyManager?.resolve(type: RouterType.self)?.accessibilityCompatibleDisplay = accessibilityCompatibleDisplay
-            }
+    @objc public static var accessibilityCompatibleDisplay: Bool {
+        get {
+            interactor.accessibilityCompatibleDisplay
+        }
+        set {
+            interactor.accessibilityCompatibleDisplay = newValue
         }
     }
 
     /// An optional callback called only for campaigns with defined context just before displaying its message.
     /// Return `false` to prevent the message from displaying.
     @objc public static var onVerifyContext: ((_ contexts: [String], _ campaignTitle: String) -> Bool)? {
-        didSet {
-            initializedModule?.onVerifyContext = onVerifyContext
+        get {
+            interactor.onVerifyContext
+        }
+        set {
+            interactor.onVerifyContext = newValue
         }
     }
 
     /// A closure called whenever any internal error occurs.
     /// This functionality is made for debugging purposes to provide more information for developers.
     @objc public static var errorCallback: ((NSError) -> Void)? {
-        didSet {
-            initializedModule?.aggregatedErrorHandler = errorCallback
+        get {
+            interactor.errorCallback
+        }
+        set {
+            interactor.errorCallback = newValue
         }
     }
 
@@ -70,7 +83,11 @@ import RSDKUtils
                                        configurationURL: String? = nil,
                                        enableTooltipFeature: Bool = false) {
 
-        guard verifyRMCEnvironment(subscriptionID: subscriptionID), initializedModule == nil else {
+        guard verifyRMCEnvironment(subscriptionID: subscriptionID), !isInitialized else {
+            let description = "⚠️ SDK configure request rejected. Initialization status: \(isInitialized)"
+            let error = NSError.iamError(description: description)
+            Logger.debug(description)
+            errorCallback?(error)
             return
         }
 
@@ -86,68 +103,29 @@ import RSDKUtils
         configure(dependencyManager: dependencyManager, moduleConfig: config)
     }
 
-    internal static func configure(dependencyManager: TypedDependencyManager, moduleConfig: InAppMessagingModuleConfiguration) {
+    internal static func configure(dependencyManager: TypedDependencyManager,
+                                   moduleConfig: InAppMessagingModuleConfiguration,
+                                   completion: ((Bool) -> Void)? = nil) {
         self.dependencyManager = dependencyManager
 
         inAppQueue.async {
-            guard initializedModule == nil else {
-                return
-            }
-
-            guard let configurationManager = dependencyManager.resolve(type: ConfigurationManagerType.self),
-                  let campaignsListManager = dependencyManager.resolve(type: CampaignsListManagerType.self),
-                  let impressionService = dependencyManager.resolve(type: ImpressionServiceType.self),
-                  let eventMatcher = dependencyManager.resolve(type: EventMatcherType.self),
-                  let accountRepository = dependencyManager.resolve(type: AccountRepositoryType.self),
-                  let readyCampaignDispatcher = dependencyManager.resolve(type: CampaignDispatcherType.self),
-                  let campaignTriggerAgent = dependencyManager.resolve(type: CampaignTriggerAgentType.self),
-                  let campaignRepository = dependencyManager.resolve(type: CampaignRepositoryType.self),
-                  let router = dependencyManager.resolve(type: RouterType.self),
-                  let randomizer = dependencyManager.resolve(type: Randomizer.self),
-                  let displayPermissionService = dependencyManager.resolve(type: DisplayPermissionServiceType.self),
-                  let viewListener = dependencyManager.resolve(type: ViewListenerType.self),
-                  let _ = dependencyManager.resolve(type: TooltipEventSenderType.self),
-                  let tooltipDispatcher = dependencyManager.resolve(type: TooltipDispatcherType.self) else {
-
-                assertionFailure("In-App Messaging SDK module initialization failure: Dependencies could not be resolved")
-                return
-            }
-            router.accessibilityCompatibleDisplay = accessibilityCompatibleDisplay
-            configurationManager.save(moduleConfig: moduleConfig)
-
-            initializedModule = InAppMessagingModule(configurationManager: configurationManager,
-                                                     campaignsListManager: campaignsListManager,
-                                                     impressionService: impressionService,
-                                                     accountRepository: accountRepository,
-                                                     eventMatcher: eventMatcher,
-                                                     readyCampaignDispatcher: readyCampaignDispatcher,
-                                                     campaignTriggerAgent: campaignTriggerAgent,
-                                                     campaignRepository: campaignRepository,
-                                                     router: router,
-                                                     randomizer: randomizer,
-                                                     displayPermissionService: displayPermissionService,
-                                                     tooltipDispatcher: tooltipDispatcher)
-            initializedModule?.aggregatedErrorHandler = errorCallback
-            initializedModule?.onVerifyContext = onVerifyContext
-            initializedModule?.initialize { shouldDeinit in
-                if shouldDeinit {
-                    self.initializedModule = nil
-                    self.dependencyManager = nil
-                    viewListener.stopListening()
-                } else if moduleConfig.isTooltipFeatureEnabled {
-                    viewListener.startListening()
+            self.interactor.configure(dependencyManager: dependencyManager, moduleConfig: moduleConfig, completion: { shouldDeinit in
+                defer {
+                    completion?(shouldDeinit)
                 }
-            }
+                guard shouldDeinit else {
+                    return
+                }
+                self.dependencyManager = nil
+            })
         }
     }
 
     /// Log the event name passed in and also pass the event name to the view controller to display a matching campaign.
     /// - Parameter event: The Event object to log.
-    /// - Warning: ⚠️ Calling this method prior to `configure()` has no effect.
     @objc public static func logEvent(_ event: Event) {
         inAppQueue.async {
-            notifyIfModuleNotInitialized()
-            initializedModule?.logEvent(event)
+            interactor.logEvent(event)
         }
     }
 
@@ -156,12 +134,10 @@ import RSDKUtils
     /// Registered object should be updated to reflect current user session state.
     /// Should only be called once unless new `UserInfoProvider` object has been created.
     /// - Note: This method creates a strong reference to provided object.
-    /// - Warning: ⚠️ Calling this method prior to `configure()` has no effect.
     /// - Parameter provider: object that will always contain up-to-date user information.
     @objc public static func registerPreference(_ provider: UserInfoProvider) {
         inAppQueue.async {
-            notifyIfModuleNotInitialized()
-            initializedModule?.registerPreference(provider)
+            interactor.userPerference = provider
         }
     }
 
@@ -173,8 +149,7 @@ import RSDKUtils
     ///                                   triggered and are queued to be displayed.
     @objc public static func closeMessage(clearQueuedCampaigns: Bool = false) {
         inAppQueue.async {
-            notifyIfModuleNotInitialized()
-            initializedModule?.closeMessage(clearQueuedCampaigns: clearQueuedCampaigns)
+            interactor.closeMessage(clearQueuedCampaigns: clearQueuedCampaigns)
         }
     }
 
@@ -186,20 +161,8 @@ import RSDKUtils
     ///                                  (a.k.a. `UIElement` parameter in tooltip JSON payload)
     @objc public static func closeTooltip(with uiElementIdentifier: String) {
         inAppQueue.async {
-            notifyIfModuleNotInitialized()
-            initializedModule?.closeTooltip(with: uiElementIdentifier)
+            interactor.closeTooltip(with: uiElementIdentifier)
         }
-    }
-
-    internal static func notifyIfModuleNotInitialized() {
-        guard initializedModule == nil else {
-            return
-        }
-
-        let description = "⚠️ API method called before calling `configure()`"
-        let error = NSError.iamError(description: description)
-        Logger.debug(description)
-        errorCallback?(error)
     }
 
     // visible for unit tests
@@ -245,12 +208,13 @@ import RSDKUtils
     internal static func deinitializeModule() {
         inAppQueue.sync {
             dependencyManager?.resolve(type: ViewListenerType.self)?.stopListening()
-            initializedModule = nil
+            setModule(nil)
             dependencyManager = nil
+            interactor.userPerference = nil
         }
     }
 
     internal static func setModule(_ iamModule: InAppMessagingModule?) {
-        initializedModule = iamModule
+        interactor.iamModule = iamModule
     }
 }

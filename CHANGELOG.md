@@ -7,6 +7,8 @@
 	- Added device_id to DisplayPermission request header [SDKCF-6624]
 	- Prevent calling `configure()` then RMC module is integrated [SDKCF-6710]
 	- Added rmcsdk version parameter to all api calls [SDKCF-6709]
+- Improvements:
+	- Retaining API calls until `configure()` is called [SDKCF-6740]
 - Fixes:
 	- Fixed Xcode 15 beta errors [SDKCF-6692]
 	- Fixed Finding RMC Bundle [SDKCF-6751]

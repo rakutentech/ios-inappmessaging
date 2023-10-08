@@ -32,7 +32,6 @@ internal extension View {
 @available(iOS 15.0, *)
 public extension View {
     func canHaveTooltip(identifier: String) -> some View {
-        RInAppMessaging.notifyIfModuleNotInitialized()
-        return modifier(TooltipViewModifier(identifier: identifier))
+        modifier(TooltipViewModifier(identifier: identifier))
     }
 }
