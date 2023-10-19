@@ -7,6 +7,7 @@
 	- Added device_id to DisplayPermission request header [SDKCF-6624]
 	- Prevent calling `configure()` then RMC module is integrated [SDKCF-6710]
 	- Added rmcsdk version parameter to all api calls [SDKCF-6709]
+	- Retaining API calls until configure() is called [SDKCF-6812]
 - Improvements:
 	- Retaining API calls until `configure()` is called [SDKCF-6740]
 - Fixes:

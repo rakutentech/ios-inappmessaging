@@ -94,7 +94,8 @@ func application(_ application: UIApplication, didFinishLaunchingWithOptions lau
 **Note**: 
 * `subscriptionID` and `configurationURL` parameters are optional if you set their values in Info.plist (See [build-time configuration](#build-time-config))
 * You can wrap the call to `configure()` in an `if <enable IAM-SDK boolean value> == true` condition to control enabling/disabling the SDK. 
-* If `configure()` is not called, subsequent calls to other public API SDK functions have no effect.
+* If `configure()` is not called, subsequent calls to other public API SDK get retained and get triggered after `configure()` is called.
+* If RMC SDK is used for installing IAM SDK then RMC SDK configuration should be followed rather than IAM configuration.
 
 ### **logEvent()**  
 This method is provided for the host application to log and save events. These events will be used to match campaign triggers.
