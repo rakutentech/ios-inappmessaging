@@ -91,11 +91,6 @@ internal class InAppMessagingModule: ErrorDelegate, CampaignDispatcherDelegate, 
 
     func registerPreference(_ preference: UserInfoProvider) {
         accountRepository.setPreference(preference)
-
-        guard isInitialized else {
-            return
-        }
-
         checkUserChanges()
     }
 
@@ -118,7 +113,9 @@ internal class InAppMessagingModule: ErrorDelegate, CampaignDispatcherDelegate, 
     func checkUserChanges() {
         if accountRepository.updateUserInfo() {
             campaignRepository.loadCachedData()
-            campaignsListManager.refreshList()
+            if isInitialized {
+                campaignsListManager.refreshList()
+            }
         }
     }
 }
