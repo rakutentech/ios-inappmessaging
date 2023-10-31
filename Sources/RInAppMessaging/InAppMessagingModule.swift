@@ -93,6 +93,9 @@ internal class InAppMessagingModule: ErrorDelegate, CampaignDispatcherDelegate, 
         accountRepository.setPreference(preference)
 
         guard isInitialized else {
+            if accountRepository.updateUserInfo() {
+                campaignRepository.loadCachedData()
+            }
             return
         }
 

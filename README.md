@@ -395,9 +395,10 @@ In your `Info.plist` configuration, set the PostScript names under `InAppMessagi
 * Status bar characters and icons are not visible when Full-Screen campaign is presented
   * If your app is running on iOS version below 13.0 you need to either change background color of the campaign or set proper `preferredStatusbarStyle` in the top-most view controller. (for iOS versions above 13.0 this issue is handled internally by the SDK)
 * A launch event campaign is presented more times than expected.
-  * Ensure that `registerPreference()` is called after `configure()` and before any `logEvent()` method
+  * Ideally `registerPreference()` should be called after `configure()` and before any `logEvent()` method
   * The preference object must contain up-to-date information before `registerPreference()` is called
   * Each *userId*/*idTrackingIdentifier* combination (including empty one) has its own counter for campaign impressions.
   * Killing the app or calling `closeMessage()` API while campaign is being displayed doesn't count as impression.
+  **Note:** If `registerPreference()` is called before `configure()` then it gets retained and gets triggered after `configure()` is called. 
 
 #### For other issues and more detailed information, Rakuten developers should refer to the Troubleshooting Guide on the internal developer documentation portal.

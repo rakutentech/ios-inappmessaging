@@ -304,9 +304,9 @@ class InAppMessagingModuleSpec: QuickSpec {
                             expect(accountRepository.userInfoProvider).to(beIdenticalTo(aUser))
                         }
 
-                        it("will not call checkUserChanges()") {
+                        it("will call updateUserInfo() to update cached user data") {
                             iamModule.registerPreference(aUser)
-                            expect(accountRepository.wasUpdateUserInfoCalled).to(beFalse())
+                            expect(accountRepository.wasUpdateUserInfoCalled).to(beTrue())
                         }
                     }
                 }
