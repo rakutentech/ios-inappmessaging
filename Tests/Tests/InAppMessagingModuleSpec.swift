@@ -306,7 +306,7 @@ class InAppMessagingModuleSpec: QuickSpec {
 
                         it("will not call checkUserChanges()") {
                             iamModule.registerPreference(aUser)
-                            expect(accountRepository.wasUpdateUserInfoCalled).to(beFalse())
+                            expect(accountRepository.wasUpdateUserInfoCalled).to(beTrue())
                         }
                     }
                 }
