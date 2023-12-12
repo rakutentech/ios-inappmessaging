@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>RInAppMessaging Class Reference</title>
+    <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="../js/jquery.min.js" defer></script>
+    <script src="../js/jazzy.js" defer></script>
+    
+    <script src="../js/lunr.min.js" defer></script>
+    <script src="../js/typeahead.jquery.js" defer></script>
+    <script src="../js/jazzy.search.js" defer></script>
+  </head>
+  <body>
+    <a name="//apple_ref/swift/Class/RInAppMessaging" class="dashAnchor"></a>
+    <a title="RInAppMessaging Class Reference"></a>
+    <header>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+      <link rel="stylesheet" type="text/css" href="../css/version-select.css" />
+      <script src="../js/version-select.js" defer></script>
+      <script src="../../versions.js"></script>
+      <div class="content-wrapper">
+        <p><a href="../index.html">RInAppMessaging Docs</a></p>
+        <div class="version-dropdown">
+          <button onclick="toggleVersionSelect()" class="versionbtn">8.1.0 <i class="fa fa-caret-down"></i></button>
+          <div id="versions" class="version-dropdown-content"></div>
+        </div> 
+        <p class="header-right"><a href="https://github.com/rakutentech/ios-inappmessaging"><img src="../img/gh.png"/>View on GitHub</a></p>
+        <p class="header-right">
+          <form role="search" action="../search.json">
+            <input type="text" placeholder="Search documentation" data-typeahead>
+          </form>
+        </p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="../index.html">RInAppMessaging Reference</a>
+        <img id="carat" src="../img/carat.png" />
+        RInAppMessaging Class Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="../Guides.html">Guides</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../changelog.html">CHANGELOG</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../contributing.html">CONTRIBUTING</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../deploy.html">DEPLOY</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../readme.html">README</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Classes/AppStartEvent.html">AppStartEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/CustomAttribute.html">CustomAttribute</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/CustomEvent.html">CustomEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Event.html">Event</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/LoginSuccessfulEvent.html">LoginSuccessfulEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/PurchaseSuccessfulEvent.html">PurchaseSuccessfulEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/RInAppMessaging.html">RInAppMessaging</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Extensions.html">Extensions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Extensions/UITabBar.html">UITabBar</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/View.html">View</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Protocols/UserInfoProvider.html">UserInfoProvider</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            <h1>RInAppMessaging</h1>
+              <div class="declaration">
+                <div class="language">
+                  
+                  <pre class="highlight swift"><code><span class="kd">@objc</span>
+<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">RInAppMessaging</span> <span class="p">:</span> <span class="kt">NSObject</span></code></pre>
+
+                </div>
+              </div>
+            <p>Class that contains the public methods for host application to call.
+Entry point for host application to communicate with InAppMessaging.
+Conforms to NSObject and exposed with objc tag to make it work with Obj-c projects.</p>
+
+          </section>
+          <section class="section task-group-section">
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@M@RInAppMessaging@objc(cs)RInAppMessaging(cpy)accessibilityCompatibleDisplay"></a>
+                    <a name="//apple_ref/swift/Variable/accessibilityCompatibleDisplay" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@M@RInAppMessaging@objc(cs)RInAppMessaging(cpy)accessibilityCompatibleDisplay">accessibilityCompatibleDisplay</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>If set to <code>true</code>, displayed campaigns will have different view hierarchy
+allowing accessibility tools to see visible UI elements.
+If you use Appium for UI tests automation - set this property to true.
+Default value is <code>false</code></p>
+<div class="aside aside-note">
+    <p class="aside-title">Note</p>
+    There is a possibility that changing this property will cause campaigns to display incorrectly
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">@objc</span>
+<span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">accessibilityCompatibleDisplay</span><span class="p">:</span> <span class="kt">Bool</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@M@RInAppMessaging@objc(cs)RInAppMessaging(cpy)onVerifyContext"></a>
+                    <a name="//apple_ref/swift/Variable/onVerifyContext" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@M@RInAppMessaging@objc(cs)RInAppMessaging(cpy)onVerifyContext">onVerifyContext</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>An optional callback called only for campaigns with defined context just before displaying its message.
+Return <code>false</code> to prevent the message from displaying.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">@objc</span>
+<span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">onVerifyContext</span><span class="p">:</span> <span class="p">((</span><span class="n">_</span> <span class="nv">contexts</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">],</span> <span class="n">_</span> <span class="nv">campaignTitle</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span><span class="p">)?</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@M@RInAppMessaging@objc(cs)RInAppMessaging(cpy)errorCallback"></a>
+                    <a name="//apple_ref/swift/Variable/errorCallback" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@M@RInAppMessaging@objc(cs)RInAppMessaging(cpy)errorCallback">errorCallback</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>A closure called whenever any internal error occurs.
+This functionality is made for debugging purposes to provide more information for developers.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">@objc</span>
+<span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">errorCallback</span><span class="p">:</span> <span class="p">((</span><span class="kt">NSError</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)?</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@M@RInAppMessaging@objc(cs)RInAppMessaging(cpy)pushPrimerAuthorizationOptions"></a>
+                    <a name="//apple_ref/swift/Variable/pushPrimerAuthorizationOptions" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@M@RInAppMessaging@objc(cs)RInAppMessaging(cpy)pushPrimerAuthorizationOptions">pushPrimerAuthorizationOptions</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>User Notification Authorization Options used in Push Primer feature.
+Value of this property will be used to register for remote notifications.
+The default value is <code>[.sound, .alert, .badge]</code></p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">@objc</span>
+<span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">pushPrimerAuthorizationOptions</span><span class="p">:</span> <span class="kt">UNAuthorizationOptions</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@M@RInAppMessaging@objc(cs)RInAppMessaging(cm)configureWithSubscriptionID:configurationURL:enableTooltipFeature:"></a>
+                    <a name="//apple_ref/swift/Method/configure(subscriptionID:configurationURL:enableTooltipFeature:)" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@M@RInAppMessaging@objc(cs)RInAppMessaging(cm)configureWithSubscriptionID:configurationURL:enableTooltipFeature:">configure(subscriptionID:<wbr>configurationURL:<wbr>enableTooltipFeature:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Function to be called by host application to start a new thread that
+configures Rakuten InAppMessaging SDK.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">@objc</span>
+<span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">configure</span><span class="p">(</span><span class="nv">subscriptionID</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">,</span>
+                             <span class="nv">configurationURL</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">,</span>
+                             <span class="nv">enableTooltipFeature</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>subscriptionKey</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>your app&rsquo;s subscription key. (This setting will override the <code>InAppMessagingAppSubscriptionID</code> value in Info.plist)</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>configurationURL</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>a configuration URL. (This setting will override the <code>InAppMessagingConfigurationURL</code> value in Info.plist)</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>enableTooltipFeature</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>set to <code>true</code> to enable Tooltip campaigns. This feature is currently in beta phase. Default value: <code>false</code>.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@M@RInAppMessaging@objc(cs)RInAppMessaging(cm)logEvent:"></a>
+                    <a name="//apple_ref/swift/Method/logEvent(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@M@RInAppMessaging@objc(cs)RInAppMessaging(cm)logEvent:">logEvent(_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Log the event name passed in and also pass the event name to the view controller to display a matching campaign.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">@objc</span>
+<span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">logEvent</span><span class="p">(</span><span class="n">_</span> <span class="nv">event</span><span class="p">:</span> <span class="kt"><a href="../Classes/Event.html">Event</a></span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>event</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The Event object to log.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@M@RInAppMessaging@objc(cs)RInAppMessaging(cm)registerPreference:"></a>
+                    <a name="//apple_ref/swift/Method/registerPreference(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@M@RInAppMessaging@objc(cs)RInAppMessaging(cm)registerPreference:">registerPreference(_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Register user preference object to the IAM SDK.</p>
+
+<p>Registered object should be updated to reflect current user session state.
+Should only be called once unless new <code><a href="../Protocols/UserInfoProvider.html">UserInfoProvider</a></code> object has been created.</p>
+<div class="aside aside-note">
+    <p class="aside-title">Note</p>
+    This method creates a strong reference to provided object.
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">@objc</span>
+<span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">registerPreference</span><span class="p">(</span><span class="n">_</span> <span class="nv">provider</span><span class="p">:</span> <span class="kt"><a href="../Protocols/UserInfoProvider.html">UserInfoProvider</a></span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>provider</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>object that will always contain up-to-date user information.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@M@RInAppMessaging@objc(cs)RInAppMessaging(cm)closeMessageWithClearQueuedCampaigns:"></a>
+                    <a name="//apple_ref/swift/Method/closeMessage(clearQueuedCampaigns:)" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@M@RInAppMessaging@objc(cs)RInAppMessaging(cm)closeMessageWithClearQueuedCampaigns:">closeMessage(clearQueuedCampaigns:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Close currently displayed campaign&rsquo;s message.</p>
+
+<p>This method should be called when app needs to force-close the displayed message without user action.
+Campaign&rsquo;s impressions won&rsquo;t be sent (i.e. the message won&rsquo;t be counted as displayed)</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">@objc</span>
+<span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">closeMessage</span><span class="p">(</span><span class="nv">clearQueuedCampaigns</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>clearQueuedCampaigns</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>when set to true, it will clear also the list of campaigns that were
+                              triggered and are queued to be displayed.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@M@RInAppMessaging@objc(cs)RInAppMessaging(cm)closeTooltipWith:"></a>
+                    <a name="//apple_ref/swift/Method/closeTooltip(with:)" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@M@RInAppMessaging@objc(cs)RInAppMessaging(cm)closeTooltipWith:">closeTooltip(with:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Close currently displayed tooltip that&rsquo;s bound to a UI element with given identifier.</p>
+
+<p>This method should be called when app needs to force-close displayed tooltip without user action.
+Tooltip&rsquo;s impressions won&rsquo;t be sent (i.e. the message won&rsquo;t be counted as displayed)</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">@objc</span>
+<span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">closeTooltip</span><span class="p">(</span><span class="n">with</span> <span class="nv">uiElementIdentifier</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>uiElementIdentifier</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>accessibilityIdentifier of UI element that displayed tooltip is attached to.
+                             (a.k.a. <code>UIElement</code> parameter in tooltip JSON payload)</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </section>
+        </section>
+        <section id="footer">
+          <p>&copy; 2023 <a class="link" href="https://github.com/rakutentech/ios-inappmessaging" target="_blank" rel="external noopener">Rakuten Group, Inc.</a>. All rights reserved. (Last updated: 2023-12-12)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.14.4</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>
