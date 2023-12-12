@@ -2,7 +2,7 @@
 
 ### Unreleased
 
-### 8.1.0 (2023-12-12)
+### 8.1.0 (2023-12-12) 
 - Features:
 	- Added User preference input in Sample App [SDKCF-6641]
 	- Added device_id to all the RAT events [SDKCF-6625]
