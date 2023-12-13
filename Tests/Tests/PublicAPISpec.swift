@@ -24,7 +24,7 @@ class PublicAPISpec: QuickSpec {
         var eventMatcher: EventMatcherSpy!
         var accountRepository: AccountRepositoryType!
         var router: RouterType!
-        var messageMixerService: MessageMixerServiceMock!
+        var pingService: PingServiceMock!
         var campaignsListManager: CampaignsListManagerType!
         var campaignRepository: CampaignRepositoryType!
         var configurationManager: ConfigurationManagerMock!
@@ -37,7 +37,7 @@ class PublicAPISpec: QuickSpec {
             TypedDependencyManager.Container([
                 TypedDependencyManager.ContainerElement(type: DisplayPermissionServiceType.self, factory: { DisplayPermissionServiceMock() }),
                 TypedDependencyManager.ContainerElement(type: ConfigurationManagerType.self, factory: { configurationManager }),
-                TypedDependencyManager.ContainerElement(type: MessageMixerServiceType.self, factory: { messageMixerService }),
+                TypedDependencyManager.ContainerElement(type: PingServiceType.self, factory: { pingService }),
                 TypedDependencyManager.ContainerElement(type: EventMatcherType.self, factory: { eventMatcher }),
                 TypedDependencyManager.ContainerElement(type: UserDataCacheable.self, factory: { dataCache })
             ])
@@ -50,7 +50,7 @@ class PublicAPISpec: QuickSpec {
             dependencyManager.appendContainer(MainContainerFactory.create(dependencyManager: dependencyManager,
                                                                           configURL: URL(string: config.configURLString ?? "empty")!))
             dependencyManager.appendContainer(mockContainer())
-            messageMixerService = MessageMixerServiceMock()
+            pingService = PingServiceMock()
             dataCache = UserDataCache(userDefaults: userDefaults)
             eventMatcher = EventMatcherSpy(
                 campaignRepository: dependencyManager.resolve(type: CampaignRepositoryType.self)!)
@@ -69,7 +69,7 @@ class PublicAPISpec: QuickSpec {
         }
 
         func generateAndDisplayLoginCampaigns(count: Int, addContexts: Bool) {
-            messageMixerService.mockedResponse = TestHelpers.MockResponse.withGeneratedCampaigns(
+            pingService.mockedResponse = TestHelpers.MockResponse.withGeneratedCampaigns(
                 count: count, test: false, delay: 100, addContexts: addContexts,
                 triggers: [Trigger.loginEventTrigger])
             campaignsListManager.refreshList()
@@ -77,7 +77,7 @@ class PublicAPISpec: QuickSpec {
         }
 
         func generateAndDisplayLoginTooltip(uiElementIdentifier: String, addContexts: Bool) {
-            messageMixerService.mockedResponse = TestHelpers.MockResponse.withGeneratedTooltip(
+            pingService.mockedResponse = TestHelpers.MockResponse.withGeneratedTooltip(
                 uiElementIdentifier: uiElementIdentifier, addContexts: addContexts,
                 triggers: [Trigger.loginEventTrigger])
             campaignsListManager.refreshList()
@@ -122,7 +122,7 @@ class PublicAPISpec: QuickSpec {
         describe("RInAppMessaging") {
 
             it("will pass internal errors to errorCallback") {
-                messageMixerService.mockedError = .invalidConfiguration
+                pingService.mockedError = .invalidConfiguration
                 campaignsListManager.refreshList()
 
                 // errorReceiver is updated inside errorCallback
@@ -175,7 +175,7 @@ class PublicAPISpec: QuickSpec {
                         it("will process events once initialization is complete") {
                             var resume: (() -> Void)!
                             initializeSDK(onDependenciesResolved: {
-                                resume = messageMixerService.suspendNextPingAndWaitForSignal()
+                                resume = pingService.suspendNextPingAndWaitForSignal()
                             })
                             RInAppMessaging.logEvent(LoginSuccessfulEvent())
                             expect(eventMatcher.loggedEvents).toAfterTimeout(beEmpty())
@@ -234,7 +234,7 @@ class PublicAPISpec: QuickSpec {
                             let userInfoProvider = newUserInfoProvider()
                             var resume: (() -> Void)!
                             initializeSDK(onDependenciesResolved: {
-                                resume = messageMixerService.suspendNextPingAndWaitForSignal()
+                                resume = pingService.suspendNextPingAndWaitForSignal()
                             })
                             RInAppMessaging.registerPreference(userInfoProvider)
                             resume()
@@ -259,7 +259,7 @@ class PublicAPISpec: QuickSpec {
                     configurationManager.fetchCalledClosure = {
                         configCalled = true
                     }
-                    messageMixerService.mockedResponse = TestHelpers.MockResponse.withGeneratedCampaigns(
+                    pingService.mockedResponse = TestHelpers.MockResponse.withGeneratedCampaigns(
                         count: 1, test: false, delay: 100, maxImpressions: 2, addContexts: false,
                         triggers: [Trigger.loginEventTrigger])
                 })
@@ -340,8 +340,8 @@ class PublicAPISpec: QuickSpec {
                     it("should set the same value in ConfigurationRepository (override Info.plist setting)") {
                         RInAppMessaging.deinitializeModule()
                         initializeSDK(config: .init(configURLString: "overriden.url",
-                                                      subscriptionID: nil,
-                                                      isTooltipFeatureEnabled: true))
+                                                    subscriptionID: nil,
+                                                    isTooltipFeatureEnabled: true))
                         expect(configurationRepository.getConfigEndpointURLString()).toEventually(equal("overriden.url"))
                     }
                 }
@@ -350,8 +350,8 @@ class PublicAPISpec: QuickSpec {
                     it("should set the same value in ConfigurationRepository (override Info.plist setting)") {
                         RInAppMessaging.deinitializeModule()
                         initializeSDK(config: .init(configURLString: nil,
-                                                      subscriptionID: "overriden.id",
-                                                      isTooltipFeatureEnabled: true))
+                                                    subscriptionID: "overriden.id",
+                                                    isTooltipFeatureEnabled: true))
                         expect(configurationRepository.getSubscriptionID()).toEventually(equal("overriden.id"))
                     }
                 }
@@ -362,17 +362,17 @@ class PublicAPISpec: QuickSpec {
                         RInAppMessaging.deinitializeModule()
                         expect(ViewListener.currentInstance.isListening).toEventually(beFalse())
                         initializeSDK(config: .init(configURLString: "https://config.test",
-                                                      subscriptionID: nil,
-                                                      isTooltipFeatureEnabled: true))
+                                                    subscriptionID: nil,
+                                                    isTooltipFeatureEnabled: true))
                         expect(ViewListener.currentInstance.isListening).to(beTrue())
                     }
 
                     it("will stop ViewListener when completion was called with shouldDeinit = true") {
                         RInAppMessaging.deinitializeModule()
                         initializeSDK(waitForInit: false,
-                                        config: .init(configURLString: "https://config.test",
-                                                      subscriptionID: nil,
-                                                      isTooltipFeatureEnabled: true)) {
+                                      config: .init(configURLString: "https://config.test",
+                                                    subscriptionID: nil,
+                                                    isTooltipFeatureEnabled: true)) {
                             configurationManager.rolloutPercentage = 0 // triggers deinit
                         }
                         expect(ViewListener.currentInstance.isListening).toAfterTimeout(beFalse())
@@ -385,8 +385,8 @@ class PublicAPISpec: QuickSpec {
                         RInAppMessaging.deinitializeModule()
                         expect(ViewListener.currentInstance.isListening).toEventually(beFalse())
                         initializeSDK(config: .init(configURLString: "https://config.test",
-                                                      subscriptionID: nil,
-                                                      isTooltipFeatureEnabled: false))
+                                                    subscriptionID: nil,
+                                                    isTooltipFeatureEnabled: false))
                         expect(ViewListener.currentInstance.isListening).toAfterTimeout(beFalse())
                     }
                 }
@@ -558,7 +558,7 @@ class PublicAPISpec: QuickSpec {
                 it("will call the method before showing a tooltip with expected parameters") {
                     contextVerifier.shouldShowCampaign = true
                     tooltipTargetView.accessibilityIdentifier = TooltipViewIdentifierMock
-                    messageMixerService.mockedResponse = PingResponse(
+                    pingService.mockedResponse = PingResponse(
                         nextPingMilliseconds: Int.max,
                         currentPingMilliseconds: 0,
                         data: [
@@ -602,7 +602,7 @@ class PublicAPISpec: QuickSpec {
                         data: [TestHelpers.generateCampaign(id: "test", maxImpressions: 1, delay: 100, test: false,
                                                             triggers: [Trigger(type: .event, eventType: .loginSuccessful,
                                                                                eventName: "e1", attributes: [])])])
-                    messageMixerService.mockedResponse = mockedResponse
+                    pingService.mockedResponse = mockedResponse
                     campaignsListManager.refreshList()
                     RInAppMessaging.logEvent(LoginSuccessfulEvent())
 
@@ -612,7 +612,7 @@ class PublicAPISpec: QuickSpec {
 
                     RInAppMessaging.deinitializeModule()
                     initializeSDK()
-                    messageMixerService.mockedResponse = mockedResponse
+                    pingService.mockedResponse = mockedResponse
                     campaignsListManager.refreshList()
                     expect(campaignRepository.list.first?.impressionsLeft).to(equal(0))
                     RInAppMessaging.logEvent(LoginSuccessfulEvent())
@@ -642,7 +642,7 @@ class PublicAPISpec: QuickSpec {
 
                 // As it may contain outdated information (especially after logout)
                 it("will not transfer cached data (sync) from anonymous user") {
-                    messageMixerService.mockedResponse = TestHelpers.MockResponse.withGeneratedCampaigns(
+                    pingService.mockedResponse = TestHelpers.MockResponse.withGeneratedCampaigns(
                         count: 1, test: false, delay: 100, maxImpressions: 2, addContexts: false,
                         triggers: [Trigger.loginEventTrigger])
                     RInAppMessaging.registerPreference(UserInfoProviderMock()) // anonymous user
@@ -662,7 +662,7 @@ class PublicAPISpec: QuickSpec {
                 }
 
                 it("will not transfer cached data (sync) from empty user") {
-                    messageMixerService.mockedResponse = TestHelpers.MockResponse.withGeneratedCampaigns(
+                    pingService.mockedResponse = TestHelpers.MockResponse.withGeneratedCampaigns(
                         count: 1, test: false, delay: 100, maxImpressions: 2, addContexts: false,
                         triggers: [Trigger.loginEventTrigger])
 

@@ -151,7 +151,7 @@ class ViewPresenterSpec: QuickSpec {
             context("when showURLError is called") {
 
                 it("will call showAlert on passed view") {
-                    let view = FullViewMock()
+                    let view = OverlayViewMock()
                     presenter.showURLError(view: view)
                     expect(view.wasShowAlertCalled).to(beTrue())
                 }
@@ -300,10 +300,10 @@ class ViewPresenterSpec: QuickSpec {
             }
         }
 
-        describe("FullViewPresenter") {
+        describe("OverlayViewPresenter") {
 
-            var view: FullViewMock!
-            var presenter: FullViewPresenter!
+            var view: OverlayViewMock!
+            var presenter: OverlayViewPresenter!
             let campaign = TestHelpers.generateCampaign(id: "test", buttons: [
                 Button(buttonText: "button1",
                        buttonTextColor: "#000000",
@@ -324,10 +324,10 @@ class ViewPresenterSpec: QuickSpec {
             var errorDelegate: ErrorDelegateMock!
 
             beforeEach {
-                view = FullViewMock()
+                view = OverlayViewMock()
                 notificationCenterMock = UNUserNotificationCenterMock()
                 errorDelegate = ErrorDelegateMock()
-                presenter = FullViewPresenter(campaignRepository: campaignRepository,
+                presenter = OverlayViewPresenter(campaignRepository: campaignRepository,
                                               impressionService: impressionService,
                                               eventMatcher: eventMatcher,
                                               campaignTriggerAgent: campaignTriggerAgent,
@@ -662,9 +662,9 @@ class ViewPresenterSpec: QuickSpec {
     }
 }
 
-private class FullViewMock: UIView, FullViewType {
+private class OverlayViewMock: UIView, OverlayViewType {
 
-    static var viewIdentifier: String { "FullViewMock" }
+    static var viewIdentifier: String { "OverlayViewMock" }
 
     var isOptOutChecked: Bool = false
     var onDismiss: ((_ cancelled: Bool) -> Void)?
@@ -674,9 +674,9 @@ private class FullViewMock: UIView, FullViewType {
     private(set) var wasDismissCalled = false
     private(set) var wasShowAlertCalled = false
     private(set) var addedButtons = [(ActionButton, viewModel: ActionButtonViewModel)]()
-    private(set) var viewModel: FullViewModel?
+    private(set) var viewModel: OverlayViewModel?
 
-    func setup(viewModel: FullViewModel) {
+    func setup(viewModel: OverlayViewModel) {
         wasSetupCalled = true
         self.viewModel = viewModel
     }

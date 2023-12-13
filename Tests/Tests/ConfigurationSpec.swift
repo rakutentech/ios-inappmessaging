@@ -17,7 +17,7 @@ class ConfigurationSpec: QuickSpec {
         context("InAppMessaging") {
 
             var configurationManager: ConfigurationManagerMock!
-            var mockMessageMixer: MessageMixerServiceMock!
+            var mockPingService: PingServiceMock!
             var dependencyManager: TypedDependencyManager!
 
             func mockContainer() -> TypedDependencyManager.Container {
@@ -25,14 +25,14 @@ class ConfigurationSpec: QuickSpec {
                     TypedDependencyManager.ContainerElement(type: ConfigurationManagerType.self, factory: {
                         configurationManager
                     }),
-                    TypedDependencyManager.ContainerElement(type: MessageMixerServiceType.self, factory: {
-                        mockMessageMixer
+                    TypedDependencyManager.ContainerElement(type: PingServiceType.self, factory: {
+                        mockPingService
                     })
                 ])
             }
 
             beforeEach {
-                mockMessageMixer = MessageMixerServiceMock()
+                mockPingService = PingServiceMock()
                 dependencyManager = TypedDependencyManager()
                 configurationManager = ConfigurationManagerMock()
                 RInAppMessaging.deinitializeModule()
@@ -60,7 +60,7 @@ class ConfigurationSpec: QuickSpec {
                 }
 
                 it("will not call ping") {
-                    expect(mockMessageMixer.wasPingCalled).toAfterTimeout(beFalse())
+                    expect(mockPingService.wasPingCalled).toAfterTimeout(beFalse())
                 }
             }
 
@@ -76,7 +76,7 @@ class ConfigurationSpec: QuickSpec {
                         }
                     }
 
-                    expect(mockMessageMixer.wasPingCalled).toEventually(beTrue())
+                    expect(mockPingService.wasPingCalled).toEventually(beTrue())
                 }
             }
         }

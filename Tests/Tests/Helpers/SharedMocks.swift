@@ -135,16 +135,16 @@ class EventMatcherMock: EventMatcherType {
     }
 }
 
-class MessageMixerServiceMock: MessageMixerServiceType {
+class PingServiceMock: PingServiceType {
     var wasPingCalled = false
     var mockedResponse: PingResponse?
-    var mockedError = MessageMixerServiceError.invalidConfiguration
+    var mockedError = PingServiceError.invalidConfiguration
     var pingCallCount = 0
 
     private let suspendSemaphore = DispatchGroup()
     private var shouldSuspend = false
 
-    func ping() -> Result<PingResponse, MessageMixerServiceError> {
+    func ping() -> Result<PingResponse, PingServiceError> {
         wasPingCalled = true
         pingCallCount += 1
 
@@ -165,7 +165,7 @@ class MessageMixerServiceMock: MessageMixerServiceType {
     /// call returned closure to send resume signal
     func suspendNextPingAndWaitForSignal() -> (() -> Void) {
         guard !shouldSuspend else {
-            fatalError("MessageMixerServiceMock: Suspend race condition")
+            fatalError("PingServiceMock: Suspend race condition")
         }
         shouldSuspend = true
         suspendSemaphore.enter()

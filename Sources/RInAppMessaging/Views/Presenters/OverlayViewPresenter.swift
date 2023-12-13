@@ -1,16 +1,16 @@
 import UIKit
 import UserNotifications
 
-internal protocol FullViewPresenterType: BaseViewPresenterType {
-    var view: FullViewType? { get set }
+internal protocol OverlayViewPresenterType: BaseViewPresenterType {
+    var view: OverlayViewType? { get set }
 
     func loadButtons()
     func didClickAction(sender: ActionButton)
     func didClickExitButton()
 }
 
-internal class FullViewPresenter: BaseViewPresenter, FullViewPresenterType, ErrorReportable {
-    weak var view: FullViewType?
+internal class OverlayViewPresenter: BaseViewPresenter, OverlayViewPresenterType, ErrorReportable {
+    weak var view: OverlayViewType?
     var errorDelegate: ErrorDelegate?
 
     private let pushPrimerOptions: UNAuthorizationOptions
@@ -38,18 +38,18 @@ internal class FullViewPresenter: BaseViewPresenter, FullViewPresenterType, Erro
 
     override func viewDidInitialize() {
         let messagePayload = campaign.data.messagePayload
-        let viewModel = FullViewModel(image: associatedImage,
-                                      backgroundColor: viewBackgroundColor,
-                                      title: messagePayload.title,
-                                      messageBody: messagePayload.messageBody,
-                                      header: messagePayload.header,
-                                      titleColor: UIColor(hexString: messagePayload.titleColor) ?? .black,
-                                      headerColor: UIColor(hexString: messagePayload.headerColor) ?? .black,
-                                      messageBodyColor: UIColor(hexString: messagePayload.messageBodyColor) ?? .black,
-                                      isHTML: messagePayload.messageSettings.displaySettings.html,
-                                      showOptOut: messagePayload.messageSettings.displaySettings.optOut,
-                                      showButtons: !messagePayload.messageSettings.controlSettings.buttons.isEmpty,
-                                      isDismissable: campaign.data.isCampaignDismissable)
+        let viewModel = OverlayViewModel(image: associatedImage,
+                                         backgroundColor: viewBackgroundColor,
+                                         title: messagePayload.title,
+                                         messageBody: messagePayload.messageBody,
+                                         header: messagePayload.header,
+                                         titleColor: UIColor(hexString: messagePayload.titleColor) ?? .black,
+                                         headerColor: UIColor(hexString: messagePayload.headerColor) ?? .black,
+                                         messageBodyColor: UIColor(hexString: messagePayload.messageBodyColor) ?? .black,
+                                         isHTML: messagePayload.messageSettings.displaySettings.html,
+                                         showOptOut: messagePayload.messageSettings.displaySettings.optOut,
+                                         showButtons: !messagePayload.messageSettings.controlSettings.buttons.isEmpty,
+                                         isDismissable: campaign.data.isCampaignDismissable)
 
         view?.setup(viewModel: viewModel)
     }

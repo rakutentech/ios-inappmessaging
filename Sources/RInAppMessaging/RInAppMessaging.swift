@@ -17,12 +17,10 @@ import RSDKUtils
     internal static var swiftUIEventHandler: SwiftUIViewEventHandlerType? {
         dependencyManager?.resolve(type: SwiftUIViewEventHandlerType.self)
     }
-    
-    internal static var bundleInfo = BundleInfo.self
-    
     internal static var isInitialized: Bool {
         interactor.iamModule != nil
     }
+    internal static var bundleInfo = BundleInfo.self
     internal static let interactor = InAppMessagingInteractor()
 
     /// Returns `true` when RMC module is integrated in the host app
