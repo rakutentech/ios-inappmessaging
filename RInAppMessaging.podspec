@@ -8,8 +8,7 @@ Pod::Spec.new do |s|
   s.source           = { :git => "https://github.com/rakutentech/ios-inappmessaging.git", :tag => s.version.to_s }  
   s.ios.deployment_target = '12.0'
   s.swift_versions = ['5.7.1']
-  s.resources = ['Resources/PrivacyInfo.xcprivacy']
-
+  s.resources = ['Sources/RInAppMessaging/Resources/PrivacyInfo.xcprivacy']
   s.dependency 'RSDKUtils', '~> 4.0'
   s.source_files = 'Sources/RInAppMessaging/**/*.swift'
   s.resource_bundles = { 'RInAppMessagingResources' => ['Sources/RInAppMessaging/Resources/*'] }
