@@ -1,6 +1,6 @@
 ## Changelog
 
-### Unreleased
+### 8.2.0 (2024-04-08) 
 - Improvements:
 	- Added PrivacyInfo.xcprivacy file [SDKCF-6897]
 
