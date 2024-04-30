@@ -18,9 +18,11 @@ internal protocol ImpressionTrackable: AnyObject {
 
 extension ImpressionTrackable {
     func sendImpressions(for campaign: Campaign) {
-        impressionService.pingImpression(
-            impressions: impressions,
-            campaignData: campaign.data)
+        if !campaign.isOutdated {
+            impressionService.pingImpression(
+                impressions: impressions,
+                campaignData: campaign.data)
+        }
     }
 
     func logImpression(type: ImpressionType) {
