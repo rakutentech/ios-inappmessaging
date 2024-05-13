@@ -1,6 +1,6 @@
 ## Changelog
 
-### Unreleased
+### 8.3.0 (2024-05-13) 
 - Improvements:
 	- Prevent sending impressions for expired campaigns [SDKCF-6910]
 

@@ -6,7 +6,7 @@ info:
   license:
     name: MIT
     url: https://opensource.org/licenses/MIT
-  version: 8.2.0
+  version: 8.3.0
 tags:
 - name: Configuration
 - name: Campaign
