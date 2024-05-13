@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>DEPLOY  Reference</title>
+    <link rel="stylesheet" type="text/css" href="css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="js/jquery.min.js" defer></script>
+    <script src="js/jazzy.js" defer></script>
+    
+    <script src="js/lunr.min.js" defer></script>
+    <script src="js/typeahead.jquery.js" defer></script>
+    <script src="js/jazzy.search.js" defer></script>
+  </head>
+  <body>
+    <a title="DEPLOY  Reference"></a>
+    <header>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+      <link rel="stylesheet" type="text/css" href="css/version-select.css" />
+      <script src="js/version-select.js" defer></script>
+      <script src="../versions.js"></script>
+      <div class="content-wrapper">
+        <p><a href="index.html">RInAppMessaging Docs</a></p>
+        <div class="version-dropdown">
+          <button onclick="toggleVersionSelect()" class="versionbtn">8.3.0 <i class="fa fa-caret-down"></i></button>
+          <div id="versions" class="version-dropdown-content"></div>
+        </div> 
+        <p class="header-right"><a href="https://github.com/rakutentech/ios-inappmessaging"><img src="img/gh.png"/>View on GitHub</a></p>
+        <p class="header-right">
+          <form role="search" action="search.json">
+            <input type="text" placeholder="Search documentation" data-typeahead>
+          </form>
+        </p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="index.html">RInAppMessaging Reference</a>
+        <img id="carat" src="img/carat.png" />
+        DEPLOY  Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="Guides.html">Guides</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="changelog.html">CHANGELOG</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="contributing.html">CONTRIBUTING</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="deploy.html">DEPLOY</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="readme.html">README</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Classes/AppStartEvent.html">AppStartEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/CustomAttribute.html">CustomAttribute</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/CustomEvent.html">CustomEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Event.html">Event</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/LoginSuccessfulEvent.html">LoginSuccessfulEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/PurchaseSuccessfulEvent.html">PurchaseSuccessfulEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/RInAppMessaging.html">RInAppMessaging</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Extensions.html">Extensions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Extensions/UITabBar.html">UITabBar</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Extensions/View.html">View</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Protocols/UserInfoProvider.html">UserInfoProvider</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            
+            <h1 id='rinappmessaging-ios-sdk' class='heading'>RInAppMessaging iOS SDK</h1>
+
+<ol>
+<li><a href="#preparation">Preparation</a></li>
+<li><a href="#deploy">Deploy</a></li>
+</ol>
+<h2 id='preparation' class='heading'>Preparation</h2>
+
+<p>Create pull request to make the following changes:</p>
+
+<ol>
+<li>Update the date in <code>CHANGELOG.md</code></li>
+<li>Update version number in <code>openapi.yaml</code></li>
+<li>Update version number in <code>.jazzy.yaml</code></li>
+<li>Update version number in <code>RInAppMessaging.podspec</code></li>
+<li>Update version number in <code>Sources/RInAppMessaging/Constants.swift</code> under <code>sdkVersion</code> constant</li>
+<li>Add version number to <code>_versions</code> file</li>
+</ol>
+<h2 id='deploy' class='heading'>Deploy</h2>
+
+<p>Push a tag (example: 7.2.0)</p>
+<h3 id='using-ci' class='heading'>Using CI</h3>
+
+<p>Run <code>deploy</code> lane on Bitrise. (Should be automatically triggered after pushing a tag)</p>
+<h3 id='using-local-script' class='heading'>Using local script</h3>
+
+<p>(in case Bitrise workflow failed or wasn&rsquo;t triggered)</p>
+
+<p>Run following commands:</p>
+<pre class="highlight shell"><code>bundle install
+bundle <span class="nb">exec </span>pod spec lint --allow-warnings
+bundle <span class="nb">exec </span>pod trunk push --allow-warnings --verbose
+bundle <span class="nb">exec </span>fastlane deploy_ghpages ghpages_url:<span class="s2">"https://github.com/rakutentech/ios-inappmessaging"</span> github_token:&lt;GitHub personal access token&gt;
+</code></pre>
+
+          </section>
+        </section>
+        <section id="footer">
+          <p>&copy; 2024 <a class="link" href="https://github.com/rakutentech/ios-inappmessaging" target="_blank" rel="external noopener">Rakuten Group, Inc.</a>. All rights reserved. (Last updated: 2024-05-13)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.15.0</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>
