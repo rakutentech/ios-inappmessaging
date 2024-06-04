@@ -60,9 +60,9 @@ internal enum MainContainerFactory {
                                    permissionService: manager.resolve(type: DisplayPermissionServiceType.self)!,
                                    campaignRepository: manager.resolve(type: CampaignRepositoryType.self)!)
             }),
-            ContainerElement(type: MessageMixerServiceType.self, factory: {
-                MessageMixerService(accountRepository: manager.resolve(type: AccountRepositoryType.self)!,
-                                    configurationRepository: manager.resolve(type: ConfigurationRepositoryType.self)!)
+            ContainerElement(type: PingServiceType.self, factory: {
+                PingService(accountRepository: manager.resolve(type: AccountRepositoryType.self)!,
+                            configurationRepository: manager.resolve(type: ConfigurationRepositoryType.self)!)
             }),
             ContainerElement(type: ImpressionServiceType.self, factory: {
                 ImpressionService(accountRepository: manager.resolve(type: AccountRepositoryType.self)!,
@@ -71,7 +71,7 @@ internal enum MainContainerFactory {
             ContainerElement(type: CampaignsListManagerType.self, factory: {
                 CampaignsListManager(campaignRepository: manager.resolve(type: CampaignRepositoryType.self)!,
                                      campaignTriggerAgent: manager.resolve(type: CampaignTriggerAgentType.self)!,
-                                     messageMixerService: manager.resolve(type: MessageMixerServiceType.self)!,
+                                     pingService: manager.resolve(type: PingServiceType.self)!,
                                      configurationRepository: manager.resolve(type: ConfigurationRepositoryType.self)!)
             }),
             ContainerElement(type: TooltipDispatcherType.self, factory: {
@@ -100,13 +100,13 @@ internal enum MainContainerFactory {
                 CampaignsValidator(campaignRepository: manager.resolve(type: CampaignRepositoryType.self)!,
                                    eventMatcher: manager.resolve(type: EventMatcherType.self)!)
             }, transient: true),
-            ContainerElement(type: FullViewPresenterType.self, factory: {
-                FullViewPresenter(campaignRepository: manager.resolve(type: CampaignRepositoryType.self)!,
-                                  impressionService: manager.resolve(type: ImpressionServiceType.self)!,
-                                  eventMatcher: manager.resolve(type: EventMatcherType.self)!,
-                                  campaignTriggerAgent: manager.resolve(type: CampaignTriggerAgentType.self)!,
-                                  pushPrimerOptions: RInAppMessaging.pushPrimerAuthorizationOptions,
-                                  configurationRepository: manager.resolve(type: ConfigurationRepositoryType.self)!)
+            ContainerElement(type: OverlayViewPresenterType.self, factory: {
+                OverlayViewPresenter(campaignRepository: manager.resolve(type: CampaignRepositoryType.self)!,
+                                     impressionService: manager.resolve(type: ImpressionServiceType.self)!,
+                                     eventMatcher: manager.resolve(type: EventMatcherType.self)!,
+                                     campaignTriggerAgent: manager.resolve(type: CampaignTriggerAgentType.self)!,
+                                     pushPrimerOptions: RInAppMessaging.pushPrimerAuthorizationOptions,
+                                     configurationRepository: manager.resolve(type: ConfigurationRepositoryType.self)!)
             }, transient: true),
             ContainerElement(type: SlideUpViewPresenterType.self, factory: {
                 SlideUpViewPresenter(campaignRepository: manager.resolve(type: CampaignRepositoryType.self)!,

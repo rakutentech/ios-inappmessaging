@@ -1,10 +1,10 @@
 import Foundation
 
-internal protocol MessageMixerServiceType {
-    func ping() -> Result<PingResponse, MessageMixerServiceError>
+internal protocol PingServiceType {
+    func ping() -> Result<PingResponse, PingServiceError>
 }
 
-internal enum MessageMixerServiceError: Error {
+internal enum PingServiceError: Error {
     case requestError(RequestError)
     case jsonDecodingError(Error)
     case invalidConfiguration
@@ -13,7 +13,7 @@ internal enum MessageMixerServiceError: Error {
     case invalidRequestError(UInt)
 }
 
-internal class MessageMixerService: MessageMixerServiceType, HttpRequestable {
+internal class PingService: PingServiceType, HttpRequestable {
 
     private let accountRepository: AccountRepositoryType
     private let configurationRepository: ConfigurationRepositoryType
@@ -29,7 +29,7 @@ internal class MessageMixerService: MessageMixerServiceType, HttpRequestable {
         httpSession = URLSession(configuration: configurationRepository.defaultHttpSessionConfiguration)
     }
 
-    func ping() -> Result<PingResponse, MessageMixerServiceError> {
+    func ping() -> Result<PingResponse, PingServiceError> {
 
         guard let mixerServerUrl = configurationRepository.getEndpoints()?.ping else {
             let error = "Error retrieving InAppMessaging Mixer Server URL"
@@ -46,7 +46,7 @@ internal class MessageMixerService: MessageMixerServiceType, HttpRequestable {
         switch response {
         case .success((let data, _)):
             return parse(response: data).mapError {
-                MessageMixerServiceError.jsonDecodingError($0)
+                PingServiceError.jsonDecodingError($0)
             }
         case .failure(let requestError):
             switch requestError {
@@ -75,7 +75,7 @@ internal class MessageMixerService: MessageMixerServiceType, HttpRequestable {
 }
 
 // MARK: - HttpRequestable implementation
-extension MessageMixerService {
+extension PingService {
 
     func buildHttpBody(with parameters: [String: Any]?) -> Result<Data, Error> {
 

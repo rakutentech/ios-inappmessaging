@@ -1,6 +1,6 @@
-internal protocol FullViewType: BaseView {
+internal protocol OverlayViewType: BaseView {
     var isOptOutChecked: Bool { get }
 
-    func setup(viewModel: FullViewModel)
+    func setup(viewModel: OverlayViewModel)
     func addButtons(_ buttons: [(ActionButton, viewModel: ActionButtonViewModel)])
 }

@@ -144,7 +144,7 @@ internal class Router: RouterType, ViewListenerObserver {
         var presenter: BaseViewPresenterType?
         switch type {
         case .modal, .full:
-            guard let resolvedPresenter = resolvePresenter(type: FullViewPresenterType.self) else {
+            guard let resolvedPresenter = resolvePresenter(type: OverlayViewPresenterType.self) else {
                 return nil
             }
             presenter = resolvedPresenter
@@ -173,7 +173,7 @@ internal class Router: RouterType, ViewListenerObserver {
 
         switch type {
         case .modal, .full:
-            let presenter = presenter as! FullViewPresenterType
+            let presenter = presenter as! OverlayViewPresenterType
             presenter.campaign = campaign
             if let associatedImageData = associatedImageData {
                 presenter.associatedImage = UIImage(data: associatedImageData)

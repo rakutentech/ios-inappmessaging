@@ -2,7 +2,7 @@ import UIKit
 import class WebKit.WKWebView
 
 /// Base class for full size campaign views. (abstract)
-internal class FullView: UIView, FullViewType, RichContentBrowsable {
+internal class OverlayView: UIView, OverlayViewType, RichContentBrowsable {
 
     class var viewIdentifier: String {
         assertionFailure("Subclasses must override this variable")
@@ -65,7 +65,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
     @IBOutlet private weak var bodyViewOffsetYConstraint: NSLayoutConstraint!
     private weak var exitButtonHeightConstraint: NSLayoutConstraint!
 
-    private let presenter: FullViewPresenterType
+    private let presenter: OverlayViewPresenterType
 
     var uiConstants = UIConstants()
     var mode: Mode {
@@ -86,7 +86,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         }
     }
 
-    init(presenter: FullViewPresenterType) {
+    init(presenter: OverlayViewPresenterType) {
         self.presenter = presenter
         super.init(frame: .zero)
         self.presenter.view = self
@@ -110,7 +110,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         }
     }
 
-    func setup(viewModel: FullViewModel) {
+    func setup(viewModel: OverlayViewModel) {
         removeAllSubviews()
 
         guard mode != .none else {
@@ -192,9 +192,9 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
     }
 
     private func setupMainView() {
-        let nib = UINib(nibName: "FullView", bundle: Bundle.sdkAssets)
+        let nib = UINib(nibName: "OverlayView", bundle: Bundle.sdkAssets)
         guard let containerView = nib.instantiate(withOwner: self, options: nil).first as? UIView else {
-            assertionFailure("Couldn't load view from FullView.xib")
+            assertionFailure("Couldn't load view from OverlayView.xib")
             return
         }
         containerView.translatesAutoresizingMaskIntoConstraints = false
@@ -202,7 +202,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         containerView.constraintsFilling(parent: self, activate: true)
     }
 
-    private func layoutContentView(viewModel: FullViewModel) {
+    private func layoutContentView(viewModel: OverlayViewModel) {
         layoutMargins = .zero
         backgroundColor = .clear
 
@@ -233,7 +233,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         }
     }
 
-    private func layoutUIComponents(viewModel: FullViewModel) {
+    private func layoutUIComponents(viewModel: OverlayViewModel) {
         bodyView.isLayoutMarginsRelativeArrangement = true
         bodyView.layoutMargins = UIEdgeInsets(top: 0, left: uiConstants.dialogViewHorizontalMargin,
                                                 bottom: 0, right: uiConstants.dialogViewHorizontalMargin)
@@ -253,7 +253,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         }
     }
 
-    private func createMessageBody(viewModel: FullViewModel) {
+    private func createMessageBody(viewModel: OverlayViewModel) {
         bodyView.isLayoutMarginsRelativeArrangement = true
         bodyView.layoutMargins.bottom = uiConstants.bodyMarginBottom
 
@@ -272,7 +272,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         updateUIComponentsVisibility(viewModel: viewModel)
     }
 
-    private func updateUIComponentsVisibility(viewModel: FullViewModel) {
+    private func updateUIComponentsVisibility(viewModel: OverlayViewModel) {
         buttonsContainer.isHidden = !viewModel.showButtons
         optOutView.isHidden = !viewModel.showOptOut
         optOutAndButtonsSpacer.isHidden = buttonsContainer.isHidden || optOutView.isHidden
@@ -291,7 +291,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         webView.constraintsFilling(parent: webViewContainer, activate: true)
     }
 
-    private func setupBodyMessage(viewModel: FullViewModel) {
+    private func setupBodyMessage(viewModel: OverlayViewModel) {
         guard let bodyMessage = viewModel.messageBody else {
             bodyLabel.isHidden = true
             return
