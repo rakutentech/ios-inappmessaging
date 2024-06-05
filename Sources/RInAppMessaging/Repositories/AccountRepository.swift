@@ -1,4 +1,5 @@
 import class Foundation.Bundle
+import Foundation
 
 #if SWIFT_PACKAGE
 import class RSDKUtilsMain.WeakWrapper
