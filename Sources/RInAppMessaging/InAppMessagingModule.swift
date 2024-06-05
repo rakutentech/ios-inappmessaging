@@ -174,6 +174,7 @@ extension InAppMessagingModule {
 extension InAppMessagingModule {
 
     func userDidChangeOrLogout() {
+        print("IAM Debug: \(Date()) userDidChangeOrLogout()")
         eventMatcher.clearNonPersistentEvents()
     }
 }

@@ -151,7 +151,7 @@ internal class CampaignRepository: CampaignRepositoryType {
     // MARK: - Helpers
 
     private func updateImpressionsLeftInCampaign(withID id: String, by value: Int) -> Campaign? {
-        print("IAM Debug: \(Date()) decrementImpressionsLeftInCampaign()")
+        print("IAM Debug: \(Date()) updateImpressionsLeftInCampaign()")
         var newList = allCampaigns.get()
         guard let index = newList.firstIndex(where: { $0.id == id }) else {
             print("IAM Debug: \(Date()) Campaign \(id) could not be updated - not found in the repository")
