@@ -82,7 +82,7 @@ internal class InAppMessagingModule: ErrorDelegate, CampaignDispatcherDelegate, 
         guard isInitialized else {
             return false
         }
-
+        print("IAM Debug: \(Date()) logEvent \(event)")
         checkUserChanges()
         eventMatcher.matchAndStore(event: event)
         campaignTriggerAgent.validateAndTriggerCampaigns()
@@ -90,10 +90,13 @@ internal class InAppMessagingModule: ErrorDelegate, CampaignDispatcherDelegate, 
     }
 
     func registerPreference(_ preference: UserInfoProvider) {
+        print("IAM Debug: \(Date()) registerPreference()")
         accountRepository.setPreference(preference)
 
         guard isInitialized else {
+            print("IAM Debug: \(Date()) registerPreference() not isInitialized")
             if accountRepository.updateUserInfo() {
+                print("IAM Debug: \(Date()) registerPreference() accountRepository.updateUserInfo()")
                 campaignRepository.loadCachedData()
             }
             return
@@ -119,7 +122,9 @@ internal class InAppMessagingModule: ErrorDelegate, CampaignDispatcherDelegate, 
 
     // visible for testing
     func checkUserChanges() {
+        print("IAM Debug: \(Date()) checkUserChanges()")
         if accountRepository.updateUserInfo() {
+            print("IAM Debug: \(Date()) updateUserInfo()")
             campaignRepository.loadCachedData()
             campaignsListManager.refreshList()
         }

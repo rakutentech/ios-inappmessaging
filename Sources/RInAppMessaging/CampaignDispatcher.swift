@@ -95,7 +95,7 @@ internal class CampaignDispatcher: CampaignDispatcherType, TaskSchedulable {
         if permissionResponse.performPing {
             delegate?.performPing()
         }
-
+        print("IAM Debug: \(Date()) campaign.impressionsLeft \(campaign.impressionsLeft))")
         guard campaign.impressionsLeft > 0 && (permissionResponse.display || campaign.data.isTest) else {
             dispatchNext()
             return
@@ -138,6 +138,7 @@ internal class CampaignDispatcher: CampaignDispatcherType, TaskSchedulable {
     }
 
     private func commitCampaignDisplay(_ campaign: Campaign, cancelled: Bool) {
+        print("IAM Debug: \(Date()) commitCampaignDisplay()")
         if !cancelled {
             campaignRepository.decrementImpressionsLeftInCampaign(id: campaign.id)
         }

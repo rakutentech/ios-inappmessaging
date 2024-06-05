@@ -82,7 +82,7 @@ import RSDKUtils
     @objc public static func configure(subscriptionID: String? = nil,
                                        configurationURL: String? = nil,
                                        enableTooltipFeature: Bool = false) {
-
+        print("IAM Debug: \(Date()) configure()")
         guard verifyRMCEnvironment(subscriptionID: subscriptionID), !isInitialized else {
             let description = "⚠️ SDK configure request rejected. Initialization status: \(isInitialized)"
             let error = NSError.iamError(description: description)

@@ -34,6 +34,7 @@ internal class CampaignsListManager: CampaignsListManagerType, TaskSchedulable {
     }
 
     func refreshList() {
+        print("IAM Debug: \(Date()) refreshList()")
         pingQueue.sync {
             pingMixerServer()
         }
@@ -53,6 +54,7 @@ internal class CampaignsListManager: CampaignsListManagerType, TaskSchedulable {
             handleError(error)
             return
         }
+        print("IAM Debug: \(Date()) pingMixerServer \(decodedResponse)")
         handleSuccess(decodedResponse)
     }
 
