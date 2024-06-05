@@ -33,6 +33,7 @@ final class InAppMessagingInteractor {
             guard let userPerference else {
                 return
             }
+            print("IAM Debug: \(Date()) registerPreference() userPerference")
             iamModule?.registerPreference(userPerference)
         }
     }
@@ -82,6 +83,7 @@ final class InAppMessagingInteractor {
         module.onVerifyContext = onVerifyContext
         module.setAccessibilityCompatibleDisplay(accessibilityCompatibleDisplay)
         if let userPerference {
+            print("IAM Debug: \(Date()) registerPreference() userPerference configure()")
             module.registerPreference(userPerference)
         }
         iamModule = module

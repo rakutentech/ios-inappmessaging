@@ -79,6 +79,7 @@ internal class CampaignRepository: CampaignRepositoryType {
     }
 
     func syncWith(list: [Campaign], timestampMilliseconds: Int64, ignoreTooltips: Bool) {
+        print("IAM Debug: \(Date()) syncWith()")
         lastSyncInMilliseconds = timestampMilliseconds
         let oldList = allCampaigns.get()
 
@@ -105,7 +106,7 @@ internal class CampaignRepository: CampaignRepositoryType {
             allCampaigns.set(value: updatedList)
             tooltips.set(value: updatedList.filter({ $0.isTooltip }))
         }
-
+        print("IAM Debug: \(Date()) updatedList \(updatedList)")
         saveDataToCache(updatedList)
         delegate?.didUpdateCampaignList()
     }
@@ -131,7 +132,8 @@ internal class CampaignRepository: CampaignRepositoryType {
 
     @discardableResult
     func decrementImpressionsLeftInCampaign(id: String) -> Campaign? {
-        updateImpressionsLeftInCampaign(withID: id, by: -1)
+        print("IAM Debug: \(Date()) decrementImpressionsLeftInCampaign()")
+        return updateImpressionsLeftInCampaign(withID: id, by: -1)
     }
 
     @discardableResult
@@ -140,15 +142,19 @@ internal class CampaignRepository: CampaignRepositoryType {
     }
 
     func loadCachedData() {
+        print("IAM Debug: \(Date()) loadCachedData()")
         let cachedData = userDataCache.getUserData(identifiers: accountRepository.getUserIdentifiers())?.campaignData ?? []
+        print("IAM Debug: \(Date()) cachedData \(cachedData)")
         allCampaigns.set(value: cachedData)
     }
 
     // MARK: - Helpers
 
     private func updateImpressionsLeftInCampaign(withID id: String, by value: Int) -> Campaign? {
+        print("IAM Debug: \(Date()) updateImpressionsLeftInCampaign()")
         var newList = allCampaigns.get()
         guard let index = newList.firstIndex(where: { $0.id == id }) else {
+            print("IAM Debug: \(Date()) Campaign \(id) could not be updated - not found in the repository")
             Logger.debug("Campaign \(id) could not be updated - not found in the repository")
             return nil
         }
@@ -156,12 +162,13 @@ internal class CampaignRepository: CampaignRepositoryType {
         let updatedCampaign = Campaign.updatedCampaign(campaign, withImpressionLeft: max(0, campaign.impressionsLeft + value))
         newList[index] = updatedCampaign
         allCampaigns.set(value: newList)
-
+        print("IAM Debug: \(Date()) newList : \(newList)")
         saveDataToCache(newList)
         return updatedCampaign
     }
 
     private func saveDataToCache(_ list: [Campaign]) {
+        print("IAM Debug: \(Date()) saveDataToCache()")
         let user = accountRepository.getUserIdentifiers()
         userDataCache.cacheCampaignData(list, userIdentifiers: user)
     }
