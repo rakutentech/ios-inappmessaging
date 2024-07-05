@@ -78,6 +78,8 @@ The SDK provides 3 public methods for the host applications to use:
 1. `registerPreference()`
 1. `closeMessage()`
 
+** Please refer to the How to Use and Troubleshooting & F.A.Q section for details on configuring and using IAM sdk **
+
 ### **configure()**  
 This method initializes the SDK and should be placed in your AppDelegate's `didFinishLaunchingWithOptions`.
 
@@ -256,7 +258,7 @@ func application(_ application: UIApplication, didFinishLaunchingWithOptions lau
 }
 ```
 
-### **Push Primer**  
+### **Push Primer**  [Under Construction]
 Push Primer is a special action type that can be set in ONE of the campaign message buttons.
 When user taps the Push Primer button, the SDK tries to authorize and then register for remote notifications.
 Developers can set `UNUserAuthorizationOptions` used during authorization proces by setting `pushPrimerAuthorizationOptions` variable:
@@ -380,6 +382,14 @@ In your `Info.plist` configuration, set the PostScript names under `InAppMessagi
     <string>customfont-medium.otf</string>
 </array>
 ```
+
+# ** How to Use **
+* configure() should be called first in the AppDelegate of the project.
+* Before calling any logEvent, registerPreference() should be called with the correct userInfo updated in the userInfoProvider.
+* LogEvents can be called after calling registerPreference() to trigger campaigns for logged in or non-logged in users.
+* App Start Event alone should not be used to trigger campaigns. It should be coupled with other events (i.e. logEvent, purchaseSuccessFullEvent).
+* When a campaign is created in the dashboard with more than one triggers events, all the events should be called to trigger the campaign.
+
 
 # **Troubleshooting & F.A.Q.**
 
