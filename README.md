@@ -78,7 +78,7 @@ The SDK provides 3 public methods for the host applications to use:
 1. `registerPreference()`
 1. `closeMessage()`
 
-** Please refer to the How to Use and Troubleshooting & F.A.Q section for details on configuring and using IAM sdk **
+**Please refer to the How to Use and Troubleshooting & F.A.Q section for details on configuring and using IAM sdk**
 
 ### **configure()**  
 This method initializes the SDK and should be placed in your AppDelegate's `didFinishLaunchingWithOptions`.
