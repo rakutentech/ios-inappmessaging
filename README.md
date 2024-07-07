@@ -8,6 +8,15 @@ In-App Messaging (IAM) module allows app developers to easily configure and disp
 
 This module supports iOS 12.0 and above. It has been tested with iOS 12.5 and above.
 
+### This page covers:
+* [Requirements](#requirements)
+* [How to install](#how-to-install)
+* [Configuration](#configuration)
+* [Using the SDK](#using-the-sdk)
+* [Advanced Features](#advanced-features)
+* [SDK Logic](#sdk-logic)
+* [Troubleshooting & F.A.Q.](#troubleshooting--faq)
+  
 # Requirements
 
 Xcode >= 14.1 is supported.
@@ -43,7 +52,7 @@ Open your project settings in Xcode and add a new package in 'Swift Packages' ta
 
 Choose `RInAppMessaging` product for your target. If you want to link other targets, go to Build Phases of that target, then in Link Binary With Libraries click + button and add `RInAppMessaging`.
 
-# **Configuring**
+# **Configuration**
 
 **Note:** Currently we do not host any public APIs but you can create your own APIs and configure the SDK to use those.
 
@@ -74,11 +83,11 @@ We recommend, as good engineering practice, that you integrate with a remote con
 The SDK provides 3 public methods for the host applications to use:
 
 1. `configure()`
-1. `logEvent()`
 1. `registerPreference()`
+1. `logEvent()`
 1. `closeMessage()`
 
-**Please refer to the How to Use and Troubleshooting & F.A.Q section for details on configuring and using IAM sdk**
+**Please refer to the [Troubleshooting & F.A.Q](#troubleshooting) section for additional details on configuring and using IAM sdk**
 
 ### **configure()**  
 This method initializes the SDK and should be placed in your AppDelegate's `didFinishLaunchingWithOptions`.
@@ -98,49 +107,6 @@ func application(_ application: UIApplication, didFinishLaunchingWithOptions lau
 * You can wrap the call to `configure()` in an `if <enable IAM-SDK boolean value> == true` condition to control enabling/disabling the SDK. 
 * If `configure()` is not called, subsequent calls to other public API SDK get retained and get triggered after `configure()` is called.
 * If RMC SDK is used for installing IAM SDK then RMC SDK configuration should be followed rather than IAM configuration.
-
-### **logEvent()**  
-This method is provided for the host application to log and save events. These events will be used to match campaign triggers.
-
-**The method signature is:**
-
-```swift
-func logEvent(_ event: Event)
-```
-
-IAM provides three pre-defined event types and a custom event type:
-
-1.  `AppStartEvent` - This event should be logged when the application is considered started by the host app. E.G AppDelegate's didFinishLaunchingWithOptions. It is persistent, meaning, once it's logged it will always satisfy corresponding trigger in a campaign. All subsequent logs of this event are ignored. Campaigns that require only AppStartEvent are shown once per app launch.
-2.  `LoginSuccessfulEvent` - This event should be logged whenever the user logs in successfully.
-3.  `PurchaseSuccessfulEvent` - This event should be logged whenever a successful purchase occurs and has several pre-defined properties – purchase amount, number of items, currency code and item list.
-4.  `CustomEvent` - This event is created by the host app developers and can take in any event name and a list of custom attributes.
-
-```swift
-// App start event.
-RInAppMessaging.logEvent(AppStartEvent())
- 
-// Purchase successful event.
-let purchaseEvent = PurchaseSuccessfulEvent()
-purchaseEvent.setPurchaseAmount(50)
-purchaseEvent.setItemList(["box", "hammer"])
-purchaseEvent.setCurrencyCode("USD")
-
-RInAppMessaging.logEvent(purchaseEvent)
- 
-// Login event.
-RInAppMessaging.logEvent(LoginSuccessfulEvent())
- 
-// Custom event.
-let stringAttribute = CustomAttribute(withKeyName: "userResponse", withStringValue: "hi")
-let intAttribute = CustomAttribute(withKeyName: "numberOfClicks", withIntValue: 100)
-let boolAttribute = CustomAttribute(withKeyName: "didNavigateToPage", withBoolValue: false)
-let doubleAttribute = CustomAttribute(withKeyName: "percentageOfCompletion", withDoubleValue: 55.0)
-let timeAttribute = CustomAttribute(withKeyName: "timeOfCompletion", withTimeInMilliValue: 32423424)
- 
-let attributesList = [stringAttribute, intAttribute, boolAttribute, doubleAttribute, timeAttribute]
- 
-RInAppMessaging.logEvent(CustomEvent(withName: "any_event_name_here", withCustomAttributes: attributesList))
-```
 
 ### **registerPreference()**
 
@@ -166,32 +132,92 @@ class UserPreference: UserInfoProvider {
         "member-id" 
     }
 
-    func getIDTrackingIdentifier() -> String? { nil }
-    func getAccessToken() -> String? { nil }
+    func getIDTrackingIdentifier() -> String? {
+        "easy id"
+    }
+    func getAccessToken() -> String? {
+        "access token" 
+  }
 }
 
 let preference = UserPreference()
 RInAppMessaging.registerPreference(preference)
 ```
 
+You must provide the relevant information through this class. It will be retrieved by SDK on demand, so make sure values are up-to-date.
 
-### **closeMessage()**
+After logout is complete, please ensure that all `UserInfoProvider` methods in the preference object return `null` or empty string.
 
-In certain cases there might be a need to manually close a campaign's message without user interaction.
-An example is when a different user logs in and the currently displayed campaign does not target the new user.
-(Or when a campaign's message appears after login process has started).
-In that case, to avoid user's confusion, host app can force-close the campaign by calling `closeMessage()` API method.
-The `clearQueuedCampaigns` optional parameter, when set to `true` (`false` by default), will additionally remove all campaigns that were queued to be displayed.
+> Notes:
+> - Regarding access token:
+>   - Only provide access token if the user is logged in
+>   - The internal Backend only supports production access token
+> - Migrating from legacy Mobile Login SDK to ID SDK
+>   - Update your `UserInfoProvider` and return valid value for the `getIDTrackingIdentifier()` method. Do not provide values for other methods or leave them as null or empty.
+>   - **Impact**: User will be treated as a new user, therefore if there are **active** messages that were previously displayed/opted-out by the user, then it will be displayed again
+
+
+### **logEvent()**  
+This method is provided for the host application to log and save events. These events will be used to match campaign triggers which initiates the display of a message whenever a specific event or a set of events occur. Call this method at appropriate locations in your app, and based on your use-case.
+
+For each logged event, the SDK will match it with the ongoing message's triggers that are configured in the Dashboard. Once all of the required events are logged by the app, the message will be displayed in the current registered activity. If no activity is registered, it will be displayed in the next registered activity.
+
+**The method signature is:**
 
 ```swift
-RInAppMessaging.closeMessage(clearQueuedCampaigns: true)
+func logEvent(_ event: Event)
 ```
-**Note:** Calling this API will not increment the campaign's impression (i.e. not counted as displayed).
+#### Pre-defined event classes:
 
+IAM provides three pre-defined event types and a custom event type:
+1.  `AppStartEvent`
+2.  `LoginSuccessfulEvent` 
+3.  `PurchaseSuccessfulEvent`
+4.  `CustomEvent`
 
-## **Custom Events**
+#### AppStartEvent
+Log this event on app launch from terminated state.
 
-As shown in the example above for event logging, IAM also supports custom event. Custom events are events with an unique name and a list of attributes associated with them.
+This event should be logged when the application is considered started by the host app. E.G AppDelegate's didFinishLaunchingWithOptions. It is persistent, meaning, once it's logged it will always satisfy corresponding trigger in a campaign. All subsequent logs of this event are ignored. Campaigns that require only AppStartEvent are shown once per app launch
+
+```swift
+// App start event.
+RInAppMessaging.logEvent(AppStartEvent())
+```
+
+> <font color="red">Note:</font>
+> Because this event is logged almost instantly after app launch, there may be situation wherein user information is not yet available due to some delay, and may cause unexpected behavior. Therefore we recommend to ensure user information is up-to-date (see [User Targeting](#register-preference) section for details) when using AppStart-only as trigger, or combine it with other event wherein user information is guaranteed to be available.
+
+#### LoginSuccessfulEvent
+Log this every time the user logs in successfully.
+
+```swift
+// Login event.
+RInAppMessaging.logEvent(LoginSuccessfulEvent())
+```
+
+#### PurchaseSuccessfulEvent
+This event should be logged whenever a successful purchase occurs and has several pre-defined properties – purchase amount, number of items, currency code and item list.
+
+```swift
+// Purchase successful event.
+let purchaseEvent = PurchaseSuccessfulEvent()
+purchaseEvent.setPurchaseAmount(50)
+purchaseEvent.setItemList(["box", "hammer"])
+purchaseEvent.setCurrencyCode("USD")
+
+RInAppMessaging.logEvent(purchaseEvent)
+```
+
+### CustomEvent
+This event is created by the host app developers and can take in any event name and a list of custom attributes. Log this after app-defined states are reached or conditions are met. Example use-case is an event based on tabs or certain screens in your app.
+
+Custom events are events with an unique name and a list of attributes associated with them. Attributes can be `integer`, `double`, `String`, `boolean`, or `java.util.Date` type.
+
+* Every custom event requires a name(case insensitive), but doesn't require to add any attributes with the custom event.
+* Each custom event attribute also requires a name(case insensitive), and a value.
+* Recommended to use English characters only.
+* Because the custom event's name will be used when matching messages with triggers; therefore, please make sure the actual message event's name and attribute's name must match with the logged events to SDK.
 
 In order to properly utilize custom events, the person creating the campaign must sync up with the host app developers to ensure that both the event name and attribute name/value exactly match exactly - note that these are case-sensitive.
 
@@ -207,10 +233,36 @@ From the dashboard side, you will have the ability to also add an operator. The 
 
 *Note:* When comparing date as timeInMillis values, there is a tolerance of 1000 milliseconds. This means that comparisons using any relevant operator types will have a leniency of 1 second. E.g. comparing 300ms and 600ms with the `EQUALS` operator will return `true`, while comparing 300 and 1400 will return `false`.
 
-From the SDK side, host app developers will be able to log custom events as shown in the examples above. When the event matching process happens, note that the attributes of the event logged by the host app will be compared against the campaign's trigger attribute value e.g. if the trigger attribute value is an integer of 5 with an operator type of `GREATER_THAN`, and the attribute value of the event logged is an integer 10, then the 10 will be successfully matched against the 5 with a `GREATER_THAN` operator (i.e. 10 > 5).
+From the SDK side, host app developers will be able to log custom events as shown in the examples below. When the event matching process happens, note that the attributes of the event logged by the host app will be compared against the campaign's trigger attribute value e.g. if the trigger attribute value is an integer of 5 with an operator type of `GREATER_THAN`, and the attribute value of the event logged is an integer 10, then the 10 will be successfully matched against the 5 with a `GREATER_THAN` operator (i.e. 10 > 5).
 
 
-## **Optional features**
+```swift
+// Custom event.
+let stringAttribute = CustomAttribute(withKeyName: "userResponse", withStringValue: "hi")
+let intAttribute = CustomAttribute(withKeyName: "numberOfClicks", withIntValue: 100)
+let boolAttribute = CustomAttribute(withKeyName: "didNavigateToPage", withBoolValue: false)
+let doubleAttribute = CustomAttribute(withKeyName: "percentageOfCompletion", withDoubleValue: 55.0)
+let timeAttribute = CustomAttribute(withKeyName: "timeOfCompletion", withTimeInMilliValue: 32423424)
+ 
+let attributesList = [stringAttribute, intAttribute, boolAttribute, doubleAttribute, timeAttribute]
+ 
+RInAppMessaging.logEvent(CustomEvent(withName: "any_event_name_here", withCustomAttributes: attributesList))
+```
+
+### **closeMessage()**
+
+In certain cases there might be a need to manually close a campaign's message without user interaction.
+An example is when a different user logs in and the currently displayed campaign does not target the new user.
+(Or when a campaign's message appears after login process has started).
+In that case, to avoid user's confusion, host app can force-close the campaign by calling `closeMessage()` API method.
+The `clearQueuedCampaigns` optional parameter, when set to `true` (`false` by default), will additionally remove all campaigns that were queued to be displayed.
+
+```swift
+RInAppMessaging.closeMessage(clearQueuedCampaigns: true)
+```
+**Note:** Calling this API will not increment the campaign's impression (i.e. not counted as displayed).
+
+## **Advanced Features**
 
 ### **Campaign context verification**
 
@@ -383,14 +435,6 @@ In your `Info.plist` configuration, set the PostScript names under `InAppMessagi
 </array>
 ```
 
-# ** How to Use **
-* configure() should be called first in the AppDelegate of the project.
-* Before calling any logEvent, registerPreference() should be called with the correct userInfo updated in the userInfoProvider.
-* LogEvents can be called after calling registerPreference() to trigger campaigns for logged in or non-logged in users.
-* App Start Event alone should not be used to trigger campaigns. It should be coupled with other events (i.e. logEvent, purchaseSuccessFullEvent).
-* When a campaign is created in the dashboard with more than one triggers events, all the events should be called to trigger the campaign.
-
-
 # **Troubleshooting & F.A.Q.**
 
 * Configuration service returns `RequestError.missingMetadata` error
@@ -412,233 +456,3 @@ In your `Info.plist` configuration, set the PostScript names under `InAppMessagi
   **Note:** If `registerPreference()` is called before `configure()` then it gets retained and gets triggered after `configure()` is called. 
 
 #### For other issues and more detailed information, Rakuten developers should refer to the Troubleshooting Guide on the internal developer documentation portal.
-
-### This page covers:
-* [Configuration](#configuration)
-* [Migrating from legacy In-App Messaging SDK](#migrating-from-legacy-iam)
-* [Using the SDK](#using-the-sdk)
-* [Final Code (Sample)](#final-code)
-* [Rollback to legacy In-App Messaging](#rollback-to-iam)
-* [Changelog](#changelog)
-
-## Configuration
-
-### 1. Add the dependency in app's `build.gradle`
-
-```groovy
-dependencies {
-    implementation 'com.rakuten.tech.mobile.rmc:rmc-inappmessaging:${latest_version}'
-}
-```
-> For the latest version, refer to [Changelog](#changelog).
-
-### 2. Enable tooltip feature (Optional)
-To enable tooltip feature (disabled by default), add this metadata in `AndroidManifest.xml`:
-
-```xml
-<meta-data
-    android:name="com.rakuten.tech.mobile.rmc.iam.enableToolTip"
-    android:value="true"/>
-```
-
-### 3. Enable debug logs (Optional)
-To enable debug logs (disabled by default) specific to IAM (tag begins with "IAM_"), add this metadata in `AndroidManifest.xml`:
-
-```xml
-<meta-data
-    android:name="com.rakuten.tech.mobile.inappmessaging.debugging"
-    android:value="true"/>
-```
-
-## <a name="migrating-from-legacy-iam"></a> Migrating from legacy In-App Messaging SDK
-
-> If your app has not previously integrated the legacy SDK, skip this section and go to [Using the SDK](#using-the-sdk) section.
-
-<details>
-<summary style="cursor: pointer;";>(click to expand)</summary>
-
-### <a name="migrate-6.x">Migrating from legacy In-App Messaging SDK 6.x or later</a>
-
-#### 1. Remove the legacy SDK dependency in app's `build.gradle`
-
-```groovy
-dependencies {
-    implementation 'io.github.rakutentech.inappmessaging:inappmessaging:${version}' // remove
-}
-```
-
-#### 2. Remove the config URL and subscription key from `AndroidManifest.xml`
-
-```xml
-<!-- remove -->
-<meta-data
-    android:name="com.rakuten.tech.mobile.inappmessaging.subscriptionkey"
-    android:value="${iam_subs_key}" />
-
-<!-- remove -->
-<meta-data
-    android:name="com.rakuten.tech.mobile.inappmessaging.configurl"
-    android:value="${iam_config_url}" />
-```
-
-#### 3. Replace the configuration API call
-Find places in your project where `InAppMessaging.configure()` or `InAppMessaging.init()` is called and remove it. It should be replaced with the `Rmc.configure()` API.
-
-```kotlin
-import com.rakuten.tech.mobile.rmc.Rmc
-
-class MainApplication: Application() {
-    
-    override fun onCreate() {
-
-        // Important! remove this line...
-        InAppMessaging.configure(...) // or InAppMessaging.init(...) for 6.x users
-
-        // ...and replace with this
-        Rmc.configure(...)
-    }
-}
-```
-
-> Aside from the configuration method, all method names are retained from the legacy SDK, so migration is completed and you may skip the [Using the SDK](#using-the-sdk) section.
-
-### Migrating from legacy In-App Messaging SDK 5.x or earlier
-
-Please check the [legacy In-App Messaging document](https://rakutentech.github.io/android-inappmessaging) changelog to identify the breaking changes in each major version, and migrate from your current version up to the next major version until version 6.x.
-
-Then finally perform the steps in [Migrating from legacy In-App Messaging SDK 6.x or later](#migrate-6.x) section.
-
-</details>
-
-## Using the SDK
-
-> Aside from the configuration method, all method names (starts with `InAppMessaging.instance().`) are retained from the legacy SDK.
-
-For the succeeding integration steps, please refer [here](https://rakutentech.github.io/android-inappmessaging/docs/7.6/#using-the-sdk).
-
-## <a name="final-code"></a>Final Code (Sample)
-
-For reference, your SDK integration code should look something like this:
-
-<details>
-<summary style="cursor: pointer;";>(click to expand)</summary>
-
-MainApplication.kt
-```kotlin
-class MainApplication: Application() {
-
-    val yourUserProvider = YourUserInfoProvider()
-
-    override fun onCreate() {
-        Rmc.configure(this)
-        InAppMessaging.instance().registerPreference(yourUserProvider)
-    }
-}
-```
-
-YourUserInfoProvider.kt
-```kotlin
-class YourUserInfoProvider: UserInfoProvider() {
-
-    // Update during login or logout
-    var userId = ""
-    var accessToken = ""
-    var idTracking = ""
-
-    override fun provideUserId() = userId
-
-    override fun provideAccessToken() = accessToken
-
-    override fun provideIdTrackingIdentifier() = idTracking
-}
-```
-
-MainActivity.kt
-```kotlin
-class MainActivity: AppCompatActivity(), View.OnClickListener {
-
-    override fun onStart() {
-        InAppMessaging.instance().logEvent(AppStartEvent())
-    }
-
-    override fun onResume() {
-        InAppMessaging.instance().registerMessageDisplayActivity(this)
-    }
-
-    override fun onPause() {
-        InAppMessaging.instance().unregisterMessageDisplayActivity()
-    }
-
-    override fun onClick(v: View) {
-      // Log the events based on your use-cases
-      when (v.id) {
-        R.id.purchase_button_tapped -> InAppMessaging.instance().logEvent(PurchaseSuccessfulEvent())
-
-        R.id.home_tab_tapped -> InAppMessaging.instance().logEvent(CustomEvent("tab_visit").addAttribute("tab_name", "home"))
-
-        R.id.cart_tab_tapped -> InAppMessaging.instance().logEvent(CustomEvent("tab_visit").addAttribute("tab_name", "cart"))
-      }
-    }
-
-    fun onUserLogin() {
-        yourUserProvider.userId = "<userId>"
-        yourUserProvider.accessToken = "<accessToken>" // or idTracking
-        InAppMessaging.instance().logEvent(LoginSuccessfulEvent())
-    }
-    
-    fun onUserLogout() {
-        yourUserProvider.userId = ""
-        yourUserProvider.accessToken = "" // or idTracking
-    }
-}
-```
-</details>
-
-## <a name="rollback-to-iam"></a>Rollback to legacy In-App Messaging SDK
-By any chance, if you face some issue in using `RMC In-App Messaging` and want to use legacy `In-App Messaging`, follow the steps given below:
-
-<details>
-<summary style="cursor: pointer;";>(click to expand)</summary>
-
-1. Remove RMC In-App Messaging dependency from app's `build.gradle`
-   ```groovy
-     dependencies {
-       implementation "com.rakuten.tech.mobile.rmc:rmc-inappmessaging:$rmcInAppMessagingVersion" // remove
-     }
-   ```
-
-2. Remove RMC-related metadata from `AndroidManifest.xml`
-    ```xml
-      <application>
-          <!-- remove -->
-          <meta-data
-                android:name="com.rakuten.tech.mobile.rmc.apiUrl"
-                android:value="${rmc_api_url}" />
-          
-          <!-- remove -->
-          <meta-data
-                android:name="com.rakuten.tech.mobile.rmc.apiKey"
-                android:value="${rmc_api_key}" />
-          
-      </application>
-    ```
-
-3. Remove `RMC.configure()` API from your code
-
-4. Follow the guide from [legacy In-App Messaging document](https://rakutentech.github.io/android-inappmessaging).
-
-</details>
-
-## Changelog
-### 1.2.0 (In Progress)
-#### Improvements
-* **[RMCCX-6696](https://jira.rakuten-it.com/jira/browse/RMCCX-6696):** Improved the userguide.
-
-### 1.1.0 (2024-05-14)
-#### Improvements
-* **[SDKCF-6873](https://jira.rakuten-it.com/jira/browse/SDKCF-6873):** Integrated `EventLogger` (internal monitoring tool for failures) in the `configure` API.
-
-### 1.0.0 (2023-12-12)
-#### Features
-* **[SDKCF-6680](https://jira.rakuten-it.com/jira/browse/SDKCF-6680):** Added `RMC.configure()` API for configuration.
-* **[SDKCF-6578](https://jira.rakuten-it.com/jira/browse/SDKCF-6578):** Added In-App Messaging functionalities.
