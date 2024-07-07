@@ -412,3 +412,233 @@ In your `Info.plist` configuration, set the PostScript names under `InAppMessagi
   **Note:** If `registerPreference()` is called before `configure()` then it gets retained and gets triggered after `configure()` is called. 
 
 #### For other issues and more detailed information, Rakuten developers should refer to the Troubleshooting Guide on the internal developer documentation portal.
+
+### This page covers:
+* [Configuration](#configuration)
+* [Migrating from legacy In-App Messaging SDK](#migrating-from-legacy-iam)
+* [Using the SDK](#using-the-sdk)
+* [Final Code (Sample)](#final-code)
+* [Rollback to legacy In-App Messaging](#rollback-to-iam)
+* [Changelog](#changelog)
+
+## Configuration
+
+### 1. Add the dependency in app's `build.gradle`
+
+```groovy
+dependencies {
+    implementation 'com.rakuten.tech.mobile.rmc:rmc-inappmessaging:${latest_version}'
+}
+```
+> For the latest version, refer to [Changelog](#changelog).
+
+### 2. Enable tooltip feature (Optional)
+To enable tooltip feature (disabled by default), add this metadata in `AndroidManifest.xml`:
+
+```xml
+<meta-data
+    android:name="com.rakuten.tech.mobile.rmc.iam.enableToolTip"
+    android:value="true"/>
+```
+
+### 3. Enable debug logs (Optional)
+To enable debug logs (disabled by default) specific to IAM (tag begins with "IAM_"), add this metadata in `AndroidManifest.xml`:
+
+```xml
+<meta-data
+    android:name="com.rakuten.tech.mobile.inappmessaging.debugging"
+    android:value="true"/>
+```
+
+## <a name="migrating-from-legacy-iam"></a> Migrating from legacy In-App Messaging SDK
+
+> If your app has not previously integrated the legacy SDK, skip this section and go to [Using the SDK](#using-the-sdk) section.
+
+<details>
+<summary style="cursor: pointer;";>(click to expand)</summary>
+
+### <a name="migrate-6.x">Migrating from legacy In-App Messaging SDK 6.x or later</a>
+
+#### 1. Remove the legacy SDK dependency in app's `build.gradle`
+
+```groovy
+dependencies {
+    implementation 'io.github.rakutentech.inappmessaging:inappmessaging:${version}' // remove
+}
+```
+
+#### 2. Remove the config URL and subscription key from `AndroidManifest.xml`
+
+```xml
+<!-- remove -->
+<meta-data
+    android:name="com.rakuten.tech.mobile.inappmessaging.subscriptionkey"
+    android:value="${iam_subs_key}" />
+
+<!-- remove -->
+<meta-data
+    android:name="com.rakuten.tech.mobile.inappmessaging.configurl"
+    android:value="${iam_config_url}" />
+```
+
+#### 3. Replace the configuration API call
+Find places in your project where `InAppMessaging.configure()` or `InAppMessaging.init()` is called and remove it. It should be replaced with the `Rmc.configure()` API.
+
+```kotlin
+import com.rakuten.tech.mobile.rmc.Rmc
+
+class MainApplication: Application() {
+    
+    override fun onCreate() {
+
+        // Important! remove this line...
+        InAppMessaging.configure(...) // or InAppMessaging.init(...) for 6.x users
+
+        // ...and replace with this
+        Rmc.configure(...)
+    }
+}
+```
+
+> Aside from the configuration method, all method names are retained from the legacy SDK, so migration is completed and you may skip the [Using the SDK](#using-the-sdk) section.
+
+### Migrating from legacy In-App Messaging SDK 5.x or earlier
+
+Please check the [legacy In-App Messaging document](https://rakutentech.github.io/android-inappmessaging) changelog to identify the breaking changes in each major version, and migrate from your current version up to the next major version until version 6.x.
+
+Then finally perform the steps in [Migrating from legacy In-App Messaging SDK 6.x or later](#migrate-6.x) section.
+
+</details>
+
+## Using the SDK
+
+> Aside from the configuration method, all method names (starts with `InAppMessaging.instance().`) are retained from the legacy SDK.
+
+For the succeeding integration steps, please refer [here](https://rakutentech.github.io/android-inappmessaging/docs/7.6/#using-the-sdk).
+
+## <a name="final-code"></a>Final Code (Sample)
+
+For reference, your SDK integration code should look something like this:
+
+<details>
+<summary style="cursor: pointer;";>(click to expand)</summary>
+
+MainApplication.kt
+```kotlin
+class MainApplication: Application() {
+
+    val yourUserProvider = YourUserInfoProvider()
+
+    override fun onCreate() {
+        Rmc.configure(this)
+        InAppMessaging.instance().registerPreference(yourUserProvider)
+    }
+}
+```
+
+YourUserInfoProvider.kt
+```kotlin
+class YourUserInfoProvider: UserInfoProvider() {
+
+    // Update during login or logout
+    var userId = ""
+    var accessToken = ""
+    var idTracking = ""
+
+    override fun provideUserId() = userId
+
+    override fun provideAccessToken() = accessToken
+
+    override fun provideIdTrackingIdentifier() = idTracking
+}
+```
+
+MainActivity.kt
+```kotlin
+class MainActivity: AppCompatActivity(), View.OnClickListener {
+
+    override fun onStart() {
+        InAppMessaging.instance().logEvent(AppStartEvent())
+    }
+
+    override fun onResume() {
+        InAppMessaging.instance().registerMessageDisplayActivity(this)
+    }
+
+    override fun onPause() {
+        InAppMessaging.instance().unregisterMessageDisplayActivity()
+    }
+
+    override fun onClick(v: View) {
+      // Log the events based on your use-cases
+      when (v.id) {
+        R.id.purchase_button_tapped -> InAppMessaging.instance().logEvent(PurchaseSuccessfulEvent())
+
+        R.id.home_tab_tapped -> InAppMessaging.instance().logEvent(CustomEvent("tab_visit").addAttribute("tab_name", "home"))
+
+        R.id.cart_tab_tapped -> InAppMessaging.instance().logEvent(CustomEvent("tab_visit").addAttribute("tab_name", "cart"))
+      }
+    }
+
+    fun onUserLogin() {
+        yourUserProvider.userId = "<userId>"
+        yourUserProvider.accessToken = "<accessToken>" // or idTracking
+        InAppMessaging.instance().logEvent(LoginSuccessfulEvent())
+    }
+    
+    fun onUserLogout() {
+        yourUserProvider.userId = ""
+        yourUserProvider.accessToken = "" // or idTracking
+    }
+}
+```
+</details>
+
+## <a name="rollback-to-iam"></a>Rollback to legacy In-App Messaging SDK
+By any chance, if you face some issue in using `RMC In-App Messaging` and want to use legacy `In-App Messaging`, follow the steps given below:
+
+<details>
+<summary style="cursor: pointer;";>(click to expand)</summary>
+
+1. Remove RMC In-App Messaging dependency from app's `build.gradle`
+   ```groovy
+     dependencies {
+       implementation "com.rakuten.tech.mobile.rmc:rmc-inappmessaging:$rmcInAppMessagingVersion" // remove
+     }
+   ```
+
+2. Remove RMC-related metadata from `AndroidManifest.xml`
+    ```xml
+      <application>
+          <!-- remove -->
+          <meta-data
+                android:name="com.rakuten.tech.mobile.rmc.apiUrl"
+                android:value="${rmc_api_url}" />
+          
+          <!-- remove -->
+          <meta-data
+                android:name="com.rakuten.tech.mobile.rmc.apiKey"
+                android:value="${rmc_api_key}" />
+          
+      </application>
+    ```
+
+3. Remove `RMC.configure()` API from your code
+
+4. Follow the guide from [legacy In-App Messaging document](https://rakutentech.github.io/android-inappmessaging).
+
+</details>
+
+## Changelog
+### 1.2.0 (In Progress)
+#### Improvements
+* **[RMCCX-6696](https://jira.rakuten-it.com/jira/browse/RMCCX-6696):** Improved the userguide.
+
+### 1.1.0 (2024-05-14)
+#### Improvements
+* **[SDKCF-6873](https://jira.rakuten-it.com/jira/browse/SDKCF-6873):** Integrated `EventLogger` (internal monitoring tool for failures) in the `configure` API.
+
+### 1.0.0 (2023-12-12)
+#### Features
+* **[SDKCF-6680](https://jira.rakuten-it.com/jira/browse/SDKCF-6680):** Added `RMC.configure()` API for configuration.
+* **[SDKCF-6578](https://jira.rakuten-it.com/jira/browse/SDKCF-6578):** Added In-App Messaging functionalities.
