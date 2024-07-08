@@ -8,6 +8,16 @@ In-App Messaging (IAM) module allows app developers to easily configure and disp
 
 This module supports iOS 12.0 and above. It has been tested with iOS 12.5 and above.
 
+### This page covers:
+* [Requirements](#requirements)
+* [How to install](#how-to-install)
+* [Configuration](#configuration)
+* [Using the SDK](#using-the-sdk)
+* [Final Code (Sample)](#final-code)
+* [Advanced Features](#advanced-features)
+* [SDK Logic](#sdk-logic)
+* [Troubleshooting & F.A.Q.](#troubleshooting--faq)
+  
 # Requirements
 
 Xcode >= 14.1 is supported.
@@ -43,7 +53,7 @@ Open your project settings in Xcode and add a new package in 'Swift Packages' ta
 
 Choose `RInAppMessaging` product for your target. If you want to link other targets, go to Build Phases of that target, then in Link Binary With Libraries click + button and add `RInAppMessaging`.
 
-# **Configuring**
+# **Configuration**
 
 **Note:** Currently we do not host any public APIs but you can create your own APIs and configure the SDK to use those.
 
@@ -74,11 +84,13 @@ We recommend, as good engineering practice, that you integrate with a remote con
 The SDK provides 3 public methods for the host applications to use:
 
 1. `configure()`
-1. `logEvent()`
 1. `registerPreference()`
+1. `logEvent()`
 1. `closeMessage()`
 
-### **configure()**  
+**Please refer to the [Troubleshooting & F.A.Q](#troubleshooting--faq) section for additional details on configuring and using IAM sdk**
+
+### **1. configure()**  
 This method initializes the SDK and should be placed in your AppDelegate's `didFinishLaunchingWithOptions`.
 
 ```swift
@@ -97,50 +109,7 @@ func application(_ application: UIApplication, didFinishLaunchingWithOptions lau
 * If `configure()` is not called, subsequent calls to other public API SDK get retained and get triggered after `configure()` is called.
 * If RMC SDK is used for installing IAM SDK then RMC SDK configuration should be followed rather than IAM configuration.
 
-### **logEvent()**  
-This method is provided for the host application to log and save events. These events will be used to match campaign triggers.
-
-**The method signature is:**
-
-```swift
-func logEvent(_ event: Event)
-```
-
-IAM provides three pre-defined event types and a custom event type:
-
-1.  `AppStartEvent` - This event should be logged when the application is considered started by the host app. E.G AppDelegate's didFinishLaunchingWithOptions. It is persistent, meaning, once it's logged it will always satisfy corresponding trigger in a campaign. All subsequent logs of this event are ignored. Campaigns that require only AppStartEvent are shown once per app launch.
-2.  `LoginSuccessfulEvent` - This event should be logged whenever the user logs in successfully.
-3.  `PurchaseSuccessfulEvent` - This event should be logged whenever a successful purchase occurs and has several pre-defined properties – purchase amount, number of items, currency code and item list.
-4.  `CustomEvent` - This event is created by the host app developers and can take in any event name and a list of custom attributes.
-
-```swift
-// App start event.
-RInAppMessaging.logEvent(AppStartEvent())
- 
-// Purchase successful event.
-let purchaseEvent = PurchaseSuccessfulEvent()
-purchaseEvent.setPurchaseAmount(50)
-purchaseEvent.setItemList(["box", "hammer"])
-purchaseEvent.setCurrencyCode("USD")
-
-RInAppMessaging.logEvent(purchaseEvent)
- 
-// Login event.
-RInAppMessaging.logEvent(LoginSuccessfulEvent())
- 
-// Custom event.
-let stringAttribute = CustomAttribute(withKeyName: "userResponse", withStringValue: "hi")
-let intAttribute = CustomAttribute(withKeyName: "numberOfClicks", withIntValue: 100)
-let boolAttribute = CustomAttribute(withKeyName: "didNavigateToPage", withBoolValue: false)
-let doubleAttribute = CustomAttribute(withKeyName: "percentageOfCompletion", withDoubleValue: 55.0)
-let timeAttribute = CustomAttribute(withKeyName: "timeOfCompletion", withTimeInMilliValue: 32423424)
- 
-let attributesList = [stringAttribute, intAttribute, boolAttribute, doubleAttribute, timeAttribute]
- 
-RInAppMessaging.logEvent(CustomEvent(withName: "any_event_name_here", withCustomAttributes: attributesList))
-```
-
-### **registerPreference()**
+### <a name="register-preference"></a>2. registerPreference()
 
 A preference is what will allow IAM to identify users for targeting and segmentation. Preference object should implement `UserInfoProvider` protocol and provide any of the following identifiers (not all need to be provided):
 
@@ -148,7 +117,7 @@ A preference is what will allow IAM to identify users for targeting and segmenta
 1.  IDTrackingIdentifier - The value provided by the internal ID SDK as the "tracking identifier" value.
 1.  AccessToken - This is the token provided by the internal RAuthentication SDK as the "accessToken" value
 
-⚠️ The method is designed to be called ONCE once per app session - i.e. only one instance of `UserInfoProvider` can be created. IAM SDK will read object's properties on demand. There's no need to call this method again after login/logout for example.
+⚠️ The method is designed to be called ONCE per app session - i.e. only one instance of `UserInfoProvider` can be created. IAM SDK will read object's properties on demand. There's no need to call this method again after login/logout for example.
 
 To ensure correct user targeting, please keep user information in the preference object up to date.
 After logout process is complete the preference object should return `nil` or `""` in all `UserInfoProvider` methods.  
@@ -160,37 +129,108 @@ Preferences are not persisted so this function needs to be called on every launc
 import RInAppMessaging
 
 class UserPreference: UserInfoProvider {
+    var userID: String?
+    var easyID: String?
+    var accessToken: String?
+    
     func getUserID() -> String? { 
-        "member-id" 
+        userID
     }
 
-    func getIDTrackingIdentifier() -> String? { nil }
-    func getAccessToken() -> String? { nil }
+    func getIDTrackingIdentifier() -> String? {
+        easyID
+    }
+    
+    func getAccessToken() -> String? {
+        accessToken
+  }
 }
 
 let preference = UserPreference()
+preference.userID = "userID"
+preferece.accessToken = "getAccessToken" // or easyID for ID SDK
+
 RInAppMessaging.registerPreference(preference)
 ```
 
+You must provide the relevant information through this class. It will be retrieved by SDK on demand, so make sure values are up-to-date.
 
-### **closeMessage()**
+After logout is complete, please ensure that all `UserInfoProvider` methods in the preference object return `null` or empty string.
 
-In certain cases there might be a need to manually close a campaign's message without user interaction.
-An example is when a different user logs in and the currently displayed campaign does not target the new user.
-(Or when a campaign's message appears after login process has started).
-In that case, to avoid user's confusion, host app can force-close the campaign by calling `closeMessage()` API method.
-The `clearQueuedCampaigns` optional parameter, when set to `true` (`false` by default), will additionally remove all campaigns that were queued to be displayed.
+> Notes:
+> - Regarding access token:
+>   - Only provide access token if the user is logged in
+>   - The internal Backend only supports production access token
+> - Migrating from legacy Mobile Login SDK to ID SDK
+>   - Update your `UserInfoProvider` and return valid value for the `getIDTrackingIdentifier()` method. Do not provide values for other methods or leave them as null or empty.
+>   - **Impact**: User will be treated as a new user, therefore if there are **active** messages that were previously displayed/opted-out by the user, then it will be displayed again
+
+
+### **3. logEvent()**  
+This method is provided for the host application to log and save events. These events will be used to match campaign triggers which initiates the display of a message whenever a specific event or a set of events occur. Call this method at appropriate locations in your app, and based on your use-case.
+
+For each logged event, the SDK will match it with the ongoing message's triggers that are configured in the Dashboard. Once all of the required events are logged by the app, the message will be displayed in the current session.
+
+**The method signature is:**
 
 ```swift
-RInAppMessaging.closeMessage(clearQueuedCampaigns: true)
+func logEvent(_ event: Event)
 ```
-**Note:** Calling this API will not increment the campaign's impression (i.e. not counted as displayed).
+#### Pre-defined event classes:
 
+IAM provides three pre-defined event types and a custom event type:
+1.  `AppStartEvent`
+2.  `LoginSuccessfulEvent` 
+3.  `PurchaseSuccessfulEvent`
+4.  `CustomEvent`
 
-## **Custom Events**
+#### AppStartEvent
+Log this event on app launch from terminated state.
 
-As shown in the example above for event logging, IAM also supports custom event. Custom events are events with an unique name and a list of attributes associated with them.
+This event should be logged when the application is considered started by the host app. E.G AppDelegate's didFinishLaunchingWithOptions. It is persistent, meaning, once it's logged it will always satisfy corresponding trigger in a campaign. All subsequent logs of this event are ignored. Campaigns that require only AppStartEvent are shown once per app launch
 
+```swift
+// App start event.
+RInAppMessaging.logEvent(AppStartEvent())
+```
+
+> <font color="red">Note:</font>
+> Because this event is logged almost instantly after app launch, there may be situation wherein user information is not yet available due to some delay, and may cause unexpected behavior. Therefore we recommend to ensure user information is up-to-date (see [User Targeting](#register-preference) section for details) when using AppStart-only as trigger, or combine it with other event wherein user information is guaranteed to be available.
+
+#### LoginSuccessfulEvent
+Log this every time the user logs in successfully.
+
+```swift
+// Login event.
+RInAppMessaging.logEvent(LoginSuccessfulEvent())
+```
+
+#### PurchaseSuccessfulEvent
+This event should be logged whenever a successful purchase occurs and has several pre-defined properties – purchase amount, number of items, currency code and item list.
+
+```swift
+// Purchase successful event.
+let purchaseEvent = PurchaseSuccessfulEvent()
+purchaseEvent.setPurchaseAmount(50)
+purchaseEvent.setItemList(["box", "hammer"])
+purchaseEvent.setCurrencyCode("USD")
+
+RInAppMessaging.logEvent(purchaseEvent)
+```
+
+### 4. CustomEvent
+This event is created by the host app developers and can take in any event name and a list of custom attributes. Log this after app-defined states are reached or conditions are met. Example use-case is an event based on tabs or certain screens in your app.
+
+Custom events are events with an unique name and a list of attributes associated with them. Attributes can be `integer`, `double`, `String`, `boolean`, or `Date` type.
+
+* Every custom event requires a name(case insensitive), but doesn't require to add any attributes with the custom event.
+* Each custom event attribute also requires a name(case insensitive), and a value.
+* Recommended to use English characters only.
+* Because the custom event's name will be used when matching messages with triggers; therefore, please make sure the actual message event's name and attribute's name must match with the logged events to SDK.
+
+**Additional Information regarding Custom Event:**
+<details>
+<summary style="cursor: pointer;";>(click to expand)</summary>
 In order to properly utilize custom events, the person creating the campaign must sync up with the host app developers to ensure that both the event name and attribute name/value exactly match exactly - note that these are case-sensitive.
 
 From the dashboard side, you will have the ability to also add an operator. The following operators are supported:  
@@ -205,10 +245,108 @@ From the dashboard side, you will have the ability to also add an operator. The 
 
 *Note:* When comparing date as timeInMillis values, there is a tolerance of 1000 milliseconds. This means that comparisons using any relevant operator types will have a leniency of 1 second. E.g. comparing 300ms and 600ms with the `EQUALS` operator will return `true`, while comparing 300 and 1400 will return `false`.
 
-From the SDK side, host app developers will be able to log custom events as shown in the examples above. When the event matching process happens, note that the attributes of the event logged by the host app will be compared against the campaign's trigger attribute value e.g. if the trigger attribute value is an integer of 5 with an operator type of `GREATER_THAN`, and the attribute value of the event logged is an integer 10, then the 10 will be successfully matched against the 5 with a `GREATER_THAN` operator (i.e. 10 > 5).
+From the SDK side, host app developers will be able to log custom events as shown in the examples below. When the event matching process happens, note that the attributes of the event logged by the host app will be compared against the campaign's trigger attribute value e.g. if the trigger attribute value is an integer of 5 with an operator type of `GREATER_THAN`, and the attribute value of the event logged is an integer 10, then the 10 will be successfully matched against the 5 with a `GREATER_THAN` operator (i.e. 10 > 5).
 
 
-## **Optional features**
+```swift
+// Custom event.
+let stringAttribute = CustomAttribute(withKeyName: "userResponse", withStringValue: "hi")
+let intAttribute = CustomAttribute(withKeyName: "numberOfClicks", withIntValue: 100)
+let boolAttribute = CustomAttribute(withKeyName: "didNavigateToPage", withBoolValue: false)
+let doubleAttribute = CustomAttribute(withKeyName: "percentageOfCompletion", withDoubleValue: 55.0)
+let timeAttribute = CustomAttribute(withKeyName: "timeOfCompletion", withTimeInMilliValue: 32423424)
+ 
+let attributesList = [stringAttribute, intAttribute, boolAttribute, doubleAttribute, timeAttribute]
+ 
+RInAppMessaging.logEvent(CustomEvent(withName: "any_event_name_here", withCustomAttributes: attributesList))
+```
+</details>
+
+### **closeMessage()**
+
+In certain cases there might be a need to manually close a campaign's message without user interaction.
+An example is when a different user logs in and the currently displayed campaign does not target the new user.
+(Or when a campaign's message appears after login process has started).
+In that case, to avoid user's confusion, host app can force-close the campaign by calling `closeMessage()` API method.
+The `clearQueuedCampaigns` optional parameter, when set to `true` (`false` by default), will additionally remove all campaigns that were queued to be displayed.
+
+```swift
+RInAppMessaging.closeMessage(clearQueuedCampaigns: true)
+```
+**Note:** Calling this API will not increment the campaign's impression (i.e. not counted as displayed).
+
+## <a name="final-code"></a>Final Code (Sample)
+
+**For reference, your SDK integration code should look something like this:**
+
+<details>
+<summary style="cursor: pointer;";>(click to expand)</summary>
+
+AppDelegate.swift
+```swift
+import RInAppMessaging
+
+func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+    RInAppMessaging.configure(subscriptionID: "subscriptionID", 
+                                configurationURL: "configURL",
+                                enableTooltipFeature: true)
+    RInAppMessaging.registerPreference(self.preferenceData)
+    return true
+}
+```
+
+
+IAMPreferenceData.swift
+```swift
+import RInAppMessaging
+
+class IAMPreferenceData: UserInfoProvider {
+    var userID: String?
+    var easyID: String?
+    var accessToken: String?
+
+}
+
+extension IAMPreferenceData {
+    func getAccessToken() -> String? {
+        accessToken
+    }
+
+    func getUserID() -> String? {
+        userID
+    }
+
+    func getIDTrackingIdentifier() -> String? {
+        easyID
+    }
+}
+```
+
+
+ViewController.swift
+```swift
+class ViewController: UIViewController {
+    var preferenceData = IAMPreferenceData()
+
+    override func viewDidLoad() {
+        RInAppMessaging.logEvent(AppStartEvent())
+    }
+
+    func onUserLogin() {
+        preferenceData.userId = "<userId>"
+        preferenceData.accessToken = "<accessToken>" // or idTracking
+        RInAppMessaging.logEvent(LoginSuccessfulEvent())
+    }
+    
+    fun onUserLogout() {
+        preferenceData.userId = ""
+        preferenceData.accessToken = "" // or idTracking
+    }
+}
+```
+</details>
+
+## **Advanced Features**
 
 ### **Campaign context verification**
 
@@ -256,7 +394,7 @@ func application(_ application: UIApplication, didFinishLaunchingWithOptions lau
 }
 ```
 
-### **Push Primer**  
+### **Push Primer**  [Under Construction]
 Push Primer is a special action type that can be set in ONE of the campaign message buttons.
 When user taps the Push Primer button, the SDK tries to authorize and then register for remote notifications.
 Developers can set `UNUserAuthorizationOptions` used during authorization proces by setting `pushPrimerAuthorizationOptions` variable:
