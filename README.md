@@ -117,7 +117,7 @@ A preference is what will allow IAM to identify users for targeting and segmenta
 1.  IDTrackingIdentifier - The value provided by the internal ID SDK as the "tracking identifier" value.
 1.  AccessToken - This is the token provided by the internal RAuthentication SDK as the "accessToken" value
 
-⚠️ The method is designed to be called ONCE once per app session - i.e. only one instance of `UserInfoProvider` can be created. IAM SDK will read object's properties on demand. There's no need to call this method again after login/logout for example.
+⚠️ The method is designed to be called ONCE per app session - i.e. only one instance of `UserInfoProvider` can be created. IAM SDK will read object's properties on demand. There's no need to call this method again after login/logout for example.
 
 To ensure correct user targeting, please keep user information in the preference object up to date.
 After logout process is complete the preference object should return `nil` or `""` in all `UserInfoProvider` methods.  
@@ -129,19 +129,27 @@ Preferences are not persisted so this function needs to be called on every launc
 import RInAppMessaging
 
 class UserPreference: UserInfoProvider {
+    var userID: String?
+    var easyID: String?
+    var accessToken: String?
+    
     func getUserID() -> String? { 
-        "member-id" 
+        userID
     }
 
     func getIDTrackingIdentifier() -> String? {
-        "easy id"
+        easyID
     }
+    
     func getAccessToken() -> String? {
-        "access token" 
+        accessToken
   }
 }
 
 let preference = UserPreference()
+preference.userID = "userID"
+preferece.accessToken = "getAccessToken" // or easyID for ID SDK
+
 RInAppMessaging.registerPreference(preference)
 ```
 
@@ -301,15 +309,15 @@ class IAMPreferenceData: UserInfoProvider {
 
 extension IAMPreferenceData {
     func getAccessToken() -> String? {
-        "accessToken"
+        accessToken
     }
 
     func getUserID() -> String? {
-         "userID"
+        userID
     }
 
     func getIDTrackingIdentifier() -> String? {
-        "easyID"
+        easyID
     }
 }
 ```
