@@ -169,7 +169,7 @@ After logout is complete, please ensure that all `UserInfoProvider` methods in t
 ### **3. logEvent()**  
 This method is provided for the host application to log and save events. These events will be used to match campaign triggers which initiates the display of a message whenever a specific event or a set of events occur. Call this method at appropriate locations in your app, and based on your use-case.
 
-For each logged event, the SDK will match it with the ongoing message's triggers that are configured in the Dashboard. Once all of the required events are logged by the app, the message will be displayed in the current registered activity. If no activity is registered, it will be displayed in the next registered activity.
+For each logged event, the SDK will match it with the ongoing message's triggers that are configured in the Dashboard. Once all of the required events are logged by the app, the message will be displayed in the current session.
 
 **The method signature is:**
 
