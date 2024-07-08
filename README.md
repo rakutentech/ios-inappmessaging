@@ -90,7 +90,7 @@ The SDK provides 3 public methods for the host applications to use:
 
 **Please refer to the [Troubleshooting & F.A.Q](#troubleshooting--faq) section for additional details on configuring and using IAM sdk**
 
-### **configure()**  
+### **1. configure()**  
 This method initializes the SDK and should be placed in your AppDelegate's `didFinishLaunchingWithOptions`.
 
 ```swift
@@ -109,7 +109,7 @@ func application(_ application: UIApplication, didFinishLaunchingWithOptions lau
 * If `configure()` is not called, subsequent calls to other public API SDK get retained and get triggered after `configure()` is called.
 * If RMC SDK is used for installing IAM SDK then RMC SDK configuration should be followed rather than IAM configuration.
 
-### **registerPreference()**
+### <a name="register-preference"></a>2. registerPreference()
 
 A preference is what will allow IAM to identify users for targeting and segmentation. Preference object should implement `UserInfoProvider` protocol and provide any of the following identifiers (not all need to be provided):
 
@@ -158,7 +158,7 @@ After logout is complete, please ensure that all `UserInfoProvider` methods in t
 >   - **Impact**: User will be treated as a new user, therefore if there are **active** messages that were previously displayed/opted-out by the user, then it will be displayed again
 
 
-### **logEvent()**  
+### **3. logEvent()**  
 This method is provided for the host application to log and save events. These events will be used to match campaign triggers which initiates the display of a message whenever a specific event or a set of events occur. Call this method at appropriate locations in your app, and based on your use-case.
 
 For each logged event, the SDK will match it with the ongoing message's triggers that are configured in the Dashboard. Once all of the required events are logged by the app, the message will be displayed in the current registered activity. If no activity is registered, it will be displayed in the next registered activity.
@@ -210,16 +210,19 @@ purchaseEvent.setCurrencyCode("USD")
 RInAppMessaging.logEvent(purchaseEvent)
 ```
 
-### CustomEvent
+### 4. CustomEvent
 This event is created by the host app developers and can take in any event name and a list of custom attributes. Log this after app-defined states are reached or conditions are met. Example use-case is an event based on tabs or certain screens in your app.
 
-Custom events are events with an unique name and a list of attributes associated with them. Attributes can be `integer`, `double`, `String`, `boolean`, or `java.util.Date` type.
+Custom events are events with an unique name and a list of attributes associated with them. Attributes can be `integer`, `double`, `String`, `boolean`, or `Date` type.
 
 * Every custom event requires a name(case insensitive), but doesn't require to add any attributes with the custom event.
 * Each custom event attribute also requires a name(case insensitive), and a value.
 * Recommended to use English characters only.
 * Because the custom event's name will be used when matching messages with triggers; therefore, please make sure the actual message event's name and attribute's name must match with the logged events to SDK.
 
+**Additional Information regarding Custom Event:**
+<details>
+<summary style="cursor: pointer;";>(click to expand)</summary>
 In order to properly utilize custom events, the person creating the campaign must sync up with the host app developers to ensure that both the event name and attribute name/value exactly match exactly - note that these are case-sensitive.
 
 From the dashboard side, you will have the ability to also add an operator. The following operators are supported:  
@@ -249,6 +252,7 @@ let attributesList = [stringAttribute, intAttribute, boolAttribute, doubleAttrib
  
 RInAppMessaging.logEvent(CustomEvent(withName: "any_event_name_here", withCustomAttributes: attributesList))
 ```
+</details>
 
 ### **closeMessage()**
 
