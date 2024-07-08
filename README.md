@@ -13,6 +13,7 @@ This module supports iOS 12.0 and above. It has been tested with iOS 12.5 and ab
 * [How to install](#how-to-install)
 * [Configuration](#configuration)
 * [Using the SDK](#using-the-sdk)
+* [Final Code (Sample)](#final-code)
 * [Advanced Features](#advanced-features)
 * [SDK Logic](#sdk-logic)
 * [Troubleshooting & F.A.Q.](#troubleshooting--faq)
@@ -261,6 +262,77 @@ The `clearQueuedCampaigns` optional parameter, when set to `true` (`false` by de
 RInAppMessaging.closeMessage(clearQueuedCampaigns: true)
 ```
 **Note:** Calling this API will not increment the campaign's impression (i.e. not counted as displayed).
+
+## <a name="final-code"></a>Final Code (Sample)
+
+**For reference, your SDK integration code should look something like this:**
+
+<details>
+<summary style="cursor: pointer;";>(click to expand)</summary>
+
+AppDelegate.swift
+```swift
+import RInAppMessaging
+
+func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+    RInAppMessaging.configure(subscriptionID: "subscriptionID", 
+                                configurationURL: "configURL",
+                                enableTooltipFeature: true)
+    RInAppMessaging.registerPreference(self.preferenceData)
+    return true
+}
+```
+
+
+IAMPreferenceData.swift
+```swift
+import RInAppMessaging
+
+class IAMPreferenceData: UserInfoProvider {
+    var userID: String?
+    var easyID: String?
+    var accessToken: String?
+
+}
+
+extension IAMPreferenceData {
+    func getAccessToken() -> String? {
+        "accessToken"
+    }
+
+    func getUserID() -> String? {
+         "userID"
+    }
+
+    func getIDTrackingIdentifier() -> String? {
+        "easyID"
+    }
+}
+```
+
+
+ViewController.swift
+```swift
+class ViewController: UIViewController {
+    var preferenceData = IAMPreferenceData()
+
+    override func viewDidLoad() {
+        RInAppMessaging.logEvent(AppStartEvent())
+    }
+
+    func onUserLogin() {
+        preferenceData.userId = "<userId>"
+        preferenceData.accessToken = "<accessToken>" // or idTracking
+        RInAppMessaging.logEvent(LoginSuccessfulEvent())
+    }
+    
+    fun onUserLogout() {
+        preferenceData.userId = ""
+        preferenceData.accessToken = "" // or idTracking
+    }
+}
+```
+</details>
 
 ## **Advanced Features**
 
