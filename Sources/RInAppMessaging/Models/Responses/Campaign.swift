@@ -31,6 +31,9 @@ internal struct Campaign: Codable, Hashable {
             String(substring.drop(while: { $0 != "["}).dropFirst())
         }.filter { !$0.isEmpty }
     }
+    var isPushPrimer: Bool {
+        return data.customJson?.pushPrimer?.button != nil
+    }
 
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)

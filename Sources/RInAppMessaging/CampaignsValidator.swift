@@ -38,6 +38,11 @@ internal struct CampaignsValidator: CampaignsValidatorType {
             guard campaign.data.isTest || (!campaign.isOptedOut && !campaign.isOutdated) else {
                 return
             }
+
+            guard !(campaign.isPushPrimer && isNotificationsAllowed()) else {
+                return
+            }
+
             guard let campaignTriggers = campaign.data.triggers else {
                 Logger.debug("campaign (\(campaign.id)) has no triggers.")
                 return
@@ -89,5 +94,19 @@ internal struct CampaignsValidator: CampaignsValidatorType {
         }
 
         return triggeredEvents
+    }
+
+    private func isNotificationsAllowed() -> Bool {
+        let semaphore = DispatchSemaphore(value: 0)
+        var authorizationStatus: UNAuthorizationStatus = .notDetermined
+
+        let center = UNUserNotificationCenter.current()
+        center.getNotificationSettings { settings in
+            authorizationStatus = settings.authorizationStatus
+            semaphore.signal()
+        }
+        semaphore.wait()
+
+        return authorizationStatus == .authorized
     }
 }

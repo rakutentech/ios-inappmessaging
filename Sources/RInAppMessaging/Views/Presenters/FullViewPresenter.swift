@@ -56,16 +56,17 @@ internal class FullViewPresenter: BaseViewPresenter, FullViewPresenterType, Erro
 
     func loadButtons() {
         let buttonList = campaign.data.messagePayload.messageSettings.controlSettings.buttons
-
+        let pushPrimerButton = campaign.data.customJson?.pushPrimer?.button ?? nil
         let supportedButtons = buttonList.prefix(2).filter {
             [.redirect, .deeplink, .close, .pushPrimer].contains($0.buttonBehavior.action)
         }
 
         var buttonsToAdd = [(ActionButton, ActionButtonViewModel)]()
         for (index, button) in supportedButtons.enumerated() {
+            let buttonAction = (pushPrimerButton != nil && index + 1 == pushPrimerButton) ? ActionType.pushPrimer : button.buttonBehavior.action
             let backgroundColor = UIColor(hexString: button.buttonBackgroundColor) ?? .white
             buttonsToAdd.append((
-                ActionButton(type: button.buttonBehavior.action,
+                ActionButton(type: buttonAction,
                              impression: index == 0 ? ImpressionType.actionOne : ImpressionType.actionTwo,
                              uri: button.buttonBehavior.uri,
                              trigger: button.campaignTrigger),
@@ -84,7 +85,9 @@ internal class FullViewPresenter: BaseViewPresenter, FullViewPresenterType, Erro
         sendImpressions()
 
         if sender.type == .pushPrimer {
-            pushPrimerAction()
+            DispatchQueue.main.async {
+                self.pushPrimerAction()
+            }
         } else if let unwrappedUri = sender.uri {
             guard let uriToOpen = URL(string: unwrappedUri) else {
                 if let view = view {
@@ -129,6 +132,12 @@ internal class FullViewPresenter: BaseViewPresenter, FullViewPresenterType, Erro
         notificationCenter.getAuthorizationStatus { [self] authorizationStatus in
             // `self` becomes nil when the campaign window gets closed
             let willPopupAppear = authorizationStatus == .notDetermined
+            
+            if authorizationStatus == .denied {
+                DispatchQueue.main.async {
+                    UIApplication.shared.openAppNotificationSettings()
+                }
+            }
 
             self.notificationCenter.requestAuthorization(options: pushPrimerOptions) { [self] (granted, error) in
                 if let error = error {
