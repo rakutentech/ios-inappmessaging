@@ -226,7 +226,8 @@ class SerializationSpec: QuickSpec {
                             controlSettings: ControlSettings(
                                 buttons: [],
                                 content: nil))
-                    )
+                    ),
+                    customJson: nil
                 )
             )
         }
@@ -273,6 +274,7 @@ private enum MockedCampaigns {
                         html: false,
                         delay: 0),
                     controlSettings: ControlSettings(buttons: [], content: nil))
-            )
+            ),
+            customJson: nil
         ))
 }

@@ -267,7 +267,8 @@ private enum MockedCampaigns {
             infiniteImpressions: false,
             hasNoEndDate: false,
             isCampaignDismissable: true,
-            messagePayload: outdatedMessagePayload
+            messagePayload: outdatedMessagePayload,
+            customJson: nil
         )
     )
 
@@ -281,7 +282,7 @@ private enum MockedCampaigns {
             infiniteImpressions: false,
             hasNoEndDate: false,
             isCampaignDismissable: true,
-            messagePayload: outdatedMessagePayload
-        )
+            messagePayload: outdatedMessagePayload,
+            customJson: nil)
     )
 }

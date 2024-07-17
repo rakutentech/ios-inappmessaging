@@ -69,7 +69,8 @@ struct TestHelpers {
                         controlSettings: ControlSettings(
                             buttons: buttons,
                             content: content))
-                )
+                ),
+                customJson: nil
             )
         )
     }
@@ -120,7 +121,8 @@ struct TestHelpers {
                         controlSettings: ControlSettings(
                             buttons: [],
                             content: nil))
-                )
+                ),
+                customJson: nil
             )
         )
     }
