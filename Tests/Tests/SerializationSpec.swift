@@ -276,5 +276,6 @@ private enum MockedCampaigns {
                     controlSettings: ControlSettings(buttons: [], content: nil))
             ),
             customJson: nil
-        ))
+        )
+    )
 }
