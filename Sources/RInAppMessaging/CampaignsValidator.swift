@@ -1,3 +1,6 @@
+import UserNotifications
+import Dispatch
+
 internal protocol CampaignsValidatorType {
 
     /// Cross references the list of campaigns from CampaignRepository
