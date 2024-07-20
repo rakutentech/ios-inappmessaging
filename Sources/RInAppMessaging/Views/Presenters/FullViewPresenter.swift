@@ -56,7 +56,7 @@ internal class FullViewPresenter: BaseViewPresenter, FullViewPresenterType, Erro
 
     func loadButtons() {
         let buttonList = campaign.data.messagePayload.messageSettings.controlSettings.buttons
-        let pushPrimerButton = campaign.data.customJson?.pushPrimer?.button ?? nil
+        let pushPrimerButton = campaign.data.customJson?.pushPrimer?.button
         let supportedButtons = buttonList.prefix(2).filter {
             [.redirect, .deeplink, .close, .pushPrimer].contains($0.buttonBehavior.action)
         }

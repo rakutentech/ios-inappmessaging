@@ -36,29 +36,30 @@ extension UIApplication {
         return nil
     }
     
-    private static let notificationSettingsURLString: String? = {
+    private static let notificationSettingsURL: URL? = {
+        let urlString: String?
+
         if #available(iOS 16, *) {
-            return UIApplication.openNotificationSettingsURLString
+            urlString = UIApplication.openNotificationSettingsURLString
+        } else if #available(iOS 15.4, *) {
+            urlString = UIApplicationOpenNotificationSettingsURLString
+        } else if #available(iOS 8.0, *) {
+            urlString = UIApplication.openSettingsURLString
+        } else {
+            urlString = nil
         }
         
-        if #available(iOS 15.4, *) {
-            return UIApplicationOpenNotificationSettingsURLString
+        guard let urlString = urlString, let url = URL(string: urlString) else {
+            return nil
         }
-        
-        if #available(iOS 8.0, *) {
-            return UIApplication.openSettingsURLString
-        }
-        
-        return nil
+
+        return url
     }()
-    
-    private static let appNotificationSettingsURL = URL(
-        string: notificationSettingsURLString ?? ""
-    )
-    
-    func openAppNotificationSettings() -> Void {
-        guard let url = UIApplication.appNotificationSettingsURL else { return }
+
+    func openAppNotificationSettings() {
+        guard let url = Self.notificationSettingsURL, self.canOpenURL(url) else {
+            return
+        }
         self.open(url)
     }
-
 }
