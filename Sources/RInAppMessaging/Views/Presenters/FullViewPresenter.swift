@@ -85,7 +85,7 @@ internal class FullViewPresenter: BaseViewPresenter, FullViewPresenterType, Erro
         sendImpressions()
 
         if sender.type == .pushPrimer {
-            self.pushPrimerAction()
+            pushPrimerAction()
         } else if let unwrappedUri = sender.uri {
             guard let uriToOpen = URL(string: unwrappedUri) else {
                 if let view = view {
