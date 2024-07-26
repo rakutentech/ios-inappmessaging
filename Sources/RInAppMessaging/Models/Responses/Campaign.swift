@@ -32,7 +32,7 @@ internal struct Campaign: Codable, Hashable {
         }.filter { !$0.isEmpty }
     }
     var isPushPrimer: Bool {
-        return data.customJson?.pushPrimer?.button != nil
+        return RInAppMessaging.isRMCEnvironment && data.customJson?.pushPrimer?.button != nil
     }
 
     init(from decoder: Decoder) throws {
