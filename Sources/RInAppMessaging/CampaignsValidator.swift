@@ -42,7 +42,7 @@ internal struct CampaignsValidator: CampaignsValidatorType {
                 return
             }
 
-            guard !(campaign.isPushPrimer && isNotificationsAllowed()) else {
+            guard campaign.pushPrimerEnabled && !isNotificationsAuthorized() else {
                 return
             }
 
@@ -99,7 +99,7 @@ internal struct CampaignsValidator: CampaignsValidatorType {
         return triggeredEvents
     }
 
-    private func isNotificationsAllowed() -> Bool {
+    private func isNotificationsAuthorized() -> Bool {
         let semaphore = DispatchSemaphore(value: 0)
         var authorizationStatus: UNAuthorizationStatus = .notDetermined
 

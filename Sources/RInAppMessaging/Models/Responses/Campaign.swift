@@ -31,7 +31,7 @@ internal struct Campaign: Codable, Hashable {
             String(substring.drop(while: { $0 != "["}).dropFirst())
         }.filter { !$0.isEmpty }
     }
-    var isPushPrimer: Bool {
+    var pushPrimerEnabled: Bool {
         return RInAppMessaging.isRMCEnvironment && data.customJson?.pushPrimer?.button != nil
     }
 
