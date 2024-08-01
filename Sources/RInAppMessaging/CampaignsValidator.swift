@@ -41,9 +41,17 @@ internal struct CampaignsValidator: CampaignsValidatorType {
             guard campaign.data.isTest || (!campaign.isOptedOut && !campaign.isOutdated) else {
                 return
             }
-
-            guard campaign.pushPrimerEnabled && !isNotificationsAuthorized() else {
-                return
+            
+            if campaign.isPushPrimer {
+                guard RInAppMessaging.isRMCEnvironment else {
+                    return
+                }
+            }
+            
+            if campaign.isPushPrimer && RInAppMessaging.isRMCEnvironment {
+                guard !isNotificationAuthorized() else {
+                    return
+                }
             }
 
             guard let campaignTriggers = campaign.data.triggers else {
@@ -99,7 +107,7 @@ internal struct CampaignsValidator: CampaignsValidatorType {
         return triggeredEvents
     }
 
-    private func isNotificationsAuthorized() -> Bool {
+    private func isNotificationAuthorized() -> Bool {
         let semaphore = DispatchSemaphore(value: 0)
         var authorizationStatus: UNAuthorizationStatus = .notDetermined
 
