@@ -658,6 +658,85 @@ class ViewPresenterSpec: QuickSpec {
                     expect(impressionService.sentImpressions?.list).toNot(contain(.optOut))
                 }
             }
+            context("when custom json data is available in Campaign Data") {
+                it("will replace the existing function and enable push primer function for the button") {
+                    let campaignPrimer = TestHelpers.generateCampaign(id: "PushPrimer", buttons: [
+                        Button(buttonText: "button1",
+                               buttonTextColor: "#000000",
+                               buttonBackgroundColor: "#000000",
+                               buttonBehavior: ButtonBehavior(action: .close, uri: nil),
+                               campaignTrigger: Trigger(type: .event,
+                                                        eventType: .custom,
+                                                        eventName: "trigger",
+                                                        attributes: []))
+                    ],
+                    customJson: CustomJson(pushPrimer: PrimerButton(button: 1))
+                    )
+                    presenter.campaign = campaignPrimer
+                    presenter.loadButtons()
+                    expect(view.addedButtons.map({ $0.0.type })).to(equal([ActionType.pushPrimer]))
+                }
+
+                it("will enable retain the button function if pushPrimer data in invalid in custom Json") {
+                    let campaignPrimer = TestHelpers.generateCampaign(id: "PushPrimer", buttons: [
+                        Button(buttonText: "button1",
+                               buttonTextColor: "#000000",
+                               buttonBackgroundColor: "#000000",
+                               buttonBehavior: ButtonBehavior(action: .close, uri: nil),
+                               campaignTrigger: Trigger(type: .event,
+                                                        eventType: .custom,
+                                                        eventName: "trigger",
+                                                        attributes: []))
+                    ],
+                    customJson: CustomJson(pushPrimer: nil)
+                    )
+                    presenter.campaign = campaignPrimer
+                    presenter.loadButtons()
+                    expect(view.addedButtons.map({ $0.0.type })).to(equal([ActionType.close]))
+                }
+
+                it("will enable retain the button function if push primer button value in invalid") {
+                    let campaignPrimer = TestHelpers.generateCampaign(id: "PushPrimer", buttons: [
+                        Button(buttonText: "button1",
+                               buttonTextColor: "#000000",
+                               buttonBackgroundColor: "#000000",
+                               buttonBehavior: ButtonBehavior(action: .close, uri: nil),
+                               campaignTrigger: Trigger(type: .event,
+                                                        eventType: .custom,
+                                                        eventName: "trigger",
+                                                        attributes: []))
+                    ],
+                    customJson: CustomJson(pushPrimer: PrimerButton(button: 99))
+                    )
+                    presenter.campaign = campaignPrimer
+                    presenter.loadButtons()
+                    expect(view.addedButtons.map({ $0.0.type })).to(equal([ActionType.close]))
+                }
+
+                it("will enable pushPrimer for the exact button number when there are multiple buttons") {
+                    let campaignPrimer = TestHelpers.generateCampaign(id: "PushPrimer", buttons: [
+                        Button(buttonText: "button1",
+                               buttonTextColor: "#000000",
+                               buttonBackgroundColor: "#000000",
+                               buttonBehavior: ButtonBehavior(action: .close, uri: nil),
+                               campaignTrigger: Trigger(type: .event,
+                                                        eventType: .custom,
+                                                        eventName: "trigger",
+                                                        attributes: [])),
+                        Button(buttonText: "button2",
+                               buttonTextColor: "#ffffff",
+                               buttonBackgroundColor: "#ffffff",
+                               buttonBehavior: ButtonBehavior(action: .redirect, uri: "uri"),
+                               campaignTrigger: nil)
+                    ],
+                    customJson: CustomJson(pushPrimer: PrimerButton(button: 2))
+                    )
+                    presenter.campaign = campaignPrimer
+                    presenter.loadButtons()
+                    expect(view.addedButtons.map({ $0.0.type })[0]).to(equal(ActionType.close))
+                    expect(view.addedButtons.map({ $0.0.type })[1]).to(equal(ActionType.pushPrimer))
+                }
+            }
         }
     }
 }

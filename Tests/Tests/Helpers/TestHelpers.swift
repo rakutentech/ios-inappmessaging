@@ -34,7 +34,8 @@ struct TestHelpers {
                                  hasImage: Bool = false,
                                  content: Content? = nil,
                                  triggers: [Trigger]? = nil,
-                                 buttons: [Button] = []) -> Campaign {
+                                 buttons: [Button] = [],
+                                 customJson: CustomJson? = nil) -> Campaign {
         Campaign(
             data: CampaignData(
                 campaignId: id,
@@ -70,7 +71,7 @@ struct TestHelpers {
                             buttons: buttons,
                             content: content))
                 ),
-                customJson: nil
+                customJson: customJson
             )
         )
     }
