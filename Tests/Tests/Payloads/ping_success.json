@@ -65,6 +65,11 @@
                         "attributes": []
                     }
                 ],
+                "customJson": {
+                    "pushPrimer": {
+                        "button": 2
+                    }
+                },
                 "messagePayload": {
                     "title": "Campaign with image test-1",
                     "messageBody": "body",
@@ -129,6 +134,11 @@
                         "attributes": []
                     }
                 ],
+                "customJson": {
+                    "pushPrimer": {
+                        "button": 2
+                    }
+                },
                 "messagePayload": {
                     "title": "Campaign with image test-1",
                     "messageBody": "body",

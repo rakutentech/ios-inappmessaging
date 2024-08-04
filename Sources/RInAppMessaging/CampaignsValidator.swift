@@ -23,12 +23,14 @@ internal struct CampaignsValidator: CampaignsValidatorType {
     private let campaignRepository: CampaignRepositoryType
     private let eventMatcher: EventMatcherType
     private let triggerValidator = TriggerAttributesValidator.self
+    private let notificationCenter: UserNotificationCenter
 
     init(campaignRepository: CampaignRepositoryType,
-         eventMatcher: EventMatcherType) {
-
+         eventMatcher: EventMatcherType,
+         notificationCenter: UserNotificationCenter) {
         self.campaignRepository = campaignRepository
         self.eventMatcher = eventMatcher
+        self.notificationCenter = notificationCenter
     }
 
     func validate(validatedCampaignHandler: (_ campaign: Campaign, _ events: Set<Event>) -> Void) {
@@ -41,15 +43,10 @@ internal struct CampaignsValidator: CampaignsValidatorType {
             guard campaign.data.isTest || (!campaign.isOptedOut && !campaign.isOutdated) else {
                 return
             }
-            
+
+            // Enable PushPrimer only for RMC Sdk
             if campaign.isPushPrimer {
-                guard RInAppMessaging.isRMCEnvironment else {
-                    return
-                }
-            }
-            
-            if campaign.isPushPrimer && RInAppMessaging.isRMCEnvironment {
-                guard !isNotificationAuthorized() else {
+                guard RInAppMessaging.isRMCEnvironment, !isNotificationAuthorized() else {
                     return
                 }
             }
@@ -107,17 +104,21 @@ internal struct CampaignsValidator: CampaignsValidatorType {
         return triggeredEvents
     }
 
-    private func isNotificationAuthorized() -> Bool {
+    internal func isNotificationAuthorized() -> Bool {
         let semaphore = DispatchSemaphore(value: 0)
         var authorizationStatus: UNAuthorizationStatus = .notDetermined
 
-        let center = UNUserNotificationCenter.current()
-        center.getNotificationSettings { settings in
+        notificationCenter.getNotificationSettings { settings in
             authorizationStatus = settings.authorizationStatus
             semaphore.signal()
         }
         semaphore.wait()
 
-        return authorizationStatus == .authorized
+        switch authorizationStatus {
+        case .denied, .notDetermined :
+            return false
+        default :
+            return true
+        }
     }
 }

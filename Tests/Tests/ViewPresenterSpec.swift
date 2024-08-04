@@ -658,7 +658,7 @@ class ViewPresenterSpec: QuickSpec {
                     expect(impressionService.sentImpressions?.list).toNot(contain(.optOut))
                 }
             }
-            context("when custom json data is available in Campaign Data") {
+            context("when push primer content is available available in Campaign Data") {
                 it("will replace the existing function and enable push primer function for the button") {
                     let campaignPrimer = TestHelpers.generateCampaign(id: "PushPrimer", buttons: [
                         Button(buttonText: "button1",
@@ -677,7 +677,7 @@ class ViewPresenterSpec: QuickSpec {
                     expect(view.addedButtons.map({ $0.0.type })).to(equal([ActionType.pushPrimer]))
                 }
 
-                it("will enable retain the button function if pushPrimer data in invalid in custom Json") {
+                it("will retain the button function if pushPrimer data in invalid") {
                     let campaignPrimer = TestHelpers.generateCampaign(id: "PushPrimer", buttons: [
                         Button(buttonText: "button1",
                                buttonTextColor: "#000000",
@@ -695,7 +695,7 @@ class ViewPresenterSpec: QuickSpec {
                     expect(view.addedButtons.map({ $0.0.type })).to(equal([ActionType.close]))
                 }
 
-                it("will enable retain the button function if push primer button value in invalid") {
+                it("will retain the button function if push primer button value is invalid") {
                     let campaignPrimer = TestHelpers.generateCampaign(id: "PushPrimer", buttons: [
                         Button(buttonText: "button1",
                                buttonTextColor: "#000000",

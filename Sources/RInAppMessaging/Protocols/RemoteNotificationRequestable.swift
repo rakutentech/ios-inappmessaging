@@ -21,3 +21,27 @@ extension UNUserNotificationCenter: RemoteNotificationRequestable {
         }
     }
 }
+
+protocol UserNotificationCenter {
+    func getNotificationSettings(completionHandler: @escaping (NotificationSettingsProtocol) -> Void)
+}
+
+protocol NotificationSettingsProtocol {
+    var authorizationStatus: UNAuthorizationStatus { get }
+}
+
+class UNUserNotificationService: UserNotificationCenter {
+    private let center: UNUserNotificationCenter
+
+    init(center: UNUserNotificationCenter = UNUserNotificationCenter.current()) {
+        self.center = center
+    }
+
+    func getNotificationSettings(completionHandler: @escaping (NotificationSettingsProtocol) -> Void) {
+        center.getNotificationSettings { settings in
+            completionHandler(settings as NotificationSettingsProtocol)
+        }
+    }
+}
+
+extension UNNotificationSettings: NotificationSettingsProtocol {}

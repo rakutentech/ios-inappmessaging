@@ -1,5 +1,6 @@
 import Quick
 import Nimble
+import UserNotifications
 @testable import RInAppMessaging
 
 class CampaignsValidatorSpec: QuickSpec {
@@ -10,18 +11,21 @@ class CampaignsValidatorSpec: QuickSpec {
         var campaignRepository: CampaignRepository!
         var eventMatcher: EventMatcher!
         var validatorHandler: ValidatorHandler!
+        var mockNotificationCenter: MockUserNotificationCenter!
 
         func syncRepository(with campaigns: [Campaign]) {
             campaignRepository.syncWith(list: campaigns, timestampMilliseconds: 0, ignoreTooltips: false)
         }
 
         beforeEach {
+            mockNotificationCenter = MockUserNotificationCenter()
             campaignRepository = CampaignRepository(userDataCache: UserDataCacheMock(),
                                                     accountRepository: AccountRepository(userDataCache: UserDataCacheMock()))
             eventMatcher = EventMatcher(campaignRepository: campaignRepository)
             campaignsValidator = CampaignsValidator(
                 campaignRepository: campaignRepository,
-                eventMatcher: eventMatcher)
+                eventMatcher: eventMatcher,
+                notificationCenter: mockNotificationCenter)
             validatorHandler = ValidatorHandler()
         }
 
@@ -221,6 +225,37 @@ class CampaignsValidatorSpec: QuickSpec {
                         eventMatcher.matchAndStore(event: ViewAppearedEvent(viewIdentifier: tooltipViewElementID))
                         campaignsValidator.validate(validatedCampaignHandler: validatorHandler.closure)
                         expect(validatorHandler.validatedCampaigns).to(contain(tooltip))
+                    }
+                }
+                context("when notification is authorized") {
+                    it("returns true") {
+                        mockNotificationCenter.mockAuthorizationStatus = .authorized
+                        let result = campaignsValidator.isNotificationAuthorized()
+                        expect(result).to(beTrue())
+                    }
+                }
+
+                context("when notification is denied") {
+                    it("returns false") {
+                        mockNotificationCenter.mockAuthorizationStatus = .denied
+                        let result = campaignsValidator.isNotificationAuthorized()
+                        expect(result).to(beFalse())
+                    }
+                }
+
+                context("when notification is not determined") {
+                    it("returns false") {
+                        mockNotificationCenter.mockAuthorizationStatus = .notDetermined
+                        let result = campaignsValidator.isNotificationAuthorized()
+                        expect(result).to(beFalse())
+                    }
+                }
+
+                context("when notification is provisional") {
+                    it("returns false") {
+                        mockNotificationCenter.mockAuthorizationStatus = .provisional
+                        let result = campaignsValidator.isNotificationAuthorized()
+                        expect(result).to(beTrue())
                     }
                 }
             }

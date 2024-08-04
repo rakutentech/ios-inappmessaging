@@ -37,16 +37,16 @@ extension UIApplication {
     }
     
     private static let notificationSettingsURL: URL? = {
-        let urlString: String?
+        var urlString: String?
 
         if #available(iOS 16, *) {
             urlString = UIApplication.openNotificationSettingsURLString
-        } else if #available(iOS 15.4, *) {
+        }
+        if #available(iOS 15.4, *) {
             urlString = UIApplicationOpenNotificationSettingsURLString
-        } else if #available(iOS 8.0, *) {
+        }
+        if #available(iOS 8.0, *) {
             urlString = UIApplication.openSettingsURLString
-        } else {
-            urlString = nil
         }
         
         guard let urlString = urlString, let url = URL(string: urlString) else {
@@ -57,7 +57,7 @@ extension UIApplication {
     }()
 
     func openAppNotificationSettings() {
-        guard let url = Self.notificationSettingsURL, self.canOpenURL(url) else {
+        guard let url = Self.notificationSettingsURL else {
             return
         }
         self.open(url)

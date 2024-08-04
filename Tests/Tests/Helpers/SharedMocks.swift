@@ -696,3 +696,20 @@ extension EndpointURL {
                     impression: nil)
     }
 }
+
+class MockNotificationSettings: NotificationSettingsProtocol {
+    var authorizationStatus: UNAuthorizationStatus
+
+    init(authorizationStatus: UNAuthorizationStatus) {
+        self.authorizationStatus = authorizationStatus
+    }
+}
+
+class MockUserNotificationCenter: UserNotificationCenter {
+    var mockAuthorizationStatus: UNAuthorizationStatus = .notDetermined
+
+    func getNotificationSettings(completionHandler: @escaping (NotificationSettingsProtocol) -> Void) {
+        let settings = MockNotificationSettings(authorizationStatus: mockAuthorizationStatus)
+        completionHandler(settings)
+    }
+}

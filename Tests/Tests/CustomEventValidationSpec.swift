@@ -13,18 +13,21 @@ class CustomEventValidationSpec: QuickSpec {
         var campaignRepository: CampaignRepository!
         var eventMatcher: EventMatcher!
         var validatorHandler: ValidatorHandler!
+        var mockCenter: MockUserNotificationCenter!
 
         func syncRepository(with campaigns: [Campaign]) {
             campaignRepository.syncWith(list: campaigns, timestampMilliseconds: 0, ignoreTooltips: false)
         }
 
         beforeEach {
+            mockCenter = MockUserNotificationCenter()
             campaignRepository = CampaignRepository(userDataCache: UserDataCacheMock(),
                                                     accountRepository: AccountRepository(userDataCache: UserDataCacheMock()))
             eventMatcher = EventMatcher(campaignRepository: campaignRepository)
             campaignsValidator = CampaignsValidator(
                 campaignRepository: campaignRepository,
-                eventMatcher: eventMatcher)
+                eventMatcher: eventMatcher,
+                notificationCenter: mockCenter)
             validatorHandler = ValidatorHandler()
         }
 
