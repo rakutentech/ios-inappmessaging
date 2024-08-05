@@ -104,7 +104,7 @@ internal struct CampaignsValidator: CampaignsValidatorType {
         return triggeredEvents
     }
 
-    internal func isNotificationAuthorized() -> Bool {
+    func isNotificationAuthorized() -> Bool {
         let semaphore = DispatchSemaphore(value: 0)
         var authorizationStatus: UNAuthorizationStatus = .notDetermined
 
