@@ -23,11 +23,11 @@ internal struct CampaignsValidator: CampaignsValidatorType {
     private let campaignRepository: CampaignRepositoryType
     private let eventMatcher: EventMatcherType
     private let triggerValidator = TriggerAttributesValidator.self
-    private let notificationCenter: UserNotificationCenter
+    private let notificationCenter: RemoteNotificationRequestable
 
     init(campaignRepository: CampaignRepositoryType,
          eventMatcher: EventMatcherType,
-         notificationCenter: UserNotificationCenter) {
+         notificationCenter: RemoteNotificationRequestable) {
         self.campaignRepository = campaignRepository
         self.eventMatcher = eventMatcher
         self.notificationCenter = notificationCenter
@@ -104,21 +104,19 @@ internal struct CampaignsValidator: CampaignsValidatorType {
         return triggeredEvents
     }
 
-    func isNotificationAuthorized() -> Bool {
+    func isNotificationAuthorized(timeout: DispatchTime = .now() + 3) -> Bool {
+        var authorizationStatus = false
         let semaphore = DispatchSemaphore(value: 0)
-        var authorizationStatus: UNAuthorizationStatus = .notDetermined
-
-        notificationCenter.getNotificationSettings { settings in
-            authorizationStatus = settings.authorizationStatus
+        notificationCenter.getAuthorizationStatus { authStatus in
+            if authStatus == .authorized {
+                authorizationStatus = true
+            }
             semaphore.signal()
         }
-        semaphore.wait()
-
-        switch authorizationStatus {
-        case .denied, .notDetermined :
+        if semaphore.wait(timeout: timeout) == .timedOut {
             return false
-        default :
-            return true
         }
+
+        return authorizationStatus
     }
 }

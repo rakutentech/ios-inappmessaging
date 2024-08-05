@@ -11,14 +11,14 @@ class CampaignsValidatorSpec: QuickSpec {
         var campaignRepository: CampaignRepository!
         var eventMatcher: EventMatcher!
         var validatorHandler: ValidatorHandler!
-        var mockNotificationCenter: MockUserNotificationCenter!
+        var mockNotificationCenter: UNUserNotificationCenterMock!
 
         func syncRepository(with campaigns: [Campaign]) {
             campaignRepository.syncWith(list: campaigns, timestampMilliseconds: 0, ignoreTooltips: false)
         }
 
         beforeEach {
-            mockNotificationCenter = MockUserNotificationCenter()
+            mockNotificationCenter = UNUserNotificationCenterMock()
             campaignRepository = CampaignRepository(userDataCache: UserDataCacheMock(),
                                                     accountRepository: AccountRepository(userDataCache: UserDataCacheMock()))
             eventMatcher = EventMatcher(campaignRepository: campaignRepository)
@@ -229,7 +229,7 @@ class CampaignsValidatorSpec: QuickSpec {
                 }
                 context("when notification is authorized") {
                     it("returns true") {
-                        mockNotificationCenter.mockAuthorizationStatus = .authorized
+                        mockNotificationCenter.authorizationStatus = .authorized
                         let result = campaignsValidator.isNotificationAuthorized()
                         expect(result).to(beTrue())
                     }
@@ -237,7 +237,7 @@ class CampaignsValidatorSpec: QuickSpec {
 
                 context("when notification is denied") {
                     it("returns false") {
-                        mockNotificationCenter.mockAuthorizationStatus = .denied
+                        mockNotificationCenter.authorizationStatus = .denied
                         let result = campaignsValidator.isNotificationAuthorized()
                         expect(result).to(beFalse())
                     }
@@ -245,7 +245,7 @@ class CampaignsValidatorSpec: QuickSpec {
 
                 context("when notification is not determined") {
                     it("returns false") {
-                        mockNotificationCenter.mockAuthorizationStatus = .notDetermined
+                        mockNotificationCenter.authorizationStatus = .notDetermined
                         let result = campaignsValidator.isNotificationAuthorized()
                         expect(result).to(beFalse())
                     }
@@ -253,9 +253,9 @@ class CampaignsValidatorSpec: QuickSpec {
 
                 context("when notification is provisional") {
                     it("returns false") {
-                        mockNotificationCenter.mockAuthorizationStatus = .provisional
+                        mockNotificationCenter.authorizationStatus = .provisional
                         let result = campaignsValidator.isNotificationAuthorized()
-                        expect(result).to(beTrue())
+                        expect(result).to(beFalse())
                     }
                 }
             }
