@@ -538,6 +538,7 @@ final class UNUserNotificationCenterMock: RemoteNotificationRequestable {
     var authorizationRequestError: Error?
     var authorizationGranted = true
     var authorizationStatus = UNAuthorizationStatus.notDetermined
+    var callCompletion: Bool = true
 
     func requestAuthorization(options: UNAuthorizationOptions = [],
                               completionHandler: @escaping (Bool, Error?) -> Void) {
@@ -550,7 +551,9 @@ final class UNUserNotificationCenterMock: RemoteNotificationRequestable {
     }
 
     func getAuthorizationStatus(completionHandler: @escaping (UNAuthorizationStatus) -> Void) {
-        completionHandler(authorizationStatus)
+        if callCompletion {
+            completionHandler(authorizationStatus)
+        }
     }
 }
 
@@ -694,32 +697,5 @@ extension EndpointURL {
         EndpointURL(ping: nil,
                     displayPermission: nil,
                     impression: nil)
-    }
-}
-
-final class CampaignValidatorNotificationCenterMock: RemoteNotificationRequestable {
-    private(set) var requestAuthorizationCallState: (didCall: Bool, options: UNAuthorizationOptions?) = (false, nil)
-    private(set) var didCallRegisterForRemoteNotifications = false
-    var authorizationRequestError: Error?
-    var authorizationGranted = true
-    var mockAuthorizationStatus: UNAuthorizationStatus?
-    var delay: TimeInterval = 1
-
-    func requestAuthorization(options: UNAuthorizationOptions = [],
-                              completionHandler: @escaping (Bool, Error?) -> Void) {
-        requestAuthorizationCallState = (didCall: true, options: options)
-        completionHandler(authorizationGranted, authorizationRequestError)
-    }
-
-    func registerForRemoteNotifications() {
-        didCallRegisterForRemoteNotifications = true
-    }
-
-    func getAuthorizationStatus(completionHandler: @escaping (UNAuthorizationStatus) -> Void) {
-        if let status = mockAuthorizationStatus {
-            DispatchQueue.global().asyncAfter(deadline: .now() + delay) {
-                completionHandler(status)
-            }
-        }
     }
 }
