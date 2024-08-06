@@ -8,6 +8,7 @@ internal struct CampaignData: Codable, Hashable {
     let hasNoEndDate: Bool
     let isCampaignDismissable: Bool
     let messagePayload: MessagePayload
+    let customJson: CustomJson?
 
     var intervalBetweenDisplaysInMS: Int {
         messagePayload.messageSettings.displaySettings.delay
@@ -21,7 +22,8 @@ internal struct CampaignData: Codable, Hashable {
          infiniteImpressions: Bool,
          hasNoEndDate: Bool,
          isCampaignDismissable: Bool,
-         messagePayload: MessagePayload) {
+         messagePayload: MessagePayload,
+         customJson: CustomJson?) {
         
         self.campaignId = campaignId
         self.maxImpressions = maxImpressions
@@ -32,6 +34,7 @@ internal struct CampaignData: Codable, Hashable {
         self.hasNoEndDate = hasNoEndDate
         self.isCampaignDismissable = isCampaignDismissable
         self.messagePayload = messagePayload
+        self.customJson = customJson
     }
 
     init(from decoder: Decoder) throws {
@@ -45,6 +48,7 @@ internal struct CampaignData: Codable, Hashable {
         hasNoEndDate = try container.decodeIfPresent(Bool.self, forKey: .hasNoEndDate) ?? false
         isCampaignDismissable = try container.decodeIfPresent(Bool.self, forKey: .isCampaignDismissable) ?? true
         messagePayload = try container.decode(MessagePayload.self, forKey: .messagePayload)
+        customJson = try container.decodeIfPresent(CustomJson.self, forKey: .customJson)
     }
 
     func hash(into hasher: inout Hasher) {

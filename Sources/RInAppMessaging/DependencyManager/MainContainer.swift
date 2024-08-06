@@ -1,4 +1,5 @@
 import Foundation
+import UserNotifications
 
 #if SWIFT_PACKAGE
 import RSDKUtilsMain
@@ -98,7 +99,8 @@ internal enum MainContainerFactory {
         elements.append(contentsOf: [
             ContainerElement(type: CampaignsValidatorType.self, factory: {
                 CampaignsValidator(campaignRepository: manager.resolve(type: CampaignRepositoryType.self)!,
-                                   eventMatcher: manager.resolve(type: EventMatcherType.self)!)
+                                   eventMatcher: manager.resolve(type: EventMatcherType.self)!,
+                                   notificationCenter: UNUserNotificationCenter.current())
             }, transient: true),
             ContainerElement(type: FullViewPresenterType.self, factory: {
                 FullViewPresenter(campaignRepository: manager.resolve(type: CampaignRepositoryType.self)!,

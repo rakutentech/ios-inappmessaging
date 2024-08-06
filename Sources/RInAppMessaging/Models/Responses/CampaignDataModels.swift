@@ -69,3 +69,37 @@ internal struct ButtonBehavior: Codable {
     let action: ActionType
     let uri: String?
 }
+
+internal struct CustomJson: Codable {
+    let pushPrimer: PrimerButton?
+    
+    enum CodingKeys: String, CodingKey {
+        case pushPrimer
+    }
+    
+    init(pushPrimer: PrimerButton? = nil) {
+        self.pushPrimer = pushPrimer
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        pushPrimer = try container.decodeIfPresent(PrimerButton.self, forKey: .pushPrimer)
+    }
+}
+
+internal struct PrimerButton: Codable {
+    let button: Int?
+    
+    enum CodingKeys: String, CodingKey {
+        case button
+    }
+    
+    init(button: Int? = nil) {
+        self.button = button
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        button = try container.decodeIfPresent(Int.self, forKey: .button)
+    }
+}

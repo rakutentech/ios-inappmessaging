@@ -35,4 +35,31 @@ extension UIApplication {
         // Only iOS 13+ is supported
         return nil
     }
+    
+    private static let notificationSettingsURL: URL? = {
+        var urlString: String?
+
+        if #available(iOS 16, *) {
+            urlString = UIApplication.openNotificationSettingsURLString
+        }
+        if #available(iOS 15.4, *) {
+            urlString = UIApplicationOpenNotificationSettingsURLString
+        }
+        if #available(iOS 8.0, *) {
+            urlString = UIApplication.openSettingsURLString
+        }
+        
+        guard let urlString = urlString, let url = URL(string: urlString) else {
+            return nil
+        }
+
+        return url
+    }()
+
+    func openAppNotificationSettings() {
+        guard let url = Self.notificationSettingsURL else {
+            return
+        }
+        self.open(url)
+    }
 }

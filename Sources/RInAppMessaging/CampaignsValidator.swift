@@ -1,3 +1,6 @@
+import UserNotifications
+import Dispatch
+
 internal protocol CampaignsValidatorType {
 
     /// Cross references the list of campaigns from CampaignRepository
@@ -20,12 +23,14 @@ internal struct CampaignsValidator: CampaignsValidatorType {
     private let campaignRepository: CampaignRepositoryType
     private let eventMatcher: EventMatcherType
     private let triggerValidator = TriggerAttributesValidator.self
+    private let notificationCenter: RemoteNotificationRequestable
 
     init(campaignRepository: CampaignRepositoryType,
-         eventMatcher: EventMatcherType) {
-
+         eventMatcher: EventMatcherType,
+         notificationCenter: RemoteNotificationRequestable) {
         self.campaignRepository = campaignRepository
         self.eventMatcher = eventMatcher
+        self.notificationCenter = notificationCenter
     }
 
     func validate(validatedCampaignHandler: (_ campaign: Campaign, _ events: Set<Event>) -> Void) {
@@ -38,6 +43,14 @@ internal struct CampaignsValidator: CampaignsValidatorType {
             guard campaign.data.isTest || (!campaign.isOptedOut && !campaign.isOutdated) else {
                 return
             }
+
+            // Enable PushPrimer only for RMC Sdk
+            if campaign.isPushPrimer {
+                guard RInAppMessaging.isRMCEnvironment, !isNotificationAuthorized() else {
+                    return
+                }
+            }
+
             guard let campaignTriggers = campaign.data.triggers else {
                 Logger.debug("campaign (\(campaign.id)) has no triggers.")
                 return
@@ -89,5 +102,21 @@ internal struct CampaignsValidator: CampaignsValidatorType {
         }
 
         return triggeredEvents
+    }
+
+    func isNotificationAuthorized(timeout: DispatchTime = .now() + 3) -> Bool {
+        var isAuthorized = false
+        let semaphore = DispatchSemaphore(value: 0)
+        notificationCenter.getAuthorizationStatus { authStatus in
+            if authStatus == .authorized {
+                isAuthorized = true
+            }
+            semaphore.signal()
+        }
+        if semaphore.wait(timeout: timeout) == .timedOut {
+            return false
+        } else {
+            return isAuthorized
+        }
     }
 }

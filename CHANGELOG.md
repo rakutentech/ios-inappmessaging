@@ -1,6 +1,11 @@
 ## Changelog
 
 ### Unreleased
+- Features:
+    - Added support for PushPrimer Campaign using CustomJson [RMCCX-6702]
+    - Prevent showing Push Priemr Campaign if Notificaation Permission was granted already [RMCCX-6707]
+    - Added CustomJson feature for RMC SDK users [RMCCX-6712] 
+    - Redirect user to App Notification Permission Settings if permission was denied previously in Push Primer [RMCCX-6710]
 
 ### 8.3.0 (2024-05-13) 
 - Improvements:
