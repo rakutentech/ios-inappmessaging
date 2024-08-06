@@ -105,18 +105,18 @@ internal struct CampaignsValidator: CampaignsValidatorType {
     }
 
     func isNotificationAuthorized(timeout: DispatchTime = .now() + 3) -> Bool {
-        var authorizationStatus = false
+        var isAuthorized = false
         let semaphore = DispatchSemaphore(value: 0)
         notificationCenter.getAuthorizationStatus { authStatus in
             if authStatus == .authorized {
-                authorizationStatus = true
+                isAuthorized = true
             }
             semaphore.signal()
         }
         if semaphore.wait(timeout: timeout) == .timedOut {
             return false
+        } else {
+            return isAuthorized
         }
-
-        return authorizationStatus
     }
 }
