@@ -52,8 +52,12 @@ class BundleSpec: QuickSpec {
             }
 
             it("should return rmcSdk version from plist") {
-                bundleMock.resourceFiles = ["RmcInfo.plist": ["rmcSdkVersion": "1.0.1"]]
+                bundleMock.resourceFiles = ["RmcInfo.plist": ["rmcSdkVersion": "1.0.1", "rmcRATAccountId": 999]]
                 expect(bundleInfo.rmcSdkVersion).to(equal("1.0.1"))
+            }
+            it("should return rmcRATAccountId version from plist") {
+                bundleMock.resourceFiles = ["RmcInfo.plist": ["rmcSdkVersion": "1.0.1", "rmcRATAccountId": 999]]
+                expect(bundleInfo.rmcRATAccountId).to(equal(NSNumber(999)))
             }
         }
 

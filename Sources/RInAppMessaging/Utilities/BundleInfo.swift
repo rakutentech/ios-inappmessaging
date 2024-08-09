@@ -45,7 +45,14 @@ internal class BundleInfo {
     }
     
     class var rmcSdkVersion: String? {
-        rmcBundle?.getRMCSdkVersion()
+        rmcBundle?.infoPlistValues()?["rmcSdkVersion"] as? String
+    }
+    
+    class var rmcRATAccountId: NSNumber? {
+        guard let accountId = rmcBundle?.infoPlistValues()?["rmcRATAccountId"] as? Int else {
+                    return nil
+        }
+        return NSNumber(value: accountId)
     }
 }
 
@@ -79,11 +86,10 @@ internal extension Bundle {
         sdkBundle(name: "RInAppMessaging")
     }
     
-    fileprivate func getRMCSdkVersion() -> String? {
+    fileprivate func infoPlistValues() -> [String: Any]?  {
         guard let path = path(forResource: "RmcInfo", ofType: "plist"),
-              let versionDict = NSDictionary(contentsOfFile: path),
-              let rmcSdkVersion = versionDict["rmcSdkVersion"] as? String
+              let infoDict = NSDictionary(contentsOfFile: path) as? [String: Any]
         else { return nil }
-        return rmcSdkVersion
+        return infoDict
     }
 }

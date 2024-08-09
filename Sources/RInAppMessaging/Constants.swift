@@ -50,6 +50,8 @@ internal enum Constants {
     enum RAnalytics: String {
         case impressionsEventName = "_rem_iam_impressions"
         case pushPrimerEventName = "_rem_iam_pushprimer"
+        case rmcImpressionsEventName = "_rem_rmc_iam_impressions"
+        case rmcPushPrimerEventName = "_rem_rmc_iam_pushprimer"
 
         enum Keys {
             static let action = "action"
