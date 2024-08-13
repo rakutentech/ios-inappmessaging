@@ -41,11 +41,9 @@ extension UIApplication {
 
         if #available(iOS 16, *) {
             urlString = UIApplication.openNotificationSettingsURLString
-        }
-        if #available(iOS 15.4, *) {
+        } else if #available(iOS 15.4, *) {
             urlString = UIApplicationOpenNotificationSettingsURLString
-        }
-        if #available(iOS 8.0, *) {
+        } else if #available(iOS 12.0, *) {
             urlString = UIApplication.openSettingsURLString
         }
         
