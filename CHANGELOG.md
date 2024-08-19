@@ -8,6 +8,7 @@
     - Redirect user to App Notification Permission Settings if permission was denied previously in Push Primer [RMCCX-6710]
     - Send RMC impression event to RAT [RMCCX-6939]
     - Send RMC push primer event to RAT [RMCCX-6938]
+    - Implement console warning if LogEvent is called before calling RegisterPreference [RMCCX-7109]
 
 ### 8.3.0 (2024-05-13) 
 - Improvements:

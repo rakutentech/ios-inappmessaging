@@ -23,6 +23,7 @@ import RSDKUtils
     internal static var isInitialized: Bool {
         interactor.iamModule != nil
     }
+    internal static var isUserRegistered: Bool = false
     internal static let interactor = InAppMessagingInteractor()
 
     /// Returns `true` when RMC module is integrated in the host app
@@ -124,6 +125,9 @@ import RSDKUtils
     /// Log the event name passed in and also pass the event name to the view controller to display a matching campaign.
     /// - Parameter event: The Event object to log.
     @objc public static func logEvent(_ event: Event) {
+        if !isUserRegistered {
+            Logger.debug("⚠️ Warning: RegisterPreference should be called before logging any Events.")
+        }
         inAppQueue.async {
             interactor.logEvent(event)
         }
@@ -136,6 +140,7 @@ import RSDKUtils
     /// - Note: This method creates a strong reference to provided object.
     /// - Parameter provider: object that will always contain up-to-date user information.
     @objc public static func registerPreference(_ provider: UserInfoProvider) {
+        isUserRegistered = true
         inAppQueue.async {
             interactor.userPerference = provider
         }

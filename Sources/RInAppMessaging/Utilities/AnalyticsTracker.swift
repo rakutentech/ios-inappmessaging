@@ -14,7 +14,9 @@ internal struct AnalyticsTracker {
         if let customAccNumber = BundleInfo.rmcRATAccountId, RInAppMessaging.isRMCEnvironment {
             let rmcEventName = name.rawValue == Constants.RAnalytics.impressionsEventName.rawValue ? Constants.RAnalytics.rmcImpressionsEventName : Constants.RAnalytics.rmcPushPrimerEventName
             AnalyticsBroadcaster.sendEventName(rmcEventName.rawValue, dataObject: eventData, customAccountNumber: customAccNumber)
+            AnalyticsBroadcaster.sendEventName(rmcEventName.rawValue, dataObject: eventData)
+        } else {
+            AnalyticsBroadcaster.sendEventName(name.rawValue, dataObject: eventData)
         }
-        AnalyticsBroadcaster.sendEventName(name.rawValue, dataObject: eventData)
     }
 }
