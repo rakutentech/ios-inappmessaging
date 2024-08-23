@@ -86,10 +86,12 @@ internal class InAppMessagingModule: ErrorDelegate, CampaignDispatcherDelegate, 
         checkUserChanges()
         eventMatcher.matchAndStore(event: event)
         campaignTriggerAgent.validateAndTriggerCampaigns()
+        Logger.debugLog("function: LogEvent")
         return true
     }
 
     func registerPreference(_ preference: UserInfoProvider) {
+        Logger.debugLog("function: registerPreference")
         accountRepository.setPreference(preference)
 
         guard isInitialized else {
@@ -103,6 +105,7 @@ internal class InAppMessagingModule: ErrorDelegate, CampaignDispatcherDelegate, 
     }
 
     func closeMessage(clearQueuedCampaigns: Bool) {
+        Logger.debugLog("function: closeMessage")
         if clearQueuedCampaigns {
             readyCampaignDispatcher.resetQueue()
         }

@@ -103,17 +103,3 @@ internal struct CommonUtility {
         return nil
     }
 }
-
-internal enum Logger {
-    static func debug(_ value: Any) {
-        #if DEBUG
-        print("InAppMessaging: " + String(describing: value))
-        #endif
-    }
-
-    static func debug(_ message: String) {
-        #if DEBUG
-        print("InAppMessaging: " + message)
-        #endif
-    }
-}

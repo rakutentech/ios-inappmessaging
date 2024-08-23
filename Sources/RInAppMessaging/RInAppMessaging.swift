@@ -100,6 +100,7 @@ import RSDKUtils
         let validConfigURL = tryGettingValidConfigURL(config)
         let mainContainer = MainContainerFactory.create(dependencyManager: dependencyManager, configURL: validConfigURL)
         dependencyManager.appendContainer(mainContainer)
+        Logger.debugLog("function: Configure")
         configure(dependencyManager: dependencyManager, moduleConfig: config)
     }
 

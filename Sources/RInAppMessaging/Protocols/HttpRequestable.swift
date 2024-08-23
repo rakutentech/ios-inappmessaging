@@ -141,7 +141,7 @@ extension HttpRequestable {
 
             if let error = error {
                 completion(.failure(.taskFailed(error)))
-                Logger.debug(error)
+                Logger.debug("Error: \(error)")
                 return
             }
 
