@@ -393,26 +393,6 @@ func application(_ application: UIApplication, didFinishLaunchingWithOptions lau
     return true
 }
 ```
-
-### **Push Primer**  [Under Construction]
-Push Primer is a special action type that can be set in ONE of the campaign message buttons.
-When user taps the Push Primer button, the SDK tries to authorize and then register for remote notifications.
-Developers can set `UNUserAuthorizationOptions` used during authorization proces by setting `pushPrimerAuthorizationOptions` variable:
-
-```swift
-RInAppMessaging.pushPrimerAuthorizationOptions = [.badge, .provisional]
-```
-
-If the variable wasn't modified, a default value will be used.
-
-⚠️ The Push Primer feature will not work if user has disabled Remote Notifications in system settings.
-
-Errors related to authorization requests can be accessed using the 'Error callback' feature.
-Errors related to registration requests will be returned in `application(_:didFailToRegisterForRemoteNotificationsWithError:)` method in the App delegate object.
-The process can be considered as successful when `application(_:didRegisterForRemoteNotificationsWithDeviceToken:)` method is called.
-
-[How to set up your app for registering with APNS](https://developer.apple.com/documentation/usernotifications/registering_your_app_with_apns)
-
 ### **Tooltip Campaigns**
 Tooltip feature is currently in beta testing; its features and behaviour might change in the future.
 Please refer to the internal guide for more information.
