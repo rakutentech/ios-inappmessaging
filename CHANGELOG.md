@@ -9,6 +9,7 @@
     - Send RMC impression event to RAT [RMCCX-6939]
     - Send RMC push primer event to RAT [RMCCX-6938]
     - Implement console warning if LogEvent is called before calling RegisterPreference [RMCCX-7109]
+    - Implement clickable image through CustomJson [RMCCX-7233]
 
 ### 8.3.0 (2024-05-13) 
 - Improvements:

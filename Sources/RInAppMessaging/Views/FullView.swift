@@ -103,7 +103,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         updateUIConstants()
         
         // Clickable Image Feature only for RMC
-        if !RInAppMessaging.isRMCEnvironment {
+        if RInAppMessaging.isRMCEnvironment {
             imageView.isUserInteractionEnabled = true
             imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onClickCampaignImage)))
         }
