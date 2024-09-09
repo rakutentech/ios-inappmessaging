@@ -737,6 +737,67 @@ class ViewPresenterSpec: QuickSpec {
                     expect(view.addedButtons.map({ $0.0.type })[1]).to(equal(ActionType.pushPrimer))
                 }
             }
+
+            context("when clickableImage content is available in Campaign Data and image is clicked") {
+                let campaignClickableImage = TestHelpers.generateCampaign(id: "ClickableImage", hasImage: true,
+                                                                          customJson: CustomJson(clickableImage: ClickableImage(url: "https://url")))
+                it("will call dismiss on the view object") {
+                    presenter.campaign = campaignClickableImage
+                    presenter.didClickCampaignImage()
+                    expect(view.wasDismissCalled).to(beTrue())
+                }
+
+                it("will send impressions containing .clickContent type") {
+                    presenter.campaign = campaignClickableImage
+                    presenter.didClickCampaignImage()
+                    expect(impressionService.sentImpressions?.list).to(contain(.clickContent))
+                    expect(impressionService.sentImpressions).toNot(beNil())
+                }
+
+                it("will do nothing if redirect URL is empty") {
+                    let campaignClickableImage = TestHelpers.generateCampaign(id: "ClickableImage",
+                                                                              hasImage: true,
+                                                                              customJson: CustomJson(clickableImage: ClickableImage(url: "")))
+                    presenter.campaign = campaignClickableImage
+                    presenter.didClickCampaignImage()
+                    expect(view.wasDismissCalled).to(beFalse())
+                    expect(impressionService.sentImpressions).to(beNil())
+                }
+
+                it("will do nothing if clickableImage is empty") {
+                    let campaignClickableImage = TestHelpers.generateCampaign(id: "ClickableImage",
+                                                                              hasImage: true,
+                                                                              customJson: CustomJson(clickableImage: nil ))
+                    presenter.campaign = campaignClickableImage
+                    presenter.didClickCampaignImage()
+                    expect(view.wasDismissCalled).to(beFalse())
+                    expect(impressionService.sentImpressions).to(beNil())
+                }
+                it("will do nothing if the campaign is a pushPrimer campaign") {
+                    let campaignPrimer = TestHelpers.generateCampaign(id: "PushPrimer", buttons: [
+                        Button(buttonText: "button1",
+                               buttonTextColor: "#000000",
+                               buttonBackgroundColor: "#000000",
+                               buttonBehavior: ButtonBehavior(action: .close, uri: nil),
+                               campaignTrigger: Trigger(type: .event,
+                                                        eventType: .custom,
+                                                        eventName: "trigger",
+                                                        attributes: [])),
+                        Button(buttonText: "button2",
+                               buttonTextColor: "#ffffff",
+                               buttonBackgroundColor: "#ffffff",
+                               buttonBehavior: ButtonBehavior(action: .redirect, uri: "uri"),
+                               campaignTrigger: nil)
+                    ],
+                    customJson: CustomJson(pushPrimer: PrimerButton(button: 2),
+                                           clickableImage: ClickableImage(url: "https://url"))
+                    )
+                    presenter.campaign = campaignPrimer
+                    presenter.didClickCampaignImage()
+                    expect(view.wasDismissCalled).to(beFalse())
+                    expect(impressionService.sentImpressions).to(beNil())
+                }
+            }
         }
     }
 }
