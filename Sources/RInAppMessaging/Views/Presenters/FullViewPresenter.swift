@@ -117,7 +117,7 @@ internal class FullViewPresenter: BaseViewPresenter, FullViewPresenterType, Erro
     }
     
     func didClickCampaignImage() {
-        guard campaign.isPushPrimer else { return }
+        guard !campaign.isPushPrimer else { return }
         guard let clickImageData = campaign.data.customJson?.clickableImage,
               let uriToOpen = URL(string: clickImageData.url ?? "") else {
             return

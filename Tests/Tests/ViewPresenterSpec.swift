@@ -739,8 +739,19 @@ class ViewPresenterSpec: QuickSpec {
             }
 
             context("when clickableImage content is available in Campaign Data and image is clicked") {
+
+                beforeEach {
+                    BundleInfoMocked.bundleMock = BundleMock()
+                    RInAppMessaging.bundleInfo = BundleInfoMocked.self
+                    RInAppMessaging.deinitializeModule()
+                }
+
+                afterEach {
+                    RInAppMessaging.bundleInfo = BundleInfo.self
+                }
+
                 let campaignClickableImage = TestHelpers.generateCampaign(id: "ClickableImage", hasImage: true,
-                                                                          customJson: CustomJson(clickableImage: ClickableImage(url: "https://url")))
+                                                                          customJson: CustomJson(clickableImage: ClickableImage(url: "https://www.google.com")))
                 it("will call dismiss on the view object") {
                     presenter.campaign = campaignClickableImage
                     presenter.didClickCampaignImage()
