@@ -7,6 +7,7 @@ internal protocol FullViewPresenterType: BaseViewPresenterType {
     func loadButtons()
     func didClickAction(sender: ActionButton)
     func didClickExitButton()
+    func didClickCampaignImage()
 }
 
 internal class FullViewPresenter: BaseViewPresenter, FullViewPresenterType, ErrorReportable {
@@ -112,6 +113,18 @@ internal class FullViewPresenter: BaseViewPresenter, FullViewPresenterType, Erro
         checkOptOutStatus()
         sendImpressions()
 
+        view?.dismiss()
+    }
+    
+    func didClickCampaignImage() {
+        guard !campaign.isPushPrimer else { return }
+        guard let clickImageData = campaign.data.customJson?.clickableImage,
+              let uriToOpen = URL(string: clickImageData.url ?? "") else {
+            return
+        }
+        logImpression(type: .clickContent)
+        sendImpressions()
+        UIApplication.shared.open(uriToOpen)
         view?.dismiss()
     }
 

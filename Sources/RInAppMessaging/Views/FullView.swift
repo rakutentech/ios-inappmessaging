@@ -101,6 +101,13 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         super.layoutSubviews()
 
         updateUIConstants()
+        
+        // Clickable Image Feature only for RMC
+        if RInAppMessaging.isRMCEnvironment {
+            imageView.isUserInteractionEnabled = true
+            imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onClickCampaignImage)))
+        }
+
         bodyViewOffsetYConstraint.constant = hasImage ? 0 : uiConstants.bodyViewSafeAreaOffsetY
 
         DispatchQueue.main.async {
@@ -349,5 +356,9 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
 
     @objc private func onExitButtonClick() {
         presenter.didClickExitButton()
+    }
+    
+    @objc private func onClickCampaignImage() {
+        presenter.didClickCampaignImage()
     }
 }
