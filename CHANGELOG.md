@@ -1,5 +1,9 @@
 ## Changelog
 
+### Unreleased
+- Improvements:
+    - Implement clickable image through CustomJson [RMCCX-7233]
+
 ### 8.4.0 (2024-09-17) 
 - Features:
     - Added support for PushPrimer Campaign using CustomJson [RMCCX-6702]
