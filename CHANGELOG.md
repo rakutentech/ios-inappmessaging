@@ -1,6 +1,6 @@
 ## Changelog
 
-### 8.4.0 (2024-09-12) 
+### 8.4.0 (2024-09-17) 
 - Features:
     - Added support for PushPrimer Campaign using CustomJson [RMCCX-6702]
     - Prevent showing Push Priemr Campaign if Notificaation Permission was granted already [RMCCX-6707]
