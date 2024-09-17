@@ -1,6 +1,6 @@
 ## Changelog
 
-### Unreleased
+### 8.4.0 (2024-09-17) 
 - Features:
     - Added support for PushPrimer Campaign using CustomJson [RMCCX-6702]
     - Prevent showing Push Priemr Campaign if Notificaation Permission was granted already [RMCCX-6707]
@@ -9,6 +9,8 @@
     - Send RMC impression event to RAT [RMCCX-6939]
     - Send RMC push primer event to RAT [RMCCX-6938]
     - Implement console warning if LogEvent is called before calling RegisterPreference [RMCCX-7109]
+- Improvements:
+    - Improve Documentation for IAM [RMCCX-6705]
 
 ### 8.3.0 (2024-05-13) 
 - Improvements:
