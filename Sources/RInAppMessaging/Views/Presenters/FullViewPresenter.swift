@@ -119,7 +119,7 @@ internal class FullViewPresenter: BaseViewPresenter, FullViewPresenterType, Erro
     func didClickCampaignImage() {
         guard !campaign.isPushPrimer else { return }
         guard let clickImageData = campaign.data.customJson?.clickableImage,
-              isValidURL(clickImageData.url ?? ""),
+              CommonUtility.isValidURL(clickImageData.url ?? ""),
               let uriToOpen = URL(string: clickImageData.url ?? "") else {
             return
         }
@@ -131,15 +131,6 @@ internal class FullViewPresenter: BaseViewPresenter, FullViewPresenterType, Erro
             }
         })
         view?.dismiss()
-    }
-
-    func isValidURL(_ urlString: String) -> Bool {
-        let pattern = "^(https://.*|.*://.*)$"
-        guard let regex = try? NSRegularExpression(pattern: pattern, options: .caseInsensitive) else {
-            return false
-        }
-        let range = NSRange(location: 0, length: urlString.utf16.count)
-        return regex.firstMatch(in: urlString, options: [], range: range) != nil
     }
 
     // MARK: - Private

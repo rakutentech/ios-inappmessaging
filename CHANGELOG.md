@@ -3,6 +3,8 @@
 ### Unreleased
 - Features:
     - Implement clickable image through CustomJson [RMCCX-7233]
+- Fixes:
+    - Fix clickable image behaviour for invalid url [RMCCX-7351]
 
 ### 8.4.0 (2024-09-17) 
 - Features:
