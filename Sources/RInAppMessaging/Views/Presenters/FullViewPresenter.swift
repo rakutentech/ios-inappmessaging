@@ -135,7 +135,9 @@ internal class FullViewPresenter: BaseViewPresenter, FullViewPresenterType, Erro
 
     func isValidURL(_ urlString: String) -> Bool {
         let pattern = "^(https://.*|.*://.*)$"
-        let regex = try! NSRegularExpression(pattern: pattern, options: .caseInsensitive)
+        guard let regex = try? NSRegularExpression(pattern: pattern, options: .caseInsensitive) else {
+            return false
+        }
         let range = NSRange(location: 0, length: urlString.utf16.count)
         return regex.firstMatch(in: urlString, options: [], range: range) != nil
     }
