@@ -119,12 +119,17 @@ internal class FullViewPresenter: BaseViewPresenter, FullViewPresenterType, Erro
     func didClickCampaignImage() {
         guard !campaign.isPushPrimer else { return }
         guard let clickImageData = campaign.data.customJson?.clickableImage,
+              CommonUtility.isValidURL(clickImageData.url ?? ""),
               let uriToOpen = URL(string: clickImageData.url ?? "") else {
             return
         }
         logImpression(type: .clickContent)
         sendImpressions()
-        UIApplication.shared.open(uriToOpen)
+        UIApplication.shared.open(uriToOpen, options: [:], completionHandler: { [view] success in
+            if !success, let view = view {
+                self.showURLError(view: view)
+            }
+        })
         view?.dismiss()
     }
 
