@@ -125,6 +125,7 @@ internal class FullViewPresenter: BaseViewPresenter, FullViewPresenterType, Erro
         }
         logImpression(type: .clickContent)
         sendImpressions()
+
         UIApplication.shared.open(uriToOpen, options: [:], completionHandler: { [view] success in
             if !success, let view = view {
                 self.showURLError(view: view)
