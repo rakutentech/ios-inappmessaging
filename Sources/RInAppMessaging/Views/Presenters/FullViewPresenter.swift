@@ -119,13 +119,25 @@ internal class FullViewPresenter: BaseViewPresenter, FullViewPresenterType, Erro
     func didClickCampaignImage() {
         guard !campaign.isPushPrimer else { return }
         guard let clickImageData = campaign.data.customJson?.clickableImage,
+              isValidURL(clickImageData.url ?? ""),
               let uriToOpen = URL(string: clickImageData.url ?? "") else {
             return
         }
         logImpression(type: .clickContent)
         sendImpressions()
-        UIApplication.shared.open(uriToOpen)
+        UIApplication.shared.open(uriToOpen, options: [:], completionHandler: { [view] success in
+            if !success, let view = view {
+                self.showURLError(view: view)
+            }
+        })
         view?.dismiss()
+    }
+
+    func isValidURL(_ urlString: String) -> Bool {
+        let pattern = "^(https://.*|.*://.*)$"
+        let regex = try! NSRegularExpression(pattern: pattern, options: .caseInsensitive)
+        let range = NSRange(location: 0, length: urlString.utf16.count)
+        return regex.firstMatch(in: urlString, options: [], range: range) != nil
     }
 
     // MARK: - Private
