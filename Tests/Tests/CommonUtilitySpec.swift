@@ -67,7 +67,7 @@ class CommonUtilitySpec: QuickSpec {
                 }
 
                 it("will return empty dictionary for empty json data") {
-                    let data = "{}".data(using: .utf8)!
+                    let data = Data("{}".utf8)
                     let result = CommonUtility.convertDataToDictionary(data)
                     expect(result).toNot(beNil())
                 }
@@ -91,7 +91,7 @@ class CommonUtilitySpec: QuickSpec {
                 }
 
                 it("will return nil for empty string data") {
-                    let data = "".data(using: .utf8)!
+                    let data = Data("".utf8)
                     let result = CommonUtility.convertDataToDictionary(data)
                     expect(result).to(beNil())
                 }

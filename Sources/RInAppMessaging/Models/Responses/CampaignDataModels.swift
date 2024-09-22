@@ -93,8 +93,42 @@ internal struct CustomJson: Codable {
 
 internal struct PrimerButton: Codable {
     let button: Int?
+    
+    enum CodingKeys: String, CodingKey {
+        case button
+    }
+    
+    init(button: Int? = nil) {
+        self.button = button
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        if let button = try? container.decode(Int.self, forKey: .button) {
+            self.button = button
+        } else {
+            self.button = nil
+        }
+    }
 }
 
 internal struct ClickableImage: Codable {
     let url: String?
+    
+    enum CodingKeys: String, CodingKey {
+        case url
+    }
+    
+    init(url: String? = nil) {
+        self.url = url
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        if let url = try? container.decode(String.self, forKey: .url) {
+            self.url = url
+        } else {
+            self.url = nil
+        }
+    }
 }

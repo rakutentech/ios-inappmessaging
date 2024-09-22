@@ -23,7 +23,7 @@ class UserDataCacheSpec: QuickSpec {
             }
 
             it("will return nil if invalid cached data was found") {
-                userDefaults.set("invalid_data".data(using: .utf8), forKey: userDefaultsDataKey)
+                userDefaults.set(Data("invalid_data".utf8), forKey: userDefaultsDataKey)
                 let userCache = UserDataCache(userDefaults: userDefaults)
                 expect(userCache.getUserData(identifiers: [])).to(beNil())
             }
