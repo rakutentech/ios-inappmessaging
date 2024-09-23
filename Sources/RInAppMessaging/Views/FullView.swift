@@ -85,6 +85,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
             imageView.isHidden = !hasImage
         }
     }
+    private var isClickableImage = false
 
     init(presenter: FullViewPresenterType) {
         self.presenter = presenter
@@ -103,7 +104,8 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         updateUIConstants()
         
         // Clickable Image Feature only for RMC
-        if RInAppMessaging.isRMCEnvironment {
+        if RInAppMessaging.isRMCEnvironment,
+           isClickableImage {
             imageView.isUserInteractionEnabled = true
             imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onClickCampaignImage)))
         }
@@ -141,6 +143,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         } else if viewModel.hasText {
             layout = .textOnly
         }
+        isClickableImage = viewModel.customJson?.clickableImage?.url != nil
 
         setupAccessibility()
         updateUIConstants()

@@ -277,7 +277,8 @@ extension FullViewModel {
               isHTML: false,
               showOptOut: true,
               showButtons: true,
-              isDismissable: true)
+              isDismissable: true,
+              customJson: nil)
     }
 }
 

@@ -13,6 +13,7 @@ internal struct FullViewModel {
     let showOptOut: Bool
     let showButtons: Bool
     let isDismissable: Bool
+    let customJson: CustomJson?
 
     var hasText: Bool {
         [header, messageBody].contains { $0?.isEmpty == false }

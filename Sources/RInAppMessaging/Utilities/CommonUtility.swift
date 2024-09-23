@@ -102,6 +102,15 @@ internal struct CommonUtility {
         Logger.debug("Failed converting value \(attribute.value) to \(attribute.type)")
         return nil
     }
+    
+    static func isValidURL(_ urlString: String) -> Bool {
+        let pattern = "^(https://.*|.*://.*)$"
+        guard let regex = try? NSRegularExpression(pattern: pattern, options: .caseInsensitive) else {
+            return false
+        }
+        let range = NSRange(location: 0, length: urlString.utf16.count)
+        return regex.firstMatch(in: urlString, options: [], range: range) != nil
+    }
 }
 
 internal enum Logger {
