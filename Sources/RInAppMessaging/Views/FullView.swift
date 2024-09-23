@@ -85,7 +85,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
             imageView.isHidden = !hasImage
         }
     }
-    private var isClickableImage: Bool?
+    private var isClickableImage = false
 
     init(presenter: FullViewPresenterType) {
         self.presenter = presenter
@@ -105,7 +105,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         
         // Clickable Image Feature only for RMC
         if RInAppMessaging.isRMCEnvironment,
-           isClickableImage == true {
+           isClickableImage {
             imageView.isUserInteractionEnabled = true
             imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onClickCampaignImage)))
         }
