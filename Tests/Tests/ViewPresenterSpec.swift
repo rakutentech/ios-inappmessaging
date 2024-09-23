@@ -775,6 +775,17 @@ class ViewPresenterSpec: QuickSpec {
                     expect(impressionService.sentImpressions).to(beNil())
                 }
 
+                it("will do nothing if redirect URL is invalid") {
+                    let campaignClickableImage = TestHelpers.generateCampaign(id: "ClickableImage",
+                                                                              hasImage: true,
+                                                                              customJson: CustomJson(clickableImage:
+                                                                                                        ClickableImage(url: "invalid.url")))
+                    presenter.campaign = campaignClickableImage
+                    presenter.didClickCampaignImage()
+                    expect(view.wasDismissCalled).to(beFalse())
+                    expect(impressionService.sentImpressions).to(beNil())
+                }
+
                 it("will do nothing if clickableImage is empty") {
                     let campaignClickableImage = TestHelpers.generateCampaign(id: "ClickableImage",
                                                                               hasImage: true,
