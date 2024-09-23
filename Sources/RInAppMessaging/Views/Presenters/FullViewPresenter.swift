@@ -50,7 +50,8 @@ internal class FullViewPresenter: BaseViewPresenter, FullViewPresenterType, Erro
                                       isHTML: messagePayload.messageSettings.displaySettings.html,
                                       showOptOut: messagePayload.messageSettings.displaySettings.optOut,
                                       showButtons: !messagePayload.messageSettings.controlSettings.buttons.isEmpty,
-                                      isDismissable: campaign.data.isCampaignDismissable)
+                                      isDismissable: campaign.data.isCampaignDismissable,
+                                      customJson: campaign.data.customJson)
 
         view?.setup(viewModel: viewModel)
     }
