@@ -86,6 +86,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         }
     }
     private var isClickableImage = false
+    var backgroundViewColor: UIColor? = .clear
 
     init(presenter: FullViewPresenterType) {
         self.presenter = presenter
@@ -150,8 +151,16 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         layoutContentView(viewModel: viewModel)
         layoutUIComponents(viewModel: viewModel)
         createMessageBody(viewModel: viewModel)
+        if RInAppMessaging.isRMCEnvironment,
+           let opacity = viewModel.customJson?.background?.opacity,
+           (0...1).contains(opacity) {
+            backgroundViewColor = .black.withAlphaComponent(opacity)
+        }
+        else {
+            backgroundViewColor = uiConstants.backgroundColor ?? viewModel.backgroundColor
+        }
 
-        backgroundView.backgroundColor = uiConstants.backgroundColor ?? viewModel.backgroundColor
+        backgroundView.backgroundColor = backgroundViewColor
         optOutView.useBrightColors = !viewModel.backgroundColor.isBright
 
         exitButton.invertedColors = viewModel.backgroundColor.isBright
