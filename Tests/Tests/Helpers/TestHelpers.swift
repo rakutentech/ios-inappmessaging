@@ -1,5 +1,6 @@
 import Foundation
 import class UIKit.UIColor
+import UIKit
 @testable import RInAppMessaging
 
 class ValidatorHandler {
