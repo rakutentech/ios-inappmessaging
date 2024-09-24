@@ -1,5 +1,4 @@
 import Foundation
-import class UIKit.UIColor
 import UIKit
 @testable import RInAppMessaging
 
@@ -130,7 +129,7 @@ struct TestHelpers {
     }
 
     static func generateFullViewModel(customJson: CustomJson? = nil) -> FullViewModel {
-        return FullViewModel.init(image: UIImage(),
+        return FullViewModel.init(image: UIImage(named: "test-image"),
                                   backgroundColor: .black,
                                   title: "Test",
                                   messageBody: "test campaign",
