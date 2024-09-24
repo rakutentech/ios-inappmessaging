@@ -89,9 +89,9 @@ internal struct CustomJson: Codable {
     
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        pushPrimer = try container.decodeIfPresent(PrimerButton.self, forKey: .pushPrimer)
-        clickableImage = try container.decodeIfPresent(ClickableImage.self, forKey: .clickableImage)
-        background = try container.decodeIfPresent(BackgroundColor.self, forKey: .background)
+        pushPrimer = try? container.decodeIfPresent(PrimerButton.self, forKey: .pushPrimer)
+        clickableImage = try? container.decodeIfPresent(ClickableImage.self, forKey: .clickableImage)
+        background = try? container.decodeIfPresent(BackgroundColor.self, forKey: .background)
     }
 }
 
@@ -108,11 +108,7 @@ internal struct PrimerButton: Codable {
     
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        if let button = try? container.decode(Int.self, forKey: .button) {
-            self.button = button
-        } else {
-            self.button = nil
-        }
+        self.button = try? container.decodeIfPresent(Int.self, forKey: .button)
     }
 }
 
@@ -129,11 +125,7 @@ internal struct ClickableImage: Codable {
     
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        if let url = try? container.decode(String.self, forKey: .url) {
-            self.url = url
-        } else {
-            self.url = nil
-        }
+        self.url = try? container.decodeIfPresent(String.self, forKey: .url)
     }
 }
 
@@ -150,10 +142,6 @@ internal struct BackgroundColor: Codable {
     
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        if let opacity = try? container.decode(Double.self, forKey: .opacity) {
-            self.opacity = opacity
-        } else {
-            self.opacity = nil
-        }
+        self.opacity = try? container.decodeIfPresent(Double.self, forKey: .opacity)
     }
 }
