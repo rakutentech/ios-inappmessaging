@@ -73,25 +73,29 @@ internal struct ButtonBehavior: Codable {
 internal struct CustomJson: Codable {
     let pushPrimer: PrimerButton?
     let clickableImage: ClickableImage?
+    let background: BackgroundColor?
     
     enum CodingKeys: String, CodingKey {
         case pushPrimer
         case clickableImage
+        case background
     }
     
-    init(pushPrimer: PrimerButton? = nil, clickableImage: ClickableImage? = nil) {
+    init(pushPrimer: PrimerButton? = nil, clickableImage: ClickableImage? = nil, background: BackgroundColor? = nil) {
         self.pushPrimer = pushPrimer
         self.clickableImage = clickableImage
+        self.background = background
     }
     
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        pushPrimer = try container.decodeIfPresent(PrimerButton.self, forKey: .pushPrimer)
-        clickableImage = try container.decodeIfPresent(ClickableImage.self, forKey: .clickableImage)
+        pushPrimer = try? container.decodeIfPresent(PrimerButton.self, forKey: .pushPrimer)
+        clickableImage = try? container.decodeIfPresent(ClickableImage.self, forKey: .clickableImage)
+        background = try? container.decodeIfPresent(BackgroundColor.self, forKey: .background)
     }
 }
 
-internal struct PrimerButton: Codable {
+internal struct PrimerButton: Codable, Equatable {
     let button: Int?
     
     enum CodingKeys: String, CodingKey {
@@ -104,15 +108,11 @@ internal struct PrimerButton: Codable {
     
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        if let button = try? container.decode(Int.self, forKey: .button) {
-            self.button = button
-        } else {
-            self.button = nil
-        }
+        self.button = try? container.decodeIfPresent(Int.self, forKey: .button)
     }
 }
 
-internal struct ClickableImage: Codable {
+internal struct ClickableImage: Codable, Equatable{
     let url: String?
     
     enum CodingKeys: String, CodingKey {
@@ -125,10 +125,23 @@ internal struct ClickableImage: Codable {
     
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        if let url = try? container.decode(String.self, forKey: .url) {
-            self.url = url
-        } else {
-            self.url = nil
-        }
+        self.url = try? container.decodeIfPresent(String.self, forKey: .url)
+    }
+}
+
+internal struct BackgroundColor: Codable, Equatable {
+    let opacity: Double?
+    
+    enum CodingKeys: String, CodingKey {
+        case opacity
+    }
+    
+    init(opacity: Double? = nil) {
+        self.opacity = opacity
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.opacity = try? container.decodeIfPresent(Double.self, forKey: .opacity)
     }
 }
