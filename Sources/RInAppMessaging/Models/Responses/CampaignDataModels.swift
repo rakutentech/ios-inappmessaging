@@ -95,7 +95,7 @@ internal struct CustomJson: Codable {
     }
 }
 
-internal struct PrimerButton: Codable {
+internal struct PrimerButton: Codable, Equatable {
     let button: Int?
     
     enum CodingKeys: String, CodingKey {
@@ -112,7 +112,7 @@ internal struct PrimerButton: Codable {
     }
 }
 
-internal struct ClickableImage: Codable {
+internal struct ClickableImage: Codable, Equatable{
     let url: String?
     
     enum CodingKeys: String, CodingKey {
@@ -129,7 +129,7 @@ internal struct ClickableImage: Codable {
     }
 }
 
-internal struct BackgroundColor: Codable {
+internal struct BackgroundColor: Codable, Equatable {
     let opacity: Double?
     
     enum CodingKeys: String, CodingKey {
