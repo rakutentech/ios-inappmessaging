@@ -128,6 +128,22 @@ struct TestHelpers {
         )
     }
 
+    static func generateFullViewModel(customJson: CustomJson? = nil) -> FullViewModel {
+        return FullViewModel.init(image: UIImage(),
+                                  backgroundColor: .black,
+                                  title: "Test",
+                                  messageBody: "test campaign",
+                                  header: "testing",
+                                  titleColor: .black,
+                                  headerColor: .black,
+                                  messageBodyColor: .black,
+                                  isHTML: false,
+                                  showOptOut: true,
+                                  showButtons: true,
+                                  isDismissable: true,
+                                  customJson: customJson)
+    }
+
     enum MockResponse {
         static func withGeneratedCampaigns(count: Int,
                                            test: Bool,

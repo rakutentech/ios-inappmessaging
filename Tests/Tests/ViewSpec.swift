@@ -174,6 +174,55 @@ class ViewSpec: QuickSpec {
             }
         }
 
+        describe("ModalView with CustomJson") {
+            var view: ModalView!
+            var presenter: FullViewPresenterMock!
+
+            beforeEach {
+                BundleInfoMocked.bundleMock = BundleMock()
+                RInAppMessaging.bundleInfo = BundleInfoMocked.self
+                RInAppMessaging.deinitializeModule()
+
+                presenter = FullViewPresenterMock()
+                view = ModalView(presenter: presenter)
+                presenter.view = view
+            }
+
+            afterEach {
+                RInAppMessaging.bundleInfo = BundleInfo.self
+            }
+
+            it("will have dark background color if CustomJson has valid value") {
+                view.setup(viewModel: TestHelpers.generateFullViewModel(customJson: CustomJson(background: BackgroundColor(opacity: 0.6))))
+                expect(view.backgroundViewColor).to(equal(.black.withAlphaComponent(0.6)))
+
+                view.setup(viewModel: TestHelpers.generateFullViewModel(customJson: CustomJson(background: BackgroundColor(opacity: 0))))
+                expect(view.backgroundViewColor).to(equal(.black.withAlphaComponent(0)))
+
+                view.setup(viewModel: TestHelpers.generateFullViewModel(customJson: CustomJson(background: BackgroundColor(opacity: 1))))
+                expect(view.backgroundViewColor).to(equal(.black.withAlphaComponent(1)))
+            }
+
+            it("will have default background color if CustomJson has invalid value") {
+                view.setup(viewModel: TestHelpers.generateFullViewModel(customJson: CustomJson(background: BackgroundColor(opacity: 1.2))))
+                expect(view.backgroundViewColor).to(equal(.black.withAlphaComponent(0.14)))
+
+                view.setup(viewModel: TestHelpers.generateFullViewModel(customJson: CustomJson(background: BackgroundColor(opacity: -1))))
+                expect(view.backgroundViewColor).to(equal(.black.withAlphaComponent(0.14)))
+            }
+
+            it("will have default background color if CustomJson has nil value for any parameters") {
+                view.setup(viewModel: TestHelpers.generateFullViewModel(customJson: CustomJson(background: nil)))
+                expect(view.backgroundViewColor).to(equal(.black.withAlphaComponent(0.14)))
+
+                view.setup(viewModel: TestHelpers.generateFullViewModel(customJson: CustomJson(background: BackgroundColor(opacity: nil))))
+                expect(view.backgroundViewColor).to(equal(.black.withAlphaComponent(0.14)))
+
+                view.setup(viewModel: TestHelpers.generateFullViewModel(customJson: nil))
+                expect(view.backgroundViewColor).to(equal(.black.withAlphaComponent(0.14)))
+            }
+        }
+
         describe("FullScreenView") {
             var view: FullScreenView!
             var presenter: FullViewPresenterMock!

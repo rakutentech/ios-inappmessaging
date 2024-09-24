@@ -73,21 +73,25 @@ internal struct ButtonBehavior: Codable {
 internal struct CustomJson: Codable {
     let pushPrimer: PrimerButton?
     let clickableImage: ClickableImage?
+    let background: BackgroundColor?
     
     enum CodingKeys: String, CodingKey {
         case pushPrimer
         case clickableImage
+        case background
     }
     
-    init(pushPrimer: PrimerButton? = nil, clickableImage: ClickableImage? = nil) {
+    init(pushPrimer: PrimerButton? = nil, clickableImage: ClickableImage? = nil, background: BackgroundColor? = nil) {
         self.pushPrimer = pushPrimer
         self.clickableImage = clickableImage
+        self.background = background
     }
     
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         pushPrimer = try container.decodeIfPresent(PrimerButton.self, forKey: .pushPrimer)
         clickableImage = try container.decodeIfPresent(ClickableImage.self, forKey: .clickableImage)
+        background = try container.decodeIfPresent(BackgroundColor.self, forKey: .background)
     }
 }
 
@@ -129,6 +133,27 @@ internal struct ClickableImage: Codable {
             self.url = url
         } else {
             self.url = nil
+        }
+    }
+}
+
+internal struct BackgroundColor: Codable {
+    let opacity: Double?
+    
+    enum CodingKeys: String, CodingKey {
+        case opacity
+    }
+    
+    init(opacity: Double? = nil) {
+        self.opacity = opacity
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        if let opacity = try? container.decode(Double.self, forKey: .opacity) {
+            self.opacity = opacity
+        } else {
+            self.opacity = nil
         }
     }
 }
