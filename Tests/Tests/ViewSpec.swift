@@ -205,9 +205,11 @@ class ViewSpec: QuickSpec {
 
             it("will have default background color if CustomJson has invalid value") {
                 view.setup(viewModel: TestHelpers.generateFullViewModel(customJson: CustomJson(background: BackgroundColor(opacity: 1.2))))
+                expect(view.backgroundViewColor).toNot(equal(.black.withAlphaComponent(1.2)))
                 expect(view.backgroundViewColor).to(equal(.black.withAlphaComponent(0.14)))
 
                 view.setup(viewModel: TestHelpers.generateFullViewModel(customJson: CustomJson(background: BackgroundColor(opacity: -1))))
+                expect(view.backgroundViewColor).toNot(equal(.black.withAlphaComponent(-1)))
                 expect(view.backgroundViewColor).to(equal(.black.withAlphaComponent(0.14)))
             }
 
