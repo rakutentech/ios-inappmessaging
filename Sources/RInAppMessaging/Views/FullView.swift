@@ -152,11 +152,11 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         layoutUIComponents(viewModel: viewModel)
         createMessageBody(viewModel: viewModel)
         if RInAppMessaging.isRMCEnvironment,
+           case .modal = mode,
            let opacity = viewModel.customJson?.background?.opacity,
            (0...1).contains(opacity) {
             backgroundViewColor = .black.withAlphaComponent(opacity)
-        }
-        else {
+        } else {
             backgroundViewColor = uiConstants.backgroundColor ?? viewModel.backgroundColor
         }
 
