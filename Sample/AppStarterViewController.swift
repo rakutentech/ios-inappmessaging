@@ -7,7 +7,7 @@ class AppStarterViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        guard #available(iOS 13, *) else {
+        guard #available(iOS 14, *) else {
             swiftUIButton.isEnabled = false
             return
         }
@@ -21,7 +21,7 @@ class AppStarterViewController: UIViewController {
         view.window?.rootViewController = uiKitTabBarController
     }
 
-    @available(iOS 13.0, *)
+    @available(iOS 14.0, *)
     @IBAction func swiftUiDidTap(_ sender: Any) {
         let swiftUITabBarController = UIHostingController(rootView: TabBarView())
         view.window?.rootViewController = swiftUITabBarController

@@ -26,7 +26,7 @@ class UIApplicationExtensionsSpec: QuickSpec {
                 }
 
                 // Tests below will run only on iOS 13+
-                guard #available(iOS 13.0, *) else {
+                guard #available(iOS 14.0, *) else {
                     return
                 }
 
@@ -54,7 +54,7 @@ class UIApplicationExtensionsSpec: QuickSpec {
             context("when calling getCurrentStatusBarStyle method") {
 
                 it("will not return nil on iOS 13+") {
-                    if #available(iOS 13.0, *) {
+                    if #available(iOS 14.0, *) {
                         expect(application.statusBarStyle).toNot(beNil())
                     } else {
                         expect(application.statusBarStyle).to(beNil())
