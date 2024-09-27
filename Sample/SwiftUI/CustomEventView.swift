@@ -1,7 +1,7 @@
 import SwiftUI
 import RInAppMessaging
 
-@available(iOS 13.0, *)
+@available(iOS 14.0, *)
 struct CustomEventView: View {
 
     @State private var isAlertPresented = false
