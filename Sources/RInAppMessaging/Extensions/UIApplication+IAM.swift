@@ -4,7 +4,7 @@ extension UIApplication {
 
     func getKeyWindow() -> UIWindow? {
         var keySceneWindow: UIWindow?
-        if #available(iOS 13.0, *) {
+        if #available(iOS 14.0, *) {
             keySceneWindow = connectedScenes
                 .filter({ $0.activationState == .foregroundActive })
                 .compactMap({ $0 as? UIWindowScene })
@@ -16,7 +16,7 @@ extension UIApplication {
     }
 
     func getCurrentStatusBarStyle() -> UIStatusBarStyle? {
-        if #available(iOS 13.0, *),
+        if #available(iOS 14.0, *),
            let keyScene = connectedScenes
                 .filter({ $0.activationState != .unattached })
                 .compactMap({ $0 as? UIWindowScene })
