@@ -1,7 +1,7 @@
 import SwiftUI
 import RInAppMessaging
 
-@available(iOS 13.0, *)
+@available(iOS 14.0, *)
 struct SecondView: View {
 
     @Environment(\.presentationMode) var presentationMode
@@ -42,7 +42,7 @@ struct SecondView: View {
     }
 }
 
-@available(iOS 13.0, *)
+@available(iOS 14.0, *)
 struct SecondView_Previews: PreviewProvider {
     static var previews: some View {
         SecondView()

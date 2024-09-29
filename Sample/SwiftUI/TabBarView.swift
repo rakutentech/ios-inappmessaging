@@ -1,6 +1,6 @@
 import SwiftUI
 
-@available(iOS 13.0, *)
+@available(iOS 14.0, *)
 struct TabBarView: View {
     var body: some View {
         VStack {
@@ -30,14 +30,14 @@ struct TabBarView: View {
     }
 }
 
-@available(iOS 13.0, *)
+@available(iOS 14.0, *)
 struct TabView_Previews: PreviewProvider {
     static var previews: some View {
         TabBarView()
     }
 }
 
-@available(iOS 13.0, *)
+@available(iOS 14.0, *)
 extension View {
     func canHaveTooltipIfAvailable(identifier: String) -> some View {
         if #available(iOS 15.0, *) {
