@@ -11,7 +11,7 @@ import class RSDKUtilsMain.TypedDependencyManager
 
 @testable import RInAppMessaging
 
-@available(iOS 13.0, *) // Because of UIImage(named:in:with:)
+@available(iOS 14.0, *) // Because of UIImage(named:in:with:)
 class RouterSpec: QuickSpec {
 // swiftlint:disable:previous type_body_length
 

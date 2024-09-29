@@ -1,7 +1,7 @@
 import SwiftUI
 import RInAppMessaging
 
-@available(iOS 13.0, *)
+@available(iOS 14.0, *)
 struct UserInfoView: View {
 
     @State private var userIDText: String = ""
@@ -87,7 +87,7 @@ struct UserInfoView: View {
     }
 }
 
-@available(iOS 13.0, *)
+@available(iOS 14.0, *)
 struct UserInfoView_Previews: PreviewProvider {
     static var previews: some View {
         UserInfoView()

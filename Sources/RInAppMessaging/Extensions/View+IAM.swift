@@ -1,7 +1,7 @@
 import Foundation
 import SwiftUI
 
-@available(iOS 13.0, *)
+@available(iOS 14.0, *)
 internal extension View {
     /// Hide or show the view based on a boolean value.
     ///
