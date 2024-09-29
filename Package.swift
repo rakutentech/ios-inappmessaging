@@ -7,7 +7,7 @@ let package = Package(
     name: "RInAppMessaging",
     defaultLocalization: "en",
     platforms: [
-        .iOS(.v12)
+        .iOS(.v14)
     ],
     products: [
         .library(

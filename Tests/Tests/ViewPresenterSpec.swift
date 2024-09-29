@@ -346,7 +346,7 @@ class ViewPresenterSpec: QuickSpec {
                     expect(view.wasSetupCalled).to(beTrue())
                 }
 
-                if #available(iOS 13.0, *) {
+                if #available(iOS 14.0, *) {
                     it("will call initializeView on the view object with expected model") {
                         presenter.associatedImage = UIImage(named: "test-image", in: .unitTests, with: nil)
                         presenter.viewDidInitialize()
