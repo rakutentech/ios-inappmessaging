@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>CHANGELOG  Reference</title>
+    <link rel="stylesheet" type="text/css" href="css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="js/jquery.min.js" defer></script>
+    <script src="js/jazzy.js" defer></script>
+    
+    <script src="js/lunr.min.js" defer></script>
+    <script src="js/typeahead.jquery.js" defer></script>
+    <script src="js/jazzy.search.js" defer></script>
+  </head>
+  <body>
+    <a title="CHANGELOG  Reference"></a>
+    <header>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+      <link rel="stylesheet" type="text/css" href="css/version-select.css" />
+      <script src="js/version-select.js" defer></script>
+      <script src="../versions.js"></script>
+      <div class="content-wrapper">
+        <p><a href="index.html">RInAppMessaging Docs</a></p>
+        <div class="version-dropdown">
+          <button onclick="toggleVersionSelect()" class="versionbtn">8.4.0 <i class="fa fa-caret-down"></i></button>
+          <div id="versions" class="version-dropdown-content"></div>
+        </div> 
+        <p class="header-right"><a href="https://github.com/rakutentech/ios-inappmessaging"><img src="img/gh.png"/>View on GitHub</a></p>
+        <p class="header-right">
+          <form role="search" action="search.json">
+            <input type="text" placeholder="Search documentation" data-typeahead>
+          </form>
+        </p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="index.html">RInAppMessaging Reference</a>
+        <img id="carat" src="img/carat.png" />
+        CHANGELOG  Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="Guides.html">Guides</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="changelog.html">CHANGELOG</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="contributing.html">CONTRIBUTING</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="deploy.html">DEPLOY</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="readme.html">README</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Classes/AppStartEvent.html">AppStartEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/CustomAttribute.html">CustomAttribute</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/CustomEvent.html">CustomEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Event.html">Event</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/LoginSuccessfulEvent.html">LoginSuccessfulEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/PurchaseSuccessfulEvent.html">PurchaseSuccessfulEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/RInAppMessaging.html">RInAppMessaging</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Extensions.html">Extensions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Extensions/UITabBar.html">UITabBar</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Extensions/View.html">View</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Protocols/UserInfoProvider.html">UserInfoProvider</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            
+            <h2 id='changelog' class='heading'>Changelog</h2>
+<h3 id='8-4-0-2024-09-17' class='heading'>8.4.0 (2024-09-17)</h3>
+
+<ul>
+<li>Features:
+
+<ul>
+<li>Added support for PushPrimer Campaign using CustomJson [RMCCX-6702]</li>
+<li>Prevent showing Push Priemr Campaign if Notificaation Permission was granted already [RMCCX-6707]</li>
+<li>Added CustomJson feature for RMC SDK users [RMCCX-6712]</li>
+<li>Redirect user to App Notification Permission Settings if permission was denied previously in Push Primer [RMCCX-6710]</li>
+<li>Send RMC impression event to RAT [RMCCX-6939]</li>
+<li>Send RMC push primer event to RAT [RMCCX-6938]</li>
+<li>Implement console warning if LogEvent is called before calling RegisterPreference [RMCCX-7109]</li>
+</ul></li>
+<li>Improvements:
+
+<ul>
+<li>Improve Documentation for IAM [RMCCX-6705]</li>
+</ul></li>
+</ul>
+<h3 id='8-3-0-2024-05-13' class='heading'>8.3.0 (2024-05-13)</h3>
+
+<ul>
+<li>Improvements:
+
+<ul>
+<li>Prevent sending impressions for expired campaigns [SDKCF-6910]</li>
+</ul></li>
+</ul>
+<h3 id='8-2-0-2024-04-08' class='heading'>8.2.0 (2024-04-08)</h3>
+
+<ul>
+<li>Improvements:
+
+<ul>
+<li>Added PrivacyInfo.xcprivacy file [SDKCF-6897]</li>
+</ul></li>
+</ul>
+<h3 id='8-1-0-2023-12-12' class='heading'>8.1.0 (2023-12-12)</h3>
+
+<ul>
+<li>Features:
+
+<ul>
+<li>Added User preference input in Sample App [SDKCF-6641]</li>
+<li>Added device_id to all the RAT events [SDKCF-6625]</li>
+<li>Added device_id to DisplayPermission request header [SDKCF-6624]</li>
+<li>Prevent calling <code>configure()</code> then RMC module is integrated [SDKCF-6710]</li>
+<li>Added rmcsdk version parameter to all api calls [SDKCF-6709]</li>
+</ul></li>
+<li>Improvements:
+
+<ul>
+<li>Retaining API calls until configure() is called [SDKCF-6812]</li>
+</ul></li>
+<li>Fixes:
+
+<ul>
+<li>Fixed Xcode 15 beta errors [SDKCF-6692]</li>
+<li>Fixed Finding RMC Bundle [SDKCF-6751]</li>
+<li>Fixed Loading cached user data before IAM initialisation [SDKCF-6826]</li>
+</ul></li>
+</ul>
+<h3 id='8-0-0-2023-06-21' class='heading'>8.0.0 (2023-06-21)</h3>
+
+<ul>
+<li><strong>Breaking changes:</strong>
+
+<ul>
+<li>Update Swift version support for package to 5.7.1 [SDKCF-6515]</li>
+</ul></li>
+<li>Features:
+
+<ul>
+<li>Added SwiftUI support for Sample App [SDKCF-5026]</li>
+<li>Added SwiftUI support for Tooltip feature [SDKCF-5025]</li>
+</ul></li>
+</ul><div class="aside aside-bug">
+    <p class="aside-title">Bug</p>
+    Bug fixes:
+
+<ul>
+<li>Removed &ldquo;last user&rdquo; cache to avoid overwriting anonymous user cache during init [SDKCF-6409]</li>
+<li>Added display permission service to perform ping on tooltip dispatcher [SDKCF-4964]</li>
+<li>Fix broken UIKit framework UI on dark mode [SDKCF-6587]</li>
+</ul>
+
+</div><ul>
+<li>Improvements:
+
+<ul>
+<li>Created new test scheme to combine unit test and UI test results [SDKCF-6356]</li>
+<li>Refactored Event classes and removed unused code [SDKCF-6376]</li>
+<li>Update api documentation [SDKCF-6592]</li>
+<li>Improved unit test code coverage to
+
+<ul>
+<li>EventType.swift [SDKCF-6378]</li>
+<li>CustomAttribute.swift [SDKCF-6379]</li>
+<li>UserInfoProvider.swift [SDKCF-6380]</li>
+<li>EventMatcher.swift [SDKCF-6390]</li>
+<li>ConfigurationService.swift [SDKCF-6388]</li>
+<li>UserDataCache.swift [SDKCF-6384]</li>
+<li>MessageMixerService.swift [SDKCF-6386]<br></li>
+<li>CampaignRepository.swift [SDKCF-6387]</li>
+<li>SlideUpViewPresenter.swift [SDKCF-6383]<br></li>
+<li>UILabel+IAM [SDKCF-6385]</li>
+<li>CommonUtility [SDKCF-6381]</li>
+<li>Event [SDKCF-6376]</li>
+<li>AppStartEvent [SDKCF-6376]</li>
+<li>CustomEvent [SDKCF-6376]</li>
+<li>PurchaseSuccessfulEvent [SDKCF-6376]</li>
+<li>LoginSuccessfulEvent [SDKCF-6376]</li>
+<li>CampaignDispatcher [SDKCF-6452]</li>
+<li>AlertPresentable [SDKCF-6375]</li>
+<li>ConfigurationManager [SDKCF-6451]</li>
+<li>HTTPRequestable [SDKCF-6389]</li>
+<li>Router [SDKCF-6382]</li>
+<li>ToolTipView [SDKCF-6377]</li>
+</ul></li>
+</ul></li>
+</ul>
+<h3 id='7-3-0-2023-01-11' class='heading'>7.3.0 (2023-01-11)</h3>
+
+<ul>
+<li>Features:
+
+<ul>
+<li>Added new API method to close displayed tooltips [SDKCF-6027]</li>
+<li>Added contexts validation for tooltip campaigns [SDKCF-6028]</li>
+<li>Added a feature flag to enable/disable the Tooltip feature [SDKCF-6075]</li>
+<li>Added tracking of opt-in/opt-outs in Push Primer feature [SDKCF-6026]</li>
+</ul></li>
+<li>Improvements:
+
+<ul>
+<li>Restored tab bar items support. Added UITabBar extension method for convenience [SDKCF-6134]</li>
+<li>Added support for screen orientation changes when using Tooltip feature [SDKCF-6177]</li>
+</ul></li>
+</ul><div class="aside aside-bug">
+    <p class="aside-title">Bug</p>
+    Bug fixes:
+
+<ul>
+<li>Fixed an edge case of not readable status bar when campaign message is displayed [SDKCF-5134]</li>
+</ul>
+
+</div><ul>
+<li>Improvements:
+
+<ul>
+<li>Sample app improvements</li>
+</ul></li>
+</ul>
+<h3 id='7-2-0-2022-09-23' class='heading'>7.2.0 (2022-09-23)</h3>
+
+<ul>
+<li>Features:
+
+<ul>
+<li>Added Push Primer feature [SDKCF-5631]</li>
+<li>Added a possibility to set subscription ID and config URL in runtime [SDKCF-5614]</li>
+</ul></li>
+<li>Improvements:
+
+<ul>
+<li>Enable triggers validation for test campaigns [SDKCF-5776]</li>
+<li>Refactor for Xcode 14 compatibility [SDCFK-5611]</li>
+<li>Integrated with Emerge Tools [SDKCF-5346]</li>
+<li>Added a warning when <code>registerPreference()</code> is called before <code>configure()</code></li>
+</ul></li>
+</ul><div class="aside aside-bug">
+    <p class="aside-title">Bug</p>
+    Bug fixes:
+
+<ul>
+<li>Fixed Opt-out message visibility on a dark background [SDKCF-5620]</li>
+<li>Fixed an issue when test campaigns were not displayed [SDKCF-5636]</li>
+</ul>
+
+</div>
+<h3 id='7-1-0-2022-06-14' class='heading'>7.1.0 (2022-06-14)</h3>
+
+<ul>
+<li>Improvements:
+
+<ul>
+<li>Updated information sent to Analytics [SDKCF-5252]</li>
+<li>Display impression analytics event is now sent when campaign message appears [SDKCF-5252]</li>
+</ul></li>
+</ul><div class="aside aside-bug">
+    <p class="aside-title">Bug</p>
+    Bug fixes:
+
+<ul>
+<li>Fixed issues with unit tests on Xcode 13.3 [SDKCF-5124]</li>
+</ul>
+
+</div>
+<h3 id='7-0-0-2022-05-13' class='heading'>7.0.0 (2022-05-13)</h3>
+
+<ul>
+<li><strong>Breaking changes:</strong>
+
+<ul>
+<li>Aligned public API with Android IAM SDK [SDKCF-4940]
+
+<ul>
+<li><code>RInAppMessagingDelegate</code> and <code>RInAppMessagingErrorDelegate</code> have been removed.</li>
+<li><code>inAppMessagingShouldShowCampaignWithContexts()</code> delegate method has been replaced with <code>onVerifyContext</code> callback variable..</li>
+<li><code>inAppMessagingDidReturnError()</code> delegate method has been replaced with <code>errorCallback</code> variable.</li>
+</ul></li>
+</ul></li>
+<li>Features:
+
+<ul>
+<li>Implemented new UX features - Campaigns with no end date, infinite impressions and no ❌ button [SDKCF-5003]</li>
+</ul></li>
+<li>Improvements:
+
+<ul>
+<li>Improved test campaigns handling [SDKCF-5027]</li>
+<li>Added border in campaign buttons when their color is similar to message body background color [SDKCF-4859]</li>
+<li>Xcode 13 compatibility</li>
+<li>Removed Codecov support in favor of SonarQube coverage reports</li>
+<li>Switched to shared bitrise yaml <a href="https://github.com/rakutentech/ios-buildconfig/blob/master/shared-bitrise.yml">file</a></li>
+</ul></li>
+</ul><div class="aside aside-bug">
+    <p class="aside-title">Bug</p>
+    Bug fixes:
+
+<ul>
+<li>Fixed impression counting when application was terminated during campaign display</li>
+</ul>
+
+</div>
+<h3 id='6-1-0-2022-02-04' class='heading'>6.1.0 (2022-02-04)</h3>
+
+<ul>
+<li>Improvements:
+
+<ul>
+<li>Campaign UI has been updated to be in line with internal Rakuten UI design guide [SDKCF-4471]</li>
+<li>Added Swift Package Manager (SPM) support [SDKCF-4388]</li>
+<li>Improved network request error handling [SDKCF-4728] [SDKCF-4637]</li>
+<li>Added Xcode requirements to README [SDKCF-4790]</li>
+<li>Integrated SonarQube to track SDK code quality [SDKCF-4693]</li>
+</ul></li>
+</ul><div class="aside aside-bug">
+    <p class="aside-title">Bug</p>
+    Bug fixes:
+
+<ul>
+<li>Custom event attributes are now handled as case insensitive [SDKCF-4550]</li>
+<li>Fixed test campaign triggers [SDKCF-4525]</li>
+</ul>
+
+</div>
+<h3 id='6-0-0-2021-11-12' class='heading'>6.0.0 (2021-11-12)</h3>
+
+<ul>
+<li><strong>Breaking changes:</strong>
+
+<ul>
+<li>The minimum supported OS version is now iOS 12.0 [SDKCF-4361]</li>
+<li>The <code>registerPreference()</code> API method now requires a <code><a href="Protocols/UserInfoProvider.html">UserInfoProvider</a></code> object [SDKCF-3970]</li>
+<li>Removed all Rakuten ID references. The value used as Rakuten ID should be used as the User ID instead. User ID should be treated as any unique member identifier.</li>
+</ul></li>
+<li>Improvements:
+
+<ul>
+<li>Updated user handling to align with the Android IAM SDK. The <code>registerPreference()</code> API method now requires a <code><a href="Protocols/UserInfoProvider.html">UserInfoProvider</a></code> object, which must be kept up-to-date in your app code. See the README&rsquo;s registerPreference() description. [SDKCF-3970]</li>
+<li>Added UI tests [SDKCF-2246]</li>
+<li>Integrated <a href="https://github.com/rakutentech/ios-sdkutils">RSDKUtils</a> library to replace common code [SDKCF-4351]</li>
+<li>Updated response models to use non-optionals [SDKCF-4017]</li>
+<li>Test campaigns are no longer cached.</li>
+</ul></li>
+</ul><div class="aside aside-bug">
+    <p class="aside-title">Bug</p>
+    Bug fixes:
+
+<ul>
+<li>Fixed possible race condition crash in LockableObject [SDKCF-3987]</li>
+<li>Fixed issue with opt-out logic that occurred on user change [SDKCF-3720]</li>
+</ul>
+
+</div>
+<h3 id='5-0-0-2021-09-15' class='heading'>5.0.0 (2021-09-15)</h3>
+
+<p><strong>Breaking change:</strong> Changed public <code>Identification</code> enum member <code>easyId</code> to <code>idTrackingIdentifier</code>.</p>
+
+<ul>
+<li>Features:
+
+<ul>
+<li>Added support for ID tracking identifier. [SDKCF-4072]</li>
+</ul></li>
+<li>Improvements:
+
+<ul>
+<li>Modified AtomicGetSet wrapper to use a concurrent queue with barrier to ensure safe writes.</li>
+<li>Increased HTTP resource request timeouts to more reasonable values.</li>
+<li>Added <a href="https://github.com/MobSF/mobsfscan">mobsfscan</a> automatic code scanning for security issues.</li>
+</ul></li>
+</ul><div class="aside aside-bug">
+    <p class="aside-title">Bug</p>
+    Bug fixes:
+
+<ul>
+<li>Fixed large image display issue in campaigns. [SDKCF-4022]</li>
+</ul>
+
+</div>
+<h3 id='4-0-2-2021-07-21' class='heading'>4.0.2 (2021-07-21)</h3>
+
+<ul>
+<li>Improvements:
+
+<ul>
+<li>Changed campaigns to not display when attached image cannot be downloaded. [SDKCF-3977]</li>
+<li>Changed campaigns to not display upon display permission request failure. [SDKCF-3976]</li>
+<li>Increased clickable area of the IAM close button &ldquo;x&rdquo;. [SDKCF-3958]</li>
+<li>Fixed campaign view incorrectly being horizontally scrollable on iPad in landscape orientation [SDKCF-4020]</li>
+</ul></li>
+</ul>
+<h3 id='4-0-1-2021-06-30' class='heading'>4.0.1 (2021-06-30)</h3>
+
+<ul>
+<li>Improvements:
+
+<ul>
+<li>Added recommendation to README that apps should use a remote feature flag to enable/disable the SDK. [SDKCF-3938]</li>
+</ul></li>
+</ul>
+<h3 id='4-0-0-2021-06-22' class='heading'>4.0.0 (2021-06-22)</h3>
+
+<p><strong>Breaking change:</strong> Config API contract has changed and now requires the v2 GET endpoint. The SDK will not work with the v1 endpoint.</p>
+
+<ul>
+<li>Improvements:
+
+<ul>
+<li>Updated company name references. [SDKCF-3550]</li>
+<li>Added handling for getConfig response status codes 400 and 404. [SDKCF-3884]</li>
+<li>Changed Config API call to be a /GET with query params. This allows the backend to filter requests if required. [SDKCF-3652]</li>
+<li>Added handling for &ldquo;429 Too Many Requests&rdquo; response to Config/Ping API requests. When status code 429 is received by the SDK it will start expontential backoff (plus a random factor) retries to space out the requests to the backend. [SDKCF-3654]</li>
+<li>Campaign opt-out &amp; max impression tracking logic is now handled solely on client side. This change reduces the backend&rsquo;s load per request. [SDKCF-3656]</li>
+<li>Added support for rollout percentage value received in Config API response. This allows the backend to gradually increase campaign distribution. [SDKCF-3663]</li>
+<li>Added subscription key in Config API request header to enable better filtering of requests. [SDKCF-3716]</li>
+</ul></li>
+</ul><div class="aside aside-bug">
+    <p class="aside-title">Bug</p>
+    Bug fixes:
+
+<ul>
+<li>Removed canOpenURL check for redirect and deeplink buttons [SDKCF-3848]</li>
+<li>Fixed rarely occurring threading crashes in dependency manager by using a static queue for access. [SDKCF-3646]</li>
+</ul>
+
+</div>
+<h3 id='3-0-0-2021-02-10' class='heading'>3.0.0 (2021-02-10)</h3>
+
+<p><strong>Breaking change:</strong> Minimum supported iOS version is now 11.0 [SDKCF-3182]</p>
+
+<ul>
+<li>Status bar overlay in Full Screen campaigns is now present in all layout types. The color is adjusted to status bar style (dark or light) - this feature is available only on iOS 13+. [SDKCF-3203, SDKCF-3175]</li>
+<li>Added new API method to close campaign&rsquo;s message manually [SDKCF-3201]</li>
+<li>Improvements:
+
+<ul>
+<li>Added integration tests [SDKCF-3109]</li>
+<li>Moved CI from Travis to Bitrise</li>
+<li>Improved README [SDKCF-3062, SDKCF-3179]</li>
+<li>Improved Sample app secrets setup</li>
+<li>Reduced a chance for user to change screen when campaign is being displayed/animated [SDKCF-3027]</li>
+</ul></li>
+</ul><div class="aside aside-bug">
+    <p class="aside-title">Bug</p>
+    Bug fixes:
+
+<ul>
+<li>Fixed an issue when SDK localization files interfered with host app&rsquo;s localization [SDKCF-3139]</li>
+<li>Fixed campaign dispatch logic that might have caused an unwanted delay between messages [SDKCF-3007]</li>
+</ul>
+
+</div>
+<h3 id='2-1-0-2020-11-11' class='heading'>2.1.0 (2020-11-11)</h3>
+
+<ul>
+<li>Added a campaign&rsquo;s context feature - a phrase enclosed in square brackets added to the campaign&rsquo;s title. Campaigns with contexts can be optionally validated by implementing a new method from the SDK. Validation occurs before displaying the message and decides about showing that message or not. [SDKCF-2871]</li>
+<li>Improvements:
+
+<ul>
+<li>Updated the locale parameter format in backend http requests [SDKCF-2401]</li>
+<li>Improved unit tests code coverage [SDKCF-2245]</li>
+<li>Improved campaign synchronization logic [SDKCF-2467]</li>
+<li>Other minor improvements like: using xcconfig to set up secrets, Xcode 12 updates</li>
+</ul></li>
+</ul><div class="aside aside-bug">
+    <p class="aside-title">Bug</p>
+    Bug fixes:
+
+<ul>
+<li>Fixed a bug where bottom body margin in Modal campaigns layout was missing [SDKCF-2496]</li>
+<li>Full Screen campaign content is now not overlapping with system status bar [SDKCF-2444]</li>
+<li>Fixed an issue when UI was blocked because of no internet connection [SDKCF-2842]</li>
+<li>Fixed an issue when a user was able to see a message from previous user&rsquo;s cached data [SDKCF-2535]</li>
+</ul>
+
+</div>
+<h3 id='2-0-0-2020-06-30' class='heading'>2.0.0 (2020-06-30)</h3>
+
+<ul>
+<li>Initial open sourced release</li>
+<li>This version is a major refactor. Highlights include:
+
+<ul>
+<li>Improved maintainability, testability and error handling</li>
+<li>Removed 3rd party dependencies</li>
+<li>Added CI automation with Fastlane/travis</li>
+</ul></li>
+</ul>
+<h4 id='note-previous-sdk-versions-up-to-and-including-the-most-recently-published-version-1-4-0-were-named-code-inappmessaging-code' class='heading'>Note: Previous SDK versions up to and including the most recently published version 1.4.0 were named <code>InAppMessaging</code>.</h4>
+
+          </section>
+        </section>
+        <section id="footer">
+          <p>&copy; 2024 <a class="link" href="https://github.com/rakutentech/ios-inappmessaging" target="_blank" rel="external noopener">Rakuten Group, Inc.</a>. All rights reserved. (Last updated: 2024-09-30)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.15.1</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>
