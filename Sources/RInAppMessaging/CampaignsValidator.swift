@@ -52,7 +52,7 @@ internal struct CampaignsValidator: CampaignsValidatorType {
             }
 
             guard let campaignTriggers = campaign.data.triggers else {
-                Logger.debug("campaign (\(campaign.id)) has no triggers.")
+                IAMLogger.debug("campaign (\(campaign.id)) has no triggers.")
                 return
             }
 

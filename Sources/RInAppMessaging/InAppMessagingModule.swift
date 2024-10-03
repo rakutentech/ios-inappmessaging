@@ -82,7 +82,7 @@ internal class InAppMessagingModule: ErrorDelegate, CampaignDispatcherDelegate, 
         guard isInitialized else {
             return false
         }
-
+        IAMLogger.debugLog("logEvent: \(event)")
         checkUserChanges()
         eventMatcher.matchAndStore(event: event)
         campaignTriggerAgent.validateAndTriggerCampaigns()
@@ -91,9 +91,11 @@ internal class InAppMessagingModule: ErrorDelegate, CampaignDispatcherDelegate, 
 
     func registerPreference(_ preference: UserInfoProvider) {
         accountRepository.setPreference(preference)
-
+        IAMLogger.debugLog("registerPreference: \(preference)")
+        
         guard isInitialized else {
             if accountRepository.updateUserInfo() {
+                IAMLogger.debugLog("registerPreference: updateUserInfo")
                 campaignRepository.loadCachedData()
             }
             return
@@ -103,6 +105,7 @@ internal class InAppMessagingModule: ErrorDelegate, CampaignDispatcherDelegate, 
     }
 
     func closeMessage(clearQueuedCampaigns: Bool) {
+        IAMLogger.debugLog("closeMessage: \(clearQueuedCampaigns)")
         if clearQueuedCampaigns {
             readyCampaignDispatcher.resetQueue()
         }
@@ -110,6 +113,7 @@ internal class InAppMessagingModule: ErrorDelegate, CampaignDispatcherDelegate, 
     }
 
     func closeTooltip(with uiElementIdentifier: String) {
+        IAMLogger.debugLog("closeTooltip: \(uiElementIdentifier)")
         router.discardDisplayedTooltip(with: uiElementIdentifier)
     }
 
@@ -120,6 +124,7 @@ internal class InAppMessagingModule: ErrorDelegate, CampaignDispatcherDelegate, 
     // visible for testing
     func checkUserChanges() {
         if accountRepository.updateUserInfo() {
+            IAMLogger.debugLog("checkUserChanges: updateUserInfo() - user has changed")
             campaignRepository.loadCachedData()
             campaignsListManager.refreshList()
         }

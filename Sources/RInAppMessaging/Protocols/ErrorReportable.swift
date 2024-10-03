@@ -17,9 +17,9 @@ extension ErrorReportable {
         errorDelegate?.didReceive(error: error)
 
         if let unwrappedData = data {
-            Logger.debug(description + " (\(String(describing: unwrappedData))")
+            IAMLogger.debug(description + " (\(String(describing: unwrappedData))")
         } else {
-            Logger.debug(description)
+            IAMLogger.debug(description)
         }
     }
 }

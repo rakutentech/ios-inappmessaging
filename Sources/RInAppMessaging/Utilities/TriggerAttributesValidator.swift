@@ -58,7 +58,7 @@ internal struct TriggerAttributesValidator {
         switch valueType {
 
         case .invalid:
-            Logger.debug("Error - invalid attribute value")
+            IAMLogger.debug("Error - invalid attribute value")
             return false
 
         case .string:
@@ -116,7 +116,7 @@ internal struct TriggerAttributesValidator {
             )
         }
 
-        Logger.debug("Error converting values")
+        IAMLogger.debug("Error converting values")
         return false
     }
 }

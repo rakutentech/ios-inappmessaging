@@ -57,7 +57,7 @@ extension HttpRequestable {
                                addtionalHeaders: [HeaderAttribute]?) -> RequestResult {
 
         if Thread.current.isMainThread {
-            Logger.debug("Performing HTTP task synchronously on main thread. This should be avoided.")
+            IAMLogger.debug("Performing HTTP task synchronously on main thread. This should be avoided.")
             assertionFailure()
         }
 
@@ -72,7 +72,7 @@ extension HttpRequestable {
             completion: { result = $0 })
 
         guard let unwrappedResult = result else {
-            Logger.debug("Error: Didn't get any result - completion handler not called!")
+            IAMLogger.debug("Error: Didn't get any result - completion handler not called!")
             assertionFailure()
             return .failure(.unknown)
         }
@@ -141,7 +141,7 @@ extension HttpRequestable {
 
             if let error = error {
                 completion(.failure(.taskFailed(error)))
-                Logger.debug(error)
+                IAMLogger.debug(String(describing: error))
                 return
             }
 
@@ -153,7 +153,7 @@ extension HttpRequestable {
 
                 completion(.failure(.httpError(UInt(statusCode), response, data)))
                 let errorMessage = data != nil ? String(data: data!, encoding: .utf8) : ""
-                Logger.debug("HTTP call failed (\(statusCode))\n\(errorMessage ?? "")")
+                IAMLogger.debug("HTTP call failed (\(statusCode))\n\(errorMessage ?? "")")
                 return
             }
 

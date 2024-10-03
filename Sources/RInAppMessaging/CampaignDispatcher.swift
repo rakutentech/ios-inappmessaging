@@ -88,7 +88,7 @@ internal class CampaignDispatcher: CampaignDispatcherType, TaskSchedulable {
 
         let campaignID = queuedCampaignIDs.removeFirst()
         guard let campaign = campaignRepository.list.first(where: { $0.id == campaignID }) else {
-            Logger.debug("Warning: Queued campaign \(campaignID) does not exist in the repository anymore")
+            IAMLogger.debug("Warning: Queued campaign \(campaignID) does not exist in the repository anymore")
             return
         }
         let permissionResponse = permissionService.checkPermission(forCampaign: campaign.data)
@@ -96,6 +96,7 @@ internal class CampaignDispatcher: CampaignDispatcherType, TaskSchedulable {
             delegate?.performPing()
         }
 
+        IAMLogger.debugLog("campaign impressionsLeft: \(campaign.impressionsLeft)")
         guard campaign.impressionsLeft > 0 && (permissionResponse.display || campaign.data.isTest) else {
             dispatchNext()
             return

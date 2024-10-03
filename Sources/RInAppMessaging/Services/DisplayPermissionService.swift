@@ -37,7 +37,7 @@ internal class DisplayPermissionService: DisplayPermissionServiceType, HttpReque
         ]
 
         guard let displayPermissionUrl = configurationRepository.getEndpoints()?.displayPermission else {
-            Logger.debug("error: missing endpoint for DisplayPermissionService")
+            IAMLogger.debug("error: missing endpoint for DisplayPermissionService")
             return fallbackResponse
         }
 
@@ -84,11 +84,11 @@ extension DisplayPermissionService {
 
         guard let subscriptionId = configurationRepository.getSubscriptionID(),
               let appVersion = bundleInfo.appVersion else {
-            Logger.debug("error while building request body for display permssion - missing metadata")
+            IAMLogger.debug("error while building request body for display permssion - missing metadata")
             return .failure(RequestError.missingMetadata)
         }
         guard let campaignId = parameters?[Constants.Request.campaignID] as? String else {
-            Logger.debug("error while building request body for display permssion - unexpected parameters")
+            IAMLogger.debug("error while building request body for display permssion - unexpected parameters")
             return .failure(RequestError.missingParameters)
         }
 
@@ -105,7 +105,7 @@ extension DisplayPermissionService {
             let body = try JSONEncoder().encode(permissionRequest)
             return .success(body)
         } catch {
-            Logger.debug("failed creating a request body.")
+            IAMLogger.debug("failed creating a request body.")
             return .failure(error)
         }
     }

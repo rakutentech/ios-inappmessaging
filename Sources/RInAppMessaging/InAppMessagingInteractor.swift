@@ -82,6 +82,7 @@ final class InAppMessagingInteractor {
         module.onVerifyContext = onVerifyContext
         module.setAccessibilityCompatibleDisplay(accessibilityCompatibleDisplay)
         if let userPerference {
+            IAMLogger.debugLog("configure: registerPreference - userPerference")
             module.registerPreference(userPerference)
         }
         iamModule = module

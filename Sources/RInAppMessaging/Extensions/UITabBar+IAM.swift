@@ -13,7 +13,7 @@ public extension UITabBar {
             .sorted { $0.frame.minX < $1.frame.minX } // Ensuring the right order
 
         guard tabBarButtons.count == items?.count else {
-            Logger.debug("Unexpected tab bar items setup: \(tabBarButtons) \(items ?? [])")
+            IAMLogger.debug("Unexpected tab bar items setup: \(tabBarButtons) \(items ?? [])")
             return
         }
 

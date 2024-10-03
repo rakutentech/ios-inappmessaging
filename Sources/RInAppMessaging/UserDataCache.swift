@@ -45,7 +45,7 @@ internal class UserDataCache: UserDataCacheable {
                 cachedContainers = decodedData
             } catch {
                 cachedContainers = [:]
-                Logger.debug("UserDataCache decoding failed! \(error)")
+                IAMLogger.debug("UserDataCache decoding failed! \(error)")
                 Environment.isUnitTestEnvironment ? () : assertionFailure()
             }
         } else {
@@ -97,7 +97,7 @@ internal class UserDataCache: UserDataCacheable {
             let encodedData = try JSONEncoder().encode(cachedContainers)
             userDefaults.set(encodedData, forKey: persistedDataKey)
         } catch {
-            Logger.debug("UserDataCache encoding failed! \(error)")
+            IAMLogger.debug("UserDataCache encoding failed! \(error)")
             assertionFailure()
         }
     }

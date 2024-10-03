@@ -44,6 +44,7 @@ final class AccountRepository: AccountRepositoryType {
     func updateUserInfo() -> Bool {
         guard let userInfoProvider = userInfoProvider else {
             // No userInfoProvider object has been registered yet
+            IAMLogger.debugLog("updateUserInfo: No userInfoProvider object has been registered yet")
             return false
         }
         if BundleInfo.applicationId?.contains("rakuten") == true, !Environment.isUnitTestEnvironment {
@@ -51,6 +52,7 @@ final class AccountRepository: AccountRepositoryType {
         }
 
         let newHash = userDataCache.userHash(from: userInfoProvider.userIdentifiers)
+        IAMLogger.debugLog("updateUserInfo: newUserHash: \(newHash)")
         guard let currentHash = userInfoHash else {
             // updateUserInfo() has been called for the first time after registering `userInfoProvider`
             userInfoHash = newHash
@@ -63,6 +65,7 @@ final class AccountRepository: AccountRepositoryType {
         }
 
         userInfoHash = newHash
+        IAMLogger.debugLog("updateUserInfo: currentHash=\(currentHash), userInfoHash=\(String(describing: userInfoHash))")
         return currentHash != userInfoHash
     }
 

@@ -79,6 +79,7 @@ internal class CampaignRepository: CampaignRepositoryType {
     }
 
     func syncWith(list: [Campaign], timestampMilliseconds: Int64, ignoreTooltips: Bool) {
+        IAMLogger.debugLog("syncWith start")
         lastSyncInMilliseconds = timestampMilliseconds
         let oldList = allCampaigns.get()
 
@@ -108,13 +109,14 @@ internal class CampaignRepository: CampaignRepositoryType {
 
         saveDataToCache(updatedList)
         delegate?.didUpdateCampaignList()
+        IAMLogger.debugLog("syncWith end")
     }
 
     @discardableResult
     func optOutCampaign(_ campaign: Campaign) -> Campaign? {
         var newList = allCampaigns.get()
         guard let index = newList.firstIndex(where: { $0.id == campaign.id }) else {
-            Logger.debug("Campaign \(campaign.id) cannot be updated - not found in repository")
+            IAMLogger.debug("Campaign \(campaign.id) cannot be updated - not found in repository")
             return nil
         }
 
@@ -131,17 +133,21 @@ internal class CampaignRepository: CampaignRepositoryType {
 
     @discardableResult
     func decrementImpressionsLeftInCampaign(id: String) -> Campaign? {
-        updateImpressionsLeftInCampaign(withID: id, by: -1)
+        IAMLogger.debugLog("decrementImpressionsLeftInCampaign: \(id)")
+        return updateImpressionsLeftInCampaign(withID: id, by: -1)
     }
 
     @discardableResult
     func incrementImpressionsLeftInCampaign(id: String) -> Campaign? {
-        updateImpressionsLeftInCampaign(withID: id, by: 1)
+        IAMLogger.debugLog("incrementImpressionsLeftInCampaign: \(id)")
+        return updateImpressionsLeftInCampaign(withID: id, by: 1)
     }
 
     func loadCachedData() {
+        IAMLogger.debugLog("loadCachedData: start")
         let cachedData = userDataCache.getUserData(identifiers: accountRepository.getUserIdentifiers())?.campaignData ?? []
         allCampaigns.set(value: cachedData)
+        IAMLogger.debugLog("loadCachedData: end")
     }
 
     // MARK: - Helpers
@@ -149,7 +155,7 @@ internal class CampaignRepository: CampaignRepositoryType {
     private func updateImpressionsLeftInCampaign(withID id: String, by value: Int) -> Campaign? {
         var newList = allCampaigns.get()
         guard let index = newList.firstIndex(where: { $0.id == id }) else {
-            Logger.debug("Campaign \(id) could not be updated - not found in the repository")
+            IAMLogger.debug("Campaign \(id) could not be updated - not found in the repository")
             return nil
         }
         let campaign = newList[index]

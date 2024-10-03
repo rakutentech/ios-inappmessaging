@@ -83,11 +83,11 @@ import RSDKUtils
     @objc public static func configure(subscriptionID: String? = nil,
                                        configurationURL: String? = nil,
                                        enableTooltipFeature: Bool = false) {
-
+        IAMLogger.debugLog("configure")
         guard verifyRMCEnvironment(subscriptionID: subscriptionID), !isInitialized else {
             let description = "⚠️ SDK configure request rejected. Initialization status: \(isInitialized)"
             let error = NSError.iamError(description: description)
-            Logger.debug(description)
+            IAMLogger.debug(description)
             errorCallback?(error)
             return
         }
@@ -125,8 +125,9 @@ import RSDKUtils
     /// Log the event name passed in and also pass the event name to the view controller to display a matching campaign.
     /// - Parameter event: The Event object to log.
     @objc public static func logEvent(_ event: Event) {
+        IAMLogger.debugLog("logEvent: \(event)")
         if !isUserRegistered {
-            Logger.debug("⚠️ Warning: RegisterPreference should be called before logging any Events.")
+            IAMLogger.debug("⚠️ Warning: RegisterPreference should be called before logging any Events.")
         }
         inAppQueue.async {
             interactor.logEvent(event)
@@ -140,6 +141,7 @@ import RSDKUtils
     /// - Note: This method creates a strong reference to provided object.
     /// - Parameter provider: object that will always contain up-to-date user information.
     @objc public static func registerPreference(_ provider: UserInfoProvider) {
+        IAMLogger.debugLog("registerPreference: \(provider)")
         isUserRegistered = true
         inAppQueue.async {
             interactor.userPerference = provider
@@ -153,6 +155,7 @@ import RSDKUtils
     /// - Parameter clearQueuedCampaigns: when set to true, it will clear also the list of campaigns that were
     ///                                   triggered and are queued to be displayed.
     @objc public static func closeMessage(clearQueuedCampaigns: Bool = false) {
+        IAMLogger.debugLog("closeMessage")
         inAppQueue.async {
             interactor.closeMessage(clearQueuedCampaigns: clearQueuedCampaigns)
         }
@@ -165,6 +168,7 @@ import RSDKUtils
     /// - Parameter uiElementIdentifier: accessibilityIdentifier of UI element that displayed tooltip is attached to.
     ///                                  (a.k.a. `UIElement` parameter in tooltip JSON payload)
     @objc public static func closeTooltip(with uiElementIdentifier: String) {
+        IAMLogger.debugLog("closeTooltip : \(uiElementIdentifier)")
         inAppQueue.async {
             interactor.closeTooltip(with: uiElementIdentifier)
         }
@@ -176,7 +180,7 @@ import RSDKUtils
         guard let url = config.configURLString , let configURL = URL(string: url) else {
             let description = "⚠️ Invalid Configuration URL: \(config.configURLString ?? "<empty>")"
             let error = NSError.iamError(description: description)
-            Logger.debug(description)
+            IAMLogger.debug(description)
             errorCallback?(error)
             assertionFailure(description)
             return URL(string: "invalid")!

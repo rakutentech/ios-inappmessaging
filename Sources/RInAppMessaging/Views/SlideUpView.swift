@@ -65,7 +65,7 @@ internal class SlideUpView: UIView, SlideUpViewType {
 
     func animateOnShow(completion: @escaping () -> Void) {
         guard [leftConstraint, bottomConstraint, rightConstraint].allSatisfy({ $0 != nil }) else {
-            Logger.debug("Error: Constraints not set up. Cancelling animation")
+            IAMLogger.debug("Error: Constraints not set up. Cancelling animation")
             assertionFailure()
             completion()
             return
@@ -81,7 +81,7 @@ internal class SlideUpView: UIView, SlideUpViewType {
             leftConstraint.constant = frame.width
             rightConstraint.constant = -frame.width
         case .top:
-            Logger.debug("Error: Unsupported slide direction (top)")
+            IAMLogger.debug("Error: Unsupported slide direction (top)")
         }
 
         superview?.layoutIfNeeded()
