@@ -129,7 +129,7 @@ internal class IAMLogger {
         #if DEBUG
          print("InAppMessaging: " + message)
         #else
-         os_log("%{PUBLIC}@", log: OSLog.sdk, type: .error, message)
+         os_log("%{public}s", log: OSLog.sdk, type: .info, message)
         #endif
      }
 
@@ -137,7 +137,7 @@ internal class IAMLogger {
         #if DEBUG
          // do nothing
         #else
-         os_log("%{PUBLIC}@", log: OSLog.sdk, type: .debug, message)
+         os_log("%{public}s", log: OSLog.sdk, type: .info, message)
         #endif
      }
  }
