@@ -90,7 +90,7 @@ import RSDKUtils
             errorCallback?(error)
             return
         }
-
+        IAMLogger.debugLog("configure called")
         IAMLogger.debugLog("configure - device:\(UIDevice.deviceID ?? ""), appVer:\(bundleInfo.appVersion ?? ""), rmcVer: \(bundleInfo.rmcSdkVersion ?? "")")
 
         let config = InAppMessagingModuleConfiguration(

@@ -102,6 +102,7 @@ final class InAppMessagingInteractor {
     }
 
     func logEvent(_ event: Event) {
+        IAMLogger.debugLog("logEvent called")
         IAMLogger.debugLog("logEvent: \(event.type.name)")
         let didLogEvent = iamModule?.logEvent(event) == true
         if !didLogEvent {
