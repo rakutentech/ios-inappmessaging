@@ -109,13 +109,13 @@ internal class Router: RouterType, ViewListenerObserver {
 
         let campaignViewType = campaign.data.type
         guard campaignViewType != .invalid else {
-            Logger.debug("Error: Campaign view type is invalid")
+            IAMLogger.debug("Error: Campaign view type is invalid")
             completion(true)
             return
         }
 
         guard let presenter = getPresenter(for: campaignViewType) else {
-            Logger.debug("Error: \(campaignViewType) couldn't be resolved")
+            IAMLogger.debug("Error: \(campaignViewType) couldn't be resolved")
             assertionFailure()
             completion(true)
             return
@@ -154,14 +154,14 @@ internal class Router: RouterType, ViewListenerObserver {
             }
             presenter = resolvedPresenter
         default:
-            Logger.debug("Error: Campaign view type is not supported")
+            IAMLogger.debug("Error: Campaign view type is not supported")
         }
         return presenter
     }
 
     private func resolvePresenter<T>(type: T.Type) -> T? {
         guard let presenter = self.dependencyManager.resolve(type: type) else {
-            Logger.debug("Error: \(type) couldn't be resolved")
+            IAMLogger.debug("Error: \(type) couldn't be resolved")
             return nil
         }
         return presenter
@@ -184,7 +184,7 @@ internal class Router: RouterType, ViewListenerObserver {
             presenter.campaign = campaign
             view = { SlideUpView(presenter: presenter) }
         case .invalid, .html:
-            Logger.debug("Error: Campaign view type not supported")
+            IAMLogger.debug("Error: Campaign view type not supported")
         }
         return view
     }
@@ -199,7 +199,7 @@ internal class Router: RouterType, ViewListenerObserver {
                         completion: @escaping (_ cancelled: Bool) -> Void) {
 
         guard let presenter = self.dependencyManager.resolve(type: TooltipPresenterType.self) else {
-            Logger.debug("Error: TooltipPresenterType couldn't be resolved")
+            IAMLogger.debug("Error: TooltipPresenterType couldn't be resolved")
             assertionFailure()
             return
         }
@@ -254,7 +254,7 @@ internal class Router: RouterType, ViewListenerObserver {
                                confirmation: @escaping @autoclosure () -> Bool,
                                completion: @escaping (_ cancelled: Bool) -> Void) {
         guard let presenter = self.dependencyManager.resolve(type: TooltipPresenterType.self) else {
-            Logger.debug("Error: TooltipPresenterType couldn't be resolved")
+            IAMLogger.debug("Error: TooltipPresenterType couldn't be resolved")
             assertionFailure()
             return
         }

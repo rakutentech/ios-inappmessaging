@@ -82,7 +82,6 @@ internal class InAppMessagingModule: ErrorDelegate, CampaignDispatcherDelegate, 
         guard isInitialized else {
             return false
         }
-
         checkUserChanges()
         eventMatcher.matchAndStore(event: event)
         campaignTriggerAgent.validateAndTriggerCampaigns()
@@ -91,9 +90,11 @@ internal class InAppMessagingModule: ErrorDelegate, CampaignDispatcherDelegate, 
 
     func registerPreference(_ preference: UserInfoProvider) {
         accountRepository.setPreference(preference)
-
+        IAMLogger.debugLog("registerPreference: \(preference)")
+        
         guard isInitialized else {
             if accountRepository.updateUserInfo() {
+                IAMLogger.debugLog("registerPreference: updateUserInfo")
                 campaignRepository.loadCachedData()
             }
             return
@@ -120,6 +121,7 @@ internal class InAppMessagingModule: ErrorDelegate, CampaignDispatcherDelegate, 
     // visible for testing
     func checkUserChanges() {
         if accountRepository.updateUserInfo() {
+            IAMLogger.debugLog("checkUserChanges: updateUserInfo() - user has changed")
             campaignRepository.loadCachedData()
             campaignsListManager.refreshList()
         }

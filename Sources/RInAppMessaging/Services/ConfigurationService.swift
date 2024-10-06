@@ -67,7 +67,7 @@ internal struct ConfigurationService: ConfigurationServiceType, HttpRequestable 
             return .success(response.data)
         } catch {
             let description = "Failed to parse json"
-            Logger.debug("\(description): \(error)")
+            IAMLogger.debug("\(description): \(error)")
             return .failure(error)
         }
     }
@@ -78,7 +78,7 @@ extension ConfigurationService {
     private func getConfigRequest() throws -> GetConfigRequest {
         guard let appVersion = bundleInfo.appVersion,
               let appId = bundleInfo.applicationId else {
-            Logger.debug("failed creating a request body")
+            IAMLogger.debug("failed creating a request body")
             throw RequestError.missingMetadata
         }
         
@@ -96,7 +96,7 @@ extension ConfigurationService {
         var headerBuilder = HeaderAttributesBuilder()
 
         if !headerBuilder.addSubscriptionID(configurationRepository: configurationRepository) {
-            Logger.debug("Info.plist must contain a valid InAppMessagingAppSubscriptionID")
+            IAMLogger.debug("Info.plist must contain a valid InAppMessagingAppSubscriptionID")
             assertionFailure()
         }
 
@@ -114,7 +114,7 @@ extension ConfigurationService {
             return .success(URLRequest(url: url))
 
         } catch let error {
-            Logger.debug("failed creating a request - \(error)")
+            IAMLogger.debug("failed creating a request - \(error)")
             return .failure(error)
         }
     }

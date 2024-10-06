@@ -1,4 +1,5 @@
 import Foundation
+import os
 
 #if SWIFT_PACKAGE
 import protocol RSDKUtilsMain.Lockable
@@ -99,7 +100,7 @@ internal struct CommonUtility {
             return CustomAttribute(withKeyName: attribute.name, withTimeInMilliValue: value)
         }
 
-        Logger.debug("Failed converting value \(attribute.value) to \(attribute.type)")
+        IAMLogger.debug("Failed converting value \(attribute.value) to \(attribute.type)")
         return nil
     }
     
@@ -113,16 +114,30 @@ internal struct CommonUtility {
     }
 }
 
-internal enum Logger {
-    static func debug(_ value: Any) {
-        #if DEBUG
-        print("InAppMessaging: " + String(describing: value))
-        #endif
-    }
+extension OSLog {
+    static let sdk = OSLog(category: "RInAppMessaging SDK")
 
-    static func debug(_ message: String) {
-        #if DEBUG
-        print("InAppMessaging: " + message)
-        #endif
+    private convenience init(category: String, bundle: Bundle = Bundle(for: IAMLogger.self)) {
+        let identifier = bundle.infoDictionary?["CFBundleIdentifier"] as? String
+        self.init(subsystem: (identifier ?? "").appending(".logs"), category: category)
     }
 }
+
+internal class IAMLogger {
+     // Debug Logging
+     static func debug(_ message: String) {
+        #if DEBUG
+         print("InAppMessaging: " + message)
+        #else
+         os_log("%{PUBLIC}@", log: OSLog.sdk, type: .default, message)
+        #endif
+     }
+
+     static func debugLog(_ message: String) {
+        #if DEBUG
+         // do nothing
+        #else
+         os_log("%{PUBLIC}@", log: OSLog.sdk, type: .default, message)
+        #endif
+     }
+ }
