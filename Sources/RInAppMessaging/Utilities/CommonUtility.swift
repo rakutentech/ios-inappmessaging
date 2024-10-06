@@ -114,20 +114,6 @@ internal struct CommonUtility {
     }
 }
 
-internal enum Logger {
-    static func debug(_ value: Any) {
-        #if DEBUG
-        print("InAppMessaging: " + String(describing: value))
-        #endif
-    }
-
-    static func debug(_ message: String) {
-        #if DEBUG
-        print("InAppMessaging: " + message)
-        #endif
-    }
-}
-
 extension OSLog {
     static let sdk = OSLog(category: "RInAppMessaging SDK")
 
@@ -143,7 +129,7 @@ internal class IAMLogger {
         #if DEBUG
          print("InAppMessaging: " + message)
         #else
-         os_log("%s", log: OSLog.sdk, type: .error, message)
+         os_log("%{PUBLIC}@", log: OSLog.sdk, type: .error, message)
         #endif
      }
 
@@ -151,7 +137,7 @@ internal class IAMLogger {
         #if DEBUG
          // do nothing
         #else
-         os_log("%s", log: OSLog.sdk, type: .error, message)
+         os_log("%{PUBLIC}@", log: OSLog.sdk, type: .debug, message)
         #endif
      }
  }

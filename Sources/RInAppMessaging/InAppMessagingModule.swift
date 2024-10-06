@@ -82,7 +82,6 @@ internal class InAppMessagingModule: ErrorDelegate, CampaignDispatcherDelegate, 
         guard isInitialized else {
             return false
         }
-        IAMLogger.debugLog("logEvent: \(event)")
         checkUserChanges()
         eventMatcher.matchAndStore(event: event)
         campaignTriggerAgent.validateAndTriggerCampaigns()
@@ -105,7 +104,6 @@ internal class InAppMessagingModule: ErrorDelegate, CampaignDispatcherDelegate, 
     }
 
     func closeMessage(clearQueuedCampaigns: Bool) {
-        IAMLogger.debugLog("closeMessage: \(clearQueuedCampaigns)")
         if clearQueuedCampaigns {
             readyCampaignDispatcher.resetQueue()
         }
@@ -113,7 +111,6 @@ internal class InAppMessagingModule: ErrorDelegate, CampaignDispatcherDelegate, 
     }
 
     func closeTooltip(with uiElementIdentifier: String) {
-        IAMLogger.debugLog("closeTooltip: \(uiElementIdentifier)")
         router.discardDisplayedTooltip(with: uiElementIdentifier)
     }
 

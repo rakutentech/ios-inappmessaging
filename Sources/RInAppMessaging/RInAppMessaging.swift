@@ -83,7 +83,6 @@ import RSDKUtils
     @objc public static func configure(subscriptionID: String? = nil,
                                        configurationURL: String? = nil,
                                        enableTooltipFeature: Bool = false) {
-        IAMLogger.debugLog("configure")
         guard verifyRMCEnvironment(subscriptionID: subscriptionID), !isInitialized else {
             let description = "⚠️ SDK configure request rejected. Initialization status: \(isInitialized)"
             let error = NSError.iamError(description: description)
@@ -91,6 +90,8 @@ import RSDKUtils
             errorCallback?(error)
             return
         }
+
+        IAMLogger.debugLog("configure - device:\(UIDevice.deviceID ?? ""), appVer:\(bundleInfo.appVersion ?? ""), rmcVer: \(bundleInfo.rmcSdkVersion ?? "")")
 
         let config = InAppMessagingModuleConfiguration(
             configURLString: configurationURL ?? BundleInfo.inAppConfigurationURL,

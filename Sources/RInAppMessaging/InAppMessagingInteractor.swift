@@ -102,6 +102,7 @@ final class InAppMessagingInteractor {
     }
 
     func logEvent(_ event: Event) {
+        IAMLogger.debugLog("logEvent: \(event)")
         let didLogEvent = iamModule?.logEvent(event) == true
         if !didLogEvent {
             eventBuffer.append(event)
@@ -109,10 +110,12 @@ final class InAppMessagingInteractor {
     }
 
     func closeMessage(clearQueuedCampaigns: Bool) {
+        IAMLogger.debugLog("closeMessage: \(clearQueuedCampaigns)")
         iamModule?.closeMessage(clearQueuedCampaigns: clearQueuedCampaigns)
     }
 
     func closeTooltip(with uiElementIdentifier: String) {
+        IAMLogger.debugLog("closeTooltip: \(uiElementIdentifier)")
         iamModule?.closeTooltip(with: uiElementIdentifier)
     }
 
