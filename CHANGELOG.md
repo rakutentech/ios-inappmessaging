@@ -2,10 +2,10 @@
 
 ### Unreleased
 - Features:
-    - Implement clickable image through CustomJson [RMCCX-7233]
-    - Implement dark background through CustomJson [RMCCX-7328]
+    - Implement Clickable image through CustomJson [RMCCX-7233]
+    - Implement Dark background through CustomJson [RMCCX-7328]
 - Fixes:
-    - Fix clickable image behaviour for invalid url [RMCCX-7351]
+    - Fix Clickable image behaviour for invalid url [RMCCX-7351]
 
 ### 8.4.0 (2024-09-17) 
 - Features:
