@@ -1,6 +1,6 @@
 ## Changelog
 
-### Unreleased
+### 9.0.0 (2024-10-22) 
 - Features:
     - Implement Clickable image through CustomJson [RMCCX-7233]
     - Implement Dark background through CustomJson [RMCCX-7328]
