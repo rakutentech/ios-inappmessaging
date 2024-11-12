@@ -206,6 +206,162 @@ class CustomJsonSpec: QuickSpec {
                     expect(decodedBackground?.opacity).to(beNil())
                 }
             }
+
+            describe("Carousel model") {
+                var carousel: ImageCarousel?
+                var jsonData: Data!
+
+                context("when JSON contains all fields") {
+                    beforeEach {
+                        jsonData = """
+                                {
+                                    "carousel": {
+                                        "images": {
+                                            "0": {
+                                                "img_url": "URL link",
+                                                "link": "https://redirecturl",
+                                                "alt_text": "unable to load image"
+                                            },
+                                            "1": {
+                                                "img_url": "URL link",
+                                                "link": "https://redirecturl",
+                                                "alt_text": "unable to load image"
+                                            }
+                                        }
+                                    }
+                                }
+                                """.data(using: .utf8)
+                        let decodedData = try? JSONDecoder().decode([String: ImageCarousel].self, from: jsonData)
+                        carousel = decodedData?["carousel"]
+                    }
+
+                    it("decodes the images dictionary") {
+                        expect(carousel?.images).toNot(beNil())
+                        expect(carousel?.images?.count).to(equal(2))
+                    }
+
+                    it("decodes image details correctly") {
+                        let firstImage = carousel?.images?["0"]
+                        expect(firstImage?.imgURL).to(equal("URL link"))
+                        expect(firstImage?.link).to(equal("https://redirecturl"))
+                        expect(firstImage?.altText).to(equal("unable to load image"))
+                    }
+                }
+
+                context("when JSON is missing some fields") {
+                    beforeEach {
+                        jsonData = """
+                                {
+                                    "carousel": {
+                                        "images": {
+                                            "0": {
+                                                "img_url": "URL link"
+                                            }
+                                        }
+                                    }
+                                }
+                                """.data(using: .utf8)
+                        let decodedData = try? JSONDecoder().decode([String: ImageCarousel].self, from: jsonData)
+                        carousel = decodedData?["carousel"]
+                    }
+
+                    it("decodes with nil for missing fields") {
+                        let firstImage = carousel?.images?["0"]
+                        expect(firstImage?.imgURL).to(equal("URL link"))
+                        expect(firstImage?.link).to(beNil())
+                        expect(firstImage?.altText).to(beNil())
+                    }
+                }
+
+                context("when JSON has no images") {
+                    beforeEach {
+                        jsonData = """
+                                {
+                                    "carousel": {}
+                                }
+                                """.data(using: .utf8)
+                        let decodedData = try? JSONDecoder().decode([String: ImageCarousel].self, from: jsonData)
+                        carousel = decodedData?["carousel"]
+                    }
+
+                    it("decodes images as nil") {
+                        expect(carousel?.images).to(beNil())
+                    }
+                }
+
+                context("when JSON is completely empty") {
+                    beforeEach {
+                        jsonData = "{}".data(using: .utf8)
+                        let decodedData = try? JSONDecoder().decode([String: ImageCarousel].self, from: jsonData)
+                        carousel = decodedData?["carousel"]
+                    }
+
+                    it("decodes carousel as nil") {
+                        expect(carousel).to(beNil())
+                    }
+                }
+
+                context("when JSON contains 'carousel' key but no images") {
+                    beforeEach {
+                        jsonData = """
+                        {
+                            "carousel": {}
+                        }
+                        """.data(using: .utf8)
+
+                        let decodedData = try? JSONDecoder().decode([String: ImageCarousel].self, from: jsonData)
+                        carousel = decodedData?["carousel"]
+                    }
+
+                    it("decodes images as nil") {
+                        expect(carousel?.images).to(beNil())
+                    }
+                }
+
+                context("when 'images' is an empty dictionary") {
+                    beforeEach {
+                        jsonData = """
+                        {
+                            "carousel": {
+                                "images": {}
+                            }
+                        }
+                        """.data(using: .utf8)
+
+                        let decodedData = try? JSONDecoder().decode([String: ImageCarousel].self, from: jsonData)
+                        carousel = decodedData?["carousel"]
+                    }
+
+                    it("decodes images as an empty dictionary") {
+                        expect(carousel?.images).toNot(beNil())
+                        expect(carousel?.images?.isEmpty).to(beTrue())
+                    }
+                }
+
+                context("when images contain empty ImageDetails objects") {
+                    beforeEach {
+                        jsonData = """
+                        {
+                            "carousel": {
+                                "images": {
+                                    "0": {}
+                                }
+                            }
+                        }
+                        """.data(using: .utf8)
+
+                        let decodedData = try? JSONDecoder().decode([String: ImageCarousel].self, from: jsonData)
+                        carousel = decodedData?["carousel"]
+                    }
+
+                    it("decodes ImageDetails with all fields as nil") {
+                        let firstImage = carousel?.images?["0"]
+                        expect(firstImage?.imgURL).to(beNil())
+                        expect(firstImage?.link).to(beNil())
+                        expect(firstImage?.altText).to(beNil())
+                    }
+                }
+            }
         }
     }
 }

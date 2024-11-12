@@ -86,6 +86,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         }
     }
     private var isClickableImage = false
+    private var isImageCarousel = false
     var backgroundViewColor: UIColor? = .clear
 
     init(presenter: FullViewPresenterType) {
@@ -145,6 +146,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
             layout = .textOnly
         }
         isClickableImage = viewModel.customJson?.clickableImage?.url != nil
+        isImageCarousel = !(viewModel.customJson?.imageCarousel?.images?.isEmpty ?? true)
 
         setupAccessibility()
         updateUIConstants()
