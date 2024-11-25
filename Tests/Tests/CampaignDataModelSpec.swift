@@ -208,7 +208,7 @@ class CustomJsonSpec: QuickSpec {
             }
 
             describe("Carousel model") {
-                var carousel: ImageCarousel?
+                var carousel: Carousel?
                 var jsonData: Data!
 
                 context("when JSON contains all fields") {
@@ -231,7 +231,9 @@ class CustomJsonSpec: QuickSpec {
                                     }
                                 }
                                 """.data(using: .utf8)
-                        let decodedData = try? JSONDecoder().decode([String: ImageCarousel].self, from: jsonData)
+                        let decoder = JSONDecoder()
+                        decoder.keyDecodingStrategy = .convertFromSnakeCase
+                        let decodedData = try? decoder.decode([String: Carousel].self, from: jsonData)
                         carousel = decodedData?["carousel"]
                     }
 
@@ -242,7 +244,7 @@ class CustomJsonSpec: QuickSpec {
 
                     it("decodes image details correctly") {
                         let firstImage = carousel?.images?["0"]
-                        expect(firstImage?.imgURL).to(equal("URL link"))
+                        expect(firstImage?.imgUrl).to(equal("URL link"))
                         expect(firstImage?.link).to(equal("https://redirecturl"))
                         expect(firstImage?.altText).to(equal("unable to load image"))
                     }
@@ -261,13 +263,15 @@ class CustomJsonSpec: QuickSpec {
                                     }
                                 }
                                 """.data(using: .utf8)
-                        let decodedData = try? JSONDecoder().decode([String: ImageCarousel].self, from: jsonData)
+                        let decoder = JSONDecoder()
+                        decoder.keyDecodingStrategy = .convertFromSnakeCase
+                        let decodedData = try? decoder.decode([String: Carousel].self, from: jsonData)
                         carousel = decodedData?["carousel"]
                     }
 
                     it("decodes with nil for missing fields") {
                         let firstImage = carousel?.images?["0"]
-                        expect(firstImage?.imgURL).to(equal("URL link"))
+                        expect(firstImage?.imgUrl).to(equal("URL link"))
                         expect(firstImage?.link).to(beNil())
                         expect(firstImage?.altText).to(beNil())
                     }
@@ -280,7 +284,7 @@ class CustomJsonSpec: QuickSpec {
                                     "carousel": {}
                                 }
                                 """.data(using: .utf8)
-                        let decodedData = try? JSONDecoder().decode([String: ImageCarousel].self, from: jsonData)
+                        let decodedData = try? JSONDecoder().decode([String: Carousel].self, from: jsonData)
                         carousel = decodedData?["carousel"]
                     }
 
@@ -292,7 +296,7 @@ class CustomJsonSpec: QuickSpec {
                 context("when JSON is completely empty") {
                     beforeEach {
                         jsonData = "{}".data(using: .utf8)
-                        let decodedData = try? JSONDecoder().decode([String: ImageCarousel].self, from: jsonData)
+                        let decodedData = try? JSONDecoder().decode([String: Carousel].self, from: jsonData)
                         carousel = decodedData?["carousel"]
                     }
 
@@ -309,7 +313,7 @@ class CustomJsonSpec: QuickSpec {
                         }
                         """.data(using: .utf8)
 
-                        let decodedData = try? JSONDecoder().decode([String: ImageCarousel].self, from: jsonData)
+                        let decodedData = try? JSONDecoder().decode([String: Carousel].self, from: jsonData)
                         carousel = decodedData?["carousel"]
                     }
 
@@ -328,7 +332,7 @@ class CustomJsonSpec: QuickSpec {
                         }
                         """.data(using: .utf8)
 
-                        let decodedData = try? JSONDecoder().decode([String: ImageCarousel].self, from: jsonData)
+                        let decodedData = try? JSONDecoder().decode([String: Carousel].self, from: jsonData)
                         carousel = decodedData?["carousel"]
                     }
 
@@ -350,13 +354,13 @@ class CustomJsonSpec: QuickSpec {
                         }
                         """.data(using: .utf8)
 
-                        let decodedData = try? JSONDecoder().decode([String: ImageCarousel].self, from: jsonData)
+                        let decodedData = try? JSONDecoder().decode([String: Carousel].self, from: jsonData)
                         carousel = decodedData?["carousel"]
                     }
 
                     it("decodes ImageDetails with all fields as nil") {
                         let firstImage = carousel?.images?["0"]
-                        expect(firstImage?.imgURL).to(beNil())
+                        expect(firstImage?.imgUrl).to(beNil())
                         expect(firstImage?.link).to(beNil())
                         expect(firstImage?.altText).to(beNil())
                     }
