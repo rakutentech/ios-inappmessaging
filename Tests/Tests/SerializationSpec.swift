@@ -11,7 +11,7 @@ class SerializationSpec: QuickSpec {
             it("should serialize with correct property names") {
                 let identifier = UserIdentifier(type: .idTrackingIdentifier, identifier: "TheUserID")
                 let encoder = JSONEncoder()
-
+                encoder.outputFormatting = .sortedKeys
                 let encodedData = try? encoder.encode(identifier)
                 expect(encodedData).toNot(beNil())
                 let encodedString = String(data: encodedData!, encoding: .utf8)

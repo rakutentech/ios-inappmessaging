@@ -68,6 +68,31 @@
                 "customJson": {
                     "pushPrimer": {
                         "button": 2
+                    },
+                    "background": {
+                        "opacity": 0.6
+                    },
+                    "clickableImage":{
+                        "url":"https://www.google.com"
+                    },
+                    "carousel": {
+                        "images": {
+                            "0": {
+                                "link": "https://redirecturl1",
+                                "img_url": "URL link",
+                                "alt_text": "unable to load image"
+                            },
+                            "1": {
+                                "link": "https://redirecturl2",
+                                "img_url": "URL link",
+                                "alt_text": "unable to load image"
+                            },
+                            "2": {
+                                "link": "https://redirecturl3",
+                                "img_url": "URL link",
+                                "alt_text": "unable to load image"
+                            }
+                        }
                     }
                 },
                 "messagePayload": {

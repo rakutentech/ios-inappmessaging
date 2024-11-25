@@ -64,7 +64,9 @@ internal class MessageMixerService: MessageMixerServiceType, HttpRequestable {
 
     private func parse(response: Data) -> Result<PingResponse, Error> {
         do {
-            let response = try JSONDecoder().decode(PingResponse.self, from: response)
+            let decoder = JSONDecoder()
+            decoder.keyDecodingStrategy = .convertFromSnakeCase
+            let response = try decoder.decode(PingResponse.self, from: response)
             return .success(response)
         } catch {
             let description = "Failed to parse json"
