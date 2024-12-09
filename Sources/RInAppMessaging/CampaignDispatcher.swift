@@ -24,6 +24,14 @@ internal class CampaignDispatcher: CampaignDispatcherType, TaskSchedulable {
     private let dispatchQueue = DispatchQueue(label: "IAM.CampaignDisplay", qos: .userInteractive)
     private(set) var queuedCampaignIDs = [String]()
     private(set) var isDispatching = false
+    
+    private let urlCache: URLCache = {
+        // response must be <= 5% of mem/disk cap in order to committed to cache
+        let cache = URLCache(memoryCapacity: URLCache.shared.memoryCapacity,
+                                   diskCapacity: 100 * 1024 * 1024,  // fits up to 5MB images
+                                   diskPath: "RInAppMessaging")
+        return cache
+    }()
 
     weak var delegate: CampaignDispatcherDelegate?
     var scheduledTask: DispatchWorkItem?
@@ -41,11 +49,7 @@ internal class CampaignDispatcher: CampaignDispatcherType, TaskSchedulable {
         sessionConfig.timeoutIntervalForRequest = Constants.CampaignMessage.imageRequestTimeoutSeconds
         sessionConfig.timeoutIntervalForResource = Constants.CampaignMessage.imageResourceTimeoutSeconds
         sessionConfig.waitsForConnectivity = true
-        sessionConfig.urlCache = URLCache(
-            // response must be <= 5% of mem/disk cap in order to committed to cache
-            memoryCapacity: URLCache.shared.memoryCapacity,
-            diskCapacity: 100*1024*1024, // fits up to 5MB images
-            diskPath: "RInAppMessaging")
+        sessionConfig.urlCache = urlCache
         httpSession = URLSession(configuration: sessionConfig)
     }
 
@@ -100,28 +104,46 @@ internal class CampaignDispatcher: CampaignDispatcherType, TaskSchedulable {
             dispatchNext()
             return
         }
-
-        // fetch from imageUrl, display if successful, skip on error
-        if let resImgUrlString = campaign.data.messagePayload.resource.imageUrl, let resImgUrl = URL(string: resImgUrlString) {
-            data(from: resImgUrl) { imgBlob in
-                self.dispatchQueue.async {
-                    guard let imgBlob = imgBlob else {
-                        self.dispatchNext()
-                        return
-                    }
-                    self.displayCampaign(campaign, imageBlob: imgBlob)
-                }
-            }
-        } else {
+        fetchCampaignImagesAndDisplay(campaign: campaign)
+    }
+    
+    func fetchCampaignImagesAndDisplay(campaign: Campaign) {
+        guard let resImgUrlString = campaign.data.messagePayload.resource.imageUrl,
+              let resImgUrl = URL(string: resImgUrlString) else {
             // If no image expected, just display the message.
             displayCampaign(campaign)
+            return
+        }
+
+        fetchImage(from: resImgUrl, for: campaign)
+    }
+
+    private func fetchImage(from url: URL, for campaign: Campaign) {
+        data(from: url) { imgBlob in
+            self.dispatchQueue.async {
+                guard let imgBlob = imgBlob else {
+                    self.dispatchNext()
+                    return
+                }
+                self.handleCampaignImage(campaign, imgBlob: imgBlob)
+            }
         }
     }
 
-    private func displayCampaign(_ campaign: Campaign, imageBlob: Data? = nil) {
-        let campaignTitle = campaign.data.messagePayload.title
+    private func handleCampaignImage(_ campaign: Campaign, imgBlob: Data) {
+        if let carouselData = campaign.data.customJson?.carousel,
+           !(carouselData.images?.isEmpty ?? true) {
+            fetchImagesArray(from: carouselData) { images in
+                self.displayCampaign(campaign, imageBlob: imgBlob, carouselImages: images)
+            }
+        } else {
+            self.displayCampaign(campaign, imageBlob: imgBlob)
+        }
+    }
 
-        router.displayCampaign(campaign, associatedImageData: imageBlob, confirmation: {
+    private func displayCampaign(_ campaign: Campaign, imageBlob: Data? = nil, carouselImages: [UIImage?]? = nil) {
+        let campaignTitle = campaign.data.messagePayload.title
+        router.displayCampaign(campaign, associatedImageData: imageBlob, carouselImages: carouselImages, confirmation: {
             let contexts = campaign.contexts
             guard let delegate = self.delegate, !contexts.isEmpty, !campaign.data.isTest else {
                 return true
@@ -165,6 +187,63 @@ internal class CampaignDispatcher: CampaignDispatcherType, TaskSchedulable {
                 return
             }
             completion(data)
+        }.resume()
+    }
+
+    func fetchImagesArray(from carousel: Carousel, completion: @escaping ([UIImage?]) -> Void) {
+        guard let imageDetails = carousel.images else {
+            completion([])
+            return
+        }
+
+        let filteredDetails = imageDetails
+            .sorted { $0.key < $1.key }
+            .prefix(Constants.CampaignMessage.carouselThreshold)
+            .map { $0 }
+
+        var images: [UIImage?] = Array(repeating: nil, count: filteredDetails.count)
+
+        for (index, detail) in filteredDetails.enumerated() {
+            guard let urlString = detail.value.imgUrl else {
+                images[index] = nil
+                continue
+            }
+            fetchCarouselImage(for: urlString) { image in
+                images[index] = image
+            }
+        }
+        completion(images)
+    }
+
+    func fetchCarouselImage(for urlString: String, completion: @escaping (UIImage?) -> Void) {
+        guard let url = URL(string: urlString),
+              ["jpg", "jpeg", "png"].contains(url.pathExtension.lowercased()) else {
+            completion(nil)
+            return
+        }
+
+        let request = URLRequest(url: url)
+
+        // Check cache
+        if let cachedResponse = self.urlCache.cachedResponse(for: request),
+           let cachedImage = UIImage(data: cachedResponse.data) {
+            completion(cachedImage)
+            return
+        }
+
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let data = data,
+               let response = response,
+               error == nil,
+               let httpResponse = response as? HTTPURLResponse,
+               httpResponse.statusCode == 200,
+               let image = UIImage(data: data) {
+                let cachedData = CachedURLResponse(response: response, data: data)
+                self.urlCache.storeCachedResponse(cachedData, for: request)
+                completion(image)
+            } else {
+                completion(nil)
+            }
         }.resume()
     }
 }

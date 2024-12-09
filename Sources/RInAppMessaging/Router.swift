@@ -18,6 +18,7 @@ internal protocol RouterType: ErrorReportable {
     /// - Parameter cancelled: true when message display was cancelled
     func displayCampaign(_ campaign: Campaign,
                          associatedImageData: Data?,
+                         carouselImages: [UIImage?]?,
                          confirmation: @escaping @autoclosure () -> Bool,
                          completion: @escaping (_ cancelled: Bool) -> Void)
 
@@ -104,6 +105,7 @@ internal class Router: RouterType, ViewListenerObserver {
 
     func displayCampaign(_ campaign: Campaign,
                          associatedImageData: Data?,
+                         carouselImages: [UIImage?]?,
                          confirmation: @escaping @autoclosure () -> Bool,
                          completion: @escaping (_ cancelled: Bool) -> Void) {
 
@@ -122,7 +124,7 @@ internal class Router: RouterType, ViewListenerObserver {
         }
 
         displayQueue.async {
-            let viewConstructor = self.createViewConstructor(for: campaign, presenter: presenter, associatedImageData: associatedImageData)
+            let viewConstructor = self.createViewConstructor(for: campaign, presenter: presenter, associatedImageData: associatedImageData, carouselImage: carouselImages)
 
             DispatchQueue.main.async {
                 guard let rootView = UIApplication.shared.getKeyWindow(),
@@ -167,7 +169,8 @@ internal class Router: RouterType, ViewListenerObserver {
         return presenter
     }
 
-    private func createViewConstructor(for campaign: Campaign, presenter: BaseViewPresenterType, associatedImageData: Data?) -> (() -> BaseView) {
+    private func createViewConstructor(for campaign: Campaign, presenter: BaseViewPresenterType, associatedImageData: Data?, carouselImage: [UIImage?]?
+    ) -> (() -> BaseView) {
         var view: (() -> BaseView)!
         let type = campaign.data.type
 
@@ -177,6 +180,9 @@ internal class Router: RouterType, ViewListenerObserver {
             presenter.campaign = campaign
             if let associatedImageData = associatedImageData {
                 presenter.associatedImage = UIImage(data: associatedImageData)
+            }
+            if let carouselImage = carouselImage {
+                presenter.carouselImages = carouselImage
             }
             view = type == .modal ? { ModalView(presenter: presenter) } : { FullScreenView(presenter: presenter) }
         case .slide:

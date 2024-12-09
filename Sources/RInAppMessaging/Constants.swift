@@ -5,6 +5,7 @@ internal enum Constants {
     enum CampaignMessage {
         static let imageRequestTimeoutSeconds: TimeInterval = 20
         static let imageResourceTimeoutSeconds: TimeInterval = 300
+        static let carouselThreshold: Int = 5
     }
 
     enum Request {

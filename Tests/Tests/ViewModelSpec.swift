@@ -16,7 +16,7 @@ class ViewModelSpec: QuickSpec {
                           messageBody: messageBody,
                           header: header,
                           titleColor: .black, headerColor: .black, messageBodyColor: .black,
-                          isHTML: false, showOptOut: true, showButtons: true, isDismissable: true, customJson: nil)
+                          isHTML: false, showOptOut: true, showButtons: true, isDismissable: true, customJson: nil, carouselImages: nil)
                 }
 
                 it("should return true if bodyMessage is not nil") {
