@@ -106,30 +106,38 @@ internal class CampaignDispatcher: CampaignDispatcherType, TaskSchedulable {
         }
         fetchCampaignImagesAndDisplay(campaign: campaign)
     }
-
-    func fetchCampaignImagesAndDisplay(campaign: Campaign ){
-        // fetch from imageUrl, display if successful, skip on error
-        if let resImgUrlString = campaign.data.messagePayload.resource.imageUrl, let resImgUrl = URL(string: resImgUrlString) {
-            data(from: resImgUrl) { imgBlob in
-                self.dispatchQueue.async {
-                    guard let imgBlob = imgBlob else {
-                        self.dispatchNext()
-                        return
-                    }
-                    if !(campaign.data.customJson?.carousel?.images?.isEmpty ?? true) {
-                        if let carouselData = campaign.data.customJson?.carousel {
-                            self.fetchImagesArray(from: carouselData) { images in
-                                self.displayCampaign(campaign, imageBlob: imgBlob, carouselImages: images)
-                            }
-                        }
-                    } else {
-                        self.displayCampaign(campaign, imageBlob: imgBlob)
-                    }
-                }
-            }
-        } else {
+    
+    func fetchCampaignImagesAndDisplay(campaign: Campaign) {
+        guard let resImgUrlString = campaign.data.messagePayload.resource.imageUrl,
+              let resImgUrl = URL(string: resImgUrlString) else {
             // If no image expected, just display the message.
             displayCampaign(campaign)
+            return
+        }
+
+        fetchImage(from: resImgUrl, for: campaign)
+    }
+
+    private func fetchImage(from url: URL, for campaign: Campaign) {
+        data(from: url) { imgBlob in
+            self.dispatchQueue.async {
+                guard let imgBlob = imgBlob else {
+                    self.dispatchNext()
+                    return
+                }
+                self.handleCampaignImage(campaign, imgBlob: imgBlob)
+            }
+        }
+    }
+
+    private func handleCampaignImage(_ campaign: Campaign, imgBlob: Data) {
+        if let carouselData = campaign.data.customJson?.carousel,
+           !(carouselData.images?.isEmpty ?? true) {
+            fetchImagesArray(from: carouselData) { images in
+                self.displayCampaign(campaign, imageBlob: imgBlob, carouselImages: images)
+            }
+        } else {
+            self.displayCampaign(campaign, imageBlob: imgBlob)
         }
     }
 
