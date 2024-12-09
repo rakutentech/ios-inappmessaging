@@ -14,6 +14,7 @@ internal struct FullViewModel {
     let showButtons: Bool
     let isDismissable: Bool
     let customJson: CustomJson?
+    let carouselImages: [UIImage?]?
 
     var hasText: Bool {
         [header, messageBody].contains { $0?.isEmpty == false }

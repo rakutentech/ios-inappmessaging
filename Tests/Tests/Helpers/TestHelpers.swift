@@ -141,7 +141,7 @@ struct TestHelpers {
                                   showOptOut: true,
                                   showButtons: true,
                                   isDismissable: true,
-                                  customJson: customJson)
+                                  customJson: customJson, carouselImages: nil)
     }
 
     enum MockResponse {

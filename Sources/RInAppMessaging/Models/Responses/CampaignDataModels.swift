@@ -160,6 +160,10 @@ struct Carousel: Codable {
         case images
     }
     
+    init(images: [String: ImageDetails]?) {
+        self.images = images
+    }
+    
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         images = try container.decodeIfPresent([String: ImageDetails].self, forKey: .images)
@@ -175,6 +179,12 @@ struct ImageDetails: Codable {
         case imgUrl
         case link
         case altText
+    }
+    
+    init(imgUrl: String?, link: String?, altText: String?) {
+        self.imgUrl = imgUrl
+        self.altText = altText
+        self.link = link
     }
     
     init(from decoder: Decoder) throws {

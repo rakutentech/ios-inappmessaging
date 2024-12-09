@@ -40,6 +40,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         case textAndImage
     }
 
+    @IBOutlet weak var carouselView: CarouselView!
     @IBOutlet private(set) weak var contentView: UIView! // Wraps dialog view to allow rounded corners
     @IBOutlet private weak var backgroundView: UIView!
     @IBOutlet private weak var imageView: UIImageView!
@@ -63,8 +64,9 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
 
     @IBOutlet private weak var contentWidthOffsetConstraint: NSLayoutConstraint!
     @IBOutlet private weak var bodyViewOffsetYConstraint: NSLayoutConstraint!
-    private weak var exitButtonHeightConstraint: NSLayoutConstraint!
+    @IBOutlet weak var outOutButtonTopSpacer: UIView!
 
+    private weak var exitButtonHeightConstraint: NSLayoutConstraint!
     private let presenter: FullViewPresenterType
 
     var uiConstants = UIConstants()
@@ -174,6 +176,19 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
                 exitButtonHeightConstraint.constant = uiConstants.textTopMarginForNotDismissableCampaigns
             }
         }
+        if isImageCarousel {
+            switch mode {
+            case .fullScreen:
+                carouselView.configure(images: viewModel.carouselImages!,
+                                       carouselData: viewModel.customJson?.carousel)
+            case .modal(let maxWindowHeightPercentage):
+                carouselView.configure(images: viewModel.carouselImages!,
+                                       carouselData: viewModel.customJson?.carousel,
+                                       maxHeightPercent: maxWindowHeightPercentage)
+            default:
+                assertionFailure("Unsupported mode")
+            }
+         }
 
         presenter.logImpression(type: .impression)
     }
@@ -294,8 +309,12 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
     }
 
     private func updateUIComponentsVisibility(viewModel: FullViewModel) {
+        imageView.isHidden = isImageCarousel
+        carouselView.isHidden = !isImageCarousel
+        carouselView.setPageControlVisibility(isHdden: !isImageCarousel)
         buttonsContainer.isHidden = !viewModel.showButtons
         optOutView.isHidden = !viewModel.showOptOut
+        outOutButtonTopSpacer.isHidden = isImageCarousel && (!buttonsContainer.isHidden || !optOutView.isHidden)
         optOutAndButtonsSpacer.isHidden = buttonsContainer.isHidden || optOutView.isHidden
         controlsView.isHidden = buttonsContainer.isHidden && optOutView.isHidden
         bodyView.isHidden = viewModel.isHTML || !viewModel.hasText
