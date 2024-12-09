@@ -189,10 +189,9 @@ internal class CampaignDispatcher: CampaignDispatcherType, TaskSchedulable {
 
         let filteredDetails = imageDetails
             .sorted { $0.key < $1.key }
-            .prefix(5)
+            .prefix(Constants.CampaignMessage.carouselThreshold)
             .map { $0 }
 
-        let dispatchGroup = DispatchGroup()
         var images: [UIImage?] = Array(repeating: nil, count: filteredDetails.count)
 
         for (index, detail) in filteredDetails.enumerated() {
@@ -200,17 +199,11 @@ internal class CampaignDispatcher: CampaignDispatcherType, TaskSchedulable {
                 images[index] = nil
                 continue
             }
-            
-            dispatchGroup.enter()
             fetchCarouselImage(for: urlString) { image in
                 images[index] = image
-                dispatchGroup.leave()
             }
         }
-
-        dispatchGroup.notify(queue: .main) {
-            completion(images)
-        }
+        completion(images)
     }
 
     func fetchCarouselImage(for urlString: String, completion: @escaping (UIImage?) -> Void) {
