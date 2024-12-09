@@ -104,7 +104,10 @@ internal class CampaignDispatcher: CampaignDispatcherType, TaskSchedulable {
             dispatchNext()
             return
         }
+        fetchCampaignImagesAndDisplay(campaign: campaign)
+    }
 
+    func fetchCampaignImagesAndDisplay(campaign: Campaign ){
         // fetch from imageUrl, display if successful, skip on error
         if let resImgUrlString = campaign.data.messagePayload.resource.imageUrl, let resImgUrl = URL(string: resImgUrlString) {
             data(from: resImgUrl) { imgBlob in
@@ -115,10 +118,8 @@ internal class CampaignDispatcher: CampaignDispatcherType, TaskSchedulable {
                     }
                     if !(campaign.data.customJson?.carousel?.images?.isEmpty ?? true) {
                         if let carouselData = campaign.data.customJson?.carousel {
-                            DispatchQueue.main.sync {
-                                self.fetchImagesArray(from: carouselData) { images in
-                                    self.displayCampaign(campaign, imageBlob: imgBlob, carouselImages: images)
-                                }
+                            self.fetchImagesArray(from: carouselData) { images in
+                                self.displayCampaign(campaign, imageBlob: imgBlob, carouselImages: images)
                             }
                         }
                     } else {
