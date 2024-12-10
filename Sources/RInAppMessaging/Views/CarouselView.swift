@@ -1,6 +1,6 @@
-import Foundation
+import UIKit
 
-class CarouselView: UIView {
+@objc class CarouselView: UIView {
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var carouselPageControl: UIPageControl!
     @IBOutlet private weak var carouselHeightConstraint: NSLayoutConstraint!

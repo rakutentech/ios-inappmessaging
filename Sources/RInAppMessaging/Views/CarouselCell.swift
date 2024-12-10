@@ -1,3 +1,5 @@
+import UIKit
+
 class CarouselCell: UICollectionViewCell {
     static let identifier = "CarouselCell"
     private let imageView: UIImageView = {

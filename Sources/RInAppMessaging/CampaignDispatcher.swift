@@ -1,4 +1,4 @@
-import Foundation
+import UIKit
 
 internal protocol CampaignDispatcherDelegate: AnyObject {
     func performPing()
