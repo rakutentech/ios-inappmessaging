@@ -176,20 +176,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
                 exitButtonHeightConstraint.constant = uiConstants.textTopMarginForNotDismissableCampaigns
             }
         }
-        if isImageCarousel {
-            switch mode {
-            case .fullScreen:
-                carouselView.configure(images: viewModel.carouselImages!,
-                                       carouselData: viewModel.customJson?.carousel)
-            case .modal(let maxWindowHeightPercentage):
-                carouselView.configure(images: viewModel.carouselImages!,
-                                       carouselData: viewModel.customJson?.carousel,
-                                       maxHeightPercent: maxWindowHeightPercentage)
-            default:
-                assertionFailure("Unsupported mode")
-            }
-         }
-
+        configureCarouselView(viewModel: viewModel)
         presenter.logImpression(type: .impression)
     }
 
@@ -309,7 +296,9 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
     }
 
     private func updateUIComponentsVisibility(viewModel: FullViewModel) {
-        imageView.isHidden = isImageCarousel
+        if isImageCarousel {
+            imageView.isHidden = true
+        }
         carouselView.isHidden = !isImageCarousel
         carouselView.setPageControlVisibility(isHdden: !isImageCarousel)
         buttonsContainer.isHidden = !viewModel.showButtons
@@ -380,6 +369,22 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
             button.translatesAutoresizingMaskIntoConstraints = false
             button.heightAnchor.constraint(equalToConstant: uiConstants.buttonHeight).isActive = true
             buttonsContainer.addArrangedSubview(button)
+        }
+    }
+
+    func configureCarouselView(viewModel: FullViewModel) {
+        if isImageCarousel {
+            switch mode {
+            case .fullScreen:
+                carouselView.configure(images: viewModel.carouselImages!,
+                                       carouselData: viewModel.customJson?.carousel)
+            case .modal(let maxWindowHeightPercentage):
+                carouselView.configure(images: viewModel.carouselImages!,
+                                       carouselData: viewModel.customJson?.carousel,
+                                       maxHeightPercent: maxWindowHeightPercentage)
+            default:
+                assertionFailure("Unsupported mode")
+            }
         }
     }
 
