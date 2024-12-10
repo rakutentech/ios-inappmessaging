@@ -148,7 +148,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
             layout = .textOnly
         }
         isClickableImage = viewModel.customJson?.clickableImage?.url != nil
-        isImageCarousel = !(viewModel.customJson?.carousel?.images?.isEmpty ?? true)
+        isImageCarousel = !(viewModel.customJson?.carousel?.images?.isEmpty ?? true) && self.layout == .imageOnly
 
         setupAccessibility()
         updateUIConstants()
