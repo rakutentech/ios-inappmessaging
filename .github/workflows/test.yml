@@ -24,13 +24,13 @@ jobs:
         -workspace RInAppMessaging.xcworkspace \
         -scheme UITests \
         -resultBundlePath artifacts/ui-tests/UITests \
-        -destination "platform=iOS Simulator,name=iPhone 11" \
+        -destination "platform=iOS Simulator,name=iPhone 14" \
         test | xcpretty
         xcodebuild \
         -workspace RInAppMessaging.xcworkspace \
         -scheme RInAppMessaging-Example \
         -resultBundlePath artifacts/unit-tests/RInAppMessaging-Example \
-        -destination "platform=iOS Simulator,name=iPhone 11" \
+        -destination "platform=iOS Simulator,name=iPhone 14" \
         test | xcpretty
     - uses: kishikawakatsumi/xcresulttool@v1
       with:
