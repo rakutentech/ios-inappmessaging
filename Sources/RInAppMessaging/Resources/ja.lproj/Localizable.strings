@@ -2,3 +2,4 @@
 "dialog_alert_invalidURI_title" = "ページが見つかりません";
 "dialog_alert_invalidURI_message" = "ページへの移動中にエラーが発生しました";
 "dialog_alert_invalidURI_close" = "閉じる";
+"carousel_image_load_error" = "画像を読み込めません";

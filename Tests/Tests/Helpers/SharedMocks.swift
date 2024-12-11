@@ -345,11 +345,7 @@ class RouterMock: RouterType {
 
     private let displayQueue = DispatchQueue(label: "RouterMock.displayQueue")
 
-    func displayCampaign(_ campaign: Campaign,
-                         associatedImageData: Data?,
-                         confirmation: @escaping @autoclosure () -> Bool,
-                         completion: @escaping (_ cancelled: Bool) -> Void) {
-
+func displayCampaign(_ campaign: Campaign, associatedImageData: Data?, carouselImages: [UIImage?]?, confirmation: @autoclosure @escaping () -> Bool, completion: @escaping (Bool) -> Void) {
         wasDisplayCampaignCalled = true
         guard confirmation() else {
             completion(true)
