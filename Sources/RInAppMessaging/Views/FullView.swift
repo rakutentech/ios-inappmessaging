@@ -38,6 +38,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         case textOnly
         case imageOnly
         case textAndImage
+        case carousel
     }
 
     @IBOutlet weak var carouselView: CarouselView!
@@ -64,7 +65,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
 
     @IBOutlet private weak var contentWidthOffsetConstraint: NSLayoutConstraint!
     @IBOutlet private weak var bodyViewOffsetYConstraint: NSLayoutConstraint!
-    @IBOutlet weak var outOutButtonTopSpacer: UIView!
+    @IBOutlet weak var optOutButtonTopSpacer: UIView!
 
     private weak var exitButtonHeightConstraint: NSLayoutConstraint!
     private let presenter: FullViewPresenterType
@@ -88,7 +89,6 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         }
     }
     private var isClickableImage = false
-    private var isImageCarousel = false
     var backgroundViewColor: UIColor? = .clear
 
     init(presenter: FullViewPresenterType) {
@@ -146,9 +146,10 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
             layout = viewModel.hasText ? .textAndImage : .imageOnly
         } else if viewModel.hasText {
             layout = .textOnly
+        } else if (viewModel.carouselData != nil) && !viewModel.hasText {
+            layout = .carousel
         }
         isClickableImage = viewModel.customJson?.clickableImage?.url != nil
-        isImageCarousel = !(viewModel.customJson?.carousel?.images?.isEmpty ?? true) && self.layout == .imageOnly
 
         setupAccessibility()
         updateUIConstants()
@@ -296,14 +297,14 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
     }
 
     private func updateUIComponentsVisibility(viewModel: FullViewModel) {
-        if isImageCarousel {
+        if layout == .carousel {
             imageView.isHidden = true
         }
-        carouselView.isHidden = !isImageCarousel
-        carouselView.setPageControlVisibility(isHdden: !isImageCarousel)
+        carouselView.isHidden = !(layout == .carousel)
+        carouselView.setPageControlVisibility(isHdden: !(layout == .carousel))
         buttonsContainer.isHidden = !viewModel.showButtons
         optOutView.isHidden = !viewModel.showOptOut
-        outOutButtonTopSpacer.isHidden = isImageCarousel && (!buttonsContainer.isHidden || !optOutView.isHidden)
+        optOutButtonTopSpacer.isHidden = !(layout == .carousel) && (!buttonsContainer.isHidden || !optOutView.isHidden)
         optOutAndButtonsSpacer.isHidden = buttonsContainer.isHidden || optOutView.isHidden
         controlsView.isHidden = buttonsContainer.isHidden && optOutView.isHidden
         bodyView.isHidden = viewModel.isHTML || !viewModel.hasText
@@ -373,18 +374,9 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
     }
 
     func configureCarouselView(viewModel: FullViewModel) {
-        if isImageCarousel {
-            switch mode {
-            case .fullScreen:
-                carouselView.configure(images: viewModel.carouselImages!,
-                                       carouselData: viewModel.customJson?.carousel)
-            case .modal(let maxWindowHeightPercentage):
-                carouselView.configure(images: viewModel.carouselImages!,
-                                       carouselData: viewModel.customJson?.carousel,
-                                       maxHeightPercent: maxWindowHeightPercentage)
-            default:
-                assertionFailure("Unsupported mode")
-            }
+        guard let carouselData = viewModel.carouselData else { return }
+        if layout == .carousel {
+            carouselView.configure(carouselData: carouselData)
         }
     }
 

@@ -1,8 +1,9 @@
 import UIKit
 
-class CarouselCell: UICollectionViewCell {
+final class CarouselCell: UICollectionViewCell {
     static let identifier = "CarouselCell"
-    private let imageView: UIImageView = {
+
+    let imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.clipsToBounds = true
@@ -11,7 +12,7 @@ class CarouselCell: UICollectionViewCell {
         return imageView
     }()
 
-    private let textLabel: UILabel = {
+    let textLabel: UILabel = {
         let label = UILabel()
         label.textColor = .black
         label.font = UIFont.boldSystemFont(ofSize: 16)
@@ -47,15 +48,16 @@ class CarouselCell: UICollectionViewCell {
         textLabel.frame = CGRect(x: textX, y: textY, width: textSize.width, height: textSize.height)
     }
 
-    func configure(with image: UIImage?, altText: String) {
+    func configure(with image: UIImage?, altText: String?) {
         if let image = image {
             imageView.image = image
             textLabel.isHidden = true
         } else {
-            imageView.image = UIImage()
+            imageView.image = image
+            imageView.isHidden = true
             textLabel.isHidden = false
         }
-        textLabel.text = altText
+        textLabel.text = altText ?? "carousel_image_load_error".localized
         setNeedsLayout()
     }
 }

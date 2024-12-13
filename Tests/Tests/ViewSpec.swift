@@ -267,7 +267,7 @@ class BaseViewTestObject: UIView, BaseView {
 }
 
 class BaseViewPresenterMock: BaseViewPresenterType {
-    var carouselImages: [UIImage?]?
+    var carouselData: [CarouselData]?
     var campaign: Campaign!
     var impressions: [Impression] = []
     var impressionService: ImpressionServiceType = ImpressionServiceMock()
@@ -279,7 +279,7 @@ class BaseViewPresenterMock: BaseViewPresenterType {
 }
 
 class FullViewPresenterMock: FullViewPresenterType {
-    var carouselImages: [UIImage?]?
+    var carouselData: [CarouselData]?
     var view: FullViewType?
     var campaign: Campaign!
     var impressions: [Impression] = []
@@ -300,7 +300,7 @@ class FullViewPresenterMock: FullViewPresenterType {
 }
 
 class SlideUpViewPresenterMock: SlideUpViewPresenterType {
-    var carouselImages: [UIImage?]?
+    var carouselData: [CarouselData]?
     var view: SlideUpViewType?
     var campaign: Campaign!
     var impressions: [Impression] = []
@@ -333,7 +333,7 @@ extension FullViewModel {
               showButtons: true,
               isDismissable: true,
               customJson: nil,
-              carouselImages: nil)
+              carouselData: nil)
     }
 }
 

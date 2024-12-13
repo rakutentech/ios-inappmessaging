@@ -52,7 +52,7 @@ internal class FullViewPresenter: BaseViewPresenter, FullViewPresenterType, Erro
                                       showButtons: !messagePayload.messageSettings.controlSettings.buttons.isEmpty,
                                       isDismissable: campaign.data.isCampaignDismissable,
                                       customJson: campaign.data.customJson,
-                                      carouselImages: carouselImages)
+                                      carouselData: carouselData)
 
         view?.setup(viewModel: viewModel)
     }

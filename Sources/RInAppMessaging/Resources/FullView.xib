@@ -27,8 +27,8 @@
                 <outlet property="headerLabel" destination="T7s-2B-xbs" id="z3s-fm-1Ez"/>
                 <outlet property="imageView" destination="87e-5v-58Z" id="gZQ-P8-aXx"/>
                 <outlet property="optOutAndButtonsSpacer" destination="cX9-6w-OUz" id="nq1-Dm-L26"/>
+                <outlet property="optOutButtonTopSpacer" destination="wrt-M2-rbv" id="R9h-3n-UVl"/>
                 <outlet property="optOutView" destination="v9s-j4-ABc" id="st4-gn-1jx"/>
-                <outlet property="outOutButtonTopSpacer" destination="wrt-M2-rbv" id="btW-Cq-6VI"/>
                 <outlet property="webViewContainer" destination="d8e-45-aEu" id="L7l-e9-tiy"/>
             </connections>
         </placeholder>

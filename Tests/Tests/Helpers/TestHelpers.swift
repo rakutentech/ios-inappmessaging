@@ -128,7 +128,7 @@ struct TestHelpers {
         )
     }
 
-    static func generateFullViewModel(customJson: CustomJson? = nil) -> FullViewModel {
+    static func generateFullViewModel(customJson: CustomJson? = nil, carouselData: [CarouselData]? = nil) -> FullViewModel {
         return FullViewModel.init(image: UIImage(named: "test-image"),
                                   backgroundColor: .black,
                                   title: "Test",
@@ -141,7 +141,8 @@ struct TestHelpers {
                                   showOptOut: true,
                                   showButtons: true,
                                   isDismissable: true,
-                                  customJson: customJson, carouselImages: nil)
+                                  customJson: customJson,
+                                  carouselData: nil)
     }
 
     enum MockResponse {
