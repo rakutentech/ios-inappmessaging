@@ -100,6 +100,8 @@
 		E686BF522A2692CD00D4E3E9 /* TooltipViewSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E686BF512A2692CD00D4E3E9 /* TooltipViewSpec.swift */; };
 		E686BF562A2692DD00D4E3E9 /* tooltip-data.json in Resources */ = {isa = PBXBuildFile; fileRef = E686BF532A2692DD00D4E3E9 /* tooltip-data.json */; };
 		E6D762532CA2A87F00FE62D2 /* CampaignDataModelSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6D762522CA2A87A00FE62D2 /* CampaignDataModelSpec.swift */; };
+		E6D77EEA2D094D1100E34FC3 /* CarouselCellSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6D77EE92D094D0900E34FC3 /* CarouselCellSpec.swift */; };
+		E6F12B632D0C452400B4581B /* CarouselDataSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6F12B622D0C451C00B4581B /* CarouselDataSpec.swift */; };
 		FC1872382A49B7C0005EB10B /* UserInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC1872372A49B7C0005EB10B /* UserInfoView.swift */; };
 		FC18723A2A49B7D3005EB10B /* UserInfoHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC1872392A49B7D3005EB10B /* UserInfoHelper.swift */; };
 		FC18723C2A4E97A6005EB10B /* ConstantSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC18723B2A4E97A6005EB10B /* ConstantSpec.swift */; };
@@ -254,6 +256,8 @@
 		E686BF512A2692CD00D4E3E9 /* TooltipViewSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TooltipViewSpec.swift; sourceTree = "<group>"; };
 		E686BF532A2692DD00D4E3E9 /* tooltip-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "tooltip-data.json"; sourceTree = "<group>"; };
 		E6D762522CA2A87A00FE62D2 /* CampaignDataModelSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CampaignDataModelSpec.swift; sourceTree = "<group>"; };
+		E6D77EE92D094D0900E34FC3 /* CarouselCellSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarouselCellSpec.swift; sourceTree = "<group>"; };
+		E6F12B622D0C451C00B4581B /* CarouselDataSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarouselDataSpec.swift; sourceTree = "<group>"; };
 		FC1872372A49B7C0005EB10B /* UserInfoView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserInfoView.swift; sourceTree = "<group>"; };
 		FC1872392A49B7D3005EB10B /* UserInfoHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserInfoHelper.swift; sourceTree = "<group>"; };
 		FC18723B2A4E97A6005EB10B /* ConstantSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConstantSpec.swift; sourceTree = "<group>"; };
@@ -464,10 +468,12 @@
 				4557A8B0257E544C00C9D241 /* AccountRepositorySpec.swift */,
 				E6D762522CA2A87A00FE62D2 /* CampaignDataModelSpec.swift */,
 				C9827557262C423C00476505 /* BackoffSpec.swift */,
+				E6D77EE92D094D0900E34FC3 /* CarouselCellSpec.swift */,
 				45B3CC8327871C01005BA3F7 /* BundleSpec.swift */,
 				45563B0624064D78004EAFD3 /* CampaignRepositorySpec.swift */,
 				45BDFD022421D311004DEA0C /* CampaignsListManagerSpec.swift */,
 				D92D1F2122249833008EA748 /* CampaignsValidatorSpec.swift */,
+				E6F12B622D0C451C00B4581B /* CarouselDataSpec.swift */,
 				456FE1E824288C6500304872 /* CampaignTriggerAgentSpec.swift */,
 				456FE1EA2428C51E00304872 /* CommonUtilitySpec.swift */,
 				4538BAE226282DE4009952BE /* ConfigEndpointResponseSpec.swift */,
@@ -864,6 +870,7 @@
 				45ADA542247D206B00A9E2A3 /* RouterSpec.swift in Sources */,
 				E6D762532CA2A87F00FE62D2 /* CampaignDataModelSpec.swift in Sources */,
 				456FE1E72428513200304872 /* ErrorReportableSpec.swift in Sources */,
+				E6F12B632D0C452400B4581B /* CarouselDataSpec.swift in Sources */,
 				4538BCF6262AE8FA009952BE /* UserDataCacheSpec.swift in Sources */,
 				45BDFD052421EE7B004DEA0C /* SharedMocks.swift in Sources */,
 				FCF93D8029C2D359000DB8CE /* EventTypeSpec.swift in Sources */,
@@ -904,6 +911,7 @@
 				459DE86C2407B5750002F451 /* CustomEventValidationSpec.swift in Sources */,
 				45563B0724064D78004EAFD3 /* CampaignRepositorySpec.swift in Sources */,
 				FC18723C2A4E97A6005EB10B /* ConstantSpec.swift in Sources */,
+				E6D77EEA2D094D1100E34FC3 /* CarouselCellSpec.swift in Sources */,
 				455FEBE227F214640064470D /* UIColorExtensionSpec.swift in Sources */,
 				456FE1EB2428C51E00304872 /* CommonUtilitySpec.swift in Sources */,
 				4538BAE326282DE4009952BE /* ConfigEndpointResponseSpec.swift in Sources */,

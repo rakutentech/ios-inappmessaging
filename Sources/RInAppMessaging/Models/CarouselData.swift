@@ -10,20 +10,19 @@ class CarouselModelHandler {
     private var imageDataList: [CarouselData]
     
     init(data: [String: ImageDetails], images: [UIImage?]) {
-        let sortedKeys = (0...4).map { String($0) }
-        
+        let sortedKeys = Array(data.keys).sorted()
         var tempImageDataList: [CarouselData] = []
-        
+
         for (index, key) in sortedKeys.enumerated() {
-            if index < images.count {
-                let image = images[index]
-                let altText = data[key]?.altText
-                let link = data[key]?.link
-                tempImageDataList.append(CarouselData(image: image, altText: altText, link: link))
-            } else {
-                tempImageDataList.append(CarouselData(image: nil, altText: nil, link: nil))
-            }
+            guard index < images.count else { break }
+
+            let image = images[index]
+            let altText = data[key]?.altText
+            let link = data[key]?.link
+
+            tempImageDataList.append(CarouselData(image: image, altText: altText, link: link))
         }
+
         self.imageDataList = tempImageDataList
     }
 
