@@ -300,11 +300,11 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         if layout == .carousel {
             imageView.isHidden = true
         }
-        carouselView.isHidden = !(layout == .carousel)
-        carouselView.setPageControlVisibility(isHdden: !(layout == .carousel))
+        carouselView.isHidden = layout != .carousel
+        carouselView.setPageControlVisibility(isHdden: layout != .carousel)
         buttonsContainer.isHidden = !viewModel.showButtons
         optOutView.isHidden = !viewModel.showOptOut
-        optOutButtonTopSpacer.isHidden = !(layout == .carousel) && (!buttonsContainer.isHidden || !optOutView.isHidden)
+        optOutButtonTopSpacer.isHidden = layout != .carousel && (!buttonsContainer.isHidden || !optOutView.isHidden)
         optOutAndButtonsSpacer.isHidden = buttonsContainer.isHidden || optOutView.isHidden
         controlsView.isHidden = buttonsContainer.isHidden && optOutView.isHidden
         bodyView.isHidden = viewModel.isHTML || !viewModel.hasText

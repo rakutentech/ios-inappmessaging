@@ -25,7 +25,7 @@ import UIKit
 
     override func layoutSubviews() {
         super.layoutSubviews()
-        var carouselHeight = collectionView.frame.width * getMaxImageAspectRatio() + 2
+        let carouselHeight = collectionView.frame.width * getMaxImageAspectRatio() + 2
         
         carouselHeightConstraint.constant = adjustHeight(height: carouselHeight)
         collectionView.collectionViewLayout.invalidateLayout()
