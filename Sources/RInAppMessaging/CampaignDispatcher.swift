@@ -110,7 +110,7 @@ internal class CampaignDispatcher: CampaignDispatcherType, TaskSchedulable {
         if let carouselData = campaign.data.customJson?.carousel,
            !(carouselData.images?.isEmpty ?? true) {
             fetchImagesArray(from: carouselData) { images in
-                guard let  carouselData = carouselData.images else { return }
+                guard let carouselData = carouselData.images else { return }
                 let carouselHandler = CarouselModelHandler(data: carouselData, images: images)
                 self.displayCampaign(campaign, carouselData: carouselHandler.getImageDataList())
             }

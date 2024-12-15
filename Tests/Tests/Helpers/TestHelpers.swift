@@ -25,6 +25,11 @@ class ValidatorHandler {
 // swiftlint:disable type_body_length
 struct TestHelpers {
 
+    static let carouselData = [CarouselData(image: UIImage(named: "istockphoto-1047234038"), altText: "error loading image", link: "https://www.google.com"),
+                               CarouselData(image: UIImage(named: "istockphoto-1047234038"), altText: "error loading image1", link: "https://www.google1.com"),
+                               CarouselData(image: UIImage(named: "istockphoto-1047234038"), altText: "error loading image2", link: "https://www.google2.com"),
+                               CarouselData(image: UIImage(named: "istockphoto-1047234038"), altText: "error loading image3", link: "https://www.google3.com")]
+
     static func generateCampaign(id: String,
                                  title: String = "testTitle",
                                  maxImpressions: Int = 1,
@@ -142,7 +147,26 @@ struct TestHelpers {
                                   showButtons: true,
                                   isDismissable: true,
                                   customJson: customJson,
-                                  carouselData: nil)
+                                  carouselData: carouselData)
+    }
+    static func generateFullViewCarouselModel(carouselData: [CarouselData]? = nil) -> FullViewModel {
+        return FullViewModel.init(image: nil,
+                                  backgroundColor: .black,
+                                  title: "Test",
+                                  messageBody: nil,
+                                  header: nil,
+                                  titleColor: .black,
+                                  headerColor: .black,
+                                  messageBodyColor: .black,
+                                  isHTML: false,
+                                  showOptOut: false,
+                                  showButtons: true,
+                                  isDismissable: true,
+                                  customJson: CustomJson(carousel: Carousel(
+                                    images: ["1": ImageDetails(imgUrl: "https://rak.box.com/shared/static/ovvyhkaj8yrnpj19bcbemkia3k6hoabd.png",
+                                                               link: "https://www.google.com",
+                                                               altText: "error loading image")])),
+                                  carouselData: carouselData)
     }
 
     enum MockResponse {

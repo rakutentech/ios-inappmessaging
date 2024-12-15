@@ -171,7 +171,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         exitButton.invertedColors = viewModel.backgroundColor.isBright
         exitButton.isHidden = !viewModel.isDismissable
         if exitButton.isHidden {
-            if layout == .imageOnly {
+            if layout == .imageOnly || layout == .carousel {
                 exitButtonHeightConstraint.constant = 0
             } else {
                 exitButtonHeightConstraint.constant = uiConstants.textTopMarginForNotDismissableCampaigns
