@@ -85,6 +85,28 @@ class RouterSpec: QuickSpec {
                             .toEventually(containElementSatisfying({ $0 is FullScreenView }))
                     }
 
+                    it("will show ModalView for modal campaign type when there is valid Carousel Data") {
+                        let campaign = TestHelpers.generateCampaign(id: "test", type: .modal)
+                        router.displayCampaign(campaign,
+                                               associatedImageData: nil,
+                                               carouselData: TestHelpers.carouselData,
+                                               confirmation: true,
+                                               completion: { _ in })
+                        expect(window.subviews)
+                            .toEventually(containElementSatisfying({ $0 is ModalView }))
+                    }
+
+                    it("will show FullScreenView for full campaign type when there is valid Carousel Data") {
+                        let campaign = TestHelpers.generateCampaign(id: "test", type: .full)
+                        router.displayCampaign(campaign,
+                                               associatedImageData: nil,
+                                               carouselData: TestHelpers.carouselData,
+                                               confirmation: true,
+                                               completion: { _ in })
+                        expect(window.subviews)
+                            .toEventually(containElementSatisfying({ $0 is FullScreenView }))
+                    }
+
                     it("will show SlideUpView for slide campaign type") {
                         let campaign = TestHelpers.generateCampaign(id: "test", type: .slide)
                         router.displayCampaign(campaign, associatedImageData: imageBlob,

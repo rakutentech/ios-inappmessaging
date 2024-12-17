@@ -123,3 +123,9 @@ extension CarouselView {
         return height < Constants.Carousel.minHeight ? Constants.Carousel.defaultHeight : height
     }
 }
+
+struct CarouselData {
+    var image: UIImage?
+    var altText: String?
+    var link: String?
+}

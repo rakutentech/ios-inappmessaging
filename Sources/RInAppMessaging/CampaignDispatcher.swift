@@ -106,13 +106,31 @@ internal class CampaignDispatcher: CampaignDispatcherType, TaskSchedulable {
         fetchCampaignImagesAndDisplay(campaign: campaign)
     }
     
+    func createCarouselDataList(from data: [String: ImageDetails], using images: [UIImage?]) -> [CarouselData] {
+        let sortedKeys = Array(data.keys).sorted()
+        var imageDataList: [CarouselData] = []
+
+        for (index, key) in sortedKeys.enumerated() {
+            guard index < images.count else { break }
+
+            let image = images[index]
+            let altText = data[key]?.altText
+            let link = data[key]?.link
+
+            imageDataList.append(CarouselData(image: image, altText: altText, link: link))
+        }
+
+        return imageDataList
+    }
+    
     func fetchCampaignImagesAndDisplay(campaign: Campaign) {
         if let carouselData = campaign.data.customJson?.carousel,
            !(carouselData.images?.isEmpty ?? true) {
             fetchImagesArray(from: carouselData) { images in
                 guard let carouselData = carouselData.images else { return }
-                let carouselHandler = CarouselModelHandler(data: carouselData, images: images)
-                self.displayCampaign(campaign, carouselData: carouselHandler.getImageDataList())
+                // let carouselHandler = CarouselModelHandler(data: carouselData, images: images)
+                let carouselHandler = self.createCarouselDataList(from: carouselData, using: images)
+                self.displayCampaign(campaign, carouselData: carouselHandler)
             }
         } else {
             guard let resImgUrlString = campaign.data.messagePayload.resource.imageUrl,
@@ -214,7 +232,7 @@ extension CampaignDispatcher {
                let httpResponse = response as? HTTPURLResponse,
                httpResponse.statusCode == 200,
                let image = UIImage(data: data) {
-                self.cacheImage(data: data, for: url)
+                self.cacheImage(data: data, for: url, response: response)
                 completion(image)
             } else {
                 completion(nil)
@@ -222,7 +240,7 @@ extension CampaignDispatcher {
         }
     }
 
-    private func loadImageFromCache(for url: URL) -> UIImage? {
+    func loadImageFromCache(for url: URL) -> UIImage? {
         let request = URLRequest(url: url)
         if let cachedResponse = URLCache.shared.cachedResponse(for: request) {
             return UIImage(data: cachedResponse.data)
@@ -230,13 +248,15 @@ extension CampaignDispatcher {
         return nil
     }
 
-    private func cacheImage(data: Data, for url: URL) {
-        let response = HTTPURLResponse(url: url, statusCode: 200, httpVersion: "HTTP/1.1", headerFields: nil)!
-        let cachedData = CachedURLResponse(response: response, data: data)
+    func cacheImage(data: Data, for url: URL, response: URLResponse) {
+        guard let httpResponse = response as? HTTPURLResponse else {
+          return
+        }
+        let cachedData = CachedURLResponse(response: httpResponse, data: data)
         URLCache.shared.storeCachedResponse(cachedData, for: URLRequest(url: url))
     }
 
-    private func imageData(from url: URL, completion: @escaping (Data? ,URLResponse?, Error?) -> Void) {
+    func imageData(from url: URL, completion: @escaping (Data? ,URLResponse?, Error?) -> Void) {
 
         var request = URLRequest(url: url)
         request.cachePolicy = .useProtocolCachePolicy
@@ -251,7 +271,7 @@ extension CampaignDispatcher {
         }.resume()
     }
 
-    private func data(from url: URL, completion: @escaping (Data?) -> Void) {
+    func data(from url: URL, completion: @escaping (Data?) -> Void) {
         httpSession.dataTask(with: URLRequest(url: url)) { (data, _, error) in
             guard error == nil else {
                 completion(nil)
@@ -261,7 +281,7 @@ extension CampaignDispatcher {
         }.resume()
     }
 
-    private func fetchImage(from url: URL, for campaign: Campaign) {
+     func fetchImage(from url: URL, for campaign: Campaign) {
         data(from: url) { imgBlob in
             self.dispatchQueue.async {
                 guard let imgBlob = imgBlob else {
@@ -272,5 +292,4 @@ extension CampaignDispatcher {
             }
         }
     }
-    
 }

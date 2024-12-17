@@ -202,6 +202,19 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
                         }
                     }
 
+                    it("will display campaign when carousel data is defined") {
+
+                        // swiftlint:disable line_length
+                        let campaign =
+                        TestHelpers.generateCampaign(id: "test", title: "title", type: .modal, test: false, hasImage: false, customJson: CustomJson(carousel: Carousel(images: ["1": ImageDetails(imgUrl: "https://static.id.rakuten.co.jp/static/com/img/id/Rakuten_pc_20px@2x.png", link: "https://www.google.com", altText: "error loading image")])))
+                        // swiftlint:enable line_length
+
+                        campaignRepository.list = [campaign]
+                        dispatcher.addToQueue(campaignID: campaign.id)
+                        dispatcher.dispatchAllIfNeeded()
+                        expect(router.lastDisplayedCampaign).toAfterTimeout(equal(campaign))
+                    }
+
                     it("will display campaign when imageUrl is defined") {
                         let campaign = TestHelpers.generateCampaign(id: "test", title: "title", type: .modal, test: false, hasImage: true)
                         campaignRepository.list = [campaign]

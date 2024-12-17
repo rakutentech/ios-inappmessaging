@@ -163,7 +163,7 @@ struct TestHelpers {
                                   showButtons: true,
                                   isDismissable: true,
                                   customJson: CustomJson(carousel: Carousel(
-                                    images: ["1": ImageDetails(imgUrl: "https://rak.box.com/shared/static/ovvyhkaj8yrnpj19bcbemkia3k6hoabd.png",
+                                    images: ["1": ImageDetails(imgUrl: "https://static.id.rakuten.co.jp/static/com/img/id/Rakuten_pc_20px@2x.png",
                                                                link: "https://www.google.com",
                                                                altText: "error loading image")])),
                                   carouselData: carouselData)
