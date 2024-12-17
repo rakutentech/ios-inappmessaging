@@ -106,29 +106,11 @@ internal class CampaignDispatcher: CampaignDispatcherType, TaskSchedulable {
         fetchCampaignImagesAndDisplay(campaign: campaign)
     }
     
-    func createCarouselDataList(from data: [String: ImageDetails], using images: [UIImage?]) -> [CarouselData] {
-        let sortedKeys = Array(data.keys).sorted()
-        var imageDataList: [CarouselData] = []
-
-        for (index, key) in sortedKeys.enumerated() {
-            guard index < images.count else { break }
-
-            let image = images[index]
-            let altText = data[key]?.altText
-            let link = data[key]?.link
-
-            imageDataList.append(CarouselData(image: image, altText: altText, link: link))
-        }
-
-        return imageDataList
-    }
-    
     func fetchCampaignImagesAndDisplay(campaign: Campaign) {
         if let carouselData = campaign.data.customJson?.carousel,
            !(carouselData.images?.isEmpty ?? true) {
             fetchImagesArray(from: carouselData) { images in
                 guard let carouselData = carouselData.images else { return }
-                // let carouselHandler = CarouselModelHandler(data: carouselData, images: images)
                 let carouselHandler = self.createCarouselDataList(from: carouselData, using: images)
                 self.displayCampaign(campaign, carouselData: carouselHandler)
             }
@@ -291,5 +273,22 @@ extension CampaignDispatcher {
                 self.displayCampaign(campaign, imageBlob: imgBlob)
             }
         }
+    }
+
+    func createCarouselDataList(from data: [String: ImageDetails], using images: [UIImage?]) -> [CarouselData] {
+        let sortedKeys = Array(data.keys).sorted()
+        var imageDataList: [CarouselData] = []
+
+        for (index, key) in sortedKeys.enumerated() {
+            guard index < images.count else { break }
+
+            let image = images[index]
+            let altText = data[key]?.altText
+            let link = data[key]?.link
+
+            imageDataList.append(CarouselData(image: image, altText: altText, link: link))
+        }
+
+        return imageDataList
     }
 }

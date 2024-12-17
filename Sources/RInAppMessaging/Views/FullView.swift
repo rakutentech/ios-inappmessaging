@@ -374,10 +374,8 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
     }
 
     func configureCarouselView(viewModel: FullViewModel) {
-        guard let carouselData = viewModel.carouselData else { return }
-        if layout == .carousel {
-            carouselView.configure(carouselData: carouselData)
-        }
+        guard layout == .carousel, let carouselData = viewModel.carouselData else { return }
+        carouselView.configure(carouselData: carouselData)
     }
 
     @objc private func onActionButtonClick(_ sender: ActionButton) {
