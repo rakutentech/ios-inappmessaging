@@ -5,6 +5,7 @@ internal enum Constants {
     enum CampaignMessage {
         static let imageRequestTimeoutSeconds: TimeInterval = 20
         static let imageResourceTimeoutSeconds: TimeInterval = 300
+        static let carouselThreshold: Int = 5
     }
 
     enum Request {
@@ -101,5 +102,10 @@ internal enum Constants {
                 Randomized.backOffUpperBoundSeconds = Randomized.defaultBackOffUpperBoundSeconds
             }
         }
+    }
+
+    enum Carousel {
+        static let minHeight = 5.0
+        static let defaultHeight = 250.0
     }
 }

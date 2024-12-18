@@ -3,6 +3,7 @@ import UIKit
 internal protocol BaseViewPresenterType: ImpressionTrackable {
     var campaign: Campaign! { get set }
     var associatedImage: UIImage? { get set }
+    var carouselData: [CarouselData]? { get set }
 
     func viewDidInitialize()
     func handleButtonTrigger(_ trigger: Trigger?)
@@ -20,6 +21,7 @@ internal class BaseViewPresenter: BaseViewPresenterType {
     var campaign: Campaign!
     var impressions: [Impression] = []
     var associatedImage: UIImage?
+    var carouselData: [CarouselData]?
 
     init(campaignRepository: CampaignRepositoryType,
          impressionService: ImpressionServiceType,
