@@ -49,14 +49,10 @@ final class CarouselCell: UICollectionViewCell {
     }
 
     func configure(with image: UIImage?, altText: String?) {
-        if let image = image {
-            imageView.image = image
-            textLabel.isHidden = true
-        } else {
-            imageView.image = image
-            imageView.isHidden = true
-            textLabel.isHidden = false
-        }
+        let hasImage = (image != nil)
+        imageView.isHidden = !hasImage
+        imageView.image = image
+        textLabel.isHidden = hasImage
         textLabel.text = altText ?? "carousel_image_load_error".localized
         setNeedsLayout()
     }
