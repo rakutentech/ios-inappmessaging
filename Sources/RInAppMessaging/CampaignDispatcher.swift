@@ -277,16 +277,12 @@ extension CampaignDispatcher {
 
     func createCarouselDataList(from data: [String: ImageDetails], using images: [UIImage?]) -> [CarouselData] {
         let sortedKeys = Array(data.keys).sorted()
-        var imageDataList: [CarouselData] = []
-
-        for (index, key) in sortedKeys.enumerated() {
-            guard index < images.count else { break }
-
+        let imageDataList: [CarouselData] = sortedKeys.prefix(images.count).enumerated().map { index, key in
             let image = images[index]
             let altText = data[key]?.altText
             let link = data[key]?.link
-
-            imageDataList.append(CarouselData(image: image, altText: altText, link: link))
+            
+            return CarouselData(image: image, altText: altText, link: link)
         }
 
         return imageDataList
