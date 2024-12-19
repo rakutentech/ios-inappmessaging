@@ -51,7 +51,8 @@ internal class FullViewPresenter: BaseViewPresenter, FullViewPresenterType, Erro
                                       showOptOut: messagePayload.messageSettings.displaySettings.optOut,
                                       showButtons: !messagePayload.messageSettings.controlSettings.buttons.isEmpty,
                                       isDismissable: campaign.data.isCampaignDismissable,
-                                      customJson: campaign.data.customJson)
+                                      customJson: campaign.data.customJson,
+                                      carouselData: carouselData)
 
         view?.setup(viewModel: viewModel)
     }
