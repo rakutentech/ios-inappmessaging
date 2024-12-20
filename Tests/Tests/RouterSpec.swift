@@ -55,7 +55,7 @@ class RouterSpec: QuickSpec {
 
                     it("will not show campaign message") {
                         let campaign = TestHelpers.generateCampaign(id: "test", type: .modal)
-                        router.displayCampaign(campaign, associatedImageData: nil, confirmation: false, completion: { _ in })
+                        router.displayCampaign(campaign, associatedImageData: nil, carouselData: nil, confirmation: false, completion: { _ in })
                         expect(window.findIAMView()).toAfterTimeout(beNil())
                     }
                 }
@@ -66,28 +66,60 @@ class RouterSpec: QuickSpec {
 
                     it("will show ModalView for modal campaign type") {
                         let campaign = TestHelpers.generateCampaign(id: "test", type: .modal)
-                        router.displayCampaign(campaign, associatedImageData: imageBlob, confirmation: true, completion: { _ in })
+                        router.displayCampaign(campaign,
+                                               associatedImageData: imageBlob,
+                                               carouselData: nil,
+                                               confirmation: true,
+                                               completion: { _ in })
                         expect(window.subviews)
                             .toEventually(containElementSatisfying({ $0 is ModalView }))
                     }
 
                     it("will show FullScreenView for full campaign type") {
                         let campaign = TestHelpers.generateCampaign(id: "test", type: .full)
-                        router.displayCampaign(campaign, associatedImageData: imageBlob, confirmation: true, completion: { _ in })
+                        router.displayCampaign(campaign, associatedImageData: imageBlob,
+                                               carouselData: nil,
+                                               confirmation: true,
+                                               completion: { _ in })
+                        expect(window.subviews)
+                            .toEventually(containElementSatisfying({ $0 is FullScreenView }))
+                    }
+
+                    it("will show ModalView for modal campaign type when there is valid Carousel Data") {
+                        let campaign = TestHelpers.generateCampaign(id: "test", type: .modal)
+                        router.displayCampaign(campaign,
+                                               associatedImageData: nil,
+                                               carouselData: TestHelpers.carouselData,
+                                               confirmation: true,
+                                               completion: { _ in })
+                        expect(window.subviews)
+                            .toEventually(containElementSatisfying({ $0 is ModalView }))
+                    }
+
+                    it("will show FullScreenView for full campaign type when there is valid Carousel Data") {
+                        let campaign = TestHelpers.generateCampaign(id: "test", type: .full)
+                        router.displayCampaign(campaign,
+                                               associatedImageData: nil,
+                                               carouselData: TestHelpers.carouselData,
+                                               confirmation: true,
+                                               completion: { _ in })
                         expect(window.subviews)
                             .toEventually(containElementSatisfying({ $0 is FullScreenView }))
                     }
 
                     it("will show SlideUpView for slide campaign type") {
                         let campaign = TestHelpers.generateCampaign(id: "test", type: .slide)
-                        router.displayCampaign(campaign, associatedImageData: imageBlob, confirmation: true, completion: { _ in })
+                        router.displayCampaign(campaign, associatedImageData: imageBlob,
+                                               carouselData: nil,
+                                               confirmation: true,
+                                               completion: { _ in })
                         expect(window.subviews)
                             .toEventually(containElementSatisfying({ $0 is SlideUpView }))
                     }
 
                     it("will not show any view for invalid campaign type") {
                         let campaign = TestHelpers.generateCampaign(id: "test", type: .invalid)
-                        router.displayCampaign(campaign, associatedImageData: nil, confirmation: true, completion: { _ in })
+                        router.displayCampaign(campaign, associatedImageData: nil, carouselData: nil, confirmation: true, completion: { _ in })
                         expect(window.findIAMView()).toAfterTimeout(beNil())
                     }
 
@@ -95,7 +127,7 @@ class RouterSpec: QuickSpec {
                         let campaign = TestHelpers.generateCampaign(id: "test", type: .html)
                         expect(router.displayCampaign(
                             campaign,
-                            associatedImageData: nil,
+                            associatedImageData: nil, carouselData: nil,
                             confirmation: true,
                             completion: { _ in })).to(throwAssertion())
                         expect(window.findIAMView()).toAfterTimeout(beNil())
@@ -104,10 +136,10 @@ class RouterSpec: QuickSpec {
                     it("will not show another view when one is already displayed") {
                         let campaign1 = TestHelpers.generateCampaign(id: "test", type: .modal)
                         let campaign2 = TestHelpers.generateCampaign(id: "test", type: .full)
-                        router.displayCampaign(campaign1, associatedImageData: nil, confirmation: true, completion: { _ in })
+                        router.displayCampaign(campaign1, associatedImageData: nil, carouselData: nil, confirmation: true, completion: { _ in })
                         expect(window.subviews)
                             .toEventually(containElementSatisfying({ $0 is ModalView })) // wait
-                        router.displayCampaign(campaign2, associatedImageData: nil, confirmation: true, completion: { _ in })
+                        router.displayCampaign(campaign2, associatedImageData: nil, carouselData: nil, confirmation: true, completion: { _ in })
                         expect(window.subviews)
                             .toAfterTimeoutNot(containElementSatisfying({ $0 is FullScreenView }))
                         expect(window.subviews)
@@ -119,7 +151,7 @@ class RouterSpec: QuickSpec {
                         let campaign = TestHelpers.generateCampaign(id: "test", type: .modal)
                         expect(router.displayCampaign(
                             campaign,
-                            associatedImageData: nil,
+                            associatedImageData: nil, carouselData: nil,
                             confirmation: false,
                             completion: { _ in })).to(throwAssertion())
                     }
@@ -130,6 +162,7 @@ class RouterSpec: QuickSpec {
                         expect(router.displayCampaign(
                             campaign,
                             associatedImageData: nil,
+                            carouselData: nil,
                             confirmation: false,
                             completion: { _ in })).to(throwAssertion())
                         expect(window.findIAMView()).toAfterTimeout(beNil())
@@ -141,6 +174,7 @@ class RouterSpec: QuickSpec {
                         expect(router.displayCampaign(
                             campaign,
                             associatedImageData: nil,
+                            carouselData: nil,
                             confirmation: false,
                             completion: { _ in })).to(throwAssertion())
                         expect(window.findIAMView()).toAfterTimeout(beNil())
@@ -149,7 +183,7 @@ class RouterSpec: QuickSpec {
                     it("will add a view to the UIWindow's view when `accessibilityCompatible` is false") {
                         router.accessibilityCompatibleDisplay = false
                         let campaign = TestHelpers.generateCampaign(id: "test", type: .modal)
-                        router.displayCampaign(campaign, associatedImageData: nil, confirmation: true, completion: { _ in })
+                        router.displayCampaign(campaign, associatedImageData: nil, carouselData: nil, confirmation: true, completion: { _ in })
                         expect(window.findIAMView()).toEventuallyNot(beNil())
                     }
 
@@ -159,7 +193,7 @@ class RouterSpec: QuickSpec {
                         UIApplication.shared.keyWindow?.addSubview(rootView)
 
                         let campaign = TestHelpers.generateCampaign(id: "test", type: .modal)
-                        router.displayCampaign(campaign, associatedImageData: nil, confirmation: true, completion: { _ in })
+                        router.displayCampaign(campaign, associatedImageData: nil, carouselData: nil, confirmation: true, completion: { _ in })
                         expect(rootView.findIAMView()).toEventuallyNot(beNil())
                         rootView.removeFromSuperview()
                     }
@@ -170,7 +204,7 @@ class RouterSpec: QuickSpec {
 
                 it("will remove displayed campaign view") {
                     let campaign = TestHelpers.generateCampaign(id: "test", type: .modal)
-                    router.displayCampaign(campaign, associatedImageData: nil, confirmation: true, completion: { _ in })
+                    router.displayCampaign(campaign, associatedImageData: nil, carouselData: nil, confirmation: true, completion: { _ in })
 
                     expect(window.findIAMView()).toEventuallyNot(beNil())
                     router.discardDisplayedCampaign()
@@ -184,7 +218,7 @@ class RouterSpec: QuickSpec {
                 it("will call onDismiss/completion callback with cancelled flag") {
                     let campaign = TestHelpers.generateCampaign(id: "test", type: .modal)
                     var completionCalled = false
-                    router.displayCampaign(campaign, associatedImageData: nil, confirmation: true, completion: { cancelled in
+                    router.displayCampaign(campaign, associatedImageData: nil, carouselData: nil, confirmation: true, completion: { cancelled in
                         completionCalled = true
                         expect(cancelled).to(beTrue())
                     })
@@ -379,7 +413,7 @@ class RouterSpec: QuickSpec {
                         UIApplication.shared.keyWindow?.addSubview(rootView)
                         router.accessibilityCompatibleDisplay = true
                         let campaign = TestHelpers.generateCampaign(id: "test", type: .modal)
-                        router.displayCampaign(campaign, associatedImageData: nil, confirmation: true, completion: { _ in })
+                        router.displayCampaign(campaign, associatedImageData: nil, carouselData: nil, confirmation: true, completion: { _ in })
                         expect(window.findIAMView()).toEventuallyNot(beNil())
 
                         router.displayTooltip(tooltip,
@@ -578,7 +612,7 @@ class RouterSpec: QuickSpec {
 
                     it("will insert a tooltip below existing campaign view") {
                         let campaign = TestHelpers.generateCampaign(id: "test", type: .modal)
-                        router.displayCampaign(campaign, associatedImageData: nil, confirmation: true, completion: { _ in })
+                        router.displayCampaign(campaign, associatedImageData: nil, carouselData: nil, confirmation: true, completion: { _ in })
 
                         router.displayTooltip(tooltip,
                                               targetView: targetView,

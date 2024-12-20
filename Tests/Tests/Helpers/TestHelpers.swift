@@ -25,6 +25,11 @@ class ValidatorHandler {
 // swiftlint:disable type_body_length
 struct TestHelpers {
 
+    static let carouselData = [CarouselData(image: UIImage(named: "istockphoto-1047234038"), altText: "error loading image", link: "https://www.google.com"),
+                               CarouselData(image: UIImage(named: "istockphoto-1047234038"), altText: "error loading image1", link: "https://www.google1.com"),
+                               CarouselData(image: UIImage(named: "istockphoto-1047234038"), altText: "error loading image2", link: "https://www.google2.com"),
+                               CarouselData(image: UIImage(named: "istockphoto-1047234038"), altText: "error loading image3", link: "https://www.google3.com")]
+
     static func generateCampaign(id: String,
                                  title: String = "testTitle",
                                  maxImpressions: Int = 1,
@@ -128,7 +133,7 @@ struct TestHelpers {
         )
     }
 
-    static func generateFullViewModel(customJson: CustomJson? = nil) -> FullViewModel {
+    static func generateFullViewModel(customJson: CustomJson? = nil, carouselData: [CarouselData]? = nil) -> FullViewModel {
         return FullViewModel.init(image: UIImage(named: "test-image"),
                                   backgroundColor: .black,
                                   title: "Test",
@@ -141,7 +146,27 @@ struct TestHelpers {
                                   showOptOut: true,
                                   showButtons: true,
                                   isDismissable: true,
-                                  customJson: customJson)
+                                  customJson: customJson,
+                                  carouselData: carouselData)
+    }
+    static func generateFullViewCarouselModel(carouselData: [CarouselData]? = nil) -> FullViewModel {
+        return FullViewModel.init(image: nil,
+                                  backgroundColor: .black,
+                                  title: "Test",
+                                  messageBody: nil,
+                                  header: nil,
+                                  titleColor: .black,
+                                  headerColor: .black,
+                                  messageBodyColor: .black,
+                                  isHTML: false,
+                                  showOptOut: false,
+                                  showButtons: true,
+                                  isDismissable: true,
+                                  customJson: CustomJson(carousel: Carousel(
+                                    images: ["1": ImageDetails(imgUrl: "https://static.id.rakuten.co.jp/static/com/img/id/Rakuten_pc_20px@2x.png",
+                                                               link: "https://www.google.com",
+                                                               altText: "error loading image")])),
+                                  carouselData: carouselData)
     }
 
     enum MockResponse {

@@ -38,8 +38,10 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         case textOnly
         case imageOnly
         case textAndImage
+        case carousel
     }
 
+    @IBOutlet weak var carouselView: CarouselView!
     @IBOutlet private(set) weak var contentView: UIView! // Wraps dialog view to allow rounded corners
     @IBOutlet private weak var backgroundView: UIView!
     @IBOutlet private weak var imageView: UIImageView!
@@ -63,8 +65,9 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
 
     @IBOutlet private weak var contentWidthOffsetConstraint: NSLayoutConstraint!
     @IBOutlet private weak var bodyViewOffsetYConstraint: NSLayoutConstraint!
-    private weak var exitButtonHeightConstraint: NSLayoutConstraint!
+    @IBOutlet weak var optOutButtonTopSpacer: UIView!
 
+    private weak var exitButtonHeightConstraint: NSLayoutConstraint!
     private let presenter: FullViewPresenterType
 
     var uiConstants = UIConstants()
@@ -86,7 +89,6 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         }
     }
     private var isClickableImage = false
-    private var isImageCarousel = false
     var backgroundViewColor: UIColor? = .clear
 
     init(presenter: FullViewPresenterType) {
@@ -144,9 +146,10 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
             layout = viewModel.hasText ? .textAndImage : .imageOnly
         } else if viewModel.hasText {
             layout = .textOnly
+        } else if (viewModel.carouselData != nil) && !viewModel.hasText {
+            layout = .carousel
         }
         isClickableImage = viewModel.customJson?.clickableImage?.url != nil
-        isImageCarousel = !(viewModel.customJson?.carousel?.images?.isEmpty ?? true)
 
         setupAccessibility()
         updateUIConstants()
@@ -168,13 +171,13 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         exitButton.invertedColors = viewModel.backgroundColor.isBright
         exitButton.isHidden = !viewModel.isDismissable
         if exitButton.isHidden {
-            if layout == .imageOnly {
+            if layout == .imageOnly || layout == .carousel {
                 exitButtonHeightConstraint.constant = 0
             } else {
                 exitButtonHeightConstraint.constant = uiConstants.textTopMarginForNotDismissableCampaigns
             }
         }
-
+        configureCarouselView(viewModel: viewModel)
         presenter.logImpression(type: .impression)
     }
 
@@ -294,8 +297,14 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
     }
 
     private func updateUIComponentsVisibility(viewModel: FullViewModel) {
+        if layout == .carousel {
+            imageView.isHidden = true
+        }
+        carouselView.isHidden = layout != .carousel
+        carouselView.setPageControlVisibility(isHdden: layout != .carousel)
         buttonsContainer.isHidden = !viewModel.showButtons
         optOutView.isHidden = !viewModel.showOptOut
+        optOutButtonTopSpacer.isHidden = layout != .carousel && (!buttonsContainer.isHidden || !optOutView.isHidden)
         optOutAndButtonsSpacer.isHidden = buttonsContainer.isHidden || optOutView.isHidden
         controlsView.isHidden = buttonsContainer.isHidden && optOutView.isHidden
         bodyView.isHidden = viewModel.isHTML || !viewModel.hasText
@@ -362,6 +371,11 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
             button.heightAnchor.constraint(equalToConstant: uiConstants.buttonHeight).isActive = true
             buttonsContainer.addArrangedSubview(button)
         }
+    }
+
+    func configureCarouselView(viewModel: FullViewModel) {
+        guard layout == .carousel, let carouselData = viewModel.carouselData else { return }
+        carouselView.configure(carouselData: carouselData)
     }
 
     @objc private func onActionButtonClick(_ sender: ActionButton) {
