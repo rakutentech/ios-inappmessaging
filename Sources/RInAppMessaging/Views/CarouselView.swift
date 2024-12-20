@@ -7,7 +7,6 @@ import UIKit
 
     var carouselData: [CarouselData] = []
     private var timer: Timer?
-    private var userIsScrolling = false
     private var currentIndex = 0
     private var hasReachedLastImage = false
     var presenter: FullViewPresenterType?
@@ -151,7 +150,7 @@ extension CarouselView {
     }
 
     @objc private func scrollToNextItem() {
-        guard !userIsScrolling, !carouselData.isEmpty else { return }
+        guard !carouselData.isEmpty else { return }
 
         if currentIndex == carouselData.count - 1 {
             stopAutoScroll() // Stop at the last image
@@ -167,15 +166,12 @@ extension CarouselView {
     }
 
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        userIsScrolling = true
         stopAutoScroll()
     }
 
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         let visibleIndexPath = collectionView.indexPathsForVisibleItems.first
         currentIndex = visibleIndexPath?.item ?? 0
-
-        userIsScrolling = false
 
         // Only restart auto-scroll if the user interacted before reaching the last image for the first time
         if currentIndex < carouselData.count - 1 {
