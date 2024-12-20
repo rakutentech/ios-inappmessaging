@@ -366,7 +366,7 @@ class FullViewPresenterMock: FullViewPresenterType {
     }
     func handleButtonTrigger(_ trigger: Trigger?) { }
     func optOutCampaign() { }
-    func didClickCampaignImage() {  }
+    func didClickCampaignImage(url: String?) { }
 }
 
 class SlideUpViewPresenterMock: SlideUpViewPresenterType {

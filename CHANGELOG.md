@@ -4,6 +4,8 @@
 - Features:
     - Implement data model for Custom Json carousel data [RMCCX-7616]
     - Implement Carousel UI display with manual scroll [RMCCX-7619]
+    - Implement user click behavior on Carousel Images [RMCCX-7618]
+    - Implement autoscroll behavior for Carousel [RMCCX-7620]
 
 ### 9.0.0 (2024-10-22) 
 - Features:

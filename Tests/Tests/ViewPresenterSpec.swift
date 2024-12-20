@@ -752,15 +752,17 @@ class ViewPresenterSpec: QuickSpec {
 
                 let campaignClickableImage = TestHelpers.generateCampaign(id: "ClickableImage", hasImage: true,
                                                                           customJson: CustomJson(clickableImage: ClickableImage(url: "https://www.google.com")))
+                let redirectUrl = campaignClickableImage.data.customJson?.clickableImage?.url
+
                 it("will call dismiss on the view object") {
                     presenter.campaign = campaignClickableImage
-                    presenter.didClickCampaignImage()
+                    presenter.didClickCampaignImage(url: redirectUrl)
                     expect(view.wasDismissCalled).to(beTrue())
                 }
 
                 it("will send impressions containing .clickContent type") {
                     presenter.campaign = campaignClickableImage
-                    presenter.didClickCampaignImage()
+                    presenter.didClickCampaignImage(url: redirectUrl)
                     expect(impressionService.sentImpressions?.list).to(contain(.clickContent))
                     expect(impressionService.sentImpressions).toNot(beNil())
                 }
@@ -769,8 +771,9 @@ class ViewPresenterSpec: QuickSpec {
                     let campaignClickableImage = TestHelpers.generateCampaign(id: "ClickableImage",
                                                                               hasImage: true,
                                                                               customJson: CustomJson(clickableImage: ClickableImage(url: "")))
+                    let redirectUrl = campaignClickableImage.data.customJson?.clickableImage?.url
                     presenter.campaign = campaignClickableImage
-                    presenter.didClickCampaignImage()
+                    presenter.didClickCampaignImage(url: redirectUrl)
                     expect(view.wasDismissCalled).to(beFalse())
                     expect(impressionService.sentImpressions).to(beNil())
                 }
@@ -780,8 +783,9 @@ class ViewPresenterSpec: QuickSpec {
                                                                               hasImage: true,
                                                                               customJson: CustomJson(clickableImage:
                                                                                                         ClickableImage(url: "invalid.url")))
+                    let redirectUrl = campaignClickableImage.data.customJson?.clickableImage?.url
                     presenter.campaign = campaignClickableImage
-                    presenter.didClickCampaignImage()
+                    presenter.didClickCampaignImage(url: redirectUrl)
                     expect(view.wasDismissCalled).to(beFalse())
                     expect(impressionService.sentImpressions).to(beNil())
                 }
@@ -790,8 +794,9 @@ class ViewPresenterSpec: QuickSpec {
                     let campaignClickableImage = TestHelpers.generateCampaign(id: "ClickableImage",
                                                                               hasImage: true,
                                                                               customJson: CustomJson(clickableImage: nil ))
+                    let redirectUrl = campaignClickableImage.data.customJson?.clickableImage?.url
                     presenter.campaign = campaignClickableImage
-                    presenter.didClickCampaignImage()
+                    presenter.didClickCampaignImage(url: redirectUrl)
                     expect(view.wasDismissCalled).to(beFalse())
                     expect(impressionService.sentImpressions).to(beNil())
                 }
@@ -814,8 +819,9 @@ class ViewPresenterSpec: QuickSpec {
                     customJson: CustomJson(pushPrimer: PrimerButton(button: 2),
                                            clickableImage: ClickableImage(url: "https://url"))
                     )
+                    let redirectUrl = campaignClickableImage.data.customJson?.clickableImage?.url
                     presenter.campaign = campaignPrimer
-                    presenter.didClickCampaignImage()
+                    presenter.didClickCampaignImage(url: redirectUrl)
                     expect(view.wasDismissCalled).to(beFalse())
                     expect(impressionService.sentImpressions).to(beNil())
                 }
