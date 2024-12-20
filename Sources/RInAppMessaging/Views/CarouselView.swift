@@ -180,10 +180,8 @@ extension CarouselView {
     }
 
     func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
-        if !userIsScrolling {
             let visibleIndexPath = collectionView.indexPathsForVisibleItems.first
             currentIndex = visibleIndexPath?.item ?? 0
-        }
     }
 }
 
