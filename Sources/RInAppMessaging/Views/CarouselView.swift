@@ -6,6 +6,11 @@ import UIKit
     @IBOutlet weak var carouselHeightConstraint: NSLayoutConstraint!
 
     var carouselData: [CarouselData] = []
+    private var timer: Timer?
+    private var userIsScrolling = false
+    private var currentIndex = 0
+    private var hasReachedLastImage = false
+    var presenter: FullViewPresenterType?
 
     required init?(coder: NSCoder) {
         super.init(coder: coder)
@@ -14,12 +19,15 @@ import UIKit
 
     deinit {
         NotificationCenter.default.removeObserver(self, name: UIDevice.orientationDidChangeNotification, object: nil)
+        stopAutoScroll()
     }
 
-    func configure(carouselData: [CarouselData]) {
+    func configure(carouselData: [CarouselData], presenter: FullViewPresenterType) {
         self.carouselData = carouselData
+        self.presenter = presenter
         setupCollectionView()
         setupPageControl()
+        startAutoScroll()
         collectionView.reloadData()
     }
 
@@ -78,6 +86,14 @@ extension CarouselView: UICollectionViewDataSource, UICollectionViewDelegateFlow
         let itemHeight = itemWidth * getMaxImageAspectRatio()
         return  CGSize(width: itemWidth, height: adjustHeight(height: itemHeight))
     }
+
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let item = carouselData[indexPath.item]
+
+        guard let redirectLink = item.link,
+              item.image != nil else { return }
+        presenter?.didClickCampaignImage(url: redirectLink)
+    }
 }
 
 extension CarouselView {
@@ -121,6 +137,57 @@ extension CarouselView {
     
     func adjustHeight(height: CGFloat) -> CGFloat {
         return height < Constants.Carousel.minHeight ? Constants.Carousel.defaultHeight : height
+    }
+
+    func startAutoScroll() {
+            stopAutoScroll()
+            guard !hasReachedLastImage else { return }
+            timer = Timer.scheduledTimer(timeInterval: 5.0, target: self, selector: #selector(scrollToNextItem), userInfo: nil, repeats: true)
+    }
+
+    func stopAutoScroll() {
+        timer?.invalidate()
+        timer = nil
+    }
+
+    @objc private func scrollToNextItem() {
+        guard !userIsScrolling, !carouselData.isEmpty else { return }
+
+        if currentIndex == carouselData.count - 1 {
+            stopAutoScroll() // Stop at the last image
+            hasReachedLastImage = true
+            return
+        }
+
+        let nextIndex = currentIndex + 1
+        let indexPath = IndexPath(item: nextIndex, section: 0)
+
+        collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+        currentIndex = nextIndex
+    }
+
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        userIsScrolling = true
+        stopAutoScroll()
+    }
+
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        let visibleIndexPath = collectionView.indexPathsForVisibleItems.first
+        currentIndex = visibleIndexPath?.item ?? 0
+
+        userIsScrolling = false
+
+        // Only restart auto-scroll if the user interacted before reaching the last image for the first time
+        if currentIndex < carouselData.count - 1 {
+            startAutoScroll()
+        }
+    }
+
+    func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+        if !userIsScrolling {
+            let visibleIndexPath = collectionView.indexPathsForVisibleItems.first
+            currentIndex = visibleIndexPath?.item ?? 0
+        }
     }
 }
 

@@ -90,6 +90,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
     }
     private var isClickableImage = false
     var backgroundViewColor: UIColor? = .clear
+    private var clickableImageUrl: String?
 
     init(presenter: FullViewPresenterType) {
         self.presenter = presenter
@@ -149,7 +150,9 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         } else if (viewModel.carouselData != nil) && !viewModel.hasText {
             layout = .carousel
         }
-        isClickableImage = viewModel.customJson?.clickableImage?.url != nil
+        
+        clickableImageUrl = viewModel.customJson?.clickableImage?.url
+        isClickableImage = clickableImageUrl != nil
 
         setupAccessibility()
         updateUIConstants()
@@ -304,7 +307,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         carouselView.setPageControlVisibility(isHdden: layout != .carousel)
         buttonsContainer.isHidden = !viewModel.showButtons
         optOutView.isHidden = !viewModel.showOptOut
-        optOutButtonTopSpacer.isHidden = layout != .carousel && (!buttonsContainer.isHidden || !optOutView.isHidden)
+        optOutButtonTopSpacer.isHidden = layout == .carousel && (buttonsContainer.isHidden || optOutView.isHidden)
         optOutAndButtonsSpacer.isHidden = buttonsContainer.isHidden || optOutView.isHidden
         controlsView.isHidden = buttonsContainer.isHidden && optOutView.isHidden
         bodyView.isHidden = viewModel.isHTML || !viewModel.hasText
@@ -375,7 +378,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
 
     func configureCarouselView(viewModel: FullViewModel) {
         guard layout == .carousel, let carouselData = viewModel.carouselData else { return }
-        carouselView.configure(carouselData: carouselData)
+        carouselView.configure(carouselData: carouselData, presenter: presenter)
     }
 
     @objc private func onActionButtonClick(_ sender: ActionButton) {
@@ -387,6 +390,6 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
     }
     
     @objc private func onClickCampaignImage() {
-        presenter.didClickCampaignImage()
+        presenter.didClickCampaignImage(url: clickableImageUrl)
     }
 }

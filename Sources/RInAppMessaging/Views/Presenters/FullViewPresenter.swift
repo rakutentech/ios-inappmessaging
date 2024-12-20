@@ -7,7 +7,7 @@ internal protocol FullViewPresenterType: BaseViewPresenterType {
     func loadButtons()
     func didClickAction(sender: ActionButton)
     func didClickExitButton()
-    func didClickCampaignImage()
+    func didClickCampaignImage(url: String?)
 }
 
 internal class FullViewPresenter: BaseViewPresenter, FullViewPresenterType, ErrorReportable {
@@ -118,11 +118,11 @@ internal class FullViewPresenter: BaseViewPresenter, FullViewPresenterType, Erro
         view?.dismiss()
     }
     
-    func didClickCampaignImage() {
+    func didClickCampaignImage(url: String?) {
         guard !campaign.isPushPrimer else { return }
-        guard let clickImageData = campaign.data.customJson?.clickableImage,
-              CommonUtility.isValidURL(clickImageData.url ?? ""),
-              let uriToOpen = URL(string: clickImageData.url ?? "") else {
+        guard let redirectUrl = url,
+              CommonUtility.isValidURL(redirectUrl),
+              let uriToOpen = URL(string: redirectUrl) else {
             return
         }
         logImpression(type: .clickContent)
