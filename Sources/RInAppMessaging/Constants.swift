@@ -103,9 +103,4 @@ internal enum Constants {
             }
         }
     }
-
-    enum Carousel {
-        static let minHeight = 5.0
-        static let defaultHeight = 250.0
-    }
 }

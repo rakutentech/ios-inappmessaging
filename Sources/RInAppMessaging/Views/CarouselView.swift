@@ -135,7 +135,7 @@ extension CarouselView {
     }
     
     func adjustHeight(height: CGFloat) -> CGFloat {
-        return height < Constants.Carousel.minHeight ? Constants.Carousel.defaultHeight : height
+        return height < CarouselConstants.minHeight ? CarouselConstants.defaultHeight : height
     }
 
     func startAutoScroll() {
@@ -189,4 +189,9 @@ struct CarouselData {
     var image: UIImage?
     var altText: String?
     var link: String?
+}
+
+private enum CarouselConstants {
+    static let minHeight = 5.0
+    static let defaultHeight = 250.0
 }
