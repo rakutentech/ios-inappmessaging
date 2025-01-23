@@ -6,6 +6,7 @@ import UIKit
     @IBOutlet weak var carouselHeightConstraint: NSLayoutConstraint!
 
     var carouselData: [CarouselData] = []
+    private var isFullScreen = false
     private var timer: Timer?
     private var currentIndex = 0
     private var hasReachedLastImage = false
@@ -21,9 +22,10 @@ import UIKit
         stopAutoScroll()
     }
 
-    func configure(carouselData: [CarouselData], presenter: FullViewPresenterType) {
+    func configure(carouselData: [CarouselData], presenter: FullViewPresenterType, isFullScreen: Bool) {
         self.carouselData = carouselData
         self.presenter = presenter
+        self.isFullScreen = isFullScreen
         setupCollectionView()
         setupPageControl()
         startAutoScroll()
@@ -81,6 +83,9 @@ extension CarouselView: UICollectionViewDataSource, UICollectionViewDelegateFlow
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        if isFullScreen {
+            return CGSize(width: collectionView.bounds.width, height: collectionView.bounds.height)
+        }
         let itemWidth = collectionView.frame.width
         let itemHeight = itemWidth * getMaxImageAspectRatio()
         return  CGSize(width: itemWidth, height: adjustHeight(height: itemHeight))

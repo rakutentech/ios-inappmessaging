@@ -378,7 +378,8 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
 
     func configureCarouselView(viewModel: FullViewModel) {
         guard layout == .carousel, let carouselData = viewModel.carouselData else { return }
-        carouselView.configure(carouselData: carouselData, presenter: presenter)
+        let isFullScreen = (mode == .fullScreen)
+        carouselView.configure(carouselData: carouselData, presenter: presenter, isFullScreen: isFullScreen)
     }
 
     @objc private func onActionButtonClick(_ sender: ActionButton) {

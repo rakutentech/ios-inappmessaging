@@ -264,7 +264,7 @@ extension CampaignDispatcher {
         }.resume()
     }
 
-     func fetchImage(from url: URL, for campaign: Campaign) {
+    func fetchImage(from url: URL, for campaign: Campaign) {
         data(from: url) { imgBlob in
             self.dispatchQueue.async {
                 guard let imgBlob = imgBlob else {
