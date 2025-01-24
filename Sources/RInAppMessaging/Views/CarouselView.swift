@@ -9,6 +9,7 @@ import UIKit
     private var timer: Timer?
     private var currentIndex = 0
     private var hasReachedLastImage = false
+    private var campaignMode: Mode = .none
     var presenter: FullViewPresenterType?
 
     required init?(coder: NSCoder) {
@@ -21,9 +22,10 @@ import UIKit
         stopAutoScroll()
     }
 
-    func configure(carouselData: [CarouselData], presenter: FullViewPresenterType) {
+    func configure(carouselData: [CarouselData], presenter: FullViewPresenterType, campaignMode: Mode) {
         self.carouselData = carouselData
         self.presenter = presenter
+        self.campaignMode = campaignMode
         setupCollectionView()
         setupPageControl()
         startAutoScroll()
@@ -81,6 +83,9 @@ extension CarouselView: UICollectionViewDataSource, UICollectionViewDelegateFlow
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        if campaignMode == .fullScreen {
+            return CGSize(width: collectionView.bounds.width, height: collectionView.bounds.height)
+        }
         let itemWidth = collectionView.frame.width
         let itemHeight = itemWidth * getMaxImageAspectRatio()
         return  CGSize(width: itemWidth, height: adjustHeight(height: itemHeight))

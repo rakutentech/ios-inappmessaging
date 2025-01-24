@@ -98,7 +98,7 @@ class ViewSpec: QuickSpec {
             }
 
             it("will have .none mode set") {
-                expect(view.mode).to(equal(FullView.Mode.none))
+                expect(view.mode).to(equal(Mode.none))
             }
 
             it("will call viewDidInitialize on presenter after init") {

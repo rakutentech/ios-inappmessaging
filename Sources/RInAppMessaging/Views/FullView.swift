@@ -27,12 +27,6 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         var textTopMarginForNotDismissableCampaigns: CGFloat = 20 // A space added between top edge and text/body view when exit button is hidden.
     }
 
-    internal enum Mode: Equatable {
-        case none
-        case modal(maxWindowHeightPercentage: CGFloat)
-        case fullScreen
-    }
-
     internal enum Layout: String {
         case html
         case textOnly
@@ -378,7 +372,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
 
     func configureCarouselView(viewModel: FullViewModel) {
         guard layout == .carousel, let carouselData = viewModel.carouselData else { return }
-        carouselView.configure(carouselData: carouselData, presenter: presenter)
+        carouselView.configure(carouselData: carouselData, presenter: presenter, campaignMode: mode)
     }
 
     @objc private func onActionButtonClick(_ sender: ActionButton) {
@@ -392,4 +386,10 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
     @objc private func onClickCampaignImage() {
         presenter.didClickCampaignImage(url: clickableImageUrl)
     }
+}
+
+enum Mode: Equatable {
+    case none
+    case modal(maxWindowHeightPercentage: CGFloat)
+    case fullScreen
 }
