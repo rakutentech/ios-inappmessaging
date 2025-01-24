@@ -9,4 +9,5 @@ gem "xcov", ">= 1.7.3", "< 2.0.0"
 gem "danger"
 gem "danger-xcov"
 gem "slather"
-gem "activesupport", "= 7.0.8"
+gem 'activesupport', '>= 6.1.7.5', '< 7.1.0'
+gem 'concurrent-ruby', '< 1.3.4'
