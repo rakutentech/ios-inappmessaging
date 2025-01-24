@@ -9,5 +9,6 @@ gem "xcov", ">= 1.7.3", "< 2.0.0"
 gem "danger"
 gem "danger-xcov"
 gem "slather"
-gem 'activesupport', '>= 6.1.7.5', '< 7.1.0'
-gem 'concurrent-ruby', '< 1.3.4'
+gem "activesupport", "= 7.0.8"
+# fix for bitrise error https://github.com/facebook/react-native/issues/48746
+gem "concurrent-ruby", "< 1.3.4" 
