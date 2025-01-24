@@ -7,7 +7,8 @@
     - Implement user click behavior on Carousel Images [RMCCX-7618]
     - Implement autoscroll behavior for Carousel [RMCCX-7620]
 - Fixes:
-    - Fix issue of two images appearing on a single page in fullscreen Image Carousel campaign [RMCCX-8178]
+    - Fixed issue of two images appearing on a single page in fullscreen Image Carousel campaign [RMCCX-8178]
+    - Uploaded Image should be displayed when single image is uploaded to JSON for carousel [RMCCX-8192]
 
 ### 9.0.0 (2024-10-22) 
 - Features:
