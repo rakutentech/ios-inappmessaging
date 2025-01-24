@@ -108,8 +108,10 @@ internal class CampaignDispatcher: CampaignDispatcherType, TaskSchedulable {
     
     func fetchCampaignImagesAndDisplay(campaign: Campaign) {
         if let carouselData = campaign.data.customJson?.carousel,
-           !(carouselData.images?.isEmpty ?? true),
-           RInAppMessaging.isRMCEnvironment {
+           let images = carouselData.images,
+           !images.isEmpty,
+           images.count > 1,
+           !RInAppMessaging.isRMCEnvironment {
             fetchImagesArray(from: carouselData) { images in
                 guard let carouselData = carouselData.images else { return }
                 let carouselHandler = self.createCarouselDataList(from: carouselData, using: images)
