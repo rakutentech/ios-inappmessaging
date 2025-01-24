@@ -111,7 +111,7 @@ internal class CampaignDispatcher: CampaignDispatcherType, TaskSchedulable {
            let images = carouselData.images,
            !images.isEmpty,
            images.count > 1,
-           !RInAppMessaging.isRMCEnvironment {
+           RInAppMessaging.isRMCEnvironment {
             fetchImagesArray(from: carouselData) { images in
                 guard let carouselData = carouselData.images else { return }
                 let carouselHandler = self.createCarouselDataList(from: carouselData, using: images)
