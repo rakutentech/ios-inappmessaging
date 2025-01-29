@@ -14,11 +14,13 @@ import UIKit
 
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        self.setupOrientationObserver()
+        self.setupObservers()
     }
 
     deinit {
         NotificationCenter.default.removeObserver(self, name: UIDevice.orientationDidChangeNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIApplication.didEnterBackgroundNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIApplication.didBecomeActiveNotification, object: nil)
         stopAutoScroll()
     }
 
@@ -102,24 +104,33 @@ extension CarouselView: UICollectionViewDataSource, UICollectionViewDelegateFlow
 
 extension CarouselView {
 
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let page = Int(scrollView.contentOffset.x / collectionView.frame.width)
-        carouselPageControl?.currentPage = page
-    }
-
     func getMaxImageAspectRatio() -> CGFloat {
         guard let maxImageData = carouselData.compactMap({ $0.image }).max(by: { $0.size.height < $1.size.height })
             else { return .zero }
         return maxImageData.size.height / maxImageData.size.width
     }
 
-    private func setupOrientationObserver() {
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(handleOrientationChange),
-            name: UIDevice.orientationDidChangeNotification,
-            object: nil
-        )
+    private func setupObservers() {
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(handleOrientationChange),
+                                               name: UIDevice.orientationDidChangeNotification,
+                                               object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(appDidEnterBackground),
+                                               name: UIApplication.didEnterBackgroundNotification,
+                                               object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(appdidBecomeActive),
+                                               name: UIApplication.didBecomeActiveNotification,
+                                               object: nil)
+    }
+    
+    @objc private func appDidEnterBackground(){
+        stopAutoScroll()
+    }
+
+    @objc private func appdidBecomeActive() {
+        startAutoScroll()
     }
 
     @objc func handleOrientationChange() {
@@ -143,10 +154,19 @@ extension CarouselView {
         return height < Constants.Carousel.minHeight ? Constants.Carousel.defaultHeight : height
     }
 
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let page = Int(scrollView.contentOffset.x / collectionView.frame.width)
+        carouselPageControl?.currentPage = page
+
+        guard !hasReachedLastImage else { return }
+        let maxOffsetX = collectionView.contentSize.width - collectionView.frame.width
+        hasReachedLastImage = scrollView.contentOffset.x >= maxOffsetX
+    }
+
     func startAutoScroll() {
-            stopAutoScroll()
-            guard !hasReachedLastImage else { return }
-            timer = Timer.scheduledTimer(timeInterval: 5.0, target: self, selector: #selector(scrollToNextItem), userInfo: nil, repeats: true)
+        stopAutoScroll()
+        guard !hasReachedLastImage else { return }
+        timer = Timer.scheduledTimer(timeInterval: 5.0, target: self, selector: #selector(scrollToNextItem), userInfo: nil, repeats: true)
     }
 
     func stopAutoScroll() {
@@ -179,14 +199,14 @@ extension CarouselView {
         currentIndex = visibleIndexPath?.item ?? 0
 
         // Only restart auto-scroll if the user interacted before reaching the last image for the first time
-        if currentIndex < carouselData.count - 1 {
+        if currentIndex < carouselData.count - 1 && !hasReachedLastImage {
             startAutoScroll()
         }
     }
 
     func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
-            let visibleIndexPath = collectionView.indexPathsForVisibleItems.first
-            currentIndex = visibleIndexPath?.item ?? 0
+        let visibleIndexPath = collectionView.indexPathsForVisibleItems.first
+        currentIndex = visibleIndexPath?.item ?? 0
     }
 }
 

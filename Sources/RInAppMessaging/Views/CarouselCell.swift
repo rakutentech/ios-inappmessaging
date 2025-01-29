@@ -54,7 +54,10 @@ final class CarouselCell: UICollectionViewCell {
         imageView.image = image
         textLabel.isHidden = hasImage
         textLabel.text = altText ?? "carousel_image_load_error".localized
+        layoutIfNeeded()
         setNeedsLayout()
+        imageView.layoutIfNeeded()
+        imageView.setNeedsLayout()
     }
 }
 
