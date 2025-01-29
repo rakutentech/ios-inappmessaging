@@ -9,6 +9,8 @@
 - Fixes:
     - Fixed issue of two images appearing on a single page in fullscreen Image Carousel campaign [RMCCX-8178]
     - Uploaded Image should be displayed when single image is uploaded to JSON for carousel [RMCCX-8192]
+    - Auto scrolling should be stopped once the auto scroll reaches last image [RMCCX-8236]
+    - Prevent images on carousel getting zoomed in after the app is brought back to foreground from background [RMCCX-8247]
 
 ### 9.0.0 (2024-10-22) 
 - Features:
