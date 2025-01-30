@@ -128,14 +128,23 @@ extension CarouselView {
                                                selector: #selector(appdidBecomeActive),
                                                name: UIApplication.didBecomeActiveNotification,
                                                object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(handleAppWillEnterForeground),
+                                               name: UIApplication.willEnterForegroundNotification,
+                                               object: nil)
     }
-    
+
     @objc private func appDidEnterBackground(){
         stopAutoScroll()
     }
 
     @objc private func appdidBecomeActive() {
         startAutoScroll()
+    }
+
+    @objc private func handleAppWillEnterForeground() {
+        collectionView.collectionViewLayout.invalidateLayout()
+        collectionView.reloadData()
     }
 
     @objc func handleOrientationChange() {
@@ -154,7 +163,7 @@ extension CarouselView {
         let currentPage = carouselPageControl.currentPage
         collectionView.scrollToItem(at: IndexPath(item: currentPage, section: 0), at: .centeredHorizontally, animated: true)
     }
-    
+
     func adjustHeight(height: CGFloat) -> CGFloat {
         return height < Constants.Carousel.minHeight ? Constants.Carousel.defaultHeight : height
     }
