@@ -10,6 +10,7 @@ import UIKit
     private var currentIndex = 0
     private var hasReachedLastImage = false
     private var campaignMode: Mode = .none
+    private var carouselBgColor: UIColor = .clear
     var presenter: FullViewPresenterType?
 
     required init?(coder: NSCoder) {
@@ -24,10 +25,11 @@ import UIKit
         stopAutoScroll()
     }
 
-    func configure(carouselData: [CarouselData], presenter: FullViewPresenterType, campaignMode: Mode) {
+    func configure(carouselData: [CarouselData], presenter: FullViewPresenterType, campaignMode: Mode, backgroundColor: UIColor) {
         self.carouselData = carouselData
         self.presenter = presenter
         self.campaignMode = campaignMode
+        self.carouselBgColor = backgroundColor
         setupCollectionView()
         setupPageControl()
         startAutoScroll()
@@ -79,8 +81,11 @@ extension CarouselView: UICollectionViewDataSource, UICollectionViewDelegateFlow
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CarouselCell.identifier, for: indexPath) as? CarouselCell else {
             return UICollectionViewCell()
         }
+
+        collectionView.backgroundColor = (carouselData[indexPath.item].image != nil) ? carouselBgColor : .clear
         cell.configure(with: carouselData[indexPath.item].image,
-                       altText: carouselData[indexPath.item].altText)
+                       altText: carouselData[indexPath.item].altText,
+                       cellBgColor: carouselBgColor)
         return cell
     }
 
