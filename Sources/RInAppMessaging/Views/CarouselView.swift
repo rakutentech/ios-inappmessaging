@@ -10,6 +10,7 @@ import UIKit
     private var currentIndex = 0
     private var hasReachedLastImage = false
     private var campaignMode: Mode = .none
+    private var carouselBgColor: UIColor = .clear
     var presenter: FullViewPresenterType?
 
     required init?(coder: NSCoder) {
@@ -21,13 +22,15 @@ import UIKit
         NotificationCenter.default.removeObserver(self, name: UIDevice.orientationDidChangeNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: UIApplication.didEnterBackgroundNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: UIApplication.didBecomeActiveNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIApplication.willEnterForegroundNotification, object: nil)
         stopAutoScroll()
     }
 
-    func configure(carouselData: [CarouselData], presenter: FullViewPresenterType, campaignMode: Mode) {
+    func configure(carouselData: [CarouselData], presenter: FullViewPresenterType, campaignMode: Mode, backgroundColor: UIColor) {
         self.carouselData = carouselData
         self.presenter = presenter
         self.campaignMode = campaignMode
+        self.carouselBgColor = backgroundColor
         setupCollectionView()
         setupPageControl()
         startAutoScroll()
@@ -79,8 +82,11 @@ extension CarouselView: UICollectionViewDataSource, UICollectionViewDelegateFlow
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CarouselCell.identifier, for: indexPath) as? CarouselCell else {
             return UICollectionViewCell()
         }
+
+        collectionView.backgroundColor = (carouselData[indexPath.item].image != nil) ? carouselBgColor : .clear
         cell.configure(with: carouselData[indexPath.item].image,
-                       altText: carouselData[indexPath.item].altText)
+                       altText: carouselData[indexPath.item].altText,
+                       cellBgColor: carouselBgColor)
         return cell
     }
 
@@ -123,14 +129,23 @@ extension CarouselView {
                                                selector: #selector(appdidBecomeActive),
                                                name: UIApplication.didBecomeActiveNotification,
                                                object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(handleAppWillEnterForeground),
+                                               name: UIApplication.willEnterForegroundNotification,
+                                               object: nil)
     }
-    
+
     @objc private func appDidEnterBackground(){
         stopAutoScroll()
     }
 
     @objc private func appdidBecomeActive() {
         startAutoScroll()
+    }
+
+    @objc private func handleAppWillEnterForeground() {
+        collectionView.collectionViewLayout.invalidateLayout()
+        collectionView.reloadData()
     }
 
     @objc func handleOrientationChange() {
@@ -149,7 +164,7 @@ extension CarouselView {
         let currentPage = carouselPageControl.currentPage
         collectionView.scrollToItem(at: IndexPath(item: currentPage, section: 0), at: .centeredHorizontally, animated: true)
     }
-    
+
     func adjustHeight(height: CGFloat) -> CGFloat {
         return height < Constants.Carousel.minHeight ? Constants.Carousel.defaultHeight : height
     }

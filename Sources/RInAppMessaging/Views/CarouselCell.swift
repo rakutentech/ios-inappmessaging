@@ -48,8 +48,9 @@ final class CarouselCell: UICollectionViewCell {
         textLabel.frame = CGRect(x: textX, y: textY, width: textSize.width, height: textSize.height)
     }
 
-    func configure(with image: UIImage?, altText: String?) {
+    func configure(with image: UIImage?, altText: String?, cellBgColor: UIColor) {
         let hasImage = (image != nil)
+        backgroundColor = hasImage ? cellBgColor : .clear
         imageView.isHidden = !hasImage
         imageView.image = image
         textLabel.isHidden = hasImage

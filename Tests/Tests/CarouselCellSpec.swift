@@ -35,46 +35,50 @@ class CarouselCellSpec: QuickSpec {
             context("when configured with an image") {
                 it("should display the image and hide the textLabel") {
                     let image = UIImage()
-                    cell.configure(with: image, altText: "Alt Text")
+                    cell.configure(with: image, altText: "Alt Text", cellBgColor: .black)
 
                     expect(cell.imageView.image).to(equal(image))
                     expect(cell.textLabel.isHidden).to(beTrue())
+                    expect(cell.backgroundColor).to(equal(.black))
                 }
 
                 it("should not display the alt text") {
                     let image = UIImage()
-                    cell.configure(with: image, altText: "Alt Text")
-
+                    cell.configure(with: image, altText: "Alt Text", cellBgColor: .black)
                     expect(cell.textLabel.text).to(equal("Alt Text"))
                     expect(cell.textLabel.isHidden).to(beTrue())
+                    expect(cell.backgroundColor).to(equal(.black))
                 }
             }
 
             context("when configured without an image") {
                 it("should display the alt text and imageView should have nil image") {
-                    cell.configure(with: nil, altText: "Alt Text")
+                    cell.configure(with: nil, altText: "Alt Text", cellBgColor: .black)
 
                     expect(cell.imageView.image).to(beNil())
                     expect(cell.textLabel.isHidden).to(beFalse())
                     expect(cell.textLabel.text).to(equal("Alt Text"))
+                    expect(cell.backgroundColor).to(equal(.clear))
                 }
             }
 
             context("when configured with an empty alt text") {
                 it("should display an empty alt text") {
-                    cell.configure(with: nil, altText: "")
+                    cell.configure(with: nil, altText: "", cellBgColor: .black)
 
                     expect(cell.textLabel.text).to(equal(""))
                     expect(cell.textLabel.isHidden).to(beFalse())
+                    expect(cell.backgroundColor).to(equal(.clear))
                 }
             }
 
             context("when configured with a nil alt text") {
                 it("should display the default alt text") {
-                    cell.configure(with: nil, altText: nil)
+                    cell.configure(with: nil, altText: nil, cellBgColor: .black)
 
                     expect(cell.textLabel.text).to(equal("carousel_image_load_error".localized))
                     expect(cell.textLabel.isHidden).to(beFalse())
+                    expect(cell.backgroundColor).to(equal(.clear))
                 }
             }
 

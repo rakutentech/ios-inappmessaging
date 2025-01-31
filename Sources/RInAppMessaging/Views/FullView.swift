@@ -372,7 +372,10 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
 
     func configureCarouselView(viewModel: FullViewModel) {
         guard layout == .carousel, let carouselData = viewModel.carouselData else { return }
-        carouselView.configure(carouselData: carouselData, presenter: presenter, campaignMode: mode)
+        carouselView.configure(carouselData: carouselData,
+                               presenter: presenter,
+                               campaignMode: mode,
+                               backgroundColor: viewModel.backgroundColor)
     }
 
     @objc private func onActionButtonClick(_ sender: ActionButton) {
