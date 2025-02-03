@@ -40,7 +40,7 @@
                 <view contentMode="scaleToFill" placeholderIntrinsicWidth="414" placeholderIntrinsicHeight="635" translatesAutoresizingMaskIntoConstraints="NO" id="9fo-EW-lL9">
                     <rect key="frame" x="0.0" y="-2" width="414" height="635"/>
                     <subviews>
-                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="sQ8-dx-V3p">
+                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" translatesAutoresizingMaskIntoConstraints="NO" id="sQ8-dx-V3p">
                             <rect key="frame" x="0.0" y="0.0" width="414" height="635"/>
                             <subviews>
                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="LBu-gO-Kcj">
@@ -68,8 +68,8 @@
                                 <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" contentInsetAdjustmentBehavior="never" translatesAutoresizingMaskIntoConstraints="NO" id="R2i-po-Za0">
                                     <rect key="frame" x="0.0" y="50" width="414" height="446"/>
                                     <subviews>
-                                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="kFe-rN-o5K">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="274"/>
+                                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" translatesAutoresizingMaskIntoConstraints="NO" id="kFe-rN-o5K">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="446"/>
                                             <subviews>
                                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="18" translatesAutoresizingMaskIntoConstraints="NO" id="mHs-W6-s9X">
                                                     <rect key="frame" x="0.0" y="0.0" width="414" height="18"/>
@@ -89,10 +89,10 @@
                                                     </subviews>
                                                 </stackView>
                                                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" placeholderIntrinsicWidth="infinite" placeholderIntrinsicHeight="128" translatesAutoresizingMaskIntoConstraints="NO" id="87e-5v-58Z" customClass="FlexibleHeightImageView" customModule="RInAppMessaging">
-                                                    <rect key="frame" x="0.0" y="18" width="414" height="128"/>
+                                                    <rect key="frame" x="0.0" y="104" width="414" height="128"/>
                                                 </imageView>
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="y34-nW-wPD" customClass="CarouselView" customModule="RInAppMessaging">
-                                                    <rect key="frame" x="0.0" y="146" width="414" height="128"/>
+                                                    <rect key="frame" x="0.0" y="318" width="414" height="128"/>
                                                     <subviews>
                                                         <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="UdF-Wq-BHP">
                                                             <rect key="frame" x="0.0" y="0.0" width="414" height="128"/>
@@ -122,7 +122,7 @@
                                                     </connections>
                                                 </view>
                                                 <view hidden="YES" contentMode="scaleToFill" verticalHuggingPriority="750" verticalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="01e-c5-HnS" userLabel="Empty Space">
-                                                    <rect key="frame" x="0.0" y="274" width="414" height="0.0"/>
+                                                    <rect key="frame" x="0.0" y="446" width="414" height="0.0"/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" relation="greaterThanOrEqual" id="e9Y-gr-e8O"/>
