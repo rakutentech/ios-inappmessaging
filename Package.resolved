@@ -23,8 +23,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/rakutentech/ios-sdkutils.git",
       "state" : {
-        "revision" : "dedb314c2b8b5cfa2887fdbf7d0e18bf44c0cb26",
-        "version" : "4.2.0"
+        "revision" : "794ea18ce446ae3b016b5c2c76e25869aaa1f366",
+        "version" : "5.0.0"
       }
     },
     {
