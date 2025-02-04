@@ -13,7 +13,7 @@ target 'RInAppMessaging_Example' do
 
   abstract_target 'Tests-Common' do
     pod 'Quick', '~> 5.0'
-    pod 'Nimble'
+    pod 'Nimble',  '~> 12.1.0'
 
     target 'Tests'
 

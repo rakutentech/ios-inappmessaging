@@ -6,7 +6,7 @@ PODS:
   - CNIOLinux (2.40.0)
   - CNIOWindows (2.40.0)
   - GRMustache.swift (4.0.1)
-  - Nimble (10.0.0)
+  - Nimble (12.1.0)
   - Quick (5.0.1)
   - RInAppMessaging (9.0.0):
     - RSDKUtils (~> 5.0.0)
@@ -68,7 +68,7 @@ PODS:
     - SwiftNIOCore (= 2.40.0)
 
 DEPENDENCIES:
-  - Nimble
+  - Nimble (~> 12.1.0)
   - Quick (~> 5.0)
   - RInAppMessaging (from `.`)
   - RSDKUtils (~> 5.0.0)
@@ -110,7 +110,7 @@ SPEC CHECKSUMS:
   CNIOLinux: 62e3505f50de558c393dc2f273dde71dcce518da
   CNIOWindows: 3047f2d8165848a3936a0a755fee27c6b5ee479b
   GRMustache.swift: a6436504284b22b4b05daf5f46f77bd3fe00a9a2
-  Nimble: 5316ef81a170ce87baf72dd961f22f89a602ff84
+  Nimble: 7badc051fbff5e14e3798e2392b9389de67f75ea
   Quick: 749aa754fd1e7d984f2000fe051e18a3a9809179
   RInAppMessaging: 37523bc00d31183a794ae67d06a7e2d1a0f62cf6
   RSDKUtils: cf3b35c03684ef59f7831da729c0738ecd4809b8
@@ -123,6 +123,6 @@ SPEC CHECKSUMS:
   SwiftNIOHTTP1: ef56706550a1dc135ea69d65215b9941e643c23b
   SwiftNIOPosix: b49af4bdbecaadfadd5c93dfe28594d6722b75e4
 
-PODFILE CHECKSUM: ec7e3a478688578543cabb0b7440453a1e684d3e
+PODFILE CHECKSUM: 481b38f7140325e5f16466bc1a8dd0855b1fa4c8
 
 COCOAPODS: 1.16.2
