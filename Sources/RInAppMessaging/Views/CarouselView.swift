@@ -83,7 +83,7 @@ extension CarouselView: UICollectionViewDataSource, UICollectionViewDelegateFlow
             return UICollectionViewCell()
         }
 
-        collectionView.backgroundColor = (carouselData[indexPath.item].image != nil) ? carouselBgColor : .clear
+        collectionView.backgroundColor = carouselBgColor
         cell.configure(with: carouselData[indexPath.item].image,
                        altText: carouselData[indexPath.item].altText,
                        cellBgColor: carouselBgColor)
