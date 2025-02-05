@@ -50,7 +50,7 @@ final class CarouselCell: UICollectionViewCell {
 
     func configure(with image: UIImage?, altText: String?, cellBgColor: UIColor) {
         let hasImage = (image != nil)
-        backgroundColor = hasImage ? cellBgColor : .clear
+        backgroundColor = hasImage ? cellBgColor : .white
         imageView.isHidden = !hasImage
         imageView.image = image
         textLabel.isHidden = hasImage

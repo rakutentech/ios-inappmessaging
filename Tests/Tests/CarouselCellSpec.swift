@@ -58,7 +58,7 @@ class CarouselCellSpec: QuickSpec {
                     expect(cell.imageView.image).to(beNil())
                     expect(cell.textLabel.isHidden).to(beFalse())
                     expect(cell.textLabel.text).to(equal("Alt Text"))
-                    expect(cell.backgroundColor).to(equal(.clear))
+                    expect(cell.backgroundColor).to(equal(.white))
                 }
             }
 
@@ -68,7 +68,7 @@ class CarouselCellSpec: QuickSpec {
 
                     expect(cell.textLabel.text).to(equal(""))
                     expect(cell.textLabel.isHidden).to(beFalse())
-                    expect(cell.backgroundColor).to(equal(.clear))
+                    expect(cell.backgroundColor).to(equal(.white))
                 }
             }
 
@@ -78,7 +78,7 @@ class CarouselCellSpec: QuickSpec {
 
                     expect(cell.textLabel.text).to(equal("carousel_image_load_error".localized))
                     expect(cell.textLabel.isHidden).to(beFalse())
-                    expect(cell.backgroundColor).to(equal(.clear))
+                    expect(cell.backgroundColor).to(equal(.white))
                 }
             }
 
