@@ -15,7 +15,7 @@ let package = Package(
             targets: ["RInAppMessaging"])
     ],
     dependencies: [
-        .package(url: "https://github.com/rakutentech/ios-sdkutils.git", .upToNextMajor(from: "4.2.0"))
+        .package(url: "https://github.com/rakutentech/ios-sdkutils.git", .upToNextMajor(from: "5.1.0"))
     ],
     targets: [
         .target(

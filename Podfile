@@ -1,5 +1,5 @@
 use_frameworks!
-platform :ios, '12.0'
+platform :ios, '14.0'
 
 secrets = ["RIAM_CONFIG_URL", "RIAM_APP_SUBSCRIPTION_KEY"]
 
@@ -8,12 +8,12 @@ project 'RInAppMessaging', 'UITests' => :debug
 target 'RInAppMessaging_Example' do
   pod 'RInAppMessaging', :path => '.'
   pod 'SwiftLint', '~> 0.50'
-  pod 'RSDKUtils', '~> 4.2.0', :testspecs => ['Nimble', 'TestHelpers']
+  pod 'RSDKUtils', '~> 5.1.0', :testspecs => ['Nimble', 'TestHelpers']
   pod 'Shock', '~> 6.1.2'
 
   abstract_target 'Tests-Common' do
     pod 'Quick', '~> 5.0'
-    pod 'Nimble'
+    pod 'Nimble','~> 12.1.0'
 
     target 'Tests'
 

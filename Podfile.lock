@@ -6,19 +6,19 @@ PODS:
   - CNIOLinux (2.40.0)
   - CNIOWindows (2.40.0)
   - GRMustache.swift (4.0.1)
-  - Nimble (10.0.0)
+  - Nimble (12.1.0)
   - Quick (5.0.1)
   - RInAppMessaging (9.0.0):
-    - RSDKUtils (~> 4.0)
-  - RSDKUtils (4.2.0):
-    - RSDKUtils/Main (= 4.2.0)
-  - RSDKUtils/Main (4.2.0):
+    - RSDKUtils (~> 5.1.0)
+  - RSDKUtils (5.1.0):
+    - RSDKUtils/Main (= 5.1.0)
+  - RSDKUtils/Main (5.1.0):
     - RSDKUtils/RLogger
-  - RSDKUtils/Nimble (4.2.0):
+  - RSDKUtils/Nimble (5.1.0):
     - Nimble
     - RSDKUtils/Main
-  - RSDKUtils/RLogger (4.2.0)
-  - RSDKUtils/TestHelpers (4.2.0):
+  - RSDKUtils/RLogger (5.1.0)
+  - RSDKUtils/TestHelpers (5.1.0):
     - RSDKUtils/Main
   - Shock (6.1.3):
     - GRMustache.swift (~> 4.0.1)
@@ -68,12 +68,12 @@ PODS:
     - SwiftNIOCore (= 2.40.0)
 
 DEPENDENCIES:
-  - Nimble
+  - Nimble (~> 12.1.0)
   - Quick (~> 5.0)
   - RInAppMessaging (from `.`)
-  - RSDKUtils (~> 4.2.0)
-  - RSDKUtils/Nimble (~> 4.2.0)
-  - RSDKUtils/TestHelpers (~> 4.2.0)
+  - RSDKUtils (~> 5.1.0)
+  - RSDKUtils/Nimble (~> 5.1.0)
+  - RSDKUtils/TestHelpers (~> 5.1.0)
   - Shock (~> 6.1.2)
   - SwiftLint (~> 0.50)
 
@@ -110,10 +110,10 @@ SPEC CHECKSUMS:
   CNIOLinux: 62e3505f50de558c393dc2f273dde71dcce518da
   CNIOWindows: 3047f2d8165848a3936a0a755fee27c6b5ee479b
   GRMustache.swift: a6436504284b22b4b05daf5f46f77bd3fe00a9a2
-  Nimble: 5316ef81a170ce87baf72dd961f22f89a602ff84
+  Nimble: 7badc051fbff5e14e3798e2392b9389de67f75ea
   Quick: 749aa754fd1e7d984f2000fe051e18a3a9809179
-  RInAppMessaging: e67e3d3db5792201041fcba320f981c40ed763ec
-  RSDKUtils: 4ef7a283108a78e879f335c788d78bbd5699f907
+  RInAppMessaging: 57adabd73a205a69e3ffd19daee4fe55fcea027c
+  RSDKUtils: 6ae357662b44e390f026edd3431f57ad23fcaf97
   Shock: 34def30d5e729f6c1eea2a5b5c2d024b875af86c
   SwiftLint: 1cc5cd61ba9bacb2194e340aeb47a2a37fda00b3
   SwiftNIO: 829958aab300642625091f82fc2f49cb7cf4ef24
@@ -123,6 +123,6 @@ SPEC CHECKSUMS:
   SwiftNIOHTTP1: ef56706550a1dc135ea69d65215b9941e643c23b
   SwiftNIOPosix: b49af4bdbecaadfadd5c93dfe28594d6722b75e4
 
-PODFILE CHECKSUM: d93126c6ae225ff9f7bcfc59f0e4ced878216e9b
+PODFILE CHECKSUM: 8c42d97c4f173f1dd3f1d8bf6600f2261b1abddc
 
-COCOAPODS: 1.15.2
+COCOAPODS: 1.16.2
