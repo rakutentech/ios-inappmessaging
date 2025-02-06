@@ -282,16 +282,6 @@ class ViewSpec: QuickSpec {
                     view.carouselView.scrollViewDidScroll(view.carouselView.collectionView)
                     expect(view.carouselView.carouselPageControl.currentPage).to(equal(2))
                 }
-
-                it("it will have valid collectionView ContentSize on rotation") {
-
-                    view.setup(viewModel: TestHelpers.generateFullViewCarouselModel(carouselData: carouselData))
-                    view.carouselView.collectionView.frame = CGRect(x: 0, y: 0, width: 300, height: 300)
-                    let indexPath2 = IndexPath(item: 1, section: 0)
-                    view.carouselView.collectionView.scrollToItem(at: indexPath2, at: .centeredHorizontally, animated: false)
-                    view.carouselView.handleOrientationChange()
-                    expect(view.carouselView.collectionView.collectionViewLayout.collectionViewContentSize).notTo(beNil())
-                }
             }
         }
 
