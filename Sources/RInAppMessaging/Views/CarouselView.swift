@@ -19,7 +19,6 @@ import UIKit
     }
 
     deinit {
-        NotificationCenter.default.removeObserver(self, name: UIDevice.orientationDidChangeNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: UIApplication.didEnterBackgroundNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: UIApplication.didBecomeActiveNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: UIApplication.willEnterForegroundNotification, object: nil)
@@ -43,7 +42,10 @@ import UIKit
         
         carouselHeightConstraint.constant = adjustHeight(height: carouselHeight)
         collectionView.collectionViewLayout.invalidateLayout()
-        layoutIfNeeded()
+
+        // Restore the correct page after rotation
+        let offset = CGPoint(x: CGFloat(currentIndex) * collectionView.frame.width, y: 0)
+        collectionView.setContentOffset(offset, animated: false)
     }
 
     private func setupPageControl() {
@@ -118,10 +120,6 @@ extension CarouselView {
 
     private func setupObservers() {
         NotificationCenter.default.addObserver(self,
-                                               selector: #selector(handleOrientationChange),
-                                               name: UIDevice.orientationDidChangeNotification,
-                                               object: nil)
-        NotificationCenter.default.addObserver(self,
                                                selector: #selector(appDidEnterBackground),
                                                name: UIApplication.didEnterBackgroundNotification,
                                                object: nil)
@@ -148,21 +146,10 @@ extension CarouselView {
         collectionView.reloadData()
     }
 
-    @objc func handleOrientationChange() {
-        guard let collectionView = self.collectionView else { return }
-
-        let visibleRect = CGRect(origin: collectionView.contentOffset, size: collectionView.bounds.size)
-        guard let visibleIndexPath = collectionView.indexPathForItem(at: CGPoint(x: visibleRect.midX, y: visibleRect.midY)) else { return }
-
-        collectionView.collectionViewLayout.invalidateLayout()
-        DispatchQueue.main.async {
-            collectionView.scrollToItem(at: visibleIndexPath, at: .centeredHorizontally, animated: false)
-        }
-    }
-
     @objc func pageControlValueChanged() {
         let currentPage = carouselPageControl.currentPage
-        collectionView.scrollToItem(at: IndexPath(item: currentPage, section: 0), at: .centeredHorizontally, animated: true)
+        let offset = CGPoint(x: CGFloat(currentPage) * collectionView.frame.width, y: 0)
+        collectionView.setContentOffset(offset, animated: false)
     }
 
     func adjustHeight(height: CGFloat) -> CGFloat {
