@@ -13,6 +13,7 @@
     - Auto scrolling should be stopped once the auto scroll reaches last image [RMCCX-8236]
     - Prevent images on carousel getting zoomed in after the app is brought back to foreground from background [RMCCX-8247]
     - Fixed incorrect carousel image display issue on changing device orientation [RMCCX-8330]
+    - Fix image skipping issue on carousel while auto scrolling [RMCCX-8347]
 
 ### 9.0.0 (2024-10-22) 
 - Features:
