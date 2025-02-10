@@ -149,7 +149,7 @@ extension CarouselView {
     @objc func pageControlValueChanged() {
         let currentPage = carouselPageControl.currentPage
         let offset = CGPoint(x: CGFloat(currentPage) * collectionView.frame.width, y: 0)
-        collectionView.setContentOffset(offset, animated: false)
+        collectionView.setContentOffset(offset, animated: true)
     }
 
     func adjustHeight(height: CGFloat) -> CGFloat {
@@ -157,12 +157,7 @@ extension CarouselView {
     }
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let page = Int(scrollView.contentOffset.x / collectionView.frame.width)
-        carouselPageControl?.currentPage = page
-
-        guard !hasReachedLastImage else { return }
-        let maxOffsetX = collectionView.contentSize.width - collectionView.frame.width
-        hasReachedLastImage = scrollView.contentOffset.x >= maxOffsetX
+        carouselPageControl?.currentPage = getCurrentIndex()
     }
 
     func startAutoScroll() {
@@ -189,7 +184,6 @@ extension CarouselView {
         let indexPath = IndexPath(item: nextIndex, section: 0)
 
         collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
-        currentIndex = nextIndex
     }
 
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
@@ -197,18 +191,27 @@ extension CarouselView {
     }
 
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        let visibleIndexPath = collectionView.indexPathsForVisibleItems.first
-        currentIndex = visibleIndexPath?.item ?? 0
-
+        updateCurrentIndex()
         // Only restart auto-scroll if the user interacted before reaching the last image for the first time
-        if currentIndex < carouselData.count - 1 && !hasReachedLastImage {
+        if !hasReachedLastImage {
             startAutoScroll()
         }
     }
 
     func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
-        let visibleIndexPath = collectionView.indexPathsForVisibleItems.first
-        currentIndex = visibleIndexPath?.item ?? 0
+        updateCurrentIndex()
+    }
+
+    func getCurrentIndex() -> Int {
+        let pageWidth = collectionView.frame.width
+        let page = Int(round(collectionView.contentOffset.x / pageWidth))
+        return max(0, min(page, carouselData.count - 1))
+    }
+
+    func updateCurrentIndex() {
+        currentIndex = getCurrentIndex()
+        guard !hasReachedLastImage else { return }
+        hasReachedLastImage = currentIndex == carouselData.count - 1
     }
 }
 
