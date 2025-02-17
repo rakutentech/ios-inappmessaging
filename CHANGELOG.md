@@ -1,6 +1,6 @@
 ## Changelog
 
-### Unreleased 
+### 9.1.0 (2025-02-18)
 - Features:
     - Implement data model for Custom Json carousel data [RMCCX-7616]
     - Implement Carousel UI display with manual scroll [RMCCX-7619]
