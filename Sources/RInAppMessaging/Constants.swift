@@ -45,7 +45,7 @@ internal enum Constants {
     }
 
     enum Versions {
-        static let sdkVersion = "9.1.0"
+        static let sdkVersion = "9.2.0-snapshot"
     }
 
     enum RAnalytics: String {
