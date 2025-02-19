@@ -93,6 +93,16 @@
                                 "alt_text": "unable to load image"
                             }
                         }
+                    },
+                    "modifyModal": {
+                        "size": {
+                          "width": "80",
+                          "height": "60"
+                        },
+                        "position": {
+                          "verticalAlign": "top",
+                          "horizontalAlign": "right"
+                        }
                     }
                 },
                 "messagePayload": {
