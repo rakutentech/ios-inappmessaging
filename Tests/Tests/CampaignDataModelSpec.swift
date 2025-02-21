@@ -366,6 +366,157 @@ class CustomJsonSpec: QuickSpec {
                     }
                 }
             }
+            describe("Modify Modal model") {
+                context("when Custom JSON is complete") {
+                    it("should decode all properties correctly") {
+                        let json = """
+                                {
+                                    "size": {
+                                        "width": "80",
+                                        "height": "60"
+                                    },
+                                    "position": {
+                                        "verticalAlign": "center",
+                                        "horizontalAlign": "center"
+                                    }
+                                }
+                                """.data(using: .utf8)!
+                        let decodedObject = try? JSONDecoder().decode(ModifyModal.self, from: json)
+                        expect(decodedObject).toNot(beNil())
+                        expect(decodedObject?.size?.width).to(equal("80"))
+                        expect(decodedObject?.size?.height).to(equal("60"))
+                        expect(decodedObject?.position?.verticalAlign).to(equal("center"))
+                        expect(decodedObject?.position?.horizontalAlign).to(equal("center"))
+                    }
+                }
+                context("when JSON is missing some properties") {
+                    it("should decode available properties and set missing ones to nil") {
+                        let json = """
+                                {
+                                    "size": {
+                                        "width": "80"
+                                    }
+                                }
+                                """.data(using: .utf8)!
+                        let decodedObject = try? JSONDecoder().decode(ModifyModal.self, from: json)
+                        expect(decodedObject).toNot(beNil())
+                        expect(decodedObject?.size?.width).to(equal("80"))
+                        expect(decodedObject?.size?.height).to(beNil())
+                        expect(decodedObject?.position).to(beNil())
+                    }
+                }
+                context("when JSON is empty") {
+                    it("should decode to an object with all properties set to nil") {
+                        let json = "{}".data(using: .utf8)!
+                        let decodedObject = try? JSONDecoder().decode(ModifyModal.self, from: json)
+                        expect(decodedObject).toNot(beNil())
+                        expect(decodedObject?.size).to(beNil())
+                        expect(decodedObject?.position).to(beNil())
+                    }
+                }
+                context("when JSON is invalid") {
+                    it("should fail to decode and return nil") {
+                        let json = """
+                                {
+                                    "size": {
+                                        "width": 80,
+                                        "height": "60"
+                                    },
+                                    "position": {
+                                        "verticalAlign": "center",
+                                        "horizontalAlign": "center"
+                                    }
+                                }
+                                """.data(using: .utf8)!
+                        let decodedObject = try? JSONDecoder().decode(ModifyModal.self, from: json)
+                        expect(decodedObject).to(beNil())
+                    }
+                }
+            }
+            describe("Size Decoding") {
+                context("when JSON is complete") {
+                    it("should decode all properties correctly") {
+                        let json = """
+                                {
+                                    "width": "80",
+                                    "height": "60"
+                                }
+                                """.data(using: .utf8)!
+                        let decodedObject = try? JSONDecoder().decode(Size.self, from: json)
+                        expect(decodedObject).toNot(beNil())
+                        expect(decodedObject?.width).to(equal("80"))
+                        expect(decodedObject?.height).to(equal("60"))
+                    }
+                }
+                context("when JSON is missing some properties") {
+                    it("should decode available properties and set missing ones to nil") {
+                        let json = """
+                                {
+                                    "width": "80"
+                                }
+                                """.data(using: .utf8)!
+                        let decodedObject = try? JSONDecoder().decode(Size.self, from: json)
+                        expect(decodedObject).toNot(beNil())
+                        expect(decodedObject?.width).to(equal("80"))
+                        expect(decodedObject?.height).to(beNil())
+                    }
+                }
+                context("when JSON is invalid") {
+                    it("should fail to decode and return nil") {
+                        let json = """
+                                {
+                                    "width": 80,
+                                    "height": "60"
+                                }
+                                """.data(using: .utf8)!
+                        let decodedObject = try? JSONDecoder().decode(Size.self, from: json)
+                        expect(decodedObject).to(beNil())
+                    }
+                }
+            }
+
+            describe("Position Decoding") {
+                context("when JSON is complete") {
+                    it("should decode all properties correctly") {
+                        let json = """
+                                {
+                                    "verticalAlign": "center",
+                                    "horizontalAlign": "center"
+                                }
+                                """.data(using: .utf8)!
+                        let decodedObject = try? JSONDecoder().decode(Position.self, from: json)
+                        expect(decodedObject).toNot(beNil())
+                        expect(decodedObject?.verticalAlign).to(equal("center"))
+                        expect(decodedObject?.horizontalAlign).to(equal("center"))
+                    }
+                }
+                context("when JSON is missing some properties") {
+                    it("should decode available properties and set missing ones to nil") {
+                        let json = """
+                                {
+                                    "verticalAlign": "center"
+                                }
+                                """.data(using: .utf8)!
+
+                        let decodedObject = try? JSONDecoder().decode(Position.self, from: json)
+                        expect(decodedObject).toNot(beNil())
+                        expect(decodedObject?.verticalAlign).to(equal("center"))
+                        expect(decodedObject?.horizontalAlign).to(beNil())
+                    }
+                }
+                context("when JSON is invalid") {
+                    it("should fail to decode and return nil") {
+                        let json = """
+                                {
+                                    "verticalAlign": 123,
+                                    "horizontalAlign": "center"
+                                }
+                                """.data(using: .utf8)!
+                        let decodedObject = try? JSONDecoder().decode(Position.self, from: json)
+                        expect(decodedObject).to(beNil())
+                    }
+                }
+            }
         }
     }
 }
