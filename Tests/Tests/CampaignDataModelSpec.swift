@@ -372,8 +372,8 @@ class CustomJsonSpec: QuickSpec {
                         let json = """
                                 {
                                     "size": {
-                                        "width": "80",
-                                        "height": "60"
+                                        "width": 0.8,
+                                        "height": 0.6
                                     },
                                     "position": {
                                         "verticalAlign": "center",
@@ -383,8 +383,8 @@ class CustomJsonSpec: QuickSpec {
                                 """.data(using: .utf8)!
                         let decodedObject = try? JSONDecoder().decode(ModifyModal.self, from: json)
                         expect(decodedObject).toNot(beNil())
-                        expect(decodedObject?.size?.width).to(equal("80"))
-                        expect(decodedObject?.size?.height).to(equal("60"))
+                        expect(decodedObject?.size?.width).to(equal(0.8))
+                        expect(decodedObject?.size?.height).to(equal(0.6))
                         expect(decodedObject?.position?.verticalAlign).to(equal("center"))
                         expect(decodedObject?.position?.horizontalAlign).to(equal("center"))
                     }
@@ -394,13 +394,13 @@ class CustomJsonSpec: QuickSpec {
                         let json = """
                                 {
                                     "size": {
-                                        "width": "80"
+                                        "width": 0.8
                                     }
                                 }
                                 """.data(using: .utf8)!
                         let decodedObject = try? JSONDecoder().decode(ModifyModal.self, from: json)
                         expect(decodedObject).toNot(beNil())
-                        expect(decodedObject?.size?.width).to(equal("80"))
+                        expect(decodedObject?.size?.width).to(equal(0.8))
                         expect(decodedObject?.size?.height).to(beNil())
                         expect(decodedObject?.position).to(beNil())
                     }
@@ -419,8 +419,8 @@ class CustomJsonSpec: QuickSpec {
                         let json = """
                                 {
                                     "size": {
-                                        "width": 80,
-                                        "height": "60"
+                                        "width": "0.8",
+                                        "height": "0.6"
                                     },
                                     "position": {
                                         "verticalAlign": "center",
@@ -438,26 +438,26 @@ class CustomJsonSpec: QuickSpec {
                     it("should decode all properties correctly") {
                         let json = """
                                 {
-                                    "width": "80",
-                                    "height": "60"
+                                    "width": 0.8,
+                                    "height": 0.6
                                 }
                                 """.data(using: .utf8)!
                         let decodedObject = try? JSONDecoder().decode(Size.self, from: json)
                         expect(decodedObject).toNot(beNil())
-                        expect(decodedObject?.width).to(equal("80"))
-                        expect(decodedObject?.height).to(equal("60"))
+                        expect(decodedObject?.width).to(equal(0.8))
+                        expect(decodedObject?.height).to(equal(0.6))
                     }
                 }
                 context("when JSON is missing some properties") {
                     it("should decode available properties and set missing ones to nil") {
                         let json = """
                                 {
-                                    "width": "80"
+                                    "width": 0.8
                                 }
                                 """.data(using: .utf8)!
                         let decodedObject = try? JSONDecoder().decode(Size.self, from: json)
                         expect(decodedObject).toNot(beNil())
-                        expect(decodedObject?.width).to(equal("80"))
+                        expect(decodedObject?.width).to(equal(0.8))
                         expect(decodedObject?.height).to(beNil())
                     }
                 }
@@ -465,8 +465,8 @@ class CustomJsonSpec: QuickSpec {
                     it("should fail to decode and return nil") {
                         let json = """
                                 {
-                                    "width": 80,
-                                    "height": "60"
+                                    "width": "80",
+                                    "height": 0.6
                                 }
                                 """.data(using: .utf8)!
                         let decodedObject = try? JSONDecoder().decode(Size.self, from: json)

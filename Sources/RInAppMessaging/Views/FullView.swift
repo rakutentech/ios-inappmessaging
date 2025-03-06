@@ -57,12 +57,19 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         }
     }
 
-    @IBOutlet private weak var contentWidthOffsetConstraint: NSLayoutConstraint!
-    @IBOutlet private weak var bodyViewOffsetYConstraint: NSLayoutConstraint!
+// These are the view constants
+    @IBOutlet var contentViewCenterX: NSLayoutConstraint!
+    @IBOutlet var contentViewCenterY: NSLayoutConstraint!
+    @IBOutlet private var contentWidthOffsetConstraint: NSLayoutConstraint!
+    @IBOutlet private var bodyViewOffsetYConstraint: NSLayoutConstraint!
     @IBOutlet weak var optOutButtonTopSpacer: UIView!
-
+    @IBOutlet weak var contentViewHeightConstraint: NSLayoutConstraint!
     private weak var exitButtonHeightConstraint: NSLayoutConstraint!
+    private var portraitConstraints: [NSLayoutConstraint] = []
+    private var landscapeConstraints: [NSLayoutConstraint] = []
+
     private let presenter: FullViewPresenterType
+    var fullViewModel: FullViewModel?
 
     var uiConstants = UIConstants()
     var mode: Mode {
@@ -85,6 +92,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
     private var isClickableImage = false
     var backgroundViewColor: UIColor? = .clear
     private var clickableImageUrl: String?
+    private var modifyModalData: (Bool, Bool, ModifyModal?)?
 
     init(presenter: FullViewPresenterType) {
         self.presenter = presenter
@@ -111,6 +119,12 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
 
         bodyViewOffsetYConstraint.constant = hasImage ? 0 : uiConstants.bodyViewSafeAreaOffsetY
 
+        if let isValidmodifyModalSize = modifyModalData?.0, isValidmodifyModalSize,
+           let model = fullViewModel,
+           !RInAppMessaging.isRMCEnvironment {
+            layoutModifyModal(fullViewModel: model)
+        }
+
         DispatchQueue.main.async {
             // Fixes a problem with content size width being set 0.5pt too much
             // (landscape iPad), resulting in horizontal scroll bouncing.
@@ -118,14 +132,100 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         }
     }
 
+    func layoutModifyModal(fullViewModel: FullViewModel) {
+        switch mode {
+        case .modal(let maxWindowHeightPercentage):
+            guard let model = modifyModalData?.2,
+                  let size = model.size,
+                  let width = size.width, let height = size.height else { return }
+            
+            let heightRatio = CGFloat(height)
+            let widthRatio = CGFloat(width)
+
+            NSLayoutConstraint.deactivate(portraitConstraints + landscapeConstraints)
+            portraitConstraints.removeAll()
+            landscapeConstraints.removeAll()
+
+            if let contentViewCenterX, let contentViewCenterY, let contentViewHeightConstraint {
+                contentViewCenterX.isActive = false
+                contentViewCenterY.isActive = false
+                contentViewHeightConstraint.isActive = false
+            }
+
+            contentView.translatesAutoresizingMaskIntoConstraints = false
+            layoutMargins = .zero
+            backgroundColor = .clear
+            contentView.backgroundColor = fullViewModel.backgroundColor
+            contentView.clipsToBounds = true
+            contentView.layer.cornerRadius = uiConstants.cornerRadiusForDialogView
+            contentView.layer.masksToBounds = false
+
+            let isPortrait = UIScreen.main.bounds.height > UIScreen.main.bounds.width
+
+            contentWidthOffsetConstraint.constant = -uiConstants.dialogViewWidthOffset
+            contentWidthOffsetConstraint.setMultiplier(uiConstants.dialogViewWidthMultiplier * widthRatio)
+            contentViewHeightConstraint = createHeightConstraint(for: isPortrait,
+                                                                 heightPercentage: maxWindowHeightPercentage,
+                                                                 heightRatio: heightRatio)
+
+            if let isValidPosition = modifyModalData?.1, isValidPosition,
+               let verticalAlign = model.position?.verticalAlign,
+               let horizontalAlign = model.position?.horizontalAlign, isPortrait {
+                portraitConstraints = [
+                    verticalConstraint(for: verticalAlign),
+                    horizontalConstraint(for: horizontalAlign)
+                ].compactMap { $0 }
+            } else {
+                // If position is not valid then keep the campaign at center for potrait, for landscape keep it always at center
+                let defaultConstraints = [
+                    contentView.centerXAnchor.constraint(equalTo: backgroundView.safeAreaLayoutGuide.centerXAnchor),
+                    contentView.centerYAnchor.constraint(equalTo: backgroundView.safeAreaLayoutGuide.centerYAnchor)
+                ]
+
+                if isPortrait {
+                    portraitConstraints = defaultConstraints
+                } else {
+                    landscapeConstraints = defaultConstraints
+                }
+            }
+
+            NSLayoutConstraint.activate(isPortrait ? portraitConstraints : landscapeConstraints)
+
+            setModalDropShadow()
+            layoutUIComponents(viewModel: fullViewModel)
+        default:
+            break
+        }
+    }
+
+    func createHeightConstraint(for isPortrait: Bool, heightPercentage: CGFloat, heightRatio: CGFloat) -> NSLayoutConstraint {
+        let multiplier: CGFloat
+        if isPortrait {
+            multiplier = heightPercentage * heightRatio
+        } else {
+            multiplier = heightPercentage
+        }
+        let constraint = contentView.heightAnchor.constraint(
+            lessThanOrEqualTo: backgroundView.heightAnchor,
+            multiplier: multiplier
+        )
+        constraint.isActive = true
+        return constraint
+    }
+
     func setup(viewModel: FullViewModel) {
         removeAllSubviews()
 
+        fullViewModel = viewModel
         guard mode != .none else {
             return
         }
 
         setupMainView()
+        
+        clickableImageUrl = viewModel.customJson?.clickableImage?.url
+        isClickableImage = clickableImageUrl != nil
+        modifyModalData = presenter.validateAndAdjustModifyModal(modal: viewModel.customJson?.modifyModal)
 
         if let image = viewModel.image {
             hasImage = true
@@ -141,17 +241,16 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
             layout = viewModel.hasText ? .textAndImage : .imageOnly
         } else if viewModel.hasText {
             layout = .textOnly
-        } else if (viewModel.carouselData != nil) && !viewModel.hasText && RInAppMessaging.isRMCEnvironment {
+        } else if (viewModel.carouselData != nil) && !viewModel.hasText && RInAppMessaging.isRMCEnvironment && modifyModalData?.0 != true {
             layout = .carousel
         }
-        
-        clickableImageUrl = viewModel.customJson?.clickableImage?.url
-        isClickableImage = clickableImageUrl != nil
 
         setupAccessibility()
         updateUIConstants()
-        layoutContentView(viewModel: viewModel)
-        layoutUIComponents(viewModel: viewModel)
+        if modifyModalData?.0 != true {
+            layoutContentView(viewModel: viewModel)
+            layoutUIComponents(viewModel: viewModel)
+        }
         createMessageBody(viewModel: viewModel)
         if RInAppMessaging.isRMCEnvironment,
            case .modal = mode,
@@ -235,23 +334,31 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         contentView.backgroundColor = viewModel.backgroundColor
         contentView.clipsToBounds = true
         contentView.layer.cornerRadius = uiConstants.cornerRadiusForDialogView
-        
+        contentViewHeightConstraint.isActive = false
+
         switch mode {
         case .fullScreen:
             contentView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor).isActive = true
             contentView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor).isActive = true
         case .modal(let maxWindowHeightPercentage):
-            contentView.heightAnchor.constraint(lessThanOrEqualTo: backgroundView.heightAnchor,
-                                                multiplier: maxWindowHeightPercentage).isActive = true
-            // add drop shadow
-            contentView.layer.masksToBounds = false
-            contentView.layer.shadowColor = UIColor.black.cgColor
-            contentView.layer.shadowOpacity = 0.2
-            contentView.layer.shadowOffset = .zero
-            contentView.layer.shadowRadius = 10
+            contentViewHeightConstraint = contentView.heightAnchor.constraint(
+                lessThanOrEqualTo: backgroundView.heightAnchor,
+                multiplier: maxWindowHeightPercentage
+            )
+            contentViewHeightConstraint.isActive = true
+            setModalDropShadow()
+            
         default:
             assertionFailure("Unsupported mode")
         }
+    }
+    
+    private func setModalDropShadow() {
+        contentView.layer.masksToBounds = false
+        contentView.layer.shadowColor = UIColor.black.cgColor
+        contentView.layer.shadowOpacity = 0.2
+        contentView.layer.shadowOffset = .zero
+        contentView.layer.shadowRadius = 10
     }
 
     private func layoutUIComponents(viewModel: FullViewModel) {
@@ -305,6 +412,32 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         optOutAndButtonsSpacer.isHidden = buttonsContainer.isHidden || optOutView.isHidden
         controlsView.isHidden = buttonsContainer.isHidden && optOutView.isHidden
         bodyView.isHidden = viewModel.isHTML || !viewModel.hasText
+    }
+
+    private func verticalConstraint(for alignment: String) -> NSLayoutConstraint? {
+        switch VerticalAlignment(rawValue: alignment) {
+        case .top:
+            return contentView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor)
+        case .center:
+            return contentView.centerYAnchor.constraint(equalTo: safeAreaLayoutGuide.centerYAnchor)
+        case .bottom:
+            return contentView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor)
+        default:
+            return nil
+        }
+    }
+
+    private func horizontalConstraint(for alignment: String) -> NSLayoutConstraint? {
+        switch HorizontalAlignment(rawValue: alignment) {
+        case .left:
+            return contentView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: 16.0)
+        case .center:
+            return contentView.centerXAnchor.constraint(equalTo: safeAreaLayoutGuide.centerXAnchor)
+        case .right:
+            return contentView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: -16.0)
+        default:
+            return nil
+        }
     }
 
     private func setupWebView(withHtmlString htmlString: String) {
@@ -385,7 +518,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
     @objc private func onExitButtonClick() {
         presenter.didClickExitButton()
     }
-    
+
     @objc private func onClickCampaignImage() {
         presenter.didClickCampaignImage(url: clickableImageUrl)
     }

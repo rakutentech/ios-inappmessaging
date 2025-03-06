@@ -222,23 +222,23 @@ struct ModifyModal: Codable {
 }
 
 struct Size: Codable {
-    var width: String?
-    var height: String?
+    var width: Double?
+    var height: Double?
 
     enum CodingKeys: String, CodingKey {
         case width
         case height
     }
 
-    init(width: String?, height: String?) {
+    init(width: Double?, height: Double?) {
         self.width = width
         self.height = height
     }
 
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        width = try container.decodeIfPresent(String.self, forKey: .width)
-        height = try container.decodeIfPresent(String.self, forKey: .height)
+        width = try container.decodeIfPresent(Double.self, forKey: .width)
+        height = try container.decodeIfPresent(Double.self, forKey: .height)
     }
 }
 
