@@ -134,8 +134,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
     }
 
     func layoutModifyModal(fullViewModel: FullViewModel) {
-        switch mode {
-        case .modal(let maxWindowHeightPercentage):
+        if case .modal(let maxWindowHeightPercentage) = mode {
             guard let model = modifyModalData?.2,
                   let size = model.size,
                   let width = size.width, let height = size.height else { return }
@@ -194,8 +193,6 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
 
             setModalDropShadow()
             layoutUIComponents(viewModel: fullViewModel)
-        default:
-            break
         }
     }
 
