@@ -93,6 +93,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
     var backgroundViewColor: UIColor? = .clear
     private var clickableImageUrl: String?
     private var modifyModalData: (Bool, Bool, ModifyModal?)?
+    private var isValidModifyModalSize: Bool = false
 
     init(presenter: FullViewPresenterType) {
         self.presenter = presenter
@@ -119,8 +120,8 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
 
         bodyViewOffsetYConstraint.constant = hasImage ? 0 : uiConstants.bodyViewSafeAreaOffsetY
 
-        if let isValidmodifyModalSize = modifyModalData?.0, isValidmodifyModalSize,
-           let model = fullViewModel,
+        if isValidModifyModalSize,
+            let model = fullViewModel,
            !RInAppMessaging.isRMCEnvironment {
             layoutModifyModal(fullViewModel: model)
         }
@@ -226,14 +227,11 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         clickableImageUrl = viewModel.customJson?.clickableImage?.url
         isClickableImage = clickableImageUrl != nil
         modifyModalData = presenter.validateAndAdjustModifyModal(modal: viewModel.customJson?.modifyModal)
-
-        if let image = viewModel.image {
-            hasImage = true
-            imageView.contentMode = .scaleAspectFill
-            imageView.image = image
-        } else {
-            hasImage = false
+        if let modifyModalData {
+            self.isValidModifyModalSize = modifyModalData.0
         }
+
+        updateImageView(model: viewModel)
 
         if viewModel.isHTML {
             layout = .html
@@ -241,13 +239,13 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
             layout = viewModel.hasText ? .textAndImage : .imageOnly
         } else if viewModel.hasText {
             layout = .textOnly
-        } else if (viewModel.carouselData != nil) && !viewModel.hasText && RInAppMessaging.isRMCEnvironment && modifyModalData?.0 != true {
+        } else if (viewModel.carouselData != nil) && !viewModel.hasText && RInAppMessaging.isRMCEnvironment && !isValidModifyModalSize {
             layout = .carousel
         }
 
         setupAccessibility()
         updateUIConstants()
-        if modifyModalData?.0 != true {
+        if !isValidModifyModalSize {
             layoutContentView(viewModel: viewModel)
             layoutUIComponents(viewModel: viewModel)
         }
@@ -308,6 +306,16 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
 
         if let layout = layout {
             accessibilityIdentifier = type(of: self).viewIdentifier + " data-qa=\"\(layout)\""
+        }
+    }
+
+    private func updateImageView(model: FullViewModel) {
+        if let image = model.image {
+            hasImage = true
+            imageView.contentMode = .scaleAspectFill
+            imageView.image = image
+        } else {
+            hasImage = false
         }
     }
 
