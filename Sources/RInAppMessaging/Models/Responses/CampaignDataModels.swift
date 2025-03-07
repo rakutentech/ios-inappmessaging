@@ -158,7 +158,7 @@ internal struct BackgroundColor: Codable, Equatable {
     }
 }
 
-struct Carousel: Codable {
+struct Carousel: Codable, Equatable {
     let images: [String: ImageDetails]?
 
     enum CodingKeys: String, CodingKey {
@@ -175,7 +175,7 @@ struct Carousel: Codable {
     }
 }
 
-struct ImageDetails: Codable {
+struct ImageDetails: Codable, Equatable {
     let imgUrl: String?
     let link: String?
     let altText: String?
@@ -200,7 +200,7 @@ struct ImageDetails: Codable {
     }
 }
 
-struct ModifyModal: Codable {
+struct ModifyModal: Codable, Equatable {
     var size: Size?
     var position: Position?
 
@@ -221,7 +221,7 @@ struct ModifyModal: Codable {
     }
 }
 
-struct Size: Codable {
+struct Size: Codable, Equatable{
     var width: Double?
     var height: Double?
 
@@ -242,7 +242,7 @@ struct Size: Codable {
     }
 }
 
-struct Position: Codable {
+struct Position: Codable, Equatable {
     var verticalAlign: String?
     var horizontalAlign: String?
 

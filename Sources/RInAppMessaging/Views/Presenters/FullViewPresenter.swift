@@ -140,7 +140,7 @@ internal class FullViewPresenter: BaseViewPresenter, FullViewPresenterType, Erro
     }
     
     func adjustSize(value: Double?) -> Double {
-        return max(0.50, min(value ?? 0.50, 1.00))
+        return max(Constants.ModifyModal.minSize, min(value ?? Constants.ModifyModal.minSize, Constants.ModifyModal.maxSize))
     }
 
     func validateAndAdjustModifyModal(modal: ModifyModal?) -> (isValidSize: Bool, isValidPosition: Bool, updatedModal: ModifyModal?) {

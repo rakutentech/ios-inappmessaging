@@ -196,21 +196,6 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         }
     }
 
-    func createHeightConstraint(for isPortrait: Bool, heightPercentage: CGFloat, heightRatio: CGFloat) -> NSLayoutConstraint {
-        let multiplier: CGFloat
-        if isPortrait {
-            multiplier = heightPercentage * heightRatio
-        } else {
-            multiplier = heightPercentage
-        }
-        let constraint = contentView.heightAnchor.constraint(
-            lessThanOrEqualTo: backgroundView.heightAnchor,
-            multiplier: multiplier
-        )
-        constraint.isActive = true
-        return constraint
-    }
-
     func setup(viewModel: FullViewModel) {
         removeAllSubviews()
 
@@ -357,14 +342,6 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
             assertionFailure("Unsupported mode")
         }
     }
-    
-    private func setModalDropShadow() {
-        contentView.layer.masksToBounds = false
-        contentView.layer.shadowColor = UIColor.black.cgColor
-        contentView.layer.shadowOpacity = 0.2
-        contentView.layer.shadowOffset = .zero
-        contentView.layer.shadowRadius = 10
-    }
 
     private func layoutUIComponents(viewModel: FullViewModel) {
         bodyView.isLayoutMarginsRelativeArrangement = true
@@ -417,32 +394,6 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         optOutAndButtonsSpacer.isHidden = buttonsContainer.isHidden || optOutView.isHidden
         controlsView.isHidden = buttonsContainer.isHidden && optOutView.isHidden
         bodyView.isHidden = viewModel.isHTML || !viewModel.hasText
-    }
-
-    private func verticalConstraint(for alignment: String) -> NSLayoutConstraint? {
-        switch VerticalAlignment(rawValue: alignment) {
-        case .top:
-            return contentView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor)
-        case .center:
-            return contentView.centerYAnchor.constraint(equalTo: safeAreaLayoutGuide.centerYAnchor)
-        case .bottom:
-            return contentView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor)
-        default:
-            return nil
-        }
-    }
-
-    private func horizontalConstraint(for alignment: String) -> NSLayoutConstraint? {
-        switch HorizontalAlignment(rawValue: alignment) {
-        case .left:
-            return contentView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: 16.0)
-        case .center:
-            return contentView.centerXAnchor.constraint(equalTo: safeAreaLayoutGuide.centerXAnchor)
-        case .right:
-            return contentView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: -16.0)
-        default:
-            return nil
-        }
     }
 
     private func setupWebView(withHtmlString htmlString: String) {
@@ -533,4 +484,55 @@ enum Mode: Equatable {
     case none
     case modal(maxWindowHeightPercentage: CGFloat)
     case fullScreen
+}
+
+extension FullView {
+    private func setModalDropShadow() {
+        contentView.layer.masksToBounds = false
+        contentView.layer.shadowColor = UIColor.black.cgColor
+        contentView.layer.shadowOpacity = 0.2
+        contentView.layer.shadowOffset = .zero
+        contentView.layer.shadowRadius = 10
+    }
+
+    private func createHeightConstraint(for isPortrait: Bool, heightPercentage: CGFloat, heightRatio: CGFloat) -> NSLayoutConstraint {
+        let multiplier: CGFloat
+        if isPortrait {
+            multiplier = heightPercentage * heightRatio
+        } else {
+            multiplier = heightPercentage
+        }
+        let constraint = contentView.heightAnchor.constraint(
+            lessThanOrEqualTo: backgroundView.heightAnchor,
+            multiplier: multiplier
+        )
+        constraint.isActive = true
+        return constraint
+    }
+
+    private func verticalConstraint(for alignment: String) -> NSLayoutConstraint? {
+        switch VerticalAlignment(rawValue: alignment) {
+        case .top:
+            return contentView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor)
+        case .center:
+            return contentView.centerYAnchor.constraint(equalTo: safeAreaLayoutGuide.centerYAnchor)
+        case .bottom:
+            return contentView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor)
+        default:
+            return nil
+        }
+    }
+
+    private func horizontalConstraint(for alignment: String) -> NSLayoutConstraint? {
+        switch HorizontalAlignment(rawValue: alignment) {
+        case .left:
+            return contentView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: Constants.ModifyModal.minSpacing)
+        case .center:
+            return contentView.centerXAnchor.constraint(equalTo: safeAreaLayoutGuide.centerXAnchor)
+        case .right:
+            return contentView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: -Constants.ModifyModal.minSpacing)
+        default:
+            return nil
+        }
+    }
 }

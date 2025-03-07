@@ -9,13 +9,25 @@ class CustomJsonSpec: QuickSpec {
                 let primerButton = PrimerButton(button: 1)
                 let clickableImage = ClickableImage(url: "http://example.com/image.png")
                 let backgroundColor = BackgroundColor(opacity: 0.5)
+                let modifyModal = ModifyModal(size: Size(width: 0.5, height: 0.6),
+                                              position: Position(verticalAlign: "center", horizontalAlign: "center"))
+                let imageDetails: [String: ImageDetails] = [
+                    "1": ImageDetails(imgUrl: "https://invalid-url.com", link: "", altText: "")
+                ]
+                let carouselImages = Carousel(images: imageDetails)
 
-                let customJson = CustomJson(pushPrimer: primerButton, clickableImage: clickableImage, background: backgroundColor)
+                let customJson = CustomJson(pushPrimer: primerButton,
+                                            clickableImage: clickableImage,
+                                            background: backgroundColor,
+                                            carousel: carouselImages,
+                                            modifyModal: modifyModal)
 
                 it("should have the correct properties") {
                     expect(customJson.pushPrimer).to(equal(primerButton))
                     expect(customJson.clickableImage).to(equal(clickableImage))
                     expect(customJson.background).to(equal(backgroundColor))
+                    expect(customJson.carousel).to(equal(carouselImages))
+                    expect(customJson.modifyModal).to(equal(modifyModal))
                 }
             }
 
@@ -26,6 +38,8 @@ class CustomJsonSpec: QuickSpec {
                     expect(customJson.pushPrimer).to(beNil())
                     expect(customJson.clickableImage).to(beNil())
                     expect(customJson.background).to(beNil())
+                    expect(customJson.modifyModal).to(beNil())
+                    expect(customJson.carousel).to(beNil())
                 }
             }
 
