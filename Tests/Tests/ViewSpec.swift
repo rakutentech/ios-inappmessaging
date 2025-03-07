@@ -242,6 +242,13 @@ class ViewSpec: QuickSpec {
                     expect(cell).to(beAKindOf(CarouselCell.self))
                 }
 
+                it("it will not display Carousel view and Carousel Page Control if custom Json has valid modify modifyModal size specs") {
+                    presenter.isValidSize = true
+                    view.setup(viewModel: TestHelpers.generateFullViewCarouselModel(carouselData: carouselData))
+                    expect(view.carouselView.isHidden).to(beTrue())
+                    expect(view.carouselView.carouselPageControl.isHidden).to(beTrue())
+                }
+
                 it("it will not display Carousel view and Carousel Page Control if the data is valid but campaign has header and body text") {
 
                     view.setup(viewModel: TestHelpers.generateFullViewModel(carouselData: carouselData))
@@ -339,30 +346,11 @@ class BaseViewPresenterMock: BaseViewPresenterType {
 }
 
 class FullViewPresenterMock: FullViewPresenterType {
+    var isValidSize = false
+    var isValidPosition = false
 
     func validateAndAdjustModifyModal(modal: ModifyModal?) -> (isValidSize: Bool, isValidPosition: Bool, updatedModal: ModifyModal?) {
-        guard var modal = modal else { return (false, false, nil) }
-
-        var isValidSize = false
-        var isValidPosition = false
-
-        if let width = modal.size?.width, let height = modal.size?.height {
-            modal.size?.width = adjustSize(value: width)
-            modal.size?.height = adjustSize(value: height)
-            isValidSize = true
-        }
-
-        if let verticalAlign = modal.position?.verticalAlign,
-           let horizontalAlign = modal.position?.horizontalAlign,
-           VerticalAlignment(rawValue: verticalAlign) != nil,
-           HorizontalAlignment(rawValue: horizontalAlign) != nil {
-            isValidPosition = true
-        }
-
-        // Return updated modal if size is valid, even if position is not.
-        let updatedModal = isValidSize ? modal : nil
-
-        return (isValidSize, isValidPosition, updatedModal)
+        return (isValidSize, isValidPosition, modal)
     }
 
     var carouselData: [CarouselData]?
@@ -383,9 +371,6 @@ class FullViewPresenterMock: FullViewPresenterType {
     func handleButtonTrigger(_ trigger: Trigger?) { }
     func optOutCampaign() { }
     func didClickCampaignImage(url: String?) { }
-    private func adjustSize(value: Double?) -> Double {
-        return max(0.50, min(value ?? 0.50, 1.00))
-    }
 }
 
 class SlideUpViewPresenterMock: SlideUpViewPresenterType {
