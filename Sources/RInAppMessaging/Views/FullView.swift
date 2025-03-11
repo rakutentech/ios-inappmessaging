@@ -152,9 +152,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
             contentView.layer.cornerRadius = uiConstants.cornerRadiusForDialogView
             contentView.layer.masksToBounds = false
 
-            let isPortrait = UIApplication.shared.connectedScenes
-                .compactMap { $0 as? UIWindowScene }
-                .first?.interfaceOrientation.isPortrait ?? true
+            let isPortrait = UIApplication.shared.isPortrait
 
             // Set size for resizeable modal campaign
             contentWidthOffsetConstraint.constant = -uiConstants.dialogViewWidthOffset
@@ -487,13 +485,22 @@ extension FullView {
     }
 
     private func verticalConstraint(for alignment: String) -> NSLayoutConstraint? {
+        let safeAreaInsets = UIApplication.shared.windows.first?.safeAreaInsets ?? .zero
+        let useSafeTopAnchor = safeAreaInsets.top > 0
+        let useSafeBottomAnchor = safeAreaInsets.bottom > 0
+
+        let topAnchor = useSafeTopAnchor ? safeAreaLayoutGuide.topAnchor : topAnchor
+        let bottomAnchor = useSafeBottomAnchor ? safeAreaLayoutGuide.bottomAnchor : bottomAnchor
+
         switch VerticalAlignment(rawValue: alignment) {
         case .top:
-            return contentView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor)
+            let constant = useSafeTopAnchor ? 0 : Constants.ResizeableModal.minSpacing
+            return contentView.topAnchor.constraint(equalTo: topAnchor, constant: constant)
         case .center:
-            return contentView.centerYAnchor.constraint(equalTo: safeAreaLayoutGuide.centerYAnchor)
+            return contentView.centerYAnchor.constraint(equalTo: centerYAnchor)
         case .bottom:
-            return contentView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor)
+            let constant = useSafeBottomAnchor ? 0 : -Constants.ResizeableModal.minSpacing
+            return contentView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: constant)
         default:
             return nil
         }

@@ -60,4 +60,10 @@ extension UIApplication {
         }
         self.open(url)
     }
+
+    var isPortrait: Bool {
+        return connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .first?.interfaceOrientation.isPortrait ?? true
+    }
 }
