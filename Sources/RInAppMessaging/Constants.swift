@@ -109,7 +109,7 @@ internal enum Constants {
         static let defaultHeight = 250.0
     }
 
-    enum ModifyModal {
+    enum ResizeableModal {
         static let minSpacing = 16.0
         static let minSize = 0.5
         static let maxSize = 1.0

@@ -8,7 +8,7 @@ internal protocol FullViewPresenterType: BaseViewPresenterType {
     func didClickAction(sender: ActionButton)
     func didClickExitButton()
     func didClickCampaignImage(url: String?)
-    func validateAndAdjustModifyModal(modal: ModifyModal?) -> (isValidSize: Bool, isValidPosition: Bool, updatedModal: ModifyModal?)
+    func validateAndAdjustModifyModal(modal: ResizeableModal?) -> (isValidSize: Bool, isValidPosition: Bool, updatedModel: ResizeableModal?)
 }
 
 internal class FullViewPresenter: BaseViewPresenter, FullViewPresenterType, ErrorReportable {
@@ -64,13 +64,10 @@ internal class FullViewPresenter: BaseViewPresenter, FullViewPresenterType, Erro
         let supportedButtons = buttonList.prefix(2).filter {
             [.redirect, .deeplink, .close, .pushPrimer].contains($0.buttonBehavior.action)
         }
-        
-        let (_, _, modifymodal) = validateAndAdjustModifyModal(modal: campaign.data.customJson?.modifyModal)
-        let isModifyModalValid = modifymodal != nil
-        
+
         var buttonsToAdd = [(ActionButton, ActionButtonViewModel)]()
         for (index, button) in supportedButtons.enumerated() {
-            let buttonAction = (pushPrimerButton != nil && index + 1 == pushPrimerButton && !isModifyModalValid) ? ActionType.pushPrimer : button.buttonBehavior.action
+            let buttonAction = (pushPrimerButton != nil && index + 1 == pushPrimerButton) ? ActionType.pushPrimer : button.buttonBehavior.action
             let backgroundColor = UIColor(hexString: button.buttonBackgroundColor) ?? .white
             buttonsToAdd.append((
                 ActionButton(type: buttonAction,
@@ -140,32 +137,32 @@ internal class FullViewPresenter: BaseViewPresenter, FullViewPresenterType, Erro
     }
     
     func adjustSize(value: Double?) -> Double {
-        return max(Constants.ModifyModal.minSize, min(value ?? Constants.ModifyModal.minSize, Constants.ModifyModal.maxSize))
+        return max(Constants.ResizeableModal.minSize, min(value ?? Constants.ResizeableModal.minSize, Constants.ResizeableModal.maxSize))
     }
 
-    func validateAndAdjustModifyModal(modal: ModifyModal?) -> (isValidSize: Bool, isValidPosition: Bool, updatedModal: ModifyModal?) {
+    func validateAndAdjustModifyModal(modal: ResizeableModal?) -> (isValidSize: Bool, isValidPosition: Bool, updatedModel: ResizeableModal?) {
         guard var modal = modal else { return (false, false, nil) }
 
         var isValidSize = false
         var isValidPosition = false
 
-        if let width = modal.size?.width, let height = modal.size?.height {
-            modal.size?.width = adjustSize(value: width)
-            modal.size?.height = adjustSize(value: height)
+        if let width = modal.modalSize?.width, let height = modal.modalSize?.height {
+            modal.modalSize?.width = adjustSize(value: width)
+            modal.modalSize?.height = adjustSize(value: height)
             isValidSize = true
         }
 
-        if let verticalAlign = modal.position?.verticalAlign,
-           let horizontalAlign = modal.position?.horizontalAlign,
+        if let verticalAlign = modal.modalPosition?.verticalAlign,
+           let horizontalAlign = modal.modalPosition?.horizontalAlign,
            VerticalAlignment(rawValue: verticalAlign) != nil,
            HorizontalAlignment(rawValue: horizontalAlign) != nil {
             isValidPosition = true
         }
 
-        // Return updated modal if size is valid, even if position is not.
-        let updatedModal = isValidSize ? modal : nil
+        // Return updated model if size is valid, even if position is not.
+        let updatedModel = isValidSize ? modal : nil
 
-        return (isValidSize, isValidPosition, updatedModal)
+        return (isValidSize, isValidPosition, updatedModel)
     }
 
     // MARK: - Private

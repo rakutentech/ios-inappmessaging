@@ -92,8 +92,8 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
     private var isClickableImage = false
     var backgroundViewColor: UIColor? = .clear
     private var clickableImageUrl: String?
-    private var modifyModalData: (Bool, Bool, ModifyModal?)?
-    private var isValidModifyModalSize: Bool = false
+    private var modifyModalData: (isValidSize: Bool, isValidPosition: Bool, updatedModel: ResizeableModal?)?
+    private var isValidModifyModal: Bool = false
 
     init(presenter: FullViewPresenterType) {
         self.presenter = presenter
@@ -120,7 +120,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
 
         bodyViewOffsetYConstraint.constant = hasImage ? 0 : uiConstants.bodyViewSafeAreaOffsetY
 
-        if isValidModifyModalSize,
+        if isValidModifyModal,
             let model = fullViewModel,
            !RInAppMessaging.isRMCEnvironment {
             layoutModifyModal(fullViewModel: model)
@@ -135,22 +135,14 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
 
     func layoutModifyModal(fullViewModel: FullViewModel) {
         if case .modal(let maxWindowHeightPercentage) = mode {
-            guard let model = modifyModalData?.2,
-                  let size = model.size,
+            guard let model = modifyModalData?.updatedModel,
+                  let size = model.modalSize,
                   let width = size.width, let height = size.height else { return }
             
             let heightRatio = CGFloat(height)
             let widthRatio = CGFloat(width)
-
-            NSLayoutConstraint.deactivate(portraitConstraints + landscapeConstraints)
-            portraitConstraints.removeAll()
-            landscapeConstraints.removeAll()
-
-            if let contentViewCenterX, let contentViewCenterY, let contentViewHeightConstraint {
-                contentViewCenterX.isActive = false
-                contentViewCenterY.isActive = false
-                contentViewHeightConstraint.isActive = false
-            }
+            
+            invalidateActiveConstraints()
 
             contentView.translatesAutoresizingMaskIntoConstraints = false
             layoutMargins = .zero
@@ -160,37 +152,19 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
             contentView.layer.cornerRadius = uiConstants.cornerRadiusForDialogView
             contentView.layer.masksToBounds = false
 
-            let isPortrait = UIScreen.main.bounds.height > UIScreen.main.bounds.width
+            let isPortrait = UIApplication.shared.connectedScenes
+                .compactMap { $0 as? UIWindowScene }
+                .first?.interfaceOrientation.isPortrait ?? true
 
+            // Set size for resizeable modal campaign
             contentWidthOffsetConstraint.constant = -uiConstants.dialogViewWidthOffset
             contentWidthOffsetConstraint.setMultiplier(uiConstants.dialogViewWidthMultiplier * widthRatio)
             contentViewHeightConstraint = createHeightConstraint(for: isPortrait,
                                                                  heightPercentage: maxWindowHeightPercentage,
                                                                  heightRatio: heightRatio)
 
-            if let isValidPosition = modifyModalData?.1, isValidPosition,
-               let verticalAlign = model.position?.verticalAlign,
-               let horizontalAlign = model.position?.horizontalAlign, isPortrait {
-                portraitConstraints = [
-                    verticalConstraint(for: verticalAlign),
-                    horizontalConstraint(for: horizontalAlign)
-                ].compactMap { $0 }
-            } else {
-                // If position is not valid then keep the campaign at center for potrait, for landscape keep it always at center
-                let defaultConstraints = [
-                    contentView.centerXAnchor.constraint(equalTo: backgroundView.safeAreaLayoutGuide.centerXAnchor),
-                    contentView.centerYAnchor.constraint(equalTo: backgroundView.safeAreaLayoutGuide.centerYAnchor)
-                ]
-
-                if isPortrait {
-                    portraitConstraints = defaultConstraints
-                } else {
-                    landscapeConstraints = defaultConstraints
-                }
-            }
-
-            NSLayoutConstraint.activate(isPortrait ? portraitConstraints : landscapeConstraints)
-
+            //Set position for resizeable modal campaign
+            setResizableModalPosition(isValidPosition: modifyModalData?.isValidPosition, isPortrait: isPortrait, model: model)
             setModalDropShadow()
             layoutUIComponents(viewModel: fullViewModel)
         }
@@ -205,13 +179,6 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         }
 
         setupMainView()
-        
-        clickableImageUrl = viewModel.customJson?.clickableImage?.url
-        isClickableImage = clickableImageUrl != nil
-        modifyModalData = presenter.validateAndAdjustModifyModal(modal: viewModel.customJson?.modifyModal)
-        if let modifyModalData {
-            self.isValidModifyModalSize = modifyModalData.0
-        }
 
         updateImageView(model: viewModel)
 
@@ -221,13 +188,20 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
             layout = viewModel.hasText ? .textAndImage : .imageOnly
         } else if viewModel.hasText {
             layout = .textOnly
-        } else if (viewModel.carouselData != nil) && !viewModel.hasText && RInAppMessaging.isRMCEnvironment && !isValidModifyModalSize {
+        } else if (viewModel.carouselData != nil) && !viewModel.hasText && RInAppMessaging.isRMCEnvironment {
             layout = .carousel
+        }
+        
+        clickableImageUrl = viewModel.customJson?.clickableImage?.url
+        isClickableImage = clickableImageUrl != nil
+        modifyModalData = presenter.validateAndAdjustModifyModal(modal: viewModel.customJson?.resizableModal)
+        if let modifyModalData {
+            self.isValidModifyModal = modifyModalData.isValidSize && layout != .carousel && !presenter.campaign.isPushPrimer
         }
 
         setupAccessibility()
         updateUIConstants()
-        if !isValidModifyModalSize {
+        if !isValidModifyModal {
             layoutContentView(viewModel: viewModel)
             layoutUIComponents(viewModel: viewModel)
         }
@@ -526,13 +500,49 @@ extension FullView {
     private func horizontalConstraint(for alignment: String) -> NSLayoutConstraint? {
         switch HorizontalAlignment(rawValue: alignment) {
         case .left:
-            return contentView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: Constants.ModifyModal.minSpacing)
+            return contentView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: Constants.ResizeableModal.minSpacing)
         case .center:
             return contentView.centerXAnchor.constraint(equalTo: safeAreaLayoutGuide.centerXAnchor)
         case .right:
-            return contentView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: -Constants.ModifyModal.minSpacing)
+            return contentView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: -Constants.ResizeableModal.minSpacing)
         default:
             return nil
+        }
+    }
+
+    private func setResizableModalPosition(isValidPosition: Bool?, isPortrait: Bool, model: ResizeableModal) {
+        if let isValidPosition = modifyModalData?.isValidPosition, isValidPosition,
+           let verticalAlign = model.modalPosition?.verticalAlign,
+           let horizontalAlign = model.modalPosition?.horizontalAlign, isPortrait {
+            portraitConstraints = [
+                verticalConstraint(for: verticalAlign),
+                horizontalConstraint(for: horizontalAlign)
+            ].compactMap { $0 }
+        } else {
+            // If position is not valid then keep the campaign at center for potrait, for landscape keep it always at center
+            let defaultConstraints = [
+                contentView.centerXAnchor.constraint(equalTo: backgroundView.safeAreaLayoutGuide.centerXAnchor),
+                contentView.centerYAnchor.constraint(equalTo: backgroundView.safeAreaLayoutGuide.centerYAnchor)
+            ]
+
+            if isPortrait {
+                portraitConstraints = defaultConstraints
+            } else {
+                landscapeConstraints = defaultConstraints
+            }
+        }
+        NSLayoutConstraint.activate(isPortrait ? portraitConstraints : landscapeConstraints)
+    }
+
+    private func invalidateActiveConstraints() {
+        NSLayoutConstraint.deactivate(portraitConstraints + landscapeConstraints)
+        portraitConstraints.removeAll()
+        landscapeConstraints.removeAll()
+
+        if let contentViewCenterX, let contentViewCenterY, let contentViewHeightConstraint {
+            contentViewCenterX.isActive = false
+            contentViewCenterY.isActive = false
+            contentViewHeightConstraint.isActive = false
         }
     }
 }

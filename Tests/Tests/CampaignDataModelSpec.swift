@@ -9,25 +9,24 @@ class CustomJsonSpec: QuickSpec {
                 let primerButton = PrimerButton(button: 1)
                 let clickableImage = ClickableImage(url: "http://example.com/image.png")
                 let backgroundColor = BackgroundColor(opacity: 0.5)
-                let modifyModal = ModifyModal(size: Size(width: 0.5, height: 0.6),
-                                              position: Position(verticalAlign: "center", horizontalAlign: "center"))
+                let resizableModal = ResizeableModal(modalSize: ModalSize(width: 0.5, height: 0.6),
+                                                     modalPosition: ModalPosition(verticalAlign: "center", horizontalAlign: "center"))
                 let imageDetails: [String: ImageDetails] = [
                     "1": ImageDetails(imgUrl: "https://invalid-url.com", link: "", altText: "")
                 ]
                 let carouselImages = Carousel(images: imageDetails)
-
                 let customJson = CustomJson(pushPrimer: primerButton,
                                             clickableImage: clickableImage,
                                             background: backgroundColor,
                                             carousel: carouselImages,
-                                            modifyModal: modifyModal)
+                                            resizableModal: resizableModal)
 
                 it("should have the correct properties") {
                     expect(customJson.pushPrimer).to(equal(primerButton))
                     expect(customJson.clickableImage).to(equal(clickableImage))
                     expect(customJson.background).to(equal(backgroundColor))
                     expect(customJson.carousel).to(equal(carouselImages))
-                    expect(customJson.modifyModal).to(equal(modifyModal))
+                    expect(customJson.resizableModal).to(equal(resizableModal))
                 }
             }
 
@@ -38,7 +37,7 @@ class CustomJsonSpec: QuickSpec {
                     expect(customJson.pushPrimer).to(beNil())
                     expect(customJson.clickableImage).to(beNil())
                     expect(customJson.background).to(beNil())
-                    expect(customJson.modifyModal).to(beNil())
+                    expect(customJson.resizableModal).to(beNil())
                     expect(customJson.carousel).to(beNil())
                 }
             }
@@ -220,14 +219,15 @@ class CustomJsonSpec: QuickSpec {
                     expect(decodedBackground?.opacity).to(beNil())
                 }
             }
+        }
 
-            describe("Carousel model") {
-                var carousel: Carousel?
-                var jsonData: Data!
+        describe("Carousel model") {
+            var carousel: Carousel?
+            var jsonData: Data!
 
-                context("when JSON contains all fields") {
-                    beforeEach {
-                        jsonData = """
+            context("when JSON contains all fields") {
+                beforeEach {
+                    jsonData = """
                                 {
                                     "carousel": {
                                         "images": {
@@ -245,28 +245,28 @@ class CustomJsonSpec: QuickSpec {
                                     }
                                 }
                                 """.data(using: .utf8)
-                        let decoder = JSONDecoder()
-                        decoder.keyDecodingStrategy = .convertFromSnakeCase
-                        let decodedData = try? decoder.decode([String: Carousel].self, from: jsonData)
-                        carousel = decodedData?["carousel"]
-                    }
-
-                    it("decodes the images dictionary") {
-                        expect(carousel?.images).toNot(beNil())
-                        expect(carousel?.images?.count).to(equal(2))
-                    }
-
-                    it("decodes image details correctly") {
-                        let firstImage = carousel?.images?["0"]
-                        expect(firstImage?.imgUrl).to(equal("URL link"))
-                        expect(firstImage?.link).to(equal("https://redirecturl"))
-                        expect(firstImage?.altText).to(equal("unable to load image"))
-                    }
+                    let decoder = JSONDecoder()
+                    decoder.keyDecodingStrategy = .convertFromSnakeCase
+                    let decodedData = try? decoder.decode([String: Carousel].self, from: jsonData)
+                    carousel = decodedData?["carousel"]
                 }
 
-                context("when JSON is missing some fields") {
-                    beforeEach {
-                        jsonData = """
+                it("decodes the images dictionary") {
+                    expect(carousel?.images).toNot(beNil())
+                    expect(carousel?.images?.count).to(equal(2))
+                }
+
+                it("decodes image details correctly") {
+                    let firstImage = carousel?.images?["0"]
+                    expect(firstImage?.imgUrl).to(equal("URL link"))
+                    expect(firstImage?.link).to(equal("https://redirecturl"))
+                    expect(firstImage?.altText).to(equal("unable to load image"))
+                }
+            }
+
+            context("when JSON is missing some fields") {
+                beforeEach {
+                    jsonData = """
                                 {
                                     "carousel": {
                                         "images": {
@@ -277,68 +277,68 @@ class CustomJsonSpec: QuickSpec {
                                     }
                                 }
                                 """.data(using: .utf8)
-                        let decoder = JSONDecoder()
-                        decoder.keyDecodingStrategy = .convertFromSnakeCase
-                        let decodedData = try? decoder.decode([String: Carousel].self, from: jsonData)
-                        carousel = decodedData?["carousel"]
-                    }
-
-                    it("decodes with nil for missing fields") {
-                        let firstImage = carousel?.images?["0"]
-                        expect(firstImage?.imgUrl).to(equal("URL link"))
-                        expect(firstImage?.link).to(beNil())
-                        expect(firstImage?.altText).to(beNil())
-                    }
+                    let decoder = JSONDecoder()
+                    decoder.keyDecodingStrategy = .convertFromSnakeCase
+                    let decodedData = try? decoder.decode([String: Carousel].self, from: jsonData)
+                    carousel = decodedData?["carousel"]
                 }
 
-                context("when JSON has no images") {
-                    beforeEach {
-                        jsonData = """
+                it("decodes with nil for missing fields") {
+                    let firstImage = carousel?.images?["0"]
+                    expect(firstImage?.imgUrl).to(equal("URL link"))
+                    expect(firstImage?.link).to(beNil())
+                    expect(firstImage?.altText).to(beNil())
+                }
+            }
+
+            context("when JSON has no images") {
+                beforeEach {
+                    jsonData = """
                                 {
                                     "carousel": {}
                                 }
                                 """.data(using: .utf8)
-                        let decodedData = try? JSONDecoder().decode([String: Carousel].self, from: jsonData)
-                        carousel = decodedData?["carousel"]
-                    }
-
-                    it("decodes images as nil") {
-                        expect(carousel?.images).to(beNil())
-                    }
+                    let decodedData = try? JSONDecoder().decode([String: Carousel].self, from: jsonData)
+                    carousel = decodedData?["carousel"]
                 }
 
-                context("when JSON is completely empty") {
-                    beforeEach {
-                        jsonData = "{}".data(using: .utf8)
-                        let decodedData = try? JSONDecoder().decode([String: Carousel].self, from: jsonData)
-                        carousel = decodedData?["carousel"]
-                    }
+                it("decodes images as nil") {
+                    expect(carousel?.images).to(beNil())
+                }
+            }
 
-                    it("decodes carousel as nil") {
-                        expect(carousel).to(beNil())
-                    }
+            context("when JSON is completely empty") {
+                beforeEach {
+                    jsonData = "{}".data(using: .utf8)
+                    let decodedData = try? JSONDecoder().decode([String: Carousel].self, from: jsonData)
+                    carousel = decodedData?["carousel"]
                 }
 
-                context("when JSON contains 'carousel' key but no images") {
-                    beforeEach {
-                        jsonData = """
+                it("decodes carousel as nil") {
+                    expect(carousel).to(beNil())
+                }
+            }
+
+            context("when JSON contains 'carousel' key but no images") {
+                beforeEach {
+                    jsonData = """
                         {
                             "carousel": {}
                         }
                         """.data(using: .utf8)
 
-                        let decodedData = try? JSONDecoder().decode([String: Carousel].self, from: jsonData)
-                        carousel = decodedData?["carousel"]
-                    }
-
-                    it("decodes images as nil") {
-                        expect(carousel?.images).to(beNil())
-                    }
+                    let decodedData = try? JSONDecoder().decode([String: Carousel].self, from: jsonData)
+                    carousel = decodedData?["carousel"]
                 }
 
-                context("when 'images' is an empty dictionary") {
-                    beforeEach {
-                        jsonData = """
+                it("decodes images as nil") {
+                    expect(carousel?.images).to(beNil())
+                }
+            }
+
+            context("when 'images' is an empty dictionary") {
+                beforeEach {
+                    jsonData = """
                         {
                             "carousel": {
                                 "images": {}
@@ -346,19 +346,19 @@ class CustomJsonSpec: QuickSpec {
                         }
                         """.data(using: .utf8)
 
-                        let decodedData = try? JSONDecoder().decode([String: Carousel].self, from: jsonData)
-                        carousel = decodedData?["carousel"]
-                    }
-
-                    it("decodes images as an empty dictionary") {
-                        expect(carousel?.images).toNot(beNil())
-                        expect(carousel?.images?.isEmpty).to(beTrue())
-                    }
+                    let decodedData = try? JSONDecoder().decode([String: Carousel].self, from: jsonData)
+                    carousel = decodedData?["carousel"]
                 }
 
-                context("when images contain empty ImageDetails objects") {
-                    beforeEach {
-                        jsonData = """
+                it("decodes images as an empty dictionary") {
+                    expect(carousel?.images).toNot(beNil())
+                    expect(carousel?.images?.isEmpty).to(beTrue())
+                }
+            }
+
+            context("when images contain empty ImageDetails objects") {
+                beforeEach {
+                    jsonData = """
                         {
                             "carousel": {
                                 "images": {
@@ -368,22 +368,22 @@ class CustomJsonSpec: QuickSpec {
                         }
                         """.data(using: .utf8)
 
-                        let decodedData = try? JSONDecoder().decode([String: Carousel].self, from: jsonData)
-                        carousel = decodedData?["carousel"]
-                    }
+                    let decodedData = try? JSONDecoder().decode([String: Carousel].self, from: jsonData)
+                    carousel = decodedData?["carousel"]
+                }
 
-                    it("decodes ImageDetails with all fields as nil") {
-                        let firstImage = carousel?.images?["0"]
-                        expect(firstImage?.imgUrl).to(beNil())
-                        expect(firstImage?.link).to(beNil())
-                        expect(firstImage?.altText).to(beNil())
-                    }
+                it("decodes ImageDetails with all fields as nil") {
+                    let firstImage = carousel?.images?["0"]
+                    expect(firstImage?.imgUrl).to(beNil())
+                    expect(firstImage?.link).to(beNil())
+                    expect(firstImage?.altText).to(beNil())
                 }
             }
-            describe("Modify Modal model") {
-                context("when Custom JSON is complete") {
-                    it("should decode all properties correctly") {
-                        let json = """
+        }
+        describe("Modify Modal model") {
+            context("when Custom JSON is complete") {
+                it("should decode all properties correctly") {
+                    let json = """
                                 {
                                     "size": {
                                         "width": 0.8,
@@ -395,42 +395,42 @@ class CustomJsonSpec: QuickSpec {
                                     }
                                 }
                                 """.data(using: .utf8)!
-                        let decodedObject = try? JSONDecoder().decode(ModifyModal.self, from: json)
-                        expect(decodedObject).toNot(beNil())
-                        expect(decodedObject?.size?.width).to(equal(0.8))
-                        expect(decodedObject?.size?.height).to(equal(0.6))
-                        expect(decodedObject?.position?.verticalAlign).to(equal("center"))
-                        expect(decodedObject?.position?.horizontalAlign).to(equal("center"))
-                    }
+                    let decodedObject = try? JSONDecoder().decode(ResizeableModal.self, from: json)
+                    expect(decodedObject).toNot(beNil())
+                    expect(decodedObject?.modalSize?.width).to(equal(0.8))
+                    expect(decodedObject?.modalSize?.height).to(equal(0.6))
+                    expect(decodedObject?.modalPosition?.verticalAlign).to(equal("center"))
+                    expect(decodedObject?.modalPosition?.horizontalAlign).to(equal("center"))
                 }
-                context("when JSON is missing some properties") {
-                    it("should decode available properties and set missing ones to nil") {
-                        let json = """
+            }
+            context("when JSON is missing some properties") {
+                it("should decode available properties and set missing ones to nil") {
+                    let json = """
                                 {
                                     "size": {
                                         "width": 0.8
                                     }
                                 }
                                 """.data(using: .utf8)!
-                        let decodedObject = try? JSONDecoder().decode(ModifyModal.self, from: json)
-                        expect(decodedObject).toNot(beNil())
-                        expect(decodedObject?.size?.width).to(equal(0.8))
-                        expect(decodedObject?.size?.height).to(beNil())
-                        expect(decodedObject?.position).to(beNil())
-                    }
+                    let decodedObject = try? JSONDecoder().decode(ResizeableModal.self, from: json)
+                    expect(decodedObject).toNot(beNil())
+                    expect(decodedObject?.modalSize?.width).to(equal(0.8))
+                    expect(decodedObject?.modalSize?.height).to(beNil())
+                    expect(decodedObject?.modalPosition).to(beNil())
                 }
-                context("when JSON is empty") {
-                    it("should decode to an object with all properties set to nil") {
-                        let json = "{}".data(using: .utf8)!
-                        let decodedObject = try? JSONDecoder().decode(ModifyModal.self, from: json)
-                        expect(decodedObject).toNot(beNil())
-                        expect(decodedObject?.size).to(beNil())
-                        expect(decodedObject?.position).to(beNil())
-                    }
+            }
+            context("when JSON is empty") {
+                it("should decode to an object with all properties set to nil") {
+                    let json = "{}".data(using: .utf8)!
+                    let decodedObject = try? JSONDecoder().decode(ResizeableModal.self, from: json)
+                    expect(decodedObject).toNot(beNil())
+                    expect(decodedObject?.modalSize).to(beNil())
+                    expect(decodedObject?.modalPosition).to(beNil())
                 }
-                context("when JSON is invalid") {
-                    it("should fail to decode and return nil") {
-                        let json = """
+            }
+            context("when JSON is invalid") {
+                it("should fail to decode and return nil") {
+                    let json = """
                                 {
                                     "size": {
                                         "width": "0.8",
@@ -442,93 +442,91 @@ class CustomJsonSpec: QuickSpec {
                                     }
                                 }
                                 """.data(using: .utf8)!
-                        let decodedObject = try? JSONDecoder().decode(ModifyModal.self, from: json)
-                        expect(decodedObject).to(beNil())
-                    }
+                    let decodedObject = try? JSONDecoder().decode(ResizeableModal.self, from: json)
+                    expect(decodedObject).to(beNil())
                 }
             }
-            describe("Size Decoding") {
-                context("when JSON is complete") {
-                    it("should decode all properties correctly") {
-                        let json = """
+        }
+        describe("Size Decoding") {
+            context("when JSON is complete") {
+                it("should decode all properties correctly") {
+                    let json = """
                                 {
                                     "width": 0.8,
                                     "height": 0.6
                                 }
                                 """.data(using: .utf8)!
-                        let decodedObject = try? JSONDecoder().decode(Size.self, from: json)
-                        expect(decodedObject).toNot(beNil())
-                        expect(decodedObject?.width).to(equal(0.8))
-                        expect(decodedObject?.height).to(equal(0.6))
-                    }
+                    let decodedObject = try? JSONDecoder().decode(ModalSize.self, from: json)
+                    expect(decodedObject).toNot(beNil())
+                    expect(decodedObject?.width).to(equal(0.8))
+                    expect(decodedObject?.height).to(equal(0.6))
                 }
-                context("when JSON is missing some properties") {
-                    it("should decode available properties and set missing ones to nil") {
-                        let json = """
+            }
+            context("when JSON is missing some properties") {
+                it("should decode available properties and set missing ones to nil") {
+                    let json = """
                                 {
                                     "width": 0.8
                                 }
                                 """.data(using: .utf8)!
-                        let decodedObject = try? JSONDecoder().decode(Size.self, from: json)
-                        expect(decodedObject).toNot(beNil())
-                        expect(decodedObject?.width).to(equal(0.8))
-                        expect(decodedObject?.height).to(beNil())
-                    }
+                    let decodedObject = try? JSONDecoder().decode(ModalSize.self, from: json)
+                    expect(decodedObject).toNot(beNil())
+                    expect(decodedObject?.width).to(equal(0.8))
+                    expect(decodedObject?.height).to(beNil())
                 }
-                context("when JSON is invalid") {
-                    it("should fail to decode and return nil") {
-                        let json = """
+            }
+            context("when JSON is invalid") {
+                it("should fail to decode and return nil") {
+                    let json = """
                                 {
                                     "width": "80",
                                     "height": 0.6
                                 }
                                 """.data(using: .utf8)!
-                        let decodedObject = try? JSONDecoder().decode(Size.self, from: json)
-                        expect(decodedObject).to(beNil())
-                    }
+                    let decodedObject = try? JSONDecoder().decode(ModalSize.self, from: json)
+                    expect(decodedObject).to(beNil())
                 }
             }
+        }
 
-            describe("Position Decoding") {
-                context("when JSON is complete") {
-                    it("should decode all properties correctly") {
-                        let json = """
+        describe("Position Decoding") {
+            context("when JSON is complete") {
+                it("should decode all properties correctly") {
+                    let json = """
                                 {
                                     "verticalAlign": "center",
                                     "horizontalAlign": "center"
                                 }
                                 """.data(using: .utf8)!
-                        let decodedObject = try? JSONDecoder().decode(Position.self, from: json)
-                        expect(decodedObject).toNot(beNil())
-                        expect(decodedObject?.verticalAlign).to(equal("center"))
-                        expect(decodedObject?.horizontalAlign).to(equal("center"))
-                    }
+                    let decodedObject = try? JSONDecoder().decode(ModalPosition.self, from: json)
+                    expect(decodedObject).toNot(beNil())
+                    expect(decodedObject?.verticalAlign).to(equal("center"))
+                    expect(decodedObject?.horizontalAlign).to(equal("center"))
                 }
-                context("when JSON is missing some properties") {
-                    it("should decode available properties and set missing ones to nil") {
-                        let json = """
+            }
+            context("when JSON is missing some properties") {
+                it("should decode available properties and set missing ones to nil") {
+                    let json = """
                                 {
                                     "verticalAlign": "center"
                                 }
                                 """.data(using: .utf8)!
-
-                        let decodedObject = try? JSONDecoder().decode(Position.self, from: json)
-                        expect(decodedObject).toNot(beNil())
-                        expect(decodedObject?.verticalAlign).to(equal("center"))
-                        expect(decodedObject?.horizontalAlign).to(beNil())
-                    }
+                    let decodedObject = try? JSONDecoder().decode(ModalPosition.self, from: json)
+                    expect(decodedObject).toNot(beNil())
+                    expect(decodedObject?.verticalAlign).to(equal("center"))
+                    expect(decodedObject?.horizontalAlign).to(beNil())
                 }
-                context("when JSON is invalid") {
-                    it("should fail to decode and return nil") {
-                        let json = """
+            }
+            context("when JSON is invalid") {
+                it("should fail to decode and return nil") {
+                    let json = """
                                 {
                                     "verticalAlign": 123,
                                     "horizontalAlign": "center"
                                 }
                                 """.data(using: .utf8)!
-                        let decodedObject = try? JSONDecoder().decode(Position.self, from: json)
-                        expect(decodedObject).to(beNil())
-                    }
+                    let decodedObject = try? JSONDecoder().decode(ModalPosition.self, from: json)
+                    expect(decodedObject).to(beNil())
                 }
             }
         }

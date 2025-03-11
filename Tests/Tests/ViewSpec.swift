@@ -349,7 +349,7 @@ class FullViewPresenterMock: FullViewPresenterType {
     var isValidSize = false
     var isValidPosition = false
 
-    func validateAndAdjustModifyModal(modal: ModifyModal?) -> (isValidSize: Bool, isValidPosition: Bool, updatedModal: ModifyModal?) {
+    func validateAndAdjustModifyModal(modal: ResizeableModal?) -> (isValidSize: Bool, isValidPosition: Bool, updatedModel: ResizeableModal?) {
         return (isValidSize, isValidPosition, modal)
     }
 

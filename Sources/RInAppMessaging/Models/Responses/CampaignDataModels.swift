@@ -75,26 +75,26 @@ internal struct CustomJson: Codable {
     let clickableImage: ClickableImage?
     let background: BackgroundColor?
     let carousel: Carousel?
-    let modifyModal: ModifyModal?
+    let resizableModal: ResizeableModal?
 
     enum CodingKeys: String, CodingKey {
         case pushPrimer
         case clickableImage
         case background
         case carousel
-        case modifyModal
+        case resizableModal = "modifyModal"
     }
 
     init(pushPrimer: PrimerButton? = nil,
          clickableImage: ClickableImage? = nil,
          background: BackgroundColor? = nil,
          carousel: Carousel? = nil,
-         modifyModal: ModifyModal? = nil) {
+         resizableModal: ResizeableModal? = nil) {
         self.pushPrimer = pushPrimer
         self.clickableImage = clickableImage
         self.background = background
         self.carousel = carousel
-        self.modifyModal = modifyModal
+        self.resizableModal = resizableModal
     }
 
     init(from decoder: Decoder) throws {
@@ -103,7 +103,7 @@ internal struct CustomJson: Codable {
         clickableImage = try? container.decodeIfPresent(ClickableImage.self, forKey: .clickableImage)
         background = try? container.decodeIfPresent(BackgroundColor.self, forKey: .background)
         carousel = try? container.decodeIfPresent(Carousel.self, forKey: .carousel)
-        modifyModal = try? container.decodeIfPresent(ModifyModal.self, forKey: .modifyModal)
+        resizableModal = try? container.decodeIfPresent(ResizeableModal.self, forKey: .resizableModal)
     }
 }
 
@@ -200,28 +200,28 @@ struct ImageDetails: Codable, Equatable {
     }
 }
 
-struct ModifyModal: Codable, Equatable {
-    var size: Size?
-    var position: Position?
+struct ResizeableModal: Codable, Equatable {
+    var modalSize: ModalSize?
+    var modalPosition: ModalPosition?
 
     enum CodingKeys: String, CodingKey {
-        case size
-        case position
+        case modalSize = "size"
+        case modalPosition = "position"
     }
 
-    init(size: Size?, position: Position?) {
-        self.size = size
-        self.position = position
+    init(modalSize: ModalSize?, modalPosition: ModalPosition?) {
+        self.modalSize = modalSize
+        self.modalPosition = modalPosition
     }
 
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        size = try container.decodeIfPresent(Size.self, forKey: .size)
-        position = try container.decodeIfPresent(Position.self, forKey: .position)
+        modalSize = try container.decodeIfPresent(ModalSize.self, forKey: .modalSize)
+        modalPosition = try container.decodeIfPresent(ModalPosition.self, forKey: .modalPosition)
     }
 }
 
-struct Size: Codable, Equatable{
+struct ModalSize: Codable, Equatable{
     var width: Double?
     var height: Double?
 
@@ -242,7 +242,7 @@ struct Size: Codable, Equatable{
     }
 }
 
-struct Position: Codable, Equatable {
+struct ModalPosition: Codable, Equatable {
     var verticalAlign: String?
     var horizontalAlign: String?
 
