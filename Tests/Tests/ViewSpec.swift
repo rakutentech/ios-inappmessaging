@@ -242,11 +242,11 @@ class ViewSpec: QuickSpec {
                     expect(cell).to(beAKindOf(CarouselCell.self))
                 }
 
-                it("it will not display Carousel view and Carousel Page Control if custom Json has valid modify modifyModal size specs") {
+                it("it will display Carousel view and Carousel Page Control if custom Json has valid modify modifyModal size specs") {
                     presenter.isValidSize = true
                     view.setup(viewModel: TestHelpers.generateFullViewCarouselModel(carouselData: carouselData))
-                    expect(view.carouselView.isHidden).to(beTrue())
-                    expect(view.carouselView.carouselPageControl.isHidden).to(beTrue())
+                    expect(view.carouselView.isHidden).to(beFalse())
+                    expect(view.carouselView.carouselPageControl.isHidden).to(beFalse())
                 }
 
                 it("it will not display Carousel view and Carousel Page Control if the data is valid but campaign has header and body text") {

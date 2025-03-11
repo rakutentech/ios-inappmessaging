@@ -179,19 +179,9 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         }
 
         setupMainView()
-
         updateImageView(model: viewModel)
+        setCampaignLayout(viewModel: viewModel)
 
-        if viewModel.isHTML {
-            layout = .html
-        } else if hasImage {
-            layout = viewModel.hasText ? .textAndImage : .imageOnly
-        } else if viewModel.hasText {
-            layout = .textOnly
-        } else if (viewModel.carouselData != nil) && !viewModel.hasText && RInAppMessaging.isRMCEnvironment {
-            layout = .carousel
-        }
-        
         clickableImageUrl = viewModel.customJson?.clickableImage?.url
         isClickableImage = clickableImageUrl != nil
         modifyModalData = presenter.validateAndAdjustModifyModal(modal: viewModel.customJson?.resizableModal)
@@ -284,6 +274,18 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         containerView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(containerView)
         containerView.constraintsFilling(parent: self, activate: true)
+    }
+
+    private func setCampaignLayout(viewModel: FullViewModel) {
+        if viewModel.isHTML {
+            layout = .html
+        } else if hasImage {
+            layout = viewModel.hasText ? .textAndImage : .imageOnly
+        } else if viewModel.hasText {
+            layout = .textOnly
+        } else if (viewModel.carouselData != nil) && !viewModel.hasText && RInAppMessaging.isRMCEnvironment {
+            layout = .carousel
+        }
     }
 
     private func layoutContentView(viewModel: FullViewModel) {
