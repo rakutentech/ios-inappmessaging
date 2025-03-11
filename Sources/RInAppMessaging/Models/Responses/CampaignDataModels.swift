@@ -75,26 +75,26 @@ internal struct CustomJson: Codable {
     let clickableImage: ClickableImage?
     let background: BackgroundColor?
     let carousel: Carousel?
-    let modifyModal: ModifyModal?
+    let resizableModal: ResizeableModal?
 
     enum CodingKeys: String, CodingKey {
         case pushPrimer
         case clickableImage
         case background
         case carousel
-        case modifyModal
+        case resizableModal = "modifyModal"
     }
 
     init(pushPrimer: PrimerButton? = nil,
          clickableImage: ClickableImage? = nil,
          background: BackgroundColor? = nil,
          carousel: Carousel? = nil,
-         modifyModal: ModifyModal? = nil) {
+         resizableModal: ResizeableModal? = nil) {
         self.pushPrimer = pushPrimer
         self.clickableImage = clickableImage
         self.background = background
         self.carousel = carousel
-        self.modifyModal = modifyModal
+        self.resizableModal = resizableModal
     }
 
     init(from decoder: Decoder) throws {
@@ -103,7 +103,7 @@ internal struct CustomJson: Codable {
         clickableImage = try? container.decodeIfPresent(ClickableImage.self, forKey: .clickableImage)
         background = try? container.decodeIfPresent(BackgroundColor.self, forKey: .background)
         carousel = try? container.decodeIfPresent(Carousel.self, forKey: .carousel)
-        modifyModal = try? container.decodeIfPresent(ModifyModal.self, forKey: .modifyModal)
+        resizableModal = try? container.decodeIfPresent(ResizeableModal.self, forKey: .resizableModal)
     }
 }
 
@@ -158,7 +158,7 @@ internal struct BackgroundColor: Codable, Equatable {
     }
 }
 
-struct Carousel: Codable {
+struct Carousel: Codable, Equatable {
     let images: [String: ImageDetails]?
 
     enum CodingKeys: String, CodingKey {
@@ -175,7 +175,7 @@ struct Carousel: Codable {
     }
 }
 
-struct ImageDetails: Codable {
+struct ImageDetails: Codable, Equatable {
     let imgUrl: String?
     let link: String?
     let altText: String?
@@ -200,49 +200,49 @@ struct ImageDetails: Codable {
     }
 }
 
-struct ModifyModal: Codable {
-    var size: Size?
-    var position: Position?
+struct ResizeableModal: Codable, Equatable {
+    var modalSize: ModalSize?
+    var modalPosition: ModalPosition?
 
     enum CodingKeys: String, CodingKey {
-        case size
-        case position
+        case modalSize = "size"
+        case modalPosition = "position"
     }
 
-    init(size: Size?, position: Position?) {
-        self.size = size
-        self.position = position
+    init(modalSize: ModalSize?, modalPosition: ModalPosition?) {
+        self.modalSize = modalSize
+        self.modalPosition = modalPosition
     }
 
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        size = try container.decodeIfPresent(Size.self, forKey: .size)
-        position = try container.decodeIfPresent(Position.self, forKey: .position)
+        modalSize = try container.decodeIfPresent(ModalSize.self, forKey: .modalSize)
+        modalPosition = try container.decodeIfPresent(ModalPosition.self, forKey: .modalPosition)
     }
 }
 
-struct Size: Codable {
-    var width: String?
-    var height: String?
+struct ModalSize: Codable, Equatable{
+    var width: Double?
+    var height: Double?
 
     enum CodingKeys: String, CodingKey {
         case width
         case height
     }
 
-    init(width: String?, height: String?) {
+    init(width: Double?, height: Double?) {
         self.width = width
         self.height = height
     }
 
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        width = try container.decodeIfPresent(String.self, forKey: .width)
-        height = try container.decodeIfPresent(String.self, forKey: .height)
+        width = try container.decodeIfPresent(Double.self, forKey: .width)
+        height = try container.decodeIfPresent(Double.self, forKey: .height)
     }
 }
 
-struct Position: Codable {
+struct ModalPosition: Codable, Equatable {
     var verticalAlign: String?
     var horizontalAlign: String?
 

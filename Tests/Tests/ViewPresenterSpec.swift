@@ -801,6 +801,9 @@ class ViewPresenterSpec: QuickSpec {
                     expect(impressionService.sentImpressions).to(beNil())
                 }
                 it("will do nothing if the campaign is a pushPrimer campaign") {
+                    let modalResize = ResizeableModal(modalSize:
+                                                        ModalSize(width: 0.6, height: 0.6),
+                                                       modalPosition: ModalPosition(verticalAlign: "center", horizontalAlign: "center"))
                     let campaignPrimer = TestHelpers.generateCampaign(id: "PushPrimer", buttons: [
                         Button(buttonText: "button1",
                                buttonTextColor: "#000000",
@@ -817,13 +820,107 @@ class ViewPresenterSpec: QuickSpec {
                                campaignTrigger: nil)
                     ],
                     customJson: CustomJson(pushPrimer: PrimerButton(button: 2),
-                                           clickableImage: ClickableImage(url: "https://url"))
+                                           clickableImage: ClickableImage(url: "https://url"),
+                                           resizableModal: modalResize)
                     )
+
                     let redirectUrl = campaignClickableImage.data.customJson?.clickableImage?.url
                     presenter.campaign = campaignPrimer
+                    presenter.loadButtons()
                     presenter.didClickCampaignImage(url: redirectUrl)
                     expect(view.wasDismissCalled).to(beFalse())
                     expect(impressionService.sentImpressions).to(beNil())
+                    expect(view.addedButtons.map({ $0.0.type })[0]).to(equal(ActionType.close))
+                    expect(view.addedButtons.map({ $0.0.type })[1]).to(equal(ActionType.pushPrimer))
+                }
+            }
+            context("adjustSize method") {
+                it("returns minSize when value is nil") {
+                    let result = presenter.adjustSize(value: nil)
+                    expect(result).to(equal(Constants.ResizeableModal.minSize))
+                }
+
+                it("returns minSize when value is below minSize") {
+                    let result = presenter.adjustSize(value: Constants.ResizeableModal.minSize - 0.25)
+                    expect(result).to(equal(Constants.ResizeableModal.minSize))
+                }
+
+                it("returns maxSize when value is above maxSize") {
+                    let result = presenter.adjustSize(value: Constants.ResizeableModal.maxSize + 0.25)
+                    expect(result).to(equal(Constants.ResizeableModal.maxSize))
+                }
+
+                it("returns the same value if within range") {
+                    let validValue = (Constants.ResizeableModal.minSize + Constants.ResizeableModal.maxSize) / 2
+                    let result = presenter.adjustSize(value: validValue)
+                    expect(result).to(equal(validValue))
+                }
+            }
+            context("validateAndAdjustModifyModal method") {
+                var modal: ResizeableModal!
+                beforeEach {
+                    modal = ResizeableModal(modalSize: ModalSize(width: 0.6, height: 0.8),
+                                            modalPosition: ModalPosition(verticalAlign: "top", horizontalAlign: "left"))
+                }
+
+                it("returns nil and false flags when modal is nil") {
+                    let result = presenter.validateAndAdjustModifyModal(modal: nil)
+                    expect(result.isValidSize).to(beFalse())
+                    expect(result.isValidPosition).to(beFalse())
+                    expect(result.updatedModel).to(beNil())
+                }
+
+                it("adjusts width and height if out of bounds") {
+                    modal.modalSize?.width = Constants.ResizeableModal.minSize - 0.25
+                    modal.modalSize?.height = Constants.ResizeableModal.maxSize + 0.25
+
+                    let result = presenter.validateAndAdjustModifyModal(modal: modal)
+
+                    expect(result.isValidSize).to(beTrue())
+                    expect(result.updatedModel?.modalSize?.width).to(equal(Constants.ResizeableModal.minSize))
+                    expect(result.updatedModel?.modalSize?.height).to(equal(Constants.ResizeableModal.maxSize))
+                }
+
+                it("does not change size if within valid range") {
+                    let originalWidth = modal.modalSize?.width
+                    let originalHeight = modal.modalSize?.height
+
+                    let result = presenter.validateAndAdjustModifyModal(modal: modal)
+                    expect(result.isValidSize).to(beTrue())
+                    expect(result.updatedModel?.modalSize?.width).to(equal(originalWidth))
+                    expect(result.updatedModel?.modalSize?.height).to(equal(originalHeight))
+                }
+
+                it("validates position if both alignments are valid") {
+                    modal.modalPosition?.verticalAlign = "center"
+                    modal.modalPosition?.horizontalAlign = "right"
+
+                    let result = presenter.validateAndAdjustModifyModal(modal: modal)
+                    expect(result.isValidPosition).to(beTrue())
+                }
+
+                it("invalidates position if vertical alignment is invalid") {
+                    modal.modalPosition?.verticalAlign = "invalid"
+                    modal.modalPosition?.horizontalAlign = "left"
+
+                    let result = presenter.validateAndAdjustModifyModal(modal: modal)
+                    expect(result.isValidPosition).to(beFalse())
+                }
+
+                it("invalidates position if horizontal alignment is invalid") {
+                    modal.modalPosition?.verticalAlign = "top"
+                    modal.modalPosition?.horizontalAlign = "invalid"
+
+                    let result = presenter.validateAndAdjustModifyModal(modal: modal)
+                    expect(result.isValidPosition).to(beFalse())
+                }
+
+                it("invalidates position if both alignments are invalid") {
+                    modal.modalPosition?.verticalAlign = "invalid"
+                    modal.modalPosition?.horizontalAlign = "invalid"
+
+                    let result = presenter.validateAndAdjustModifyModal(modal: modal)
+                    expect(result.isValidPosition).to(beFalse())
                 }
             }
         }

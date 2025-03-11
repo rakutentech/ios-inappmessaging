@@ -20,6 +20,9 @@
                 <outlet property="carouselView" destination="y34-nW-wPD" id="S39-ma-qcz"/>
                 <outlet property="contentScrollView" destination="R2i-po-Za0" id="n9b-nr-Eho"/>
                 <outlet property="contentView" destination="9fo-EW-lL9" id="qtH-MB-9vO"/>
+                <outlet property="contentViewCenterX" destination="Fp8-kU-AgK" id="HcV-tG-dY9"/>
+                <outlet property="contentViewCenterY" destination="OW4-nQ-nj2" id="5Ab-Ju-vrZ"/>
+                <outlet property="contentViewHeightConstraint" destination="As7-C4-FUa" id="e02-gd-bVc"/>
                 <outlet property="contentWidthOffsetConstraint" destination="rmG-89-pbI" id="RLz-RF-qgv"/>
                 <outlet property="controlsView" destination="IpI-Mq-vby" id="8Cg-db-Bxz"/>
                 <outlet property="dialogView" destination="sQ8-dx-V3p" id="nQl-qg-fX5"/>
@@ -193,6 +196,7 @@
                     </subviews>
                     <constraints>
                         <constraint firstAttribute="trailing" secondItem="sQ8-dx-V3p" secondAttribute="trailing" id="4q8-a5-vQ5"/>
+                        <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="100" id="As7-C4-FUa"/>
                         <constraint firstItem="sQ8-dx-V3p" firstAttribute="top" secondItem="9fo-EW-lL9" secondAttribute="top" id="HSn-tC-yhQ"/>
                         <constraint firstAttribute="bottom" secondItem="sQ8-dx-V3p" secondAttribute="bottom" id="NNM-8D-yfP"/>
                         <constraint firstItem="sQ8-dx-V3p" firstAttribute="leading" secondItem="9fo-EW-lL9" secondAttribute="leading" id="SQD-vw-pRR"/>

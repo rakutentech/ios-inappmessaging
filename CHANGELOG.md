@@ -1,6 +1,10 @@
 ## Changelog
 
 ### Unreleased:
+- Features:
+    - Implement CustomJson data parsing for Modify Modal Campaign [RMCCX-8432]
+    - Implement Modal Resizing implementation using Custom Json [RMCCX-8434]
+    - Implement Modal Positioning implementation using Custom Json [RMCCX-8437]
 
 ### 9.1.0 (2025-02-18)
 - Features:

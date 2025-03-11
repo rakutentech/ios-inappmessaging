@@ -8,6 +8,7 @@ internal protocol FullViewPresenterType: BaseViewPresenterType {
     func didClickAction(sender: ActionButton)
     func didClickExitButton()
     func didClickCampaignImage(url: String?)
+    func validateAndAdjustModifyModal(modal: ResizeableModal?) -> (isValidSize: Bool, isValidPosition: Bool, updatedModel: ResizeableModal?)
 }
 
 internal class FullViewPresenter: BaseViewPresenter, FullViewPresenterType, ErrorReportable {
@@ -133,6 +134,35 @@ internal class FullViewPresenter: BaseViewPresenter, FullViewPresenterType, Erro
             }
         })
         view?.dismiss()
+    }
+    
+    func adjustSize(value: Double?) -> Double {
+        return max(Constants.ResizeableModal.minSize, min(value ?? Constants.ResizeableModal.minSize, Constants.ResizeableModal.maxSize))
+    }
+
+    func validateAndAdjustModifyModal(modal: ResizeableModal?) -> (isValidSize: Bool, isValidPosition: Bool, updatedModel: ResizeableModal?) {
+        guard var modal = modal else { return (false, false, nil) }
+
+        var isValidSize = false
+        var isValidPosition = false
+
+        if let width = modal.modalSize?.width, let height = modal.modalSize?.height {
+            modal.modalSize?.width = adjustSize(value: width)
+            modal.modalSize?.height = adjustSize(value: height)
+            isValidSize = true
+        }
+
+        if let verticalAlign = modal.modalPosition?.verticalAlign,
+           let horizontalAlign = modal.modalPosition?.horizontalAlign,
+           VerticalAlignment(rawValue: verticalAlign) != nil,
+           HorizontalAlignment(rawValue: horizontalAlign) != nil {
+            isValidPosition = true
+        }
+
+        // Return updated model if size is valid, even if position is not.
+        let updatedModel = isValidSize ? modal : nil
+
+        return (isValidSize, isValidPosition, updatedModel)
     }
 
     // MARK: - Private
