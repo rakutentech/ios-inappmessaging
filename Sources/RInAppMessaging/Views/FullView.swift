@@ -183,7 +183,11 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         isClickableImage = clickableImageUrl != nil
         modifyModalData = presenter.validateAndAdjustModifyModal(modal: viewModel.customJson?.resizableModal)
         if let modifyModalData {
-            self.isValidModifyModal = modifyModalData.isValidSize && layout != .carousel && !presenter.campaign.isPushPrimer && RInAppMessaging.isRMCEnvironment
+            let isPushPrimer = presenter.campaign != nil ? presenter.campaign!.isPushPrimer : false
+            self.isValidModifyModal = modifyModalData.isValidSize
+            && layout != .carousel
+            && !isPushPrimer
+            && RInAppMessaging.isRMCEnvironment
         }
 
         setupAccessibility()
