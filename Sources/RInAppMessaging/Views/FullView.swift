@@ -183,7 +183,7 @@ internal class FullView: UIView, FullViewType, RichContentBrowsable {
         isClickableImage = clickableImageUrl != nil
         modifyModalData = presenter.validateAndAdjustModifyModal(modal: viewModel.customJson?.resizableModal)
         if let modifyModalData {
-            let isPushPrimer = presenter.campaign != nil ? presenter.campaign!.isPushPrimer : false
+            let isPushPrimer = presenter.campaign?.isPushPrimer ?? false
             self.isValidModifyModal = modifyModalData.isValidSize
             && layout != .carousel
             && !isPushPrimer
