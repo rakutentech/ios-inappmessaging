@@ -108,6 +108,8 @@ internal class CampaignDispatcher: CampaignDispatcherType, TaskSchedulable {
     
     func fetchCampaignImagesAndDisplay(campaign: Campaign) {
         if let carouselData = campaign.data.customJson?.carousel,
+           ![campaign.data.messagePayload.header,
+             campaign.data.messagePayload.messageBody].contains(where: { $0?.isEmpty == false }),
            let images = carouselData.images,
            !images.isEmpty,
            images.count > 1,
