@@ -92,6 +92,9 @@ internal enum MainContainerFactory {
                 SwiftUIViewEventHandler(router: manager.resolve(type: RouterType.self)!,
                                         dispatcher: manager.resolve(type: TooltipDispatcherType.self)!,
                                         eventSender: manager.resolve(type: TooltipEventSenderType.self)!)
+            }),
+            ContainerElement(type: EventLoggerSendable.self, factory: {
+                EventLogger(rmcConfiguration: manager.resolve(type: EventLoggerConfigurationProvider.self)!)
             })
         ]
 

@@ -17,6 +17,8 @@ PODS:
   - RSDKUtils/Nimble (5.1.0):
     - Nimble
     - RSDKUtils/Main
+  - RSDKUtils/REventLogger (5.1.0):
+    - RSDKUtils/Main
   - RSDKUtils/RLogger (5.1.0)
   - RSDKUtils/TestHelpers (5.1.0):
     - RSDKUtils/Main
@@ -73,6 +75,7 @@ DEPENDENCIES:
   - RInAppMessaging (from `.`)
   - RSDKUtils (~> 5.1.0)
   - RSDKUtils/Nimble (~> 5.1.0)
+  - RSDKUtils/REventLogger
   - RSDKUtils/TestHelpers (~> 5.1.0)
   - Shock (~> 6.1.2)
   - SwiftLint (~> 0.50)
@@ -123,6 +126,6 @@ SPEC CHECKSUMS:
   SwiftNIOHTTP1: ef56706550a1dc135ea69d65215b9941e643c23b
   SwiftNIOPosix: b49af4bdbecaadfadd5c93dfe28594d6722b75e4
 
-PODFILE CHECKSUM: 8c42d97c4f173f1dd3f1d8bf6600f2261b1abddc
+PODFILE CHECKSUM: e6392ce1ead50f36965de45e655e147753e4a441
 
 COCOAPODS: 1.16.2
