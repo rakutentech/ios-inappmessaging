@@ -75,9 +75,11 @@ internal class CampaignsListManager: CampaignsListManagerType, TaskSchedulable {
 
         switch error {
         case MessageMixerServiceError.invalidConfiguration:
+            RInAppMessaging.eventLogger?.logEvent(eventType: .critical, errorCode: Constants.RMCErrorCode.pingInvalidConfig, errorMessage: "Error retrieving InAppMessaging Mixer Server URL", info: nil)
             reportError(description: "Error retrieving InAppMessaging Mixer Server URL", data: nil)
 
         case MessageMixerServiceError.jsonDecodingError(let decodingError):
+            RInAppMessaging.eventLogger?.logEvent(eventType: .warning, errorCode: Constants.RMCErrorCode.pingDecodingError, errorMessage: "Ping request error: Failed to parse json", info: nil)
             reportError(description: "Ping request error: Failed to parse json", data: decodingError)
 
         case MessageMixerServiceError.tooManyRequestsError:

@@ -187,6 +187,7 @@ import RSDKUtils
             let description = "⚠️ Invalid Configuration URL: \(config.configURLString ?? "<empty>")"
             let error = NSError.iamError(description: description)
             Logger.debug(description)
+            RInAppMessaging.eventLogger?.logEvent(eventType: .critical, errorCode: Constants.RMCErrorCode.invalidConfigurationUrl, errorMessage: description, info: nil)
             errorCallback?(error)
             assertionFailure(description)
             return URL(string: "invalid")!

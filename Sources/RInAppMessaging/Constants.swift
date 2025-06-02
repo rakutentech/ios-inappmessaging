@@ -108,4 +108,10 @@ internal enum Constants {
         static let minHeight = 5.0
         static let defaultHeight = 250.0
     }
+    
+    enum RMCErrorCode {
+        static let invalidConfigurationUrl = "Configure_Invalid_Configuration_Url"
+        static let pingInvalidConfig = "Ping_Invalid_Configuration"
+        static let pingDecodingError = "Ping_Json_Decoding_Error"
+    }
 }
