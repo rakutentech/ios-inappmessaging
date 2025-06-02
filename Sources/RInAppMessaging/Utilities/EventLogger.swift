@@ -1,5 +1,9 @@
 import Foundation
+#if SWIFT_PACKAGE
+import RSDKUtilsMain
+#else
 import RSDKUtils
+#endif
 
 protocol EventLoggerSendable {
     func configure(apiKey: String, apiUrl: String)
