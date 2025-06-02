@@ -17,6 +17,10 @@ import RSDKUtils
     internal static var swiftUIEventHandler: SwiftUIViewEventHandlerType? {
         dependencyManager?.resolve(type: SwiftUIViewEventHandlerType.self)
     }
+
+    internal static var eventLogger: EventLoggerSendable? {
+        dependencyManager?.resolve(type: EventLoggerSendable.self)
+    }
     
     internal static var bundleInfo = BundleInfo.self
     
@@ -169,7 +173,13 @@ import RSDKUtils
             interactor.closeTooltip(with: uiElementIdentifier)
         }
     }
-
+    
+    @objc public static func configureEventLogger(apiKey: String, apiUrl: String) {
+        if isRMCEnvironment {
+            eventLogger?.configure(apiKey: apiKey, apiUrl: apiUrl)
+        }
+    }
+    
     // visible for unit tests
     internal static func tryGettingValidConfigURL(_ config: InAppMessagingModuleConfiguration) -> URL {
         

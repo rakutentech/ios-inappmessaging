@@ -94,7 +94,7 @@ internal enum MainContainerFactory {
                                         eventSender: manager.resolve(type: TooltipEventSenderType.self)!)
             }),
             ContainerElement(type: EventLoggerSendable.self, factory: {
-                EventLogger(rmcConfiguration: manager.resolve(type: EventLoggerConfigurationProvider.self)!)
+                EventLogger()
             })
         ]
 
