@@ -7,7 +7,9 @@ protocol EventLoggerSendable {
 }
 
 class EventLogger: EventLoggerSendable {
-    init() {}
+    init() {
+        // Custom no-argument initializer
+    }
     
     func configure(apiKey: String, apiUrl: String) {
         REventLogger.shared.configure(apiKey: apiKey, apiUrl: apiUrl)

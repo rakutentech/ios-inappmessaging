@@ -113,5 +113,8 @@ internal enum Constants {
         static let invalidConfigurationUrl = "Configure_Invalid_Configuration_Url"
         static let pingInvalidConfig = "Ping_Invalid_Configuration"
         static let pingDecodingError = "Ping_Json_Decoding_Error"
+        static let pingTooManyRequestsError = "Ping_Too_Many_Requests_Error"
+        static let invalidRequestError = "Ping_Invalid_Request_Error"
+        static let internalServerError = "Ping_Internal_Server_Error"
     }
 }

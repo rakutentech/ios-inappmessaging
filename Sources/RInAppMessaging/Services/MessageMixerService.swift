@@ -51,10 +51,13 @@ internal class MessageMixerService: MessageMixerServiceType, HttpRequestable {
         case .failure(let requestError):
             switch requestError {
             case .httpError(let statusCode, _, _) where statusCode == 429:
+                RInAppMessaging.eventLogger?.logEvent(eventType: .warning, errorCode: String(statusCode), errorMessage: Constants.RMCErrorCode.pingTooManyRequestsError, info: nil)
                 return .failure(.tooManyRequestsError)
             case .httpError(let statusCode, _, _) where 300..<500 ~= statusCode:
+                RInAppMessaging.eventLogger?.logEvent(eventType: .warning, errorCode: String(statusCode), errorMessage: Constants.RMCErrorCode.invalidRequestError, info: nil)
                 return .failure(.invalidRequestError(statusCode))
             case .httpError(let statusCode, _, _) where statusCode >= 500:
+                RInAppMessaging.eventLogger?.logEvent(eventType: .warning, errorCode: String(statusCode), errorMessage: Constants.RMCErrorCode.internalServerError, info: nil)
                 return .failure(.internalServerError(statusCode))
             default:
                 return .failure(.requestError(requestError))
