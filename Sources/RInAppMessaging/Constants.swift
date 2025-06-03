@@ -116,6 +116,6 @@ internal enum Constants {
         static let pingTooManyRequestsError = "PING_TOO_MANY_REQUESTS_ERROR"
         static let invalidRequestError = "PING_INVALID_REQUEST_ERROR"
         static let internalServerError = "PING_INTERNAL_SERVER_ERROR"
-        static let pingRequestBodyCreationFailed = "PING_REQUEST_BODY_CREATION_FAILED"
+        static let pingMissingMetadata = "PING_MISSING_METADATA"
     }
 }
