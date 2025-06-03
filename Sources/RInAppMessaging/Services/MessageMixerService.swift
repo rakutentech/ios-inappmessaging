@@ -86,6 +86,7 @@ extension MessageMixerService {
 
         guard let appVersion = bundleInfo.appVersion else {
             Logger.debug("failed creating a request body")
+            RInAppMessaging.eventLogger?.logEvent(eventType: .warning, errorCode: Constants.RMCErrorCode.pingRequestBodyCreationFailed, errorMessage: "Ping: Failed creating a request body", info: nil)
             return .failure(RequestError.missingMetadata)
         }
 

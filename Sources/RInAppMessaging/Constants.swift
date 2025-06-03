@@ -110,11 +110,12 @@ internal enum Constants {
     }
     
     enum RMCErrorCode {
-        static let invalidConfigurationUrl = "Configure_Invalid_Configuration_Url"
-        static let pingInvalidConfig = "Ping_Invalid_Configuration"
-        static let pingDecodingError = "Ping_Json_Decoding_Error"
-        static let pingTooManyRequestsError = "Ping_Too_Many_Requests_Error"
-        static let invalidRequestError = "Ping_Invalid_Request_Error"
-        static let internalServerError = "Ping_Internal_Server_Error"
+        static let invalidConfigurationUrl = "CONFIGURE_INVALID_CONFIGURATION_URL"
+        static let pingInvalidConfig = "PING_INVALID_CONFIGURATION"
+        static let pingDecodingError = "PING_JSON_DECODING_ERROR"
+        static let pingTooManyRequestsError = "PING_TOO_MANY_REQUESTS_ERROR"
+        static let invalidRequestError = "PING_INVALID_REQUEST_ERROR"
+        static let internalServerError = "PING_INTERNAL_SERVER_ERROR"
+        static let pingRequestBodyCreationFailed = "PING_REQUEST_BODY_CREATION_FAILED"
     }
 }
