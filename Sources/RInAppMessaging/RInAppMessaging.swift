@@ -18,10 +18,6 @@ import RSDKUtils
         dependencyManager?.resolve(type: SwiftUIViewEventHandlerType.self)
     }
 
-    internal static var eventLogger: EventLoggerSendable? {
-        dependencyManager?.resolve(type: EventLoggerSendable.self)
-    }
-    
     internal static var bundleInfo = BundleInfo.self
     
     internal static var isInitialized: Bool {
@@ -96,13 +92,6 @@ import RSDKUtils
             return
         }
 
-//      Implementation for configuring eventLogger key through configApi response for standalone IAM
-        if !isRMCEnvironment {
-            eventLogger?.setLoggerApiConfig(apiKey: "apiKey", apiUrl: "apiUrl")
-        }
-
-        eventLogger?.configure()
-
         let config = InAppMessagingModuleConfiguration(
             configURLString: configurationURL ?? BundleInfo.inAppConfigurationURL,
             subscriptionID: sanitizeSubscriptionID(subscriptionID) ?? BundleInfo.inAppSubscriptionId,
@@ -112,6 +101,11 @@ import RSDKUtils
         let validConfigURL = tryGettingValidConfigURL(config)
         let mainContainer = MainContainerFactory.create(dependencyManager: dependencyManager, configURL: validConfigURL)
         dependencyManager.appendContainer(mainContainer)
+        
+        if let eventLogger = dependencyManager.resolve(type: EventLoggerSendable.self) {
+            eventLogger.setLoggerApiConfig(apiKey: "yourApiKey", apiUrl: "https://api-url", isEventLoggerEnabled: true)
+            eventLogger.configure()
+        }
         configure(dependencyManager: dependencyManager, moduleConfig: config)
     }
 
@@ -181,9 +175,12 @@ import RSDKUtils
         }
     }
     
-    @objc public static func setLoggingCredentials(apiKey: String, apiUrl: String) {
+    @objc public static func setLoggingCredentials(apiKey: String, apiUrl: String, isEventLoggerEnabled: Bool) {
         if isRMCEnvironment {
-            eventLogger?.setLoggerApiConfig(apiKey: apiKey, apiUrl: apiUrl)
+            if let eventLogger = dependencyManager?.resolve(type: EventLoggerSendable.self) {
+                eventLogger.setLoggerApiConfig(apiKey: apiKey, apiUrl: apiUrl, isEventLoggerEnabled: true)
+                eventLogger.configure()
+            }
         }
     }
     
@@ -194,8 +191,6 @@ import RSDKUtils
             let description = "⚠️ Invalid Configuration URL: \(config.configURLString ?? "<empty>")"
             let error = NSError.iamError(description: description)
             Logger.debug(description)
-            RInAppMessaging.eventLogger?.logEvent(eventType: .critical, errorCode: Constants.RMCErrorCode.invalidConfigurationUrl
-                                                  , errorMessage: description, info: nil)
             errorCallback?(error)
             assertionFailure(description)
             return URL(string: "invalid")!

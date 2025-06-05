@@ -6,33 +6,33 @@ import RSDKUtils
 #endif
 
 protocol EventLoggerSendable {
+    var isEventLoggerEnabled: Bool { get set }
     func configure()
-    func logEvent(eventType: REventType, errorCode: String, errorMessage: String, info: [String: String]?)
-    func setLoggerApiConfig(apiKey: String, apiUrl: String)
+    func logEvent(eventType: REventType, errorCode: String, errorMessage: String)
+    func setLoggerApiConfig(apiKey: String, apiUrl: String, isEventLoggerEnabled: Bool)
 }
 
-class EventLogger: EventLoggerSendable {
+final class EventLogger: EventLoggerSendable {
+
+    var isEventLoggerEnabled = true
     private var apiKey: String?
     private var apiUrl: String?
 
-    init() {
-        // Custom no-argument initializer
-    }
-
-    func setLoggerApiConfig(apiKey: String, apiUrl: String) {
+    func setLoggerApiConfig(apiKey: String, apiUrl: String, isEventLoggerEnabled: Bool) {
         self.apiKey = apiKey
         self.apiUrl = apiUrl
+        self.isEventLoggerEnabled = isEventLoggerEnabled
     }
 
     func configure() {
+        guard isEventLoggerEnabled else { return }
         guard let apiKey = apiKey, let apiUrl = apiUrl else {
             return
         }
         REventLogger.shared.configure(apiKey: apiKey, apiUrl: apiUrl)
     }
 
-    func logEvent(eventType: REventType, errorCode: String, errorMessage: String, info: [String: String]? = nil) {
-        
+    func logEvent(eventType: REventType, errorCode: String, errorMessage: String) {
         if eventType == REventType.critical {
             REventLogger.shared.sendCriticalEvent(sourceName: "iam",
                                                   sourceVersion: Constants.Versions.sdkVersion,

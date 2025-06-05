@@ -117,5 +117,9 @@ internal enum Constants {
         static let invalidRequestError = "PING_INVALID_REQUEST_ERROR"
         static let internalServerError = "PING_INTERNAL_SERVER_ERROR"
         static let pingMissingMetadata = "PING_MISSING_METADATA"
+        static let checkPermissionError = "CHECK_PERMISSION_RESPONSE_ERROR"
+        static let displayPerMissingEndpoint = "DISPLAY_PERMISSION_MISSING_ENDPOINT"
+        static let displayPerMissingMetadata = "DISPLAY_PERMISSION_MISSING_METADATA"
+        static let displayPerUnexpectedParameters = "DISPLAY_PERMISSION_UNEXPECTED_PARAMETERS"
     }
 }

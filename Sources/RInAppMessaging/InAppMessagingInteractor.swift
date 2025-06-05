@@ -58,7 +58,8 @@ final class InAppMessagingInteractor {
               let displayPermissionService = dependencyManager.resolve(type: DisplayPermissionServiceType.self),
               let viewListener = dependencyManager.resolve(type: ViewListenerType.self),
               let _ = dependencyManager.resolve(type: TooltipEventSenderType.self),
-              let tooltipDispatcher = dependencyManager.resolve(type: TooltipDispatcherType.self) else {
+              let tooltipDispatcher = dependencyManager.resolve(type: TooltipDispatcherType.self),
+              let eventLogger = dependencyManager.resolve(type: EventLoggerSendable.self) else {
 
             assertionFailure("In-App Messaging SDK module initialization failure: Dependencies could not be resolved")
             return
@@ -77,7 +78,8 @@ final class InAppMessagingInteractor {
                                           router: router,
                                           randomizer: randomizer,
                                           displayPermissionService: displayPermissionService,
-                                          tooltipDispatcher: tooltipDispatcher)
+                                          tooltipDispatcher: tooltipDispatcher,
+                                          eventLogger: eventLogger)
         module.aggregatedErrorHandler = errorCallback
         module.onVerifyContext = onVerifyContext
         module.setAccessibilityCompatibleDisplay(accessibilityCompatibleDisplay)

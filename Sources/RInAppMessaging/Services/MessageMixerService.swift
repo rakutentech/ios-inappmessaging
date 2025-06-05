@@ -17,15 +17,18 @@ internal class MessageMixerService: MessageMixerServiceType, HttpRequestable {
 
     private let accountRepository: AccountRepositoryType
     private let configurationRepository: ConfigurationRepositoryType
+    private let eventLogger: EventLoggerSendable
 
     private(set) var httpSession: URLSession
     var bundleInfo = BundleInfo.self
 
     init(accountRepository: AccountRepositoryType,
-         configurationRepository: ConfigurationRepositoryType) {
+         configurationRepository: ConfigurationRepositoryType,
+         eventLogger: EventLoggerSendable) {
 
         self.accountRepository = accountRepository
         self.configurationRepository = configurationRepository
+        self.eventLogger = eventLogger
         httpSession = URLSession(configuration: configurationRepository.defaultHttpSessionConfiguration)
     }
 
@@ -51,13 +54,13 @@ internal class MessageMixerService: MessageMixerServiceType, HttpRequestable {
         case .failure(let requestError):
             switch requestError {
             case .httpError(let statusCode, _, _) where statusCode == 429:
-                RInAppMessaging.eventLogger?.logEvent(eventType: .warning, errorCode: String(statusCode), errorMessage: Constants.RMCErrorCode.pingTooManyRequestsError, info: nil)
+                eventLogger.logEvent(eventType: .warning, errorCode: String(statusCode), errorMessage: Constants.RMCErrorCode.pingTooManyRequestsError)
                 return .failure(.tooManyRequestsError)
             case .httpError(let statusCode, _, _) where 300..<500 ~= statusCode:
-                RInAppMessaging.eventLogger?.logEvent(eventType: .warning, errorCode: String(statusCode), errorMessage: Constants.RMCErrorCode.invalidRequestError, info: nil)
+                eventLogger.logEvent(eventType: .warning, errorCode: String(statusCode), errorMessage: Constants.RMCErrorCode.invalidRequestError)
                 return .failure(.invalidRequestError(statusCode))
             case .httpError(let statusCode, _, _) where statusCode >= 500:
-                RInAppMessaging.eventLogger?.logEvent(eventType: .warning, errorCode: String(statusCode), errorMessage: Constants.RMCErrorCode.internalServerError, info: nil)
+                eventLogger.logEvent(eventType: .warning, errorCode: String(statusCode), errorMessage: Constants.RMCErrorCode.internalServerError)
                 return .failure(.internalServerError(statusCode))
             default:
                 return .failure(.requestError(requestError))
@@ -86,7 +89,7 @@ extension MessageMixerService {
 
         guard let appVersion = bundleInfo.appVersion else {
             Logger.debug("failed creating a request body")
-            RInAppMessaging.eventLogger?.logEvent(eventType: .warning, errorCode: Constants.RMCErrorCode.pingMissingMetadata, errorMessage: "Ping: Failed creating a request body", info: nil)
+            eventLogger.logEvent(eventType: .warning, errorCode: Constants.RMCErrorCode.pingMissingMetadata, errorMessage: "Ping: Failed creating a request body")
             return .failure(RequestError.missingMetadata)
         }
 

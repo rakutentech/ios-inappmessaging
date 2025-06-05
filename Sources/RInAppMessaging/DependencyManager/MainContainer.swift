@@ -42,13 +42,15 @@ internal enum MainContainerFactory {
                 AccountRepository(userDataCache: manager.resolve(type: UserDataCacheable.self)!)
             }),
             ContainerElement(type: ConfigurationServiceType.self, factory: {
-                ConfigurationService(configurationRepository: manager.resolve(type: ConfigurationRepositoryType.self)!)
+                ConfigurationService(configurationRepository: manager.resolve(type: ConfigurationRepositoryType.self)!,
+                                     eventLogger: manager.resolve(type: EventLoggerSendable.self)!)
             }),
             ContainerElement(type: DisplayPermissionServiceType.self, factory: {
                 DisplayPermissionService(
                     campaignRepository: manager.resolve(type: CampaignRepositoryType.self)!,
                     accountRepository: manager.resolve(type: AccountRepositoryType.self)!,
-                    configurationRepository: manager.resolve(type: ConfigurationRepositoryType.self)!)
+                    configurationRepository: manager.resolve(type: ConfigurationRepositoryType.self)!,
+                    eventLogger: manager.resolve(type: EventLoggerSendable.self)!)
             }),
             ContainerElement(type: RouterType.self, factory: {
                 Router(dependencyManager: manager, viewListener: manager.resolve(type: ViewListenerType.self)!)
@@ -63,7 +65,8 @@ internal enum MainContainerFactory {
             }),
             ContainerElement(type: MessageMixerServiceType.self, factory: {
                 MessageMixerService(accountRepository: manager.resolve(type: AccountRepositoryType.self)!,
-                                    configurationRepository: manager.resolve(type: ConfigurationRepositoryType.self)!)
+                                    configurationRepository: manager.resolve(type: ConfigurationRepositoryType.self)!,
+                                    eventLogger: manager.resolve(type: EventLoggerSendable.self)!)
             }),
             ContainerElement(type: ImpressionServiceType.self, factory: {
                 ImpressionService(accountRepository: manager.resolve(type: AccountRepositoryType.self)!,
@@ -73,7 +76,8 @@ internal enum MainContainerFactory {
                 CampaignsListManager(campaignRepository: manager.resolve(type: CampaignRepositoryType.self)!,
                                      campaignTriggerAgent: manager.resolve(type: CampaignTriggerAgentType.self)!,
                                      messageMixerService: manager.resolve(type: MessageMixerServiceType.self)!,
-                                     configurationRepository: manager.resolve(type: ConfigurationRepositoryType.self)!)
+                                     configurationRepository: manager.resolve(type: ConfigurationRepositoryType.self)!,
+                                     eventLogger: manager.resolve(type: EventLoggerSendable.self)!)
             }),
             ContainerElement(type: TooltipDispatcherType.self, factory: {
                 TooltipDispatcher(router: manager.resolve(type: RouterType.self)!,

@@ -9,6 +9,7 @@ internal class DisplayPermissionService: DisplayPermissionServiceType, HttpReque
     private let campaignRepository: CampaignRepositoryType
     private let accountRepository: AccountRepositoryType
     private let configurationRepository: ConfigurationRepositoryType
+    private let eventLogger: EventLoggerSendable
 
     private(set) var httpSession: URLSession
     private(set) var lastResponse: RequestResult?
@@ -17,11 +18,13 @@ internal class DisplayPermissionService: DisplayPermissionServiceType, HttpReque
 
     init(campaignRepository: CampaignRepositoryType,
          accountRepository: AccountRepositoryType,
-         configurationRepository: ConfigurationRepositoryType) {
+         configurationRepository: ConfigurationRepositoryType,
+         eventLogger: EventLoggerSendable) {
 
         self.campaignRepository = campaignRepository
         self.accountRepository = accountRepository
         self.configurationRepository = configurationRepository
+        self.eventLogger = eventLogger
         httpSession = URLSession(configuration: configurationRepository.defaultHttpSessionConfiguration)
     }
 
@@ -37,6 +40,7 @@ internal class DisplayPermissionService: DisplayPermissionServiceType, HttpReque
         ]
 
         guard let displayPermissionUrl = configurationRepository.getEndpoints()?.displayPermission else {
+            eventLogger.logEvent(eventType: .warning, errorCode: Constants.RMCErrorCode.displayPerMissingEndpoint, errorMessage: "Missing endpoint for DisplayPermissionService")
             Logger.debug("error: missing endpoint for DisplayPermissionService")
             return fallbackResponse
         }
@@ -71,7 +75,7 @@ internal class DisplayPermissionService: DisplayPermissionServiceType, HttpReque
             default: ()
             }
         }
-
+        eventLogger.logEvent(eventType: .warning, errorCode: Constants.RMCErrorCode.checkPermissionError, errorMessage: "Couldn't get a valid response from display permission endpoint")
         reportError(description: "couldn't get a valid response from display permission endpoint", data: nil)
         return fallbackResponse
     }
@@ -84,10 +88,12 @@ extension DisplayPermissionService {
 
         guard let subscriptionId = configurationRepository.getSubscriptionID(),
               let appVersion = bundleInfo.appVersion else {
+            eventLogger.logEvent(eventType: .warning, errorCode: Constants.RMCErrorCode.displayPerMissingMetadata, errorMessage: "Error while building request body for display permssion - missing metadata")
             Logger.debug("error while building request body for display permssion - missing metadata")
             return .failure(RequestError.missingMetadata)
         }
         guard let campaignId = parameters?[Constants.Request.campaignID] as? String else {
+            eventLogger.logEvent(eventType: .warning, errorCode: Constants.RMCErrorCode.displayPerUnexpectedParameters, errorMessage: "Error while building request body for display permssion - unexpected parameters")
             Logger.debug("error while building request body for display permssion - unexpected parameters")
             return .failure(RequestError.missingParameters)
         }
