@@ -103,7 +103,7 @@ import RSDKUtils
         dependencyManager.appendContainer(mainContainer)
         
         if let eventLogger = dependencyManager.resolve(type: EventLoggerSendable.self) {
-            eventLogger.setLoggerApiConfig(apiKey: "yourApiKey", apiUrl: "https://api-url", isEventLoggerEnabled: true)
+            eventLogger.setLoggerApiConfig(apiKey: "", apiUrl: "", isEventLoggerEnabled: true)
             eventLogger.configure()
         }
         configure(dependencyManager: dependencyManager, moduleConfig: config)
@@ -176,11 +176,10 @@ import RSDKUtils
     }
     
     @objc public static func setLoggingCredentials(apiKey: String, apiUrl: String, isEventLoggerEnabled: Bool) {
-        if isRMCEnvironment {
-            if let eventLogger = dependencyManager?.resolve(type: EventLoggerSendable.self) {
-                eventLogger.setLoggerApiConfig(apiKey: apiKey, apiUrl: apiUrl, isEventLoggerEnabled: true)
-                eventLogger.configure()
-            }
+        if isRMCEnvironment,
+           let eventLogger = dependencyManager?.resolve(type: EventLoggerSendable.self) {
+            eventLogger.setLoggerApiConfig(apiKey: apiKey, apiUrl: apiUrl, isEventLoggerEnabled: true)
+            eventLogger.configure()
         }
     }
     
