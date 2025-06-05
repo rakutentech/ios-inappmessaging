@@ -27,6 +27,7 @@ class MessageMixerServiceSpec: QuickSpec {
         var service: MessageMixerService!
         var configurationRepository: ConfigurationRepository!
         var httpSession: URLSessionMock!
+        var eventLogger: EventLogger!
 
         func sendRequestAndWaitForResponse() {
             waitUntil { done in
@@ -47,7 +48,8 @@ class MessageMixerServiceSpec: QuickSpec {
                 configurationRepository.saveRemoteConfiguration(configData)
                 configurationRepository.saveIAMModuleConfiguration(moduleConfig)
                 service = MessageMixerService(accountRepository: accountRepository,
-                                              configurationRepository: configurationRepository)
+                                              configurationRepository: configurationRepository,
+                                              eventLogger: eventLogger)
                 httpSession = URLSessionMock.mock(originalInstance: service.httpSession)
             }
 
