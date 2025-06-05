@@ -1,8 +1,9 @@
 import Foundation
-#if SWIFT_PACKAGE
-import RSDKUtilsMain
-#else
+
+#if canImport(RSDKUtils)
 import RSDKUtils
+#elseif canImport(RSDKUtilsMain)
+import RSDKUtilsMain
 #endif
 
 protocol EventLoggerSendable {
