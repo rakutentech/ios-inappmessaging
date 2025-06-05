@@ -51,7 +51,7 @@ class PublicAPISpec: QuickSpec {
                                                                           configURL: URL(string: config.configURLString ?? "empty")!))
             dependencyManager.appendContainer(mockContainer())
             messageMixerService = MessageMixerServiceMock()
-            dataCache = UserDataCache(userDefaults: userDefaults)
+            dataCache = UserDataCache(userDefaults: userDefaults, eventLogger: MockEventLoggerSendable())
             eventMatcher = EventMatcherSpy(
                 campaignRepository: dependencyManager.resolve(type: CampaignRepositoryType.self)!)
             accountRepository = dependencyManager.resolve(type: AccountRepositoryType.self)

@@ -48,7 +48,7 @@ internal class UserDataCache: UserDataCacheable {
                 cachedContainers = decodedData
             } catch {
                 cachedContainers = [:]
-                eventLogger.logEvent(eventType: .warning, errorCode: Constants.RMCErrorCode.userDataCacheDecodingFailed, errorMessage: "UserDataCache decoding failed")
+                eventLogger.logEvent(eventType: .warning, errorCode: Constants.IAMErrorCode.userDataCacheDecodingFailed.errorCode, errorMessage: Constants.IAMErrorCode.userDataCacheDecodingFailed.errorMessage)
                 Logger.debug("UserDataCache decoding failed! \(error)")
                 Environment.isUnitTestEnvironment ? () : assertionFailure()
             }
@@ -101,7 +101,7 @@ internal class UserDataCache: UserDataCacheable {
             let encodedData = try JSONEncoder().encode(cachedContainers)
             userDefaults.set(encodedData, forKey: persistedDataKey)
         } catch {
-            eventLogger.logEvent(eventType: .warning, errorCode: Constants.RMCErrorCode.userDataCacheEncodingFailed, errorMessage: "UserDataCache decoding failed")
+            eventLogger.logEvent(eventType: .warning, errorCode: Constants.IAMErrorCode.userDataCacheEncodingFailed.errorCode, errorMessage: Constants.IAMErrorCode.userDataCacheEncodingFailed.errorMessage)
             Logger.debug("UserDataCache encoding failed! \(error)")
             assertionFailure()
         }

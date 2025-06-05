@@ -110,7 +110,6 @@ internal enum Constants {
     }
     
     enum RMCErrorCode {
-        static let invalidConfigurationUrl = "CONFIGURE_INVALID_CONFIGURATION_URL"
         static let pingInvalidConfig = "PING_INVALID_CONFIGURATION"
         static let pingDecodingError = "PING_JSON_DECODING_ERROR"
         static let pingTooManyRequestsError = "PING_TOO_MANY_REQUESTS_ERROR"
@@ -123,5 +122,77 @@ internal enum Constants {
         static let displayPerUnexpectedParameters = "DISPLAY_PERMISSION_UNEXPECTED_PARAMETERS"
         static let userDataCacheDecodingFailed = "USER_CACHE_DECODING_FAILED"
         static let userDataCacheEncodingFailed = "USERDATA_CACHE_ENCODING_FAILED"
+    }
+    enum IAMErrorCode {
+        case pingInvalidConfig
+        case pingDecodingError
+        case pingTooManyRequestsError
+        case invalidRequestError
+        case internalServerError
+        case pingMissingMetadata
+        case checkPermissionError
+        case displayPerMissingEndpoint
+        case displayPerMissingMetadata
+        case displayPerUnexpectedParameters
+        case userDataCacheDecodingFailed
+        case userDataCacheEncodingFailed
+
+        var errorCode: String {
+            switch self {
+            case .pingInvalidConfig:
+                return "PING_INVALID_CONFIGURATION"
+            case .pingDecodingError:
+                return "PING_JSON_DECODING_ERROR"
+            case .pingTooManyRequestsError:
+                return "PING_TOO_MANY_REQUESTS_ERROR"
+            case .invalidRequestError:
+                return "PING_INVALID_REQUEST_ERROR"
+            case .internalServerError:
+                return "PING_INTERNAL_SERVER_ERROR"
+            case .pingMissingMetadata:
+                return "PING_MISSING_METADATA"
+            case .checkPermissionError:
+                return "CHECK_PERMISSION_RESPONSE_ERROR"
+            case .displayPerMissingEndpoint:
+                return "DISPLAY_PERMISSION_MISSING_ENDPOINT"
+            case .displayPerMissingMetadata:
+                return "DISPLAY_PERMISSION_MISSING_METADATA"
+            case .displayPerUnexpectedParameters:
+                return "DISPLAY_PERMISSION_UNEXPECTED_PARAMETERS"
+            case .userDataCacheDecodingFailed:
+                return "USER_CACHE_DECODING_FAILED"
+            case .userDataCacheEncodingFailed:
+                return "USERDATA_CACHE_ENCODING_FAILED"
+            }
+        }
+
+        var errorMessage: String {
+            switch self {
+            case .pingInvalidConfig:
+                return "Ping configuration is invalid."
+            case .pingDecodingError:
+                return "Failed to decode ping response."
+            case .pingTooManyRequestsError:
+                return "Too many ping requests."
+            case .invalidRequestError:
+                return "Ping request was invalid."
+            case .internalServerError:
+                return "Internal server error during ping."
+            case .pingMissingMetadata:
+                return "Metadata missing in ping response."
+            case .checkPermissionError:
+                return "Couldn't get a valid response from display permission endpoint."
+            case .displayPerMissingEndpoint:
+                return "Missing endpoint in display permission request."
+            case .displayPerMissingMetadata:
+                return "Missing metadata in display permission request."
+            case .displayPerUnexpectedParameters:
+                return "Unexpected parameters in display permission request."
+            case .userDataCacheDecodingFailed:
+                return "Failed to decode cached user data."
+            case .userDataCacheEncodingFailed:
+                return "Failed to encode user data for caching."
+            }
+        }
     }
 }

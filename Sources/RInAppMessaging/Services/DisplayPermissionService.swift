@@ -40,7 +40,7 @@ internal class DisplayPermissionService: DisplayPermissionServiceType, HttpReque
         ]
 
         guard let displayPermissionUrl = configurationRepository.getEndpoints()?.displayPermission else {
-            eventLogger.logEvent(eventType: .warning, errorCode: Constants.RMCErrorCode.displayPerMissingEndpoint, errorMessage: "Missing endpoint for DisplayPermissionService")
+            eventLogger.logEvent(eventType: .warning, errorCode: Constants.IAMErrorCode.displayPerMissingEndpoint.errorCode, errorMessage: Constants.IAMErrorCode.displayPerMissingEndpoint.errorMessage)
             Logger.debug("error: missing endpoint for DisplayPermissionService")
             return fallbackResponse
         }
@@ -75,7 +75,7 @@ internal class DisplayPermissionService: DisplayPermissionServiceType, HttpReque
             default: ()
             }
         }
-        eventLogger.logEvent(eventType: .warning, errorCode: Constants.RMCErrorCode.checkPermissionError, errorMessage: "Couldn't get a valid response from display permission endpoint")
+        eventLogger.logEvent(eventType: .warning, errorCode: Constants.IAMErrorCode.checkPermissionError.errorCode, errorMessage: Constants.IAMErrorCode.checkPermissionError.errorMessage)
         reportError(description: "couldn't get a valid response from display permission endpoint", data: nil)
         return fallbackResponse
     }
@@ -88,12 +88,12 @@ extension DisplayPermissionService {
 
         guard let subscriptionId = configurationRepository.getSubscriptionID(),
               let appVersion = bundleInfo.appVersion else {
-            eventLogger.logEvent(eventType: .warning, errorCode: Constants.RMCErrorCode.displayPerMissingMetadata, errorMessage: "Error while building request body for display permssion - missing metadata")
+            eventLogger.logEvent(eventType: .warning, errorCode: Constants.IAMErrorCode.displayPerMissingMetadata.errorCode, errorMessage: Constants.IAMErrorCode.displayPerMissingMetadata.errorMessage)
             Logger.debug("error while building request body for display permssion - missing metadata")
             return .failure(RequestError.missingMetadata)
         }
         guard let campaignId = parameters?[Constants.Request.campaignID] as? String else {
-            eventLogger.logEvent(eventType: .warning, errorCode: Constants.RMCErrorCode.displayPerUnexpectedParameters, errorMessage: "Error while building request body for display permssion - unexpected parameters")
+            eventLogger.logEvent(eventType: .warning, errorCode: Constants.IAMErrorCode.displayPerUnexpectedParameters.errorCode, errorMessage: Constants.IAMErrorCode.displayPerUnexpectedParameters.errorMessage)
             Logger.debug("error while building request body for display permssion - unexpected parameters")
             return .failure(RequestError.missingParameters)
         }

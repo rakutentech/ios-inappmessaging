@@ -54,13 +54,13 @@ internal class MessageMixerService: MessageMixerServiceType, HttpRequestable {
         case .failure(let requestError):
             switch requestError {
             case .httpError(let statusCode, _, _) where statusCode == 429:
-                eventLogger.logEvent(eventType: .warning, errorCode: String(statusCode), errorMessage: Constants.RMCErrorCode.pingTooManyRequestsError)
+                eventLogger.logEvent(eventType: .warning, errorCode: String(statusCode), errorMessage: Constants.IAMErrorCode.pingTooManyRequestsError.errorMessage)
                 return .failure(.tooManyRequestsError)
             case .httpError(let statusCode, _, _) where 300..<500 ~= statusCode:
-                eventLogger.logEvent(eventType: .warning, errorCode: String(statusCode), errorMessage: Constants.RMCErrorCode.invalidRequestError)
+                eventLogger.logEvent(eventType: .warning, errorCode: String(statusCode), errorMessage: Constants.IAMErrorCode.invalidRequestError.errorMessage)
                 return .failure(.invalidRequestError(statusCode))
             case .httpError(let statusCode, _, _) where statusCode >= 500:
-                eventLogger.logEvent(eventType: .warning, errorCode: String(statusCode), errorMessage: Constants.RMCErrorCode.internalServerError)
+                eventLogger.logEvent(eventType: .warning, errorCode: String(statusCode), errorMessage: Constants.IAMErrorCode.internalServerError.errorMessage)
                 return .failure(.internalServerError(statusCode))
             default:
                 return .failure(.requestError(requestError))
@@ -89,7 +89,7 @@ extension MessageMixerService {
 
         guard let appVersion = bundleInfo.appVersion else {
             Logger.debug("failed creating a request body")
-            eventLogger.logEvent(eventType: .warning, errorCode: Constants.RMCErrorCode.pingMissingMetadata, errorMessage: "Ping: Failed creating a request body")
+            eventLogger.logEvent(eventType: .warning, errorCode: Constants.IAMErrorCode.pingMissingMetadata.errorCode, errorMessage: Constants.IAMErrorCode.pingMissingMetadata.errorMessage)
             return .failure(RequestError.missingMetadata)
         }
 

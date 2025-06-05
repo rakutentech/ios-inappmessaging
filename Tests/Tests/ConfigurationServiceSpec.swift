@@ -24,6 +24,7 @@ class ConfigurationServiceSpec: QuickSpec {
         var service: ConfigurationService!
         var httpSession: URLSessionMock!
         var configRepository: ConfigurationRepository!
+        var eventLogger: MockEventLoggerSendable!
 
         describe("ConfigurationService") {
 
@@ -31,8 +32,10 @@ class ConfigurationServiceSpec: QuickSpec {
                 URLSessionMock.startMockingURLSession()
 
                 configRepository = ConfigurationRepository()
+                eventLogger = MockEventLoggerSendable()
                 configRepository.saveIAMModuleConfiguration(moduleConfig)
-                service = ConfigurationService(configurationRepository: configRepository)
+                service = ConfigurationService(configurationRepository: configRepository,
+                                               eventLogger: eventLogger)
 
                 BundleInfoMock.reset()
                 service.bundleInfo = BundleInfoMock.self
