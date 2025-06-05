@@ -13,7 +13,6 @@ protocol EventLoggerSendable {
 }
 
 final class EventLogger: EventLoggerSendable {
-
     var isEventLoggerEnabled = true
     private var apiKey: String?
     private var apiUrl: String?

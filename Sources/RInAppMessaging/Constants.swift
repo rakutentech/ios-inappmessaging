@@ -121,5 +121,7 @@ internal enum Constants {
         static let displayPerMissingEndpoint = "DISPLAY_PERMISSION_MISSING_ENDPOINT"
         static let displayPerMissingMetadata = "DISPLAY_PERMISSION_MISSING_METADATA"
         static let displayPerUnexpectedParameters = "DISPLAY_PERMISSION_UNEXPECTED_PARAMETERS"
+        static let userDataCacheDecodingFailed = "USER_CACHE_DECODING_FAILED"
+        static let userDataCacheEncodingFailed = "USERDATA_CACHE_ENCODING_FAILED"
     }
 }

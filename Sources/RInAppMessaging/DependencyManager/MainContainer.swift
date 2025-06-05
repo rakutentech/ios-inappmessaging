@@ -29,7 +29,8 @@ internal enum MainContainerFactory {
                                      resumeQueue: RInAppMessaging.inAppQueue)
             }),
             ContainerElement(type: UserDataCacheable.self, factory: {
-                UserDataCache(userDefaults: UserDefaults.standard)
+                UserDataCache(userDefaults: UserDefaults.standard,
+                              eventLogger: manager.resolve(type: EventLoggerSendable.self)!)
             }),
             ContainerElement(type: CampaignRepositoryType.self, factory: {
                 CampaignRepository(userDataCache: manager.resolve(type: UserDataCacheable.self)!,

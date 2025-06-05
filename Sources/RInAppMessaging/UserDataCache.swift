@@ -33,11 +33,14 @@ internal class UserDataCache: UserDataCacheable {
     private typealias CacheContainers = [String: UserDataCacheContainer]
 
     private let userDefaults: UserDefaults
+    private let eventLogger: EventLoggerSendable
     @AtomicGetSet private var cachedContainers: CacheContainers
     private let persistedDataKey = "IAM_user_cache"
 
-    init(userDefaults: UserDefaults) {
+    init(userDefaults: UserDefaults,
+         eventLogger: EventLoggerSendable) {
         self.userDefaults = userDefaults
+        self.eventLogger = eventLogger
 
         if let persistedData = userDefaults.object(forKey: persistedDataKey) as? Data {
             do {
@@ -45,6 +48,7 @@ internal class UserDataCache: UserDataCacheable {
                 cachedContainers = decodedData
             } catch {
                 cachedContainers = [:]
+                eventLogger.logEvent(eventType: .warning, errorCode: Constants.RMCErrorCode.userDataCacheDecodingFailed, errorMessage: "UserDataCache decoding failed")
                 Logger.debug("UserDataCache decoding failed! \(error)")
                 Environment.isUnitTestEnvironment ? () : assertionFailure()
             }
@@ -97,6 +101,7 @@ internal class UserDataCache: UserDataCacheable {
             let encodedData = try JSONEncoder().encode(cachedContainers)
             userDefaults.set(encodedData, forKey: persistedDataKey)
         } catch {
+            eventLogger.logEvent(eventType: .warning, errorCode: Constants.RMCErrorCode.userDataCacheEncodingFailed, errorMessage: "UserDataCache decoding failed")
             Logger.debug("UserDataCache encoding failed! \(error)")
             assertionFailure()
         }
