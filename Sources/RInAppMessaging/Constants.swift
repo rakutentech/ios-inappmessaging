@@ -108,21 +108,7 @@ internal enum Constants {
         static let minHeight = 5.0
         static let defaultHeight = 250.0
     }
-    
-    enum RMCErrorCode {
-        static let pingInvalidConfig = "PING_INVALID_CONFIGURATION"
-        static let pingDecodingError = "PING_JSON_DECODING_ERROR"
-        static let pingTooManyRequestsError = "PING_TOO_MANY_REQUESTS_ERROR"
-        static let invalidRequestError = "PING_INVALID_REQUEST_ERROR"
-        static let internalServerError = "PING_INTERNAL_SERVER_ERROR"
-        static let pingMissingMetadata = "PING_MISSING_METADATA"
-        static let checkPermissionError = "CHECK_PERMISSION_RESPONSE_ERROR"
-        static let displayPerMissingEndpoint = "DISPLAY_PERMISSION_MISSING_ENDPOINT"
-        static let displayPerMissingMetadata = "DISPLAY_PERMISSION_MISSING_METADATA"
-        static let displayPerUnexpectedParameters = "DISPLAY_PERMISSION_UNEXPECTED_PARAMETERS"
-        static let userDataCacheDecodingFailed = "USER_CACHE_DECODING_FAILED"
-        static let userDataCacheEncodingFailed = "USERDATA_CACHE_ENCODING_FAILED"
-    }
+
     enum IAMErrorCode {
         case pingInvalidConfig
         case pingDecodingError
@@ -136,6 +122,11 @@ internal enum Constants {
         case displayPerUnexpectedParameters
         case userDataCacheDecodingFailed
         case userDataCacheEncodingFailed
+        case configTooManyRequestsError
+        case configMissingOrInvalidSubscriptionId
+        case configUnknownSubscriptionId
+        case configInvalidRequestError
+        case configInternalServerError
 
         var errorCode: String {
             switch self {
@@ -163,6 +154,16 @@ internal enum Constants {
                 return "USER_CACHE_DECODING_FAILED"
             case .userDataCacheEncodingFailed:
                 return "USERDATA_CACHE_ENCODING_FAILED"
+            case .configTooManyRequestsError:
+                return "CONFIG_TOO_MANY_REQUESTS_ERROR"
+            case .configMissingOrInvalidSubscriptionId:
+                return "CONFIG_MISSING_OR_INVALID_SUBSCRIPTION_ID"
+            case .configUnknownSubscriptionId:
+                return "CONFIG_UNKNOWN_SUBSCRIPTION_ID"
+            case .configInvalidRequestError:
+                return "CONFIG_INVALID_REQUEST_ERROR"
+            case .configInternalServerError:
+                return "CONFIG_INTERNAL_SERVER_ERROR"
             }
         }
 
@@ -192,6 +193,16 @@ internal enum Constants {
                 return "Failed to decode cached user data."
             case .userDataCacheEncodingFailed:
                 return "Failed to encode user data for caching."
+            case .configTooManyRequestsError:
+                return "Too many configuration requests sent in a short period."
+            case .configMissingOrInvalidSubscriptionId:
+                return "Missing or invalid subscription ID in the configuration request."
+            case .configUnknownSubscriptionId:
+                return "The provided subscription ID is unknown."
+            case .configInvalidRequestError:
+                return "The configuration request was invalid or malformed."
+            case .configInternalServerError:
+                return "An internal server error occurred while fetching the configuration."
             }
         }
     }
