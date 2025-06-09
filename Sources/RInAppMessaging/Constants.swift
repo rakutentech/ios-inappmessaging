@@ -116,8 +116,8 @@ internal enum Constants {
         case pingInvalidConfig
         case pingDecodingError
         case pingTooManyRequestsError
-        case invalidRequestError
-        case internalServerError
+        case pingInvalidRequestError
+        case pingInternalServerError
         case pingMissingMetadata
         case checkPermissionError
         case displayPerMissingEndpoint
@@ -139,9 +139,9 @@ internal enum Constants {
                 return "PING_JSON_DECODING_ERROR"
             case .pingTooManyRequestsError:
                 return "PING_TOO_MANY_REQUESTS_ERROR"
-            case .invalidRequestError:
+            case .pingInvalidRequestError:
                 return "PING_INVALID_REQUEST_ERROR"
-            case .internalServerError:
+            case .pingInternalServerError:
                 return "PING_INTERNAL_SERVER_ERROR"
             case .pingMissingMetadata:
                 return "PING_MISSING_METADATA"
@@ -178,9 +178,9 @@ internal enum Constants {
                 return "Failed to decode ping response."
             case .pingTooManyRequestsError:
                 return "Too many ping requests."
-            case .invalidRequestError:
+            case .pingInvalidRequestError:
                 return "Ping request was invalid."
-            case .internalServerError:
+            case .pingInternalServerError:
                 return "Internal server error during ping."
             case .pingMissingMetadata:
                 return "Metadata missing in ping response."

@@ -139,6 +139,11 @@ class ConfigurationServiceSpec: QuickSpec {
                                 let error = result.getError()
                                 expect(error).toNot(beNil())
 
+                                expect(eventLogger.logEventCalled).to(beTrue())
+                                expect(eventLogger.lastEventType).to(equal(REventType.warning))
+                                expect(eventLogger.lastErrorCode).to(equal("429"))
+                                expect(eventLogger.lastErrorMessage).to(equal(constants.configTooManyRequestsError.errorMessage))
+
                                 guard case .tooManyRequestsError = error else {
                                     fail("Unexpected error type \(String(describing: error)). Expected .tooManyRequestsError")
                                     done()
@@ -157,7 +162,7 @@ class ConfigurationServiceSpec: QuickSpec {
                                 let error = result.getError()
                                 expect(error).toNot(beNil())
 
-                                expect(eventLogger.isEventLoggerEnabled).to(beTrue())
+                                expect(eventLogger.logEventCalled).to(beTrue())
                                 expect(eventLogger.lastEventType).to(equal(REventType.critical))
                                 expect(eventLogger.lastErrorCode).to(equal("400"))
                                 expect(eventLogger.lastErrorMessage).to(equal(constants.configMissingOrInvalidSubscriptionId.errorMessage))
@@ -180,7 +185,7 @@ class ConfigurationServiceSpec: QuickSpec {
                                 let error = result.getError()
                                 expect(error).toNot(beNil())
 
-                                expect(eventLogger.isEventLoggerEnabled).to(beTrue())
+                                expect(eventLogger.logEventCalled).to(beTrue())
                                 expect(eventLogger.lastEventType).to(equal(REventType.critical))
                                 expect(eventLogger.lastErrorCode).to(equal("404"))
                                 expect(eventLogger.lastErrorMessage).to(equal(constants.configUnknownSubscriptionId.errorMessage))
@@ -205,6 +210,12 @@ class ConfigurationServiceSpec: QuickSpec {
                                     let error = result.getError()
                                     expect(error).toNot(beNil())
 
+                                    expect(eventLogger.logEventCalled).to(beTrue())
+                                    expect(eventLogger.lastEventType).to(equal(REventType.warning))
+                                    expect(Int(eventLogger.lastErrorCode ?? " ")).to(beGreaterThanOrEqualTo(300))
+                                    expect(Int(eventLogger.lastErrorCode ?? " ")).to(beLessThan(500))
+                                    expect(eventLogger.lastErrorMessage).to(equal(constants.configInvalidRequestError.errorMessage))
+
                                     guard case .invalidRequestError(let code) = error else {
                                         fail("Unexpected error type \(String(describing: error)). Expected .invalidRequestError")
                                         done()
@@ -228,6 +239,11 @@ class ConfigurationServiceSpec: QuickSpec {
                                     let result = service.getConfigData()
                                     let error = result.getError()
                                     expect(error).toNot(beNil())
+
+                                    expect(eventLogger.logEventCalled).to(beTrue())
+                                    expect(eventLogger.lastEventType).to(equal(REventType.warning))
+                                    expect(Int(eventLogger.lastErrorCode ?? " ")).to(beGreaterThanOrEqualTo(500))
+                                    expect(eventLogger.lastErrorMessage).to(equal(constants.configInternalServerError.errorMessage))
 
                                     guard case .internalServerError(let code) = error else {
                                         fail("Unexpected error type \(String(describing: error)). Expected .internalServerError")

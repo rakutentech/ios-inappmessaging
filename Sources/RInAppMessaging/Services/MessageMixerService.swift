@@ -57,10 +57,10 @@ internal class MessageMixerService: MessageMixerServiceType, HttpRequestable {
                 eventLogger.logEvent(eventType: .warning, errorCode: String(statusCode), errorMessage: Constants.IAMErrorCode.pingTooManyRequestsError.errorMessage)
                 return .failure(.tooManyRequestsError)
             case .httpError(let statusCode, _, _) where 300..<500 ~= statusCode:
-                eventLogger.logEvent(eventType: .warning, errorCode: String(statusCode), errorMessage: Constants.IAMErrorCode.invalidRequestError.errorMessage)
+                eventLogger.logEvent(eventType: .warning, errorCode: String(statusCode), errorMessage: Constants.IAMErrorCode.pingInvalidRequestError.errorMessage)
                 return .failure(.invalidRequestError(statusCode))
             case .httpError(let statusCode, _, _) where statusCode >= 500:
-                eventLogger.logEvent(eventType: .warning, errorCode: String(statusCode), errorMessage: Constants.IAMErrorCode.internalServerError.errorMessage)
+                eventLogger.logEvent(eventType: .warning, errorCode: String(statusCode), errorMessage: Constants.IAMErrorCode.pingInternalServerError.errorMessage)
                 return .failure(.internalServerError(statusCode))
             default:
                 return .failure(.requestError(requestError))
