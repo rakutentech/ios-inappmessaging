@@ -1537,8 +1537,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/rakutentech/ios-sdkutils.git";
 			requirement = {
-				kind = exactVersion;
-				version = 5.1.0;
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.1.0;
 			};
 		};
 		45FA9002272C2C5C005166FD /* XCRemoteSwiftPackageReference "Shock" */ = {

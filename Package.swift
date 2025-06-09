@@ -20,7 +20,8 @@ let package = Package(
     targets: [
         .target(
             name: "RInAppMessaging",
-            dependencies: [.product(name: "RSDKUtilsMain", package: "ios-sdkutils")],
+            dependencies: [.product(name: "RSDKUtilsMain", package: "ios-sdkutils"),
+                           .product(name: "REventLogger", package: "ios-sdkutils")],
             resources: [.process("Resources")]
         )
     ],

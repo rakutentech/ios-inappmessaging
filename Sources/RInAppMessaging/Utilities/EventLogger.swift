@@ -1,9 +1,10 @@
 import Foundation
 
-#if canImport(RSDKUtils)
+#if canImport(RSDKUtilsMain)
+import RSDKUtilsMain // SPM version
+import REventLogger // SPM version
+#else
 import RSDKUtils
-#elseif canImport(RSDKUtilsMain)
-import RSDKUtilsMain
 #endif
 
 protocol EventLoggerSendable {
