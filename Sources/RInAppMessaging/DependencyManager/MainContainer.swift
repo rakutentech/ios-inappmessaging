@@ -62,7 +62,8 @@ internal enum MainContainerFactory {
             ContainerElement(type: CampaignDispatcherType.self, factory: {
                 CampaignDispatcher(router: manager.resolve(type: RouterType.self)!,
                                    permissionService: manager.resolve(type: DisplayPermissionServiceType.self)!,
-                                   campaignRepository: manager.resolve(type: CampaignRepositoryType.self)!)
+                                   campaignRepository: manager.resolve(type: CampaignRepositoryType.self)!,
+                                   eventlogger: manager.resolve(type: EventLoggerSendable.self)!)
             }),
             ContainerElement(type: MessageMixerServiceType.self, factory: {
                 MessageMixerService(accountRepository: manager.resolve(type: AccountRepositoryType.self)!,

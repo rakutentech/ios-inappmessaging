@@ -101,11 +101,21 @@ import RSDKUtils
         let validConfigURL = tryGettingValidConfigURL(config)
         let mainContainer = MainContainerFactory.create(dependencyManager: dependencyManager, configURL: validConfigURL)
         dependencyManager.appendContainer(mainContainer)
-        
-        if let eventLogger = dependencyManager.resolve(type: EventLoggerSendable.self) {
-            eventLogger.setLoggerApiConfig(apiKey: "", apiUrl: "", isEventLoggerEnabled: true)
+
+        /// Event Logger configuration for standalone App Popup. The credentials are fetched from the Info.plist
+        /// - apiKey -`InAppMessagingEventLoggerApiUrl`
+        /// - apiKey - `InAppMessagingEventLoggerApiKey`
+        /// - isEventLoggerEnabled - `InAppMessagingIsEventLoggerEnabled`
+        if let eventLogger = dependencyManager.resolve(type: EventLoggerSendable.self),
+           let eventLoggerApiKey = BundleInfo.eventLoggerApiKey,
+           let eventLoggerApiUrl = BundleInfo.eventLoggerApiUrl,
+           let isEventLoggerEnabled = BundleInfo.isEventLoggerEnabled {
+            eventLogger.setupApiConfig(apiKey: eventLoggerApiKey,
+                                       apiUrl: eventLoggerApiUrl,
+                                       isEventLoggerEnabled: isEventLoggerEnabled)
             eventLogger.configure()
         }
+
         configure(dependencyManager: dependencyManager, moduleConfig: config)
     }
 
@@ -175,10 +185,21 @@ import RSDKUtils
         }
     }
     
-    @objc public static func setLoggingCredentials(apiKey: String, apiUrl: String, isEventLoggerEnabled: Bool) {
+    /// Sets the credentials required for Event Logger
+    ///
+    /// This method configures the Event Logger with  API key, API URL and enable/disable flag (for internal use only).
+    ///
+    /// - Parameters:
+    ///   - apiKey: The API key used for authenticating logging requests.
+    ///   - apiUrl: The endpoint URL where logs will be sent.
+    ///   - isEventLoggerEnabled: A Boolean value that determines if event logging should be enabled.
+    ///
+    /// - Note: This method is **intended for internal use only** within the wrapper framework.
+    /// Clients using the SDK should not call this method directly.
+    @objc public static func setupApiConfig(apiKey: String, apiUrl: String, isEventLoggerEnabled: Bool) {
         if isRMCEnvironment,
            let eventLogger = dependencyManager?.resolve(type: EventLoggerSendable.self) {
-            eventLogger.setLoggerApiConfig(apiKey: apiKey, apiUrl: apiUrl, isEventLoggerEnabled: true)
+            eventLogger.setupApiConfig(apiKey: apiKey, apiUrl: apiUrl, isEventLoggerEnabled: true)
             eventLogger.configure()
         }
     }

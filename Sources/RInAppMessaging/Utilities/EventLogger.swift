@@ -10,7 +10,7 @@ protocol EventLoggerSendable {
     var isEventLoggerEnabled: Bool { get set }
     func configure()
     func logEvent(eventType: REventType, errorCode: String, errorMessage: String)
-    func setLoggerApiConfig(apiKey: String, apiUrl: String, isEventLoggerEnabled: Bool)
+    func setupApiConfig(apiKey: String, apiUrl: String, isEventLoggerEnabled: Bool)
 }
 
 final class EventLogger: EventLoggerSendable {
@@ -18,7 +18,7 @@ final class EventLogger: EventLoggerSendable {
     private var apiKey: String?
     private var apiUrl: String?
 
-    func setLoggerApiConfig(apiKey: String, apiUrl: String, isEventLoggerEnabled: Bool) {
+    func setupApiConfig(apiKey: String, apiUrl: String, isEventLoggerEnabled: Bool) {
         self.apiKey = apiKey
         self.apiUrl = apiUrl
         self.isEventLoggerEnabled = isEventLoggerEnabled
@@ -33,6 +33,7 @@ final class EventLogger: EventLoggerSendable {
     }
 
     func logEvent(eventType: REventType, errorCode: String, errorMessage: String) {
+        guard isEventLoggerEnabled  else { return }
         if eventType == REventType.critical {
             REventLogger.shared.sendCriticalEvent(sourceName: "iam",
                                                   sourceVersion: Constants.Versions.sdkVersion,

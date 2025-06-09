@@ -710,7 +710,7 @@ class MockEventLoggerSendable: EventLoggerSendable {
         configureCalled = true
     }
 
-    func setLoggerApiConfig(apiKey: String, apiUrl: String, isEventLoggerEnabled: Bool) {
+    func setupApiConfig(apiKey: String, apiUrl: String, isEventLoggerEnabled: Bool) {
         setLoggerApiConfigCalled = true
     }
 

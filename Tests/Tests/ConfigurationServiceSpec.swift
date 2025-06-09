@@ -25,6 +25,7 @@ class ConfigurationServiceSpec: QuickSpec {
         var httpSession: URLSessionMock!
         var configRepository: ConfigurationRepository!
         var eventLogger: MockEventLoggerSendable!
+        let constants = Constants.IAMErrorCode.self
 
         describe("ConfigurationService") {
 
@@ -156,6 +157,11 @@ class ConfigurationServiceSpec: QuickSpec {
                                 let error = result.getError()
                                 expect(error).toNot(beNil())
 
+                                expect(eventLogger.isEventLoggerEnabled).to(beTrue())
+                                expect(eventLogger.lastEventType).to(equal(REventType.critical))
+                                expect(eventLogger.lastErrorCode).to(equal("400"))
+                                expect(eventLogger.lastErrorMessage).to(equal(constants.configMissingOrInvalidSubscriptionId.errorMessage))
+
                                 guard case .missingOrInvalidSubscriptionId = error else {
                                     fail("Unexpected error type \(String(describing: error)). Expected .missingOrInvalidSubscriptionId")
                                     done()
@@ -173,6 +179,11 @@ class ConfigurationServiceSpec: QuickSpec {
                                 let result = service.getConfigData()
                                 let error = result.getError()
                                 expect(error).toNot(beNil())
+
+                                expect(eventLogger.isEventLoggerEnabled).to(beTrue())
+                                expect(eventLogger.lastEventType).to(equal(REventType.critical))
+                                expect(eventLogger.lastErrorCode).to(equal("404"))
+                                expect(eventLogger.lastErrorMessage).to(equal(constants.configUnknownSubscriptionId.errorMessage))
 
                                 guard case .unknownSubscriptionId = error else {
                                     fail("Unexpected error type \(String(describing: error)). Expected .missingOrInvalidSubscriptionId")

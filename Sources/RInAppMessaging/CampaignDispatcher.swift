@@ -20,6 +20,7 @@ internal class CampaignDispatcher: CampaignDispatcherType, TaskSchedulable {
     private let router: RouterType
     private let permissionService: DisplayPermissionServiceType
     private let campaignRepository: CampaignRepositoryType
+    private let eventLogger: EventLoggerSendable
 
     private let dispatchQueue = DispatchQueue(label: "IAM.CampaignDisplay", qos: .userInteractive)
     private(set) var queuedCampaignIDs = [String]()
@@ -39,11 +40,13 @@ internal class CampaignDispatcher: CampaignDispatcherType, TaskSchedulable {
 
     init(router: RouterType,
          permissionService: DisplayPermissionServiceType,
-         campaignRepository: CampaignRepositoryType) {
+         campaignRepository: CampaignRepositoryType,
+         eventlogger: EventLoggerSendable) {
 
         self.router = router
         self.permissionService = permissionService
         self.campaignRepository = campaignRepository
+        self.eventLogger = eventlogger
 
         let sessionConfig = URLSessionConfiguration.default
         sessionConfig.timeoutIntervalForRequest = Constants.CampaignMessage.imageRequestTimeoutSeconds

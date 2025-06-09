@@ -54,6 +54,18 @@ internal class BundleInfo {
         }
         return NSNumber(value: accountId)
     }
+
+    class var eventLoggerApiUrl: String? {
+        bundle.infoDictionary?[Constants.Info.eventLoggerApiUrl] as? String
+    }
+
+    class var eventLoggerApiKey: String? {
+        bundle.infoDictionary?[Constants.Info.eventLoggerApiKey] as? String
+    }
+
+    class var isEventLoggerEnabled: Bool? {
+        bundle.infoDictionary?[Constants.Info.isEventLoggerEnabled] as? Bool
+    }
 }
 
 internal extension Bundle {
