@@ -44,7 +44,7 @@ internal enum Constants {
         static let customFontNameButtonKey = "InAppMessagingCustomFontNameButton"
         static let eventLoggerApiUrl = "InAppMessagingEventLoggerApiUrl"
         static let eventLoggerApiKey = "InAppMessagingEventLoggerApiKey"
-        static let isEventLoggerEnabled = "InAppMessagingIsEventLoggerEnabled"
+        static let isEventLoggerEnabled = "InAppMessagingEventLoggerEnabled"
     }
 
     enum Versions {
@@ -123,6 +123,7 @@ internal enum Constants {
         case displayPerMissingEndpoint
         case displayPerMissingMetadata
         case displayPerUnexpectedParameters
+        case displayPerFailedCreatingRequestBody
         case userDataCacheDecodingFailed
         case userDataCacheEncodingFailed
         case configTooManyRequestsError
@@ -167,6 +168,8 @@ internal enum Constants {
                 return "CONFIG_INVALID_REQUEST_ERROR"
             case .configInternalServerError:
                 return "CONFIG_INTERNAL_SERVER_ERROR"
+            case .displayPerFailedCreatingRequestBody:
+                return "DISPLAY_PERMISSION_FAILED_CREATING_REQUEST_BODY"
             }
         }
 
@@ -183,7 +186,7 @@ internal enum Constants {
             case .pingInternalServerError:
                 return "Internal server error during ping."
             case .pingMissingMetadata:
-                return "Metadata missing in ping response."
+                return "Failed creating a request body"
             case .checkPermissionError:
                 return "Couldn't get a valid response from display permission endpoint."
             case .displayPerMissingEndpoint:
@@ -206,6 +209,8 @@ internal enum Constants {
                 return "The configuration request was invalid or malformed."
             case .configInternalServerError:
                 return "An internal server error occurred while fetching the configuration."
+            case .displayPerFailedCreatingRequestBody:
+             return "failed creating a request body"
             }
         }
     }

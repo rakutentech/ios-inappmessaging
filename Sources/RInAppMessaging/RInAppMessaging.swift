@@ -30,6 +30,9 @@ import RSDKUtils
     internal static var isRMCEnvironment: Bool {
         bundleInfo.rmcBundle != nil
     }
+    private static var loggerApiKey: String?
+    private static var loggerApiUrl: String?
+    private static var loggerEnabled: Bool?
 
     private override init() { super.init() }
 
@@ -102,18 +105,16 @@ import RSDKUtils
         let mainContainer = MainContainerFactory.create(dependencyManager: dependencyManager, configURL: validConfigURL)
         dependencyManager.appendContainer(mainContainer)
 
-        /// Event Logger configuration for standalone App Popup. The credentials are fetched from the Info.plist
+        /// Event Logger configuration for  App Popup .
+        ///
+        /// If credentials are not set using `setupApiConfig()` then they are fetched from Info.plist
         /// - apiKey -`InAppMessagingEventLoggerApiUrl`
         /// - apiKey - `InAppMessagingEventLoggerApiKey`
-        /// - isEventLoggerEnabled - `InAppMessagingIsEventLoggerEnabled`
-        if let eventLogger = dependencyManager.resolve(type: EventLoggerSendable.self),
-           let eventLoggerApiKey = BundleInfo.eventLoggerApiKey,
-           let eventLoggerApiUrl = BundleInfo.eventLoggerApiUrl,
-           let isEventLoggerEnabled = BundleInfo.isEventLoggerEnabled {
-            eventLogger.setupApiConfig(apiKey: eventLoggerApiKey,
-                                       apiUrl: eventLoggerApiUrl,
-                                       isEventLoggerEnabled: isEventLoggerEnabled)
-            eventLogger.configure()
+        /// - isEventLoggerEnabled - `InAppMessagingEventLoggerEnabled`
+        if let eventLogger = dependencyManager.resolve(type: EventLoggerSendable.self){
+            eventLogger.configure(apiKey: self.loggerApiKey ?? BundleInfo.eventLoggerApiKey,
+                                  apiUrl: self.loggerApiUrl ?? BundleInfo.eventLoggerApiUrl,
+                                  isEventLoggerEnabled: self.loggerEnabled ?? BundleInfo.isEventLoggerEnabled)
         }
 
         configure(dependencyManager: dependencyManager, moduleConfig: config)
@@ -197,11 +198,9 @@ import RSDKUtils
     /// - Note: This method is **intended for internal use only** within the wrapper framework.
     /// Clients using the SDK should not call this method directly.
     @objc public static func setupApiConfig(apiKey: String, apiUrl: String, isEventLoggerEnabled: Bool) {
-        if isRMCEnvironment,
-           let eventLogger = dependencyManager?.resolve(type: EventLoggerSendable.self) {
-            eventLogger.setupApiConfig(apiKey: apiKey, apiUrl: apiUrl, isEventLoggerEnabled: true)
-            eventLogger.configure()
-        }
+        self.loggerApiKey = apiKey
+        self.loggerApiUrl = apiUrl
+        self.loggerEnabled = isEventLoggerEnabled
     }
     
     // visible for unit tests

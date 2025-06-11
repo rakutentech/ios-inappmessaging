@@ -111,6 +111,7 @@ extension DisplayPermissionService {
             let body = try JSONEncoder().encode(permissionRequest)
             return .success(body)
         } catch {
+            eventLogger.logEvent(eventType: .warning, errorCode: Constants.IAMErrorCode.displayPerFailedCreatingRequestBody.errorCode, errorMessage: Constants.IAMErrorCode.displayPerFailedCreatingRequestBody.errorMessage)
             Logger.debug("failed creating a request body.")
             return .failure(error)
         }

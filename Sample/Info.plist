@@ -89,7 +89,7 @@
 	<string>eventLoggerSampleKey</string>
 	<key>InAppMessagingEventLoggerApiKey</key>
 	<string>https://stg.eventLogger.url</string>
-	<key>InAppMessagingIsEventLoggerEnabled</key>
+	<key>InAppMessagingEventLoggerEnabled</key>
 	<true/>
 </dict>
 </plist>

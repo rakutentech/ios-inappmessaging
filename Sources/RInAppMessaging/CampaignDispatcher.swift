@@ -215,14 +215,17 @@ extension CampaignDispatcher {
             return
         }
 
-        imageData(from: url) { data, response, error in
+        imageData(from: url) { [weak self] data, response, error in
             if let data = data, let response = response, error == nil,
                let httpResponse = response as? HTTPURLResponse,
                httpResponse.statusCode == 200,
                let image = UIImage(data: data) {
-                self.cacheImage(data: data, for: url, response: response)
+                self?.cacheImage(data: data, for: url, response: response)
                 completion(image)
             } else {
+                if let error = error {
+                    self?.eventLogger.logEvent(eventType: .warning, errorCode:String(error.localizedDescription), errorMessage: error.localizedDescription)
+                }
                 completion(nil)
             }
         }
@@ -260,8 +263,11 @@ extension CampaignDispatcher {
     }
 
     func data(from url: URL, completion: @escaping (Data?) -> Void) {
-        httpSession.dataTask(with: URLRequest(url: url)) { (data, _, error) in
+        httpSession.dataTask(with: URLRequest(url: url)) { [weak self] (data, _, error) in
             guard error == nil else {
+                if let error = error {
+                    self?.eventLogger.logEvent(eventType: .warning, errorCode: error.localizedDescription, errorMessage: error.localizedDescription)
+                }
                 completion(nil)
                 return
             }
