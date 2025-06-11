@@ -17,7 +17,7 @@ import RSDKUtils
     internal static var swiftUIEventHandler: SwiftUIViewEventHandlerType? {
         dependencyManager?.resolve(type: SwiftUIViewEventHandlerType.self)
     }
-    
+
     internal static var bundleInfo = BundleInfo.self
     
     internal static var isInitialized: Bool {
@@ -30,6 +30,9 @@ import RSDKUtils
     internal static var isRMCEnvironment: Bool {
         bundleInfo.rmcBundle != nil
     }
+    private static var loggerApiKey: String?
+    private static var loggerApiUrl: String?
+    private static var loggerEnabled: Bool?
 
     private override init() { super.init() }
 
@@ -101,6 +104,19 @@ import RSDKUtils
         let validConfigURL = tryGettingValidConfigURL(config)
         let mainContainer = MainContainerFactory.create(dependencyManager: dependencyManager, configURL: validConfigURL)
         dependencyManager.appendContainer(mainContainer)
+
+        /// Event Logger configuration for  App Popup .
+        ///
+        /// If credentials are not set using `setupApiConfig()` then they are fetched from Info.plist
+        /// - apiKey -`InAppMessagingEventLoggerApiUrl`
+        /// - apiKey - `InAppMessagingEventLoggerApiKey`
+        /// - isEventLoggerEnabled - `InAppMessagingEventLoggerEnabled`
+        if let eventLogger = dependencyManager.resolve(type: EventLoggerSendable.self){
+            eventLogger.configure(apiKey: self.loggerApiKey ?? BundleInfo.eventLoggerApiKey,
+                                  apiUrl: self.loggerApiUrl ?? BundleInfo.eventLoggerApiUrl,
+                                  isEventLoggerEnabled: self.loggerEnabled ?? BundleInfo.isEventLoggerEnabled)
+        }
+
         configure(dependencyManager: dependencyManager, moduleConfig: config)
     }
 
@@ -169,7 +185,24 @@ import RSDKUtils
             interactor.closeTooltip(with: uiElementIdentifier)
         }
     }
-
+    
+    /// Sets the credentials required for Event Logger
+    ///
+    /// This method configures the Event Logger with  API key, API URL and enable/disable flag (for internal use only).
+    ///
+    /// - Parameters:
+    ///   - apiKey: The API key used for authenticating logging requests.
+    ///   - apiUrl: The endpoint URL where logs will be sent.
+    ///   - isEventLoggerEnabled: A Boolean value that determines if event logging should be enabled.
+    ///
+    /// - Note: This method is **intended for internal use only** within the wrapper framework.
+    /// Clients using the SDK should not call this method directly.
+    @objc public static func setupApiConfig(apiKey: String, apiUrl: String, isEventLoggerEnabled: Bool) {
+        self.loggerApiKey = apiKey
+        self.loggerApiUrl = apiUrl
+        self.loggerEnabled = isEventLoggerEnabled
+    }
+    
     // visible for unit tests
     internal static func tryGettingValidConfigURL(_ config: InAppMessagingModuleConfiguration) -> URL {
         

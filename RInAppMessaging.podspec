@@ -10,6 +10,7 @@ Pod::Spec.new do |s|
   s.swift_versions = ['5.7.1']
   s.resources = ['Sources/RInAppMessaging/Resources/PrivacyInfo.xcprivacy']
   s.dependency 'RSDKUtils', '~> 5.1.0'
+  s.dependency 'RSDKUtils/REventLogger'
   s.source_files = 'Sources/RInAppMessaging/**/*.swift'
   s.resource_bundles = { 'RInAppMessagingResources' => ['Sources/RInAppMessaging/Resources/*'] }
 end

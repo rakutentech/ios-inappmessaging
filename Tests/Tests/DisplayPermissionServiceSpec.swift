@@ -33,6 +33,7 @@ class DisplayPermissionServiceSpec: QuickSpec {
         var configurationRepository: ConfigurationRepository!
         var campaignRepository: CampaignRepositoryMock!
         var httpSession: URLSessionMock!
+        var eventLogger: MockEventLoggerSendable!
 
         func sendRequestAndWaitForResponse() {
             waitUntil { done in
@@ -51,11 +52,13 @@ class DisplayPermissionServiceSpec: QuickSpec {
                 userInfoProvider.clear()
                 campaignRepository = CampaignRepositoryMock()
                 configurationRepository = ConfigurationRepository()
+                eventLogger = MockEventLoggerSendable()
                 configurationRepository.saveRemoteConfiguration(configData)
                 configurationRepository.saveIAMModuleConfiguration(moduleConfig)
                 service = DisplayPermissionService(campaignRepository: campaignRepository,
                                                    accountRepository: accountRepository,
-                                                   configurationRepository: configurationRepository)
+                                                   configurationRepository: configurationRepository,
+                                                   eventLogger: eventLogger)
                 httpSession = URLSessionMock.mock(originalInstance: service.httpSession)
             }
 

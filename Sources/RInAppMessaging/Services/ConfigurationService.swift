@@ -19,10 +19,13 @@ internal struct ConfigurationService: ConfigurationServiceType, HttpRequestable 
 
     private let configurationRepository: ConfigurationRepositoryType
     private(set) var httpSession: URLSession
+    private var eventLogger: EventLoggerSendable
     var bundleInfo = BundleInfo.self
 
-    init(configurationRepository: ConfigurationRepositoryType) {
+    init(configurationRepository: ConfigurationRepositoryType,
+         eventLogger: EventLoggerSendable) {
         self.configurationRepository = configurationRepository
+        self.eventLogger = eventLogger
         self.httpSession = URLSession(configuration: configurationRepository.defaultHttpSessionConfiguration)
     }
 
@@ -46,14 +49,19 @@ internal struct ConfigurationService: ConfigurationServiceType, HttpRequestable 
         case .failure(let requestError):
             switch requestError {
             case .httpError(let statusCode, _, _) where statusCode == 429:
+                eventLogger.logEvent(eventType: .warning, errorCode: String(statusCode), errorMessage: Constants.IAMErrorCode.configTooManyRequestsError.errorMessage)
                 return .failure(.tooManyRequestsError)
             case .httpError(let statusCode, _, _) where statusCode == 400:
+                eventLogger.logEvent(eventType: .critical, errorCode: String(statusCode), errorMessage:Constants.IAMErrorCode.configMissingOrInvalidSubscriptionId.errorMessage)
                 return .failure(.missingOrInvalidSubscriptionId)
             case .httpError(let statusCode, _, _) where statusCode == 404:
+                eventLogger.logEvent(eventType: .critical, errorCode: String(statusCode), errorMessage: Constants.IAMErrorCode.configUnknownSubscriptionId.errorMessage)
                 return .failure(.unknownSubscriptionId)
             case .httpError(let statusCode, _, _) where 300..<500 ~= statusCode:
+                eventLogger.logEvent(eventType: .warning, errorCode: String(statusCode), errorMessage: Constants.IAMErrorCode.configInvalidRequestError.errorMessage)
                 return .failure(.invalidRequestError(statusCode))
             case .httpError(let statusCode, _, _) where statusCode >= 500:
+                eventLogger.logEvent(eventType: .warning, errorCode: String(statusCode), errorMessage: Constants.IAMErrorCode.configInternalServerError.errorMessage)
                 return .failure(.internalServerError(statusCode))
             default:
                 return .failure(.requestError(requestError))

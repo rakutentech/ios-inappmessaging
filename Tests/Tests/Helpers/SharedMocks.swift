@@ -668,7 +668,8 @@ final class InAppMessagingModuleMock: InAppMessagingModule {
                    router: RouterMock(),
                    randomizer: RandomizerMock(),
                    displayPermissionService: DisplayPermissionServiceMock(),
-                   tooltipDispatcher: TooltipDispatcherMock())
+                   tooltipDispatcher: TooltipDispatcherMock(),
+                   eventLogger: MockEventLoggerSendable())
     }
 
     override func initialize(completion: @escaping (Bool) -> Void) {
@@ -695,3 +696,23 @@ extension EndpointURL {
                     impression: nil)
     }
 }
+
+class MockEventLoggerSendable: EventLoggerSendable {
+    var configureCalled = false
+    var logEventCalled = false
+    var isEventLoggerEnabled: Bool = true
+    var lastEventType: REventType?
+    var lastErrorCode: String?
+    var lastErrorMessage: String?
+
+    func configure(apiKey: String?, apiUrl: String?, isEventLoggerEnabled: Bool?) {
+        configureCalled = true
+    }
+
+    func logEvent(eventType: REventType, errorCode: String, errorMessage: String) {
+        logEventCalled = true
+        lastEventType = eventType
+        lastErrorCode = errorCode
+        lastErrorMessage = errorMessage
+    }
+ }

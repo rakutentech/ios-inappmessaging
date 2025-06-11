@@ -29,7 +29,8 @@ internal enum MainContainerFactory {
                                      resumeQueue: RInAppMessaging.inAppQueue)
             }),
             ContainerElement(type: UserDataCacheable.self, factory: {
-                UserDataCache(userDefaults: UserDefaults.standard)
+                UserDataCache(userDefaults: UserDefaults.standard,
+                              eventLogger: manager.resolve(type: EventLoggerSendable.self)!)
             }),
             ContainerElement(type: CampaignRepositoryType.self, factory: {
                 CampaignRepository(userDataCache: manager.resolve(type: UserDataCacheable.self)!,
@@ -42,13 +43,15 @@ internal enum MainContainerFactory {
                 AccountRepository(userDataCache: manager.resolve(type: UserDataCacheable.self)!)
             }),
             ContainerElement(type: ConfigurationServiceType.self, factory: {
-                ConfigurationService(configurationRepository: manager.resolve(type: ConfigurationRepositoryType.self)!)
+                ConfigurationService(configurationRepository: manager.resolve(type: ConfigurationRepositoryType.self)!,
+                                     eventLogger: manager.resolve(type: EventLoggerSendable.self)!)
             }),
             ContainerElement(type: DisplayPermissionServiceType.self, factory: {
                 DisplayPermissionService(
                     campaignRepository: manager.resolve(type: CampaignRepositoryType.self)!,
                     accountRepository: manager.resolve(type: AccountRepositoryType.self)!,
-                    configurationRepository: manager.resolve(type: ConfigurationRepositoryType.self)!)
+                    configurationRepository: manager.resolve(type: ConfigurationRepositoryType.self)!,
+                    eventLogger: manager.resolve(type: EventLoggerSendable.self)!)
             }),
             ContainerElement(type: RouterType.self, factory: {
                 Router(dependencyManager: manager, viewListener: manager.resolve(type: ViewListenerType.self)!)
@@ -59,11 +62,13 @@ internal enum MainContainerFactory {
             ContainerElement(type: CampaignDispatcherType.self, factory: {
                 CampaignDispatcher(router: manager.resolve(type: RouterType.self)!,
                                    permissionService: manager.resolve(type: DisplayPermissionServiceType.self)!,
-                                   campaignRepository: manager.resolve(type: CampaignRepositoryType.self)!)
+                                   campaignRepository: manager.resolve(type: CampaignRepositoryType.self)!,
+                                   eventlogger: manager.resolve(type: EventLoggerSendable.self)!)
             }),
             ContainerElement(type: MessageMixerServiceType.self, factory: {
                 MessageMixerService(accountRepository: manager.resolve(type: AccountRepositoryType.self)!,
-                                    configurationRepository: manager.resolve(type: ConfigurationRepositoryType.self)!)
+                                    configurationRepository: manager.resolve(type: ConfigurationRepositoryType.self)!,
+                                    eventLogger: manager.resolve(type: EventLoggerSendable.self)!)
             }),
             ContainerElement(type: ImpressionServiceType.self, factory: {
                 ImpressionService(accountRepository: manager.resolve(type: AccountRepositoryType.self)!,
@@ -73,7 +78,8 @@ internal enum MainContainerFactory {
                 CampaignsListManager(campaignRepository: manager.resolve(type: CampaignRepositoryType.self)!,
                                      campaignTriggerAgent: manager.resolve(type: CampaignTriggerAgentType.self)!,
                                      messageMixerService: manager.resolve(type: MessageMixerServiceType.self)!,
-                                     configurationRepository: manager.resolve(type: ConfigurationRepositoryType.self)!)
+                                     configurationRepository: manager.resolve(type: ConfigurationRepositoryType.self)!,
+                                     eventLogger: manager.resolve(type: EventLoggerSendable.self)!)
             }),
             ContainerElement(type: TooltipDispatcherType.self, factory: {
                 TooltipDispatcher(router: manager.resolve(type: RouterType.self)!,
@@ -92,6 +98,9 @@ internal enum MainContainerFactory {
                 SwiftUIViewEventHandler(router: manager.resolve(type: RouterType.self)!,
                                         dispatcher: manager.resolve(type: TooltipDispatcherType.self)!,
                                         eventSender: manager.resolve(type: TooltipEventSenderType.self)!)
+            }),
+            ContainerElement(type: EventLoggerSendable.self, factory: {
+                EventLogger()
             })
         ]
 

@@ -10,6 +10,7 @@ internal class CampaignsListManager: CampaignsListManagerType, TaskSchedulable {
     private let campaignTriggerAgent: CampaignTriggerAgentType
     private let messageMixerService: MessageMixerServiceType
     private let configurationRepository: ConfigurationRepositoryType
+    private let eventLogger: EventLoggerSendable
 
     weak var errorDelegate: ErrorDelegate?
     var scheduledTask: DispatchWorkItem?
@@ -21,12 +22,14 @@ internal class CampaignsListManager: CampaignsListManagerType, TaskSchedulable {
     init(campaignRepository: CampaignRepositoryType,
          campaignTriggerAgent: CampaignTriggerAgentType,
          messageMixerService: MessageMixerServiceType,
-         configurationRepository: ConfigurationRepositoryType) {
+         configurationRepository: ConfigurationRepositoryType,
+         eventLogger: EventLoggerSendable) {
 
         self.campaignRepository = campaignRepository
         self.campaignTriggerAgent = campaignTriggerAgent
         self.messageMixerService = messageMixerService
         self.configurationRepository = configurationRepository
+        self.eventLogger = eventLogger
     }
 
     deinit {
@@ -75,9 +78,11 @@ internal class CampaignsListManager: CampaignsListManagerType, TaskSchedulable {
 
         switch error {
         case MessageMixerServiceError.invalidConfiguration:
+            eventLogger.logEvent(eventType: .critical, errorCode: Constants.IAMErrorCode.pingInvalidConfig.errorCode, errorMessage: Constants.IAMErrorCode.pingInvalidConfig.errorMessage)
             reportError(description: "Error retrieving InAppMessaging Mixer Server URL", data: nil)
 
         case MessageMixerServiceError.jsonDecodingError(let decodingError):
+            eventLogger.logEvent(eventType: .warning, errorCode: Constants.IAMErrorCode.pingDecodingError.errorCode, errorMessage: Constants.IAMErrorCode.pingDecodingError.errorMessage)
             reportError(description: "Ping request error: Failed to parse json", data: decodingError)
 
         case MessageMixerServiceError.tooManyRequestsError:
