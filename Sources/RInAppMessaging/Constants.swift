@@ -111,6 +111,10 @@ internal enum Constants {
         static let minHeight = 5.0
         static let defaultHeight = 250.0
     }
+    
+    enum Url {
+        static let invalidURL = URL(string: "invalid")!
+    }
 
     enum IAMErrorCode {
         case pingInvalidConfig
@@ -131,6 +135,10 @@ internal enum Constants {
         case configUnknownSubscriptionId
         case configInvalidRequestError
         case configInternalServerError
+        case configInvalidConfigUrl
+        case pushPrimerAuthorizationFailed
+        case pushPrimerAuthorizationDenied
+
 
         var errorCode: String {
             switch self {
@@ -170,6 +178,12 @@ internal enum Constants {
                 return "CONFIG_INTERNAL_SERVER_ERROR"
             case .displayPerFailedCreatingRequestBody:
                 return "DISPLAY_PERMISSION_FAILED_CREATING_REQUEST_BODY"
+            case .configInvalidConfigUrl:
+                return "CONFIGURE_INVALID_CONFIGURATION_URL"
+            case .pushPrimerAuthorizationFailed:
+                return "PUSH_AUTHORIZATION_FAILED"
+            case .pushPrimerAuthorizationDenied:
+                return "PUSH_AUTHORIZATION_DENIED"
             }
         }
 
@@ -210,7 +224,13 @@ internal enum Constants {
             case .configInternalServerError:
                 return "An internal server error occurred while fetching the configuration."
             case .displayPerFailedCreatingRequestBody:
-             return "failed creating a request body"
+                return "Failed creating a request body"
+            case .configInvalidConfigUrl:
+                return "Configuration Url is Invalid"
+            case .pushPrimerAuthorizationFailed:
+                return "PushPrimer: UNUserNotificationCenter requestAuthorization failed."
+            case .pushPrimerAuthorizationDenied:
+                return "PushPrimer: User has not granted authorization."
             }
         }
     }

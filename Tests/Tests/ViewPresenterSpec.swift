@@ -15,6 +15,7 @@ class ViewPresenterSpec: QuickSpec {
         var campaignTriggerAgent: CampaignTriggerAgentMock!
         var configurationRepository: ConfigurationRepository!
         let bundleInfo = BundleInfoMock.self
+        var eventLogger: MockEventLoggerSendable!
 
         beforeEach {
             campaignRepository = CampaignRepositoryMock()
@@ -23,6 +24,7 @@ class ViewPresenterSpec: QuickSpec {
             campaignTriggerAgent = CampaignTriggerAgentMock()
             configurationRepository = ConfigurationRepository()
             configurationRepository.saveIAMModuleConfiguration(.empty)
+            eventLogger = MockEventLoggerSendable()
             bundleInfo.reset()
         }
 
@@ -333,6 +335,7 @@ class ViewPresenterSpec: QuickSpec {
                                               campaignTriggerAgent: campaignTriggerAgent,
                                               pushPrimerOptions: pushPrimerOptions,
                                               configurationRepository: configurationRepository,
+                                              eventLogger: eventLogger,
                                               notificationCenter: notificationCenterMock)
                 presenter.view = view
                 presenter.campaign = campaign

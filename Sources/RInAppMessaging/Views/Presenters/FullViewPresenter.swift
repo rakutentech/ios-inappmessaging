@@ -19,6 +19,7 @@ internal class FullViewPresenter: BaseViewPresenter, FullViewPresenterType, Erro
     private var viewBackgroundColor: UIColor {
         UIColor(hexString: campaign.data.messagePayload.backgroundColor) ?? .white
     }
+    private let eventLogger: EventLoggerSendable
 
     init(campaignRepository: CampaignRepositoryType,
          impressionService: ImpressionServiceType,
@@ -26,10 +27,12 @@ internal class FullViewPresenter: BaseViewPresenter, FullViewPresenterType, Erro
          campaignTriggerAgent: CampaignTriggerAgentType,
          pushPrimerOptions: UNAuthorizationOptions,
          configurationRepository: ConfigurationRepositoryType,
+         eventLogger: EventLoggerSendable,
          notificationCenter: RemoteNotificationRequestable = UNUserNotificationCenter.current()) {
 
         self.pushPrimerOptions = pushPrimerOptions
         self.notificationCenter = notificationCenter
+        self.eventLogger = eventLogger
         super.init(campaignRepository: campaignRepository,
                    impressionService: impressionService,
                    eventMatcher: eventMatcher,
@@ -160,6 +163,7 @@ internal class FullViewPresenter: BaseViewPresenter, FullViewPresenterType, Erro
             self.notificationCenter.requestAuthorization(options: pushPrimerOptions) { [self] (granted, error) in
                 if let error = error {
                     self.reportError(description: "PushPrimer: UNUserNotificationCenter requestAuthorization failed", data: error)
+                    eventLogger.logEvent(eventType: .warning, errorCode: Constants.IAMErrorCode.pushPrimerAuthorizationFailed.errorCode, errorMessage: Constants.IAMErrorCode.pushPrimerAuthorizationFailed.errorMessage)
                 } else if granted {
                     if willPopupAppear {
                         self.trackPushPrimerAction(didOptIn: true)
@@ -170,6 +174,7 @@ internal class FullViewPresenter: BaseViewPresenter, FullViewPresenterType, Erro
                         self.trackPushPrimerAction(didOptIn: false)
                     }
                     self.reportError(description: "PushPrimer: User has not granted authorization", data: nil)
+                    eventLogger.logEvent(eventType: .warning, errorCode: Constants.IAMErrorCode.pushPrimerAuthorizationDenied.errorCode, errorMessage: Constants.IAMErrorCode.pushPrimerAuthorizationDenied.errorMessage)
                 }
             }
         }

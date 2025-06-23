@@ -117,7 +117,8 @@ internal enum MainContainerFactory {
                                   eventMatcher: manager.resolve(type: EventMatcherType.self)!,
                                   campaignTriggerAgent: manager.resolve(type: CampaignTriggerAgentType.self)!,
                                   pushPrimerOptions: RInAppMessaging.pushPrimerAuthorizationOptions,
-                                  configurationRepository: manager.resolve(type: ConfigurationRepositoryType.self)!)
+                                  configurationRepository: manager.resolve(type: ConfigurationRepositoryType.self)!,
+                                  eventLogger: manager.resolve(type: EventLoggerSendable.self)!)
             }, transient: true),
             ContainerElement(type: SlideUpViewPresenterType.self, factory: {
                 SlideUpViewPresenter(campaignRepository: manager.resolve(type: CampaignRepositoryType.self)!,
