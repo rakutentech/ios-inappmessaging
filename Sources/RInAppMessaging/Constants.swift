@@ -139,6 +139,8 @@ internal enum Constants {
         case configInvalidConfigUrl
         case pushPrimerAuthorizationFailed
         case pushPrimerAuthorizationDenied
+        case configJsonDecodingError
+        case configRequestError
 
 
         var errorCode: String {
@@ -168,11 +170,11 @@ internal enum Constants {
             case .userDataCacheEncodingFailed:
                 return "USERDATA_CACHE_ENCODING_FAILED"
             case .configTooManyRequestsError:
-                return "CONFIG_TOO_MANY_REQUESTS_ERROR"
+                return "CONFIG_TOO_MANY_REQUESTS_ERROR : "
             case .configMissingOrInvalidSubscriptionId:
-                return "CONFIG_MISSING_OR_INVALID_SUBSCRIPTION_ID"
+                return "CONFIG_MISSING_OR_INVALID_SUBSCRIPTION_ID : "
             case .configUnknownSubscriptionId:
-                return "CONFIG_UNKNOWN_SUBSCRIPTION_ID"
+                return "CONFIG_UNKNOWN_SUBSCRIPTION_ID : "
             case .configInvalidRequestError:
                 return "CONFIG_INVALID_REQUEST_ERROR"
             case .configInternalServerError:
@@ -185,6 +187,10 @@ internal enum Constants {
                 return "PUSH_AUTHORIZATION_FAILED"
             case .pushPrimerAuthorizationDenied:
                 return "PUSH_AUTHORIZATION_DENIED"
+            case .configJsonDecodingError:
+                return "CONFIGURE_JSON_DECODING_ERROR"
+            case .configRequestError:
+                return "CONFIGURE_REQUEST_ERROR"
             }
         }
 
@@ -232,6 +238,10 @@ internal enum Constants {
                 return "PushPrimer: UNUserNotificationCenter requestAuthorization failed."
             case .pushPrimerAuthorizationDenied:
                 return "PushPrimer: User has not granted authorization."
+            case .configJsonDecodingError:
+                return "JSON Decoding Error for Config api"
+            case .configRequestError:
+                return "Configure Request Error"
             }
         }
     }

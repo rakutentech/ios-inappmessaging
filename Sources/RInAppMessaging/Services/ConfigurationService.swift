@@ -44,26 +44,28 @@ internal struct ConfigurationService: ConfigurationServiceType, HttpRequestable 
         switch response {
         case .success((let data, _)):
             return parseResponse(data).mapError {
-                ConfigurationServiceError.jsonDecodingError($0)
+                eventLogger.logEvent(eventType: .warning, errorCode: Constants.IAMErrorCode.configJsonDecodingError.errorCode + $0.localizedDescription, errorMessage: Constants.IAMErrorCode.configJsonDecodingError.errorMessage)
+                return ConfigurationServiceError.jsonDecodingError($0)
             }
         case .failure(let requestError):
             switch requestError {
             case .httpError(let statusCode, _, _) where statusCode == 429:
-                eventLogger.logEvent(eventType: .warning, errorCode: String(statusCode), errorMessage: Constants.IAMErrorCode.configTooManyRequestsError.errorMessage)
+                eventLogger.logEvent(eventType: .warning, errorCode: Constants.IAMErrorCode.configTooManyRequestsError.errorCode + String(statusCode), errorMessage: Constants.IAMErrorCode.configTooManyRequestsError.errorMessage)
                 return .failure(.tooManyRequestsError)
             case .httpError(let statusCode, _, _) where statusCode == 400:
-                eventLogger.logEvent(eventType: .critical, errorCode: String(statusCode), errorMessage:Constants.IAMErrorCode.configMissingOrInvalidSubscriptionId.errorMessage)
+                eventLogger.logEvent(eventType: .critical, errorCode: Constants.IAMErrorCode.configMissingOrInvalidSubscriptionId.errorCode + String(statusCode), errorMessage:Constants.IAMErrorCode.configMissingOrInvalidSubscriptionId.errorMessage)
                 return .failure(.missingOrInvalidSubscriptionId)
             case .httpError(let statusCode, _, _) where statusCode == 404:
-                eventLogger.logEvent(eventType: .critical, errorCode: String(statusCode), errorMessage: Constants.IAMErrorCode.configUnknownSubscriptionId.errorMessage)
+                eventLogger.logEvent(eventType: .critical, errorCode: Constants.IAMErrorCode.configUnknownSubscriptionId.errorCode + String(statusCode), errorMessage: Constants.IAMErrorCode.configUnknownSubscriptionId.errorMessage)
                 return .failure(.unknownSubscriptionId)
             case .httpError(let statusCode, _, _) where 300..<500 ~= statusCode:
-                eventLogger.logEvent(eventType: .warning, errorCode: String(statusCode), errorMessage: Constants.IAMErrorCode.configInvalidRequestError.errorMessage)
+                eventLogger.logEvent(eventType: .warning, errorCode: Constants.IAMErrorCode.configInvalidRequestError.errorCode + String(statusCode), errorMessage: Constants.IAMErrorCode.configInvalidRequestError.errorMessage)
                 return .failure(.invalidRequestError(statusCode))
             case .httpError(let statusCode, _, _) where statusCode >= 500:
-                eventLogger.logEvent(eventType: .warning, errorCode: String(statusCode), errorMessage: Constants.IAMErrorCode.configInternalServerError.errorMessage)
+                eventLogger.logEvent(eventType: .warning, errorCode:Constants.IAMErrorCode.configInternalServerError.errorCode + String(statusCode), errorMessage: Constants.IAMErrorCode.configInternalServerError.errorMessage)
                 return .failure(.internalServerError(statusCode))
             default:
+                eventLogger.logEvent(eventType: .warning, errorCode:Constants.IAMErrorCode.configRequestError.errorCode + requestError.localizedDescription, errorMessage: Constants.IAMErrorCode.configRequestError.errorMessage)
                 return .failure(.requestError(requestError))
             }
         }

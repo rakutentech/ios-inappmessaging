@@ -335,7 +335,6 @@ class ViewPresenterSpec: QuickSpec {
                                               campaignTriggerAgent: campaignTriggerAgent,
                                               pushPrimerOptions: pushPrimerOptions,
                                               configurationRepository: configurationRepository,
-                                              eventLogger: eventLogger,
                                               notificationCenter: notificationCenterMock)
                 presenter.view = view
                 presenter.campaign = campaign

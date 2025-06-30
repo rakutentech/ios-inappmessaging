@@ -19,7 +19,7 @@ internal class FullViewPresenter: BaseViewPresenter, FullViewPresenterType, Erro
     private var viewBackgroundColor: UIColor {
         UIColor(hexString: campaign.data.messagePayload.backgroundColor) ?? .white
     }
-    private let eventLogger: EventLoggerSendable
+    private let eventLogger: EventLoggerSendable = EventLogger()
 
     init(campaignRepository: CampaignRepositoryType,
          impressionService: ImpressionServiceType,
@@ -27,12 +27,10 @@ internal class FullViewPresenter: BaseViewPresenter, FullViewPresenterType, Erro
          campaignTriggerAgent: CampaignTriggerAgentType,
          pushPrimerOptions: UNAuthorizationOptions,
          configurationRepository: ConfigurationRepositoryType,
-         eventLogger: EventLoggerSendable,
          notificationCenter: RemoteNotificationRequestable = UNUserNotificationCenter.current()) {
 
         self.pushPrimerOptions = pushPrimerOptions
         self.notificationCenter = notificationCenter
-        self.eventLogger = eventLogger
         super.init(campaignRepository: campaignRepository,
                    impressionService: impressionService,
                    eventMatcher: eventMatcher,
