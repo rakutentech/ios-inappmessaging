@@ -170,15 +170,15 @@ internal enum Constants {
             case .userDataCacheEncodingFailed:
                 return "USERDATA_CACHE_ENCODING_FAILED"
             case .configTooManyRequestsError:
-                return "CONFIG_TOO_MANY_REQUESTS_ERROR : "
+                return "CONFIG_TOO_MANY_REQUESTS_ERROR:"
             case .configMissingOrInvalidSubscriptionId:
-                return "CONFIG_MISSING_OR_INVALID_SUBSCRIPTION_ID : "
+                return "CONFIG_MISSING_OR_INVALID_SUBSCRIPTION_ID:"
             case .configUnknownSubscriptionId:
-                return "CONFIG_UNKNOWN_SUBSCRIPTION_ID : "
+                return "CONFIG_UNKNOWN_SUBSCRIPTION_ID:"
             case .configInvalidRequestError:
-                return "CONFIG_INVALID_REQUEST_ERROR"
+                return "CONFIG_INVALID_REQUEST_ERROR:"
             case .configInternalServerError:
-                return "CONFIG_INTERNAL_SERVER_ERROR"
+                return "CONFIG_INTERNAL_SERVER_ERROR:"
             case .displayPerFailedCreatingRequestBody:
                 return "DISPLAY_PERMISSION_FAILED_CREATING_REQUEST_BODY"
             case .configInvalidConfigUrl:
@@ -190,7 +190,7 @@ internal enum Constants {
             case .configJsonDecodingError:
                 return "CONFIGURE_JSON_DECODING_ERROR"
             case .configRequestError:
-                return "CONFIGURE_REQUEST_ERROR"
+                return "CONFIGURE_REQUEST_ERROR:"
             }
         }
 
