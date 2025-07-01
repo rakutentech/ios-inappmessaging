@@ -33,6 +33,7 @@ class ImpressionServiceSpec: QuickSpec {
 
         var service: ImpressionService!
         var configurationRepository: ConfigurationRepository!
+        var eventLogger: MockEventLoggerSendable!
         var httpSession: URLSessionMock!
         var errorDelegate: ErrorDelegateMock!
         let bundleInfo = BundleInfoMock.self
@@ -56,8 +57,10 @@ class ImpressionServiceSpec: QuickSpec {
                 configurationRepository.saveRemoteConfiguration(configData)
                 configurationRepository.saveIAMModuleConfiguration(moduleConfig)
                 errorDelegate = ErrorDelegateMock()
+                eventLogger = MockEventLoggerSendable()
                 service = ImpressionService(accountRepository: accountRepository,
-                                            configurationRepository: configurationRepository)
+                                            configurationRepository: configurationRepository,
+                                            eventLogger: eventLogger)
                 service.errorDelegate = errorDelegate
                 httpSession = URLSessionMock.mock(originalInstance: service.httpSession)
             }
