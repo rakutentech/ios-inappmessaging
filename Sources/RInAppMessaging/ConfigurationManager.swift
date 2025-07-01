@@ -95,17 +95,17 @@ internal class ConfigurationManager: ConfigurationManagerType, TaskSchedulable {
 
             case .internalServerError(let code):
                 guard responseStateMachine.consecutiveErrorCount <= Constants.Retry.retryCount else {
-                    eventLogger.logEvent(eventType: .critical, errorCode: Constants.IAMErrorCode.configInternalServerError.errorCode + String(code), errorMessage: Constants.IAMErrorCode.configInternalServerError.errorMessage)
+                    eventLogger.logEvent(eventType: .warning, errorCode: Constants.IAMErrorCode.configInternalServerError.errorCode + String(code), errorMessage: Constants.IAMErrorCode.configInternalServerError.errorMessage)
                     reportError(description: "Config request error: Response Code \(code): Internal server error", data: nil)
                     completion(ConfigEndpointData(rolloutPercentage: 0, endpoints: nil))
                     return
                 }
                 scheduleRetryWithRandomizedBackoff(retryHandler: retryHandler)
-                eventLogger.logEvent(eventType: .critical, errorCode: Constants.IAMErrorCode.configInternalServerError.errorCode + String(code), errorMessage: Constants.IAMErrorCode.configInternalServerError.errorMessage)
+                eventLogger.logEvent(eventType: .warning, errorCode: Constants.IAMErrorCode.configInternalServerError.errorCode + String(code), errorMessage: Constants.IAMErrorCode.configInternalServerError.errorMessage)
                 reportError(description: "Config request error: Response Code \(code): Internal server error. Retry scheduled", data: nil)
 
             case .invalidRequestError(let code):
-                eventLogger.logEvent(eventType: .critical, errorCode: Constants.IAMErrorCode.configInvalidRequestError.errorCode + String(code), errorMessage: Constants.IAMErrorCode.configInvalidRequestError.errorMessage)
+                eventLogger.logEvent(eventType: .warning, errorCode: Constants.IAMErrorCode.configInvalidRequestError.errorCode + String(code), errorMessage: Constants.IAMErrorCode.configInvalidRequestError.errorMessage)
                 reportError(description: "Config request error: Response Code \(code): Invalid request error", data: nil)
                 completion(ConfigEndpointData(rolloutPercentage: 0, endpoints: nil))
 
