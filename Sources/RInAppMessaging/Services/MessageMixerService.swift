@@ -37,6 +37,8 @@ internal class MessageMixerService: MessageMixerServiceType, HttpRequestable {
         guard let mixerServerUrl = configurationRepository.getEndpoints()?.ping else {
             let error = "Error retrieving InAppMessaging Mixer Server URL"
             Logger.debug(error)
+            eventLogger.logEvent(eventType: .warning, errorCode: Constants.IAMErrorCode.pingDecodingError.errorCode,
+                                 errorMessage: Constants.IAMErrorCode.pingDecodingError.errorMessage)
             return .failure(.invalidConfiguration)
         }
 
@@ -49,18 +51,19 @@ internal class MessageMixerService: MessageMixerServiceType, HttpRequestable {
         switch response {
         case .success((let data, _)):
             return parse(response: data).mapError {
-                MessageMixerServiceError.jsonDecodingError($0)
+                eventLogger.logEvent(eventType: .warning, errorCode: Constants.IAMErrorCode.pingDecodingError.errorCode + $0.localizedDescription, errorMessage: Constants.IAMErrorCode.pingDecodingError.errorMessage)
+                return MessageMixerServiceError.jsonDecodingError($0)
             }
         case .failure(let requestError):
             switch requestError {
             case .httpError(let statusCode, _, _) where statusCode == 429:
-                eventLogger.logEvent(eventType: .warning, errorCode: String(statusCode), errorMessage: Constants.IAMErrorCode.pingTooManyRequestsError.errorMessage)
+                eventLogger.logEvent(eventType: .critical, errorCode: Constants.IAMErrorCode.pingTooManyRequestsError.errorCode + String(statusCode), errorMessage: Constants.IAMErrorCode.pingTooManyRequestsError.errorMessage)
                 return .failure(.tooManyRequestsError)
             case .httpError(let statusCode, _, _) where 300..<500 ~= statusCode:
-                eventLogger.logEvent(eventType: .warning, errorCode: String(statusCode), errorMessage: Constants.IAMErrorCode.pingInvalidRequestError.errorMessage)
+                eventLogger.logEvent(eventType: .critical, errorCode: Constants.IAMErrorCode.pingInvalidRequestError.errorCode + String(statusCode), errorMessage: Constants.IAMErrorCode.pingInvalidRequestError.errorMessage)
                 return .failure(.invalidRequestError(statusCode))
             case .httpError(let statusCode, _, _) where statusCode >= 500:
-                eventLogger.logEvent(eventType: .warning, errorCode: String(statusCode), errorMessage: Constants.IAMErrorCode.pingInternalServerError.errorMessage)
+                eventLogger.logEvent(eventType: .critical, errorCode: Constants.IAMErrorCode.pingInternalServerError.errorCode + String(statusCode), errorMessage: Constants.IAMErrorCode.pingInternalServerError.errorMessage)
                 return .failure(.internalServerError(statusCode))
             default:
                 return .failure(.requestError(requestError))
@@ -103,6 +106,7 @@ extension MessageMixerService {
             let body = try JSONEncoder().encode(pingRequest)
             return .success(body)
         } catch let error {
+            eventLogger.logEvent(eventType: .warning, errorCode: Constants.IAMErrorCode.pingMissingMetadata.errorCode, errorMessage: Constants.IAMErrorCode.pingMissingMetadata.errorMessage)
             Logger.debug("failed creating a request body - \(error)")
             return .failure(error)
         }

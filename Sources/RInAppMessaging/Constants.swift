@@ -141,7 +141,12 @@ internal enum Constants {
         case pushPrimerAuthorizationDenied
         case configJsonDecodingError
         case configRequestError
-
+        case pingRequestError
+        case impressionMissingEndpoint
+        case impressionResponseError
+        case impressionMissingMetadata
+        case impressionMissingdParameters
+        case impressionFailedCreatingRequestBody
 
         var errorCode: String {
             switch self {
@@ -150,11 +155,11 @@ internal enum Constants {
             case .pingDecodingError:
                 return "PING_JSON_DECODING_ERROR"
             case .pingTooManyRequestsError:
-                return "PING_TOO_MANY_REQUESTS_ERROR"
+                return "PING_TOO_MANY_REQUESTS_ERROR:"
             case .pingInvalidRequestError:
-                return "PING_INVALID_REQUEST_ERROR"
+                return "PING_INVALID_REQUEST_ERROR:"
             case .pingInternalServerError:
-                return "PING_INTERNAL_SERVER_ERROR"
+                return "PING_INTERNAL_SERVER_ERROR:"
             case .pingMissingMetadata:
                 return "PING_MISSING_METADATA"
             case .checkPermissionError:
@@ -179,6 +184,10 @@ internal enum Constants {
                 return "CONFIG_INVALID_REQUEST_ERROR:"
             case .configInternalServerError:
                 return "CONFIG_INTERNAL_SERVER_ERROR:"
+            case .configJsonDecodingError:
+                return "CONFIGURE_JSON_DECODING_ERROR"
+            case .configRequestError:
+                return "CONFIGURE_REQUEST_ERROR:"
             case .displayPerFailedCreatingRequestBody:
                 return "DISPLAY_PERMISSION_FAILED_CREATING_REQUEST_BODY"
             case .configInvalidConfigUrl:
@@ -187,10 +196,18 @@ internal enum Constants {
                 return "PUSH_AUTHORIZATION_FAILED"
             case .pushPrimerAuthorizationDenied:
                 return "PUSH_AUTHORIZATION_DENIED"
-            case .configJsonDecodingError:
-                return "CONFIGURE_JSON_DECODING_ERROR"
-            case .configRequestError:
-                return "CONFIGURE_REQUEST_ERROR:"
+            case .pingRequestError:
+                return "PING_REQUEST_ERROR"
+            case .impressionMissingEndpoint:
+                return "IMPRESSION_MISSING_ENDPOINT"
+            case .impressionResponseError:
+                return "IMPRESSION_RESPONSE_ERROR:"
+            case .impressionMissingMetadata:
+                return "IMPRESSION_MISSING_METADATA"
+            case .impressionMissingdParameters:
+                return "IMPRESSION_UNEXPECTED_PARAMETERS"
+            case .impressionFailedCreatingRequestBody:
+                return "IMPRESSION_ERROR_ENCODING_IMPRESSION_REQUEST"
             }
         }
 
@@ -231,7 +248,7 @@ internal enum Constants {
             case .configInternalServerError:
                 return "An internal server error occurred while fetching the configuration."
             case .displayPerFailedCreatingRequestBody:
-                return "Failed creating a request body"
+                return "Failed creating display permission request body"
             case .configInvalidConfigUrl:
                 return "Configuration Url is Invalid"
             case .pushPrimerAuthorizationFailed:
@@ -239,9 +256,21 @@ internal enum Constants {
             case .pushPrimerAuthorizationDenied:
                 return "PushPrimer: User has not granted authorization."
             case .configJsonDecodingError:
-                return "JSON Decoding Error for Config api"
+                return "JSON Decoding Error for Config API"
             case .configRequestError:
                 return "Configure Request Error"
+            case .pingRequestError:
+                return "Configure Request Error"
+            case .impressionMissingEndpoint:
+                return "Error retrieving InAppMessaging Impression URL"
+            case .impressionResponseError:
+                return "Couldn't get a valid response from impression endpoint."
+            case .impressionMissingMetadata:
+                return "Missing metadata in impression request."
+            case .impressionMissingdParameters:
+                return "Unexpected parameters in impression request."
+            case .impressionFailedCreatingRequestBody:
+                return "Error encoding impression request"
             }
         }
     }

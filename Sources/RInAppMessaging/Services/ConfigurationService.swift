@@ -19,7 +19,7 @@ internal struct ConfigurationService: ConfigurationServiceType, HttpRequestable 
 
     private let configurationRepository: ConfigurationRepositoryType
     private(set) var httpSession: URLSession
-    private var eventLogger: EventLoggerSendable
+    private let eventLogger: EventLoggerSendable
     var bundleInfo = BundleInfo.self
 
     init(configurationRepository: ConfigurationRepositoryType,

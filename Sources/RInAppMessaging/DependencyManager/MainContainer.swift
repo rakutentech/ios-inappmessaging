@@ -72,7 +72,7 @@ internal enum MainContainerFactory {
             }),
             ContainerElement(type: ImpressionServiceType.self, factory: {
                 ImpressionService(accountRepository: manager.resolve(type: AccountRepositoryType.self)!,
-                                  configurationRepository: manager.resolve(type: ConfigurationRepositoryType.self)!)
+                                  configurationRepository: manager.resolve(type: ConfigurationRepositoryType.self)!, eventLogger: manager.resolve(type: EventLoggerSendable.self)!)
             }),
             ContainerElement(type: CampaignsListManagerType.self, factory: {
                 CampaignsListManager(campaignRepository: manager.resolve(type: CampaignRepositoryType.self)!,
