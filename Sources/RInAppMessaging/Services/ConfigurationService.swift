@@ -44,7 +44,7 @@ internal struct ConfigurationService: ConfigurationServiceType, HttpRequestable 
         switch response {
         case .success((let data, _)):
             return parseResponse(data).mapError {
-                eventLogger.logEvent(eventType: .warning, errorCode: Constants.IAMErrorCode.configJsonDecodingError.errorCode + $0.localizedDescription, errorMessage: Constants.IAMErrorCode.configJsonDecodingError.errorMessage)
+                eventLogger.logEvent(eventType: .warning, errorCode: Constants.IAMErrorCode.configJsonDecodingError.errorCode , errorMessage: Constants.IAMErrorCode.configJsonDecodingError.errorMessage + $0.localizedDescription)
                 return ConfigurationServiceError.jsonDecodingError($0)
             }
         case .failure(let requestError):
@@ -65,7 +65,7 @@ internal struct ConfigurationService: ConfigurationServiceType, HttpRequestable 
                 eventLogger.logEvent(eventType: .critical, errorCode:Constants.IAMErrorCode.configInternalServerError.errorCode + String(statusCode), errorMessage: Constants.IAMErrorCode.configInternalServerError.errorMessage)
                 return .failure(.internalServerError(statusCode))
             default:
-                eventLogger.logEvent(eventType: .critical, errorCode:Constants.IAMErrorCode.configRequestError.errorCode + requestError.localizedDescription, errorMessage: Constants.IAMErrorCode.configRequestError.errorMessage)
+                eventLogger.logEvent(eventType: .critical, errorCode:Constants.IAMErrorCode.configRequestError.errorCode, errorMessage: Constants.IAMErrorCode.configRequestError.errorMessage + requestError.localizedDescription)
                 return .failure(.requestError(requestError))
             }
         }

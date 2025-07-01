@@ -28,7 +28,7 @@ class MessageMixerServiceSpec: QuickSpec {
         var configurationRepository: ConfigurationRepository!
         var httpSession: URLSessionMock!
         var eventLogger: MockEventLoggerSendable!
-        var constants = Constants.IAMErrorCode.self
+        let constants = Constants.IAMErrorCode.self
 
         func sendRequestAndWaitForResponse() {
             waitUntil { done in

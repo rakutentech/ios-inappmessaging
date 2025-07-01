@@ -205,7 +205,7 @@ internal enum Constants {
             case .impressionMissingMetadata:
                 return "IMPRESSION_MISSING_METADATA"
             case .impressionMissingdParameters:
-                return "IMPRESSION_UNEXPECTED_PARAMETERS"
+                return "IMPRESSION_MISSING_PARAMETERS"
             case .impressionFailedCreatingRequestBody:
                 return "IMPRESSION_ERROR_ENCODING_IMPRESSION_REQUEST"
             }
@@ -260,7 +260,7 @@ internal enum Constants {
             case .configRequestError:
                 return "Configure Request Error"
             case .pingRequestError:
-                return "Configure Request Error"
+                return "Ping Request Error"
             case .impressionMissingEndpoint:
                 return "Error retrieving InAppMessaging Impression URL"
             case .impressionResponseError:

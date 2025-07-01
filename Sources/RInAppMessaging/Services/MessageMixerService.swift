@@ -37,8 +37,8 @@ internal class MessageMixerService: MessageMixerServiceType, HttpRequestable {
         guard let mixerServerUrl = configurationRepository.getEndpoints()?.ping else {
             let error = "Error retrieving InAppMessaging Mixer Server URL"
             Logger.debug(error)
-            eventLogger.logEvent(eventType: .warning, errorCode: Constants.IAMErrorCode.pingDecodingError.errorCode,
-                                 errorMessage: Constants.IAMErrorCode.pingDecodingError.errorMessage)
+            eventLogger.logEvent(eventType: .critical, errorCode: Constants.IAMErrorCode.pingInvalidConfig.errorCode,
+                                 errorMessage: Constants.IAMErrorCode.pingInvalidConfig.errorMessage)
             return .failure(.invalidConfiguration)
         }
 
@@ -51,7 +51,7 @@ internal class MessageMixerService: MessageMixerServiceType, HttpRequestable {
         switch response {
         case .success((let data, _)):
             return parse(response: data).mapError {
-                eventLogger.logEvent(eventType: .warning, errorCode: Constants.IAMErrorCode.pingDecodingError.errorCode + $0.localizedDescription, errorMessage: Constants.IAMErrorCode.pingDecodingError.errorMessage)
+                eventLogger.logEvent(eventType: .warning, errorCode: Constants.IAMErrorCode.pingDecodingError.errorCode, errorMessage: Constants.IAMErrorCode.pingDecodingError.errorMessage + $0.localizedDescription)
                 return MessageMixerServiceError.jsonDecodingError($0)
             }
         case .failure(let requestError):
@@ -66,6 +66,7 @@ internal class MessageMixerService: MessageMixerServiceType, HttpRequestable {
                 eventLogger.logEvent(eventType: .critical, errorCode: Constants.IAMErrorCode.pingInternalServerError.errorCode + String(statusCode), errorMessage: Constants.IAMErrorCode.pingInternalServerError.errorMessage)
                 return .failure(.internalServerError(statusCode))
             default:
+                eventLogger.logEvent(eventType: .critical, errorCode:Constants.IAMErrorCode.pingRequestError.errorCode, errorMessage: Constants.IAMErrorCode.pingRequestError.errorMessage + requestError.localizedDescription)
                 return .failure(.requestError(requestError))
             }
         }

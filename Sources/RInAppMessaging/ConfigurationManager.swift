@@ -21,19 +21,22 @@ internal class ConfigurationManager: ConfigurationManagerType, TaskSchedulable {
     private var lastRequestTime: TimeInterval = 0
     private var onConnectionResumed: (() -> Void)?
     private var responseStateMachine = ResponseStateMachine()
-
+    private let eventLogger: EventLoggerSendable
+    
     var scheduledTask: DispatchWorkItem?
     weak var errorDelegate: ErrorDelegate?
 
     init(reachability: ReachabilityType?,
          configurationService: ConfigurationServiceType?,
          configurationRepository: ConfigurationRepositoryType,
-         resumeQueue: DispatchQueue) {
+         resumeQueue: DispatchQueue,
+         eventLogger: EventLoggerSendable) {
 
         self.reachability = reachability
         self.configurationService = configurationService
         self.configurationRepository = configurationRepository
         self.resumeQueue = resumeQueue
+        self.eventLogger = eventLogger
     }
 
     deinit {
@@ -70,36 +73,44 @@ internal class ConfigurationManager: ConfigurationManagerType, TaskSchedulable {
 
             switch error {
             case .missingOrInvalidConfigURL:
+                eventLogger.logEvent(eventType: .critical, errorCode: Constants.IAMErrorCode.configInvalidConfigUrl.errorCode, errorMessage: Constants.IAMErrorCode.configInvalidConfigUrl.errorMessage)
                 reportError(
                     description: "Invalid Configuration URL: \(configurationRepository.getConfigEndpointURLString() ?? "<empty>"). SDK will be disabled.",
                     data: error)
+                
                 completion(ConfigEndpointData(rolloutPercentage: 0, endpoints: nil))
 
             case .tooManyRequestsError:
                 scheduleRetryWithRandomizedBackoff(retryHandler: retryHandler)
 
             case .missingOrInvalidSubscriptionId:
+                eventLogger.logEvent(eventType: .critical, errorCode: Constants.IAMErrorCode.configMissingOrInvalidSubscriptionId.errorCode, errorMessage: Constants.IAMErrorCode.configMissingOrInvalidSubscriptionId.errorMessage)
                 reportError(description: "Config request error: Missing or invalid Subscription ID. SDK will be disabled.", data: error)
                 completion(ConfigEndpointData(rolloutPercentage: 0, endpoints: nil))
 
             case .unknownSubscriptionId:
+                eventLogger.logEvent(eventType: .critical, errorCode: Constants.IAMErrorCode.configUnknownSubscriptionId.errorCode, errorMessage: Constants.IAMErrorCode.configUnknownSubscriptionId.errorMessage)
                 reportError(description: "Config request error: Unknown Subscription ID. SDK will be disabled.", data: error)
                 completion(ConfigEndpointData(rolloutPercentage: 0, endpoints: nil))
 
             case .internalServerError(let code):
                 guard responseStateMachine.consecutiveErrorCount <= Constants.Retry.retryCount else {
+                    eventLogger.logEvent(eventType: .critical, errorCode: Constants.IAMErrorCode.configInternalServerError.errorCode + String(code), errorMessage: Constants.IAMErrorCode.configInternalServerError.errorMessage)
                     reportError(description: "Config request error: Response Code \(code): Internal server error", data: nil)
                     completion(ConfigEndpointData(rolloutPercentage: 0, endpoints: nil))
                     return
                 }
                 scheduleRetryWithRandomizedBackoff(retryHandler: retryHandler)
+                eventLogger.logEvent(eventType: .critical, errorCode: Constants.IAMErrorCode.configInternalServerError.errorCode + String(code), errorMessage: Constants.IAMErrorCode.configInternalServerError.errorMessage)
                 reportError(description: "Config request error: Response Code \(code): Internal server error. Retry scheduled", data: nil)
 
             case .invalidRequestError(let code):
+                eventLogger.logEvent(eventType: .critical, errorCode: Constants.IAMErrorCode.configInvalidRequestError.errorCode + String(code), errorMessage: Constants.IAMErrorCode.configInvalidRequestError.errorMessage)
                 reportError(description: "Config request error: Response Code \(code): Invalid request error", data: nil)
                 completion(ConfigEndpointData(rolloutPercentage: 0, endpoints: nil))
 
             case .jsonDecodingError(let decodingError):
+                eventLogger.logEvent(eventType: .critical, errorCode: Constants.IAMErrorCode.configJsonDecodingError.errorCode, errorMessage: Constants.IAMErrorCode.configJsonDecodingError.errorMessage)
                 reportError(description: "Config request error: Failed to parse json", data: decodingError)
                 completion(ConfigEndpointData(rolloutPercentage: 0, endpoints: nil))
 

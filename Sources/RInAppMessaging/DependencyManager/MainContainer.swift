@@ -26,7 +26,7 @@ internal enum MainContainerFactory {
                 ConfigurationManager(reachability: manager.resolve(type: ReachabilityType.self),
                                      configurationService: manager.resolve(type: ConfigurationServiceType.self),
                                      configurationRepository: manager.resolve(type: ConfigurationRepositoryType.self)!,
-                                     resumeQueue: RInAppMessaging.inAppQueue)
+                                     resumeQueue: RInAppMessaging.inAppQueue, eventLogger: manager.resolve(type: EventLoggerSendable.self)!)
             }),
             ContainerElement(type: UserDataCacheable.self, factory: {
                 UserDataCache(userDefaults: UserDefaults.standard,
