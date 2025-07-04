@@ -28,7 +28,7 @@ class MessageMixerServiceSpec: QuickSpec {
         var configurationRepository: ConfigurationRepository!
         var httpSession: URLSessionMock!
         var eventLogger: MockEventLoggerSendable!
-        var constants = Constants.IAMErrorCode.self
+        let constants = Constants.IAMErrorCode.self
 
         func sendRequestAndWaitForResponse() {
             waitUntil { done in
@@ -162,8 +162,8 @@ class MessageMixerServiceSpec: QuickSpec {
                                 expect(error).toNot(beNil())
 
                                 expect(eventLogger.logEventCalled).to(beTrue())
-                                expect(eventLogger.lastEventType).to(equal(REventType.warning))
-                                expect(eventLogger.lastErrorCode).to(equal("429"))
+                                expect(eventLogger.lastEventType).to(equal(REventType.critical))
+                                expect(eventLogger.lastErrorCode).to(equal(constants.pingTooManyRequestsError.errorCode + "429"))
                                 expect(eventLogger.lastErrorMessage).to(equal(constants.pingTooManyRequestsError.errorMessage))
 
                                 guard case .tooManyRequestsError = error else {
@@ -192,9 +192,11 @@ class MessageMixerServiceSpec: QuickSpec {
                                     expect(error).toNot(beNil())
 
                                     expect(eventLogger.logEventCalled).to(beTrue())
-                                    expect(eventLogger.lastEventType).to(equal(REventType.warning))
-                                    expect(Int(eventLogger.lastErrorCode ?? " ")).to(beGreaterThanOrEqualTo(300))
-                                    expect(Int(eventLogger.lastErrorCode ?? " ")).to(beLessThan(500))
+                                    expect(eventLogger.lastEventType).to(equal(REventType.critical))
+                                    let errorCodeParts = eventLogger.lastErrorCode?.components(separatedBy: ":")
+                                    expect(Int(errorCodeParts?[1] ?? " ")).to(beGreaterThanOrEqualTo(300))
+                                    expect(Int(errorCodeParts?[1] ?? " ")).to(beLessThan(500))
+                                    expect((errorCodeParts?[0])!+":").to(equal(constants.pingInvalidRequestError.errorCode))
                                     expect(eventLogger.lastErrorMessage).to(equal(constants.pingInvalidRequestError.errorMessage))
 
                                     guard case .invalidRequestError(let code) = error else {
@@ -224,9 +226,10 @@ class MessageMixerServiceSpec: QuickSpec {
                                     let error = result.getError()
                                     expect(error).toNot(beNil())
 
-                                    expect(eventLogger.logEventCalled).to(beTrue())
-                                    expect(eventLogger.lastEventType).to(equal(REventType.warning))
-                                    expect(Int(eventLogger.lastErrorCode ?? " ")).to(beGreaterThanOrEqualTo(500))
+                                    expect(eventLogger.lastEventType).to(equal(REventType.critical))
+                                    let errorCodeParts = eventLogger.lastErrorCode?.components(separatedBy: ":")
+                                    expect(Int(errorCodeParts?[1] ?? " ")).to(beGreaterThanOrEqualTo(500))
+                                    expect((errorCodeParts?[0])!+":").to(equal(constants.pingInternalServerError.errorCode))
                                     expect(eventLogger.lastErrorMessage).to(equal(constants.pingInternalServerError.errorMessage))
 
                                     guard case .internalServerError(let code) = error else {

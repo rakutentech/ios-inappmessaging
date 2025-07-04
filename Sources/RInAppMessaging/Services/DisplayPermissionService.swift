@@ -40,7 +40,7 @@ internal class DisplayPermissionService: DisplayPermissionServiceType, HttpReque
         ]
 
         guard let displayPermissionUrl = configurationRepository.getEndpoints()?.displayPermission else {
-            eventLogger.logEvent(eventType: .warning, errorCode: Constants.IAMErrorCode.displayPerMissingEndpoint.errorCode, errorMessage: Constants.IAMErrorCode.displayPerMissingEndpoint.errorMessage)
+            eventLogger.logEvent(eventType: .critical, errorCode: Constants.IAMErrorCode.displayPerMissingEndpoint.errorCode, errorMessage: Constants.IAMErrorCode.displayPerMissingEndpoint.errorMessage)
             Logger.debug("error: missing endpoint for DisplayPermissionService")
             return fallbackResponse
         }
@@ -67,15 +67,17 @@ internal class DisplayPermissionService: DisplayPermissionServiceType, HttpReque
             }
             switch error {
             case .httpError(let statusCode, _, _) where statusCode >= 500:
+                eventLogger.logEvent(eventType: .critical, errorCode: Constants.IAMErrorCode.checkPermissionError.errorCode + String(statusCode), errorMessage: Constants.IAMErrorCode.checkPermissionError.errorMessage)
                 return checkPermission(forCampaign: campaign, retry: false)
 
             case .taskFailed:
+                eventLogger.logEvent(eventType: .critical, errorCode: Constants.IAMErrorCode.checkPermissionError.errorCode + error.localizedDescription, errorMessage: Constants.IAMErrorCode.checkPermissionError.errorMessage)
                 return checkPermission(forCampaign: campaign, retry: false)
 
             default: ()
             }
         }
-        eventLogger.logEvent(eventType: .warning, errorCode: Constants.IAMErrorCode.checkPermissionError.errorCode, errorMessage: Constants.IAMErrorCode.checkPermissionError.errorMessage)
+        eventLogger.logEvent(eventType: .critical, errorCode: Constants.IAMErrorCode.checkPermissionError.errorCode, errorMessage: Constants.IAMErrorCode.checkPermissionError.errorMessage)
         reportError(description: "couldn't get a valid response from display permission endpoint", data: nil)
         return fallbackResponse
     }

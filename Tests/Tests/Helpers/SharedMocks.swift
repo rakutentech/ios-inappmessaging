@@ -698,12 +698,14 @@ extension EndpointURL {
 }
 
 class MockEventLoggerSendable: EventLoggerSendable {
+
     var configureCalled = false
     var logEventCalled = false
     var isEventLoggerEnabled: Bool = true
     var lastEventType: REventType?
     var lastErrorCode: String?
     var lastErrorMessage: String?
+    var setEventInfoHandleCalled = false
 
     func configure(apiKey: String?, apiUrl: String?, isEventLoggerEnabled: Bool?) {
         configureCalled = true
@@ -714,5 +716,8 @@ class MockEventLoggerSendable: EventLoggerSendable {
         lastEventType = eventType
         lastErrorCode = errorCode
         lastErrorMessage = errorMessage
+    }
+    func setEventInfoHandler(handler: ((Int, String, String, [String: String]?) -> Void)?) {
+        setEventInfoHandleCalled = true
     }
  }

@@ -23,18 +23,22 @@ internal class ImpressionService: ImpressionServiceType, HttpRequestable, TaskSc
     private(set) var httpSession: URLSession
     var bundleInfo = BundleInfo.self
     var scheduledTask: DispatchWorkItem?
+    private let eventLogger: EventLoggerSendable
 
     init(accountRepository: AccountRepositoryType,
-         configurationRepository: ConfigurationRepositoryType) {
+         configurationRepository: ConfigurationRepositoryType,
+         eventLogger: EventLoggerSendable) {
 
         self.accountRepository = accountRepository
         self.configurationRepository = configurationRepository
+        self.eventLogger = eventLogger
         httpSession = URLSession(configuration: configurationRepository.defaultHttpSessionConfiguration)
     }
 
     func pingImpression(impressions: [Impression], campaignData: CampaignData) {
 
         guard let impressionEndpoint = configurationRepository.getEndpoints()?.impression else {
+            eventLogger.logEvent(eventType: .critical, errorCode: Constants.IAMErrorCode.impressionMissingEndpoint.errorCode, errorMessage: Constants.IAMErrorCode.impressionMissingEndpoint.errorMessage)
             reportError(description: "Error retrieving InAppMessaging Impression URL", data: nil)
             return
         }
@@ -76,11 +80,13 @@ internal class ImpressionService: ImpressionServiceType, HttpRequestable, TaskSc
                     switch error {
                     case .httpError(let statusCode, _, _) where statusCode >= 500:
                         guard self.responseStateMachine.consecutiveErrorCount <= Constants.Retry.retryCount else {
+                            eventLogger.logEvent(eventType: .critical, errorCode: Constants.IAMErrorCode.impressionResponseError.errorCode + String(statusCode), errorMessage: Constants.IAMErrorCode.impressionResponseError.errorMessage)
                             return
                         }
                         self.retryImpressionRequest(endpoint: endpoint, parameters: parameters)
 
                     case .taskFailed:
+                        eventLogger.logEvent(eventType: .critical, errorCode: Constants.IAMErrorCode.impressionResponseError.errorCode + error.localizedDescription, errorMessage: Constants.IAMErrorCode.impressionResponseError.errorMessage)
                         self.retryImpressionRequest(endpoint: endpoint, parameters: parameters)
 
                     default: ()
@@ -104,12 +110,14 @@ extension ImpressionService {
 
         guard let appVersion = bundleInfo.appVersion
         else {
+            eventLogger.logEvent(eventType: .warning, errorCode: Constants.IAMErrorCode.impressionMissingEndpoint.errorCode, errorMessage: Constants.IAMErrorCode.impressionMissingEndpoint.errorMessage)
             reportError(description: "Error building impressions request body", data: nil)
             return .failure(RequestError.missingMetadata)
         }
         guard let impressions = parameters?[Keys.Params.impression] as? [Impression],
               let campaign = parameters?[Keys.Params.campaign] as? CampaignData
         else {
+            eventLogger.logEvent(eventType: .warning, errorCode: Constants.IAMErrorCode.impressionMissingdParameters.errorCode, errorMessage: Constants.IAMErrorCode.impressionMissingdParameters.errorMessage)
             reportError(description: "Error building impressions request body", data: nil)
             return .failure(RequestError.missingParameters)
         }
@@ -127,6 +135,7 @@ extension ImpressionService {
             let body = try JSONEncoder().encode(impressionRequest)
             return .success(body)
         } catch {
+            eventLogger.logEvent(eventType: .warning, errorCode: Constants.IAMErrorCode.impressionFailedCreatingRequestBody.errorCode, errorMessage: Constants.IAMErrorCode.impressionFailedCreatingRequestBody.errorMessage)
             reportError(description: "Error encoding impression request", data: error)
             return .failure(error)
         }

@@ -82,7 +82,7 @@ internal class CampaignsListManager: CampaignsListManagerType, TaskSchedulable {
             reportError(description: "Error retrieving InAppMessaging Mixer Server URL", data: nil)
 
         case MessageMixerServiceError.jsonDecodingError(let decodingError):
-            eventLogger.logEvent(eventType: .warning, errorCode: Constants.IAMErrorCode.pingDecodingError.errorCode, errorMessage: Constants.IAMErrorCode.pingDecodingError.errorMessage)
+            eventLogger.logEvent(eventType: .critical, errorCode: Constants.IAMErrorCode.pingDecodingError.errorCode, errorMessage: Constants.IAMErrorCode.pingDecodingError.errorMessage)
             reportError(description: "Ping request error: Failed to parse json", data: decodingError)
 
         case MessageMixerServiceError.tooManyRequestsError:
@@ -90,13 +90,16 @@ internal class CampaignsListManager: CampaignsListManagerType, TaskSchedulable {
 
         case MessageMixerServiceError.internalServerError(let code):
             guard responseStateMachine.consecutiveErrorCount <= Constants.Retry.retryCount else {
+                eventLogger.logEvent(eventType: .warning, errorCode: Constants.IAMErrorCode.pingInternalServerError.errorCode, errorMessage: Constants.IAMErrorCode.pingInternalServerError.errorMessage)
                 reportError(description: "Ping request error: Response Code \(code): Internal server error", data: nil)
                 return
             }
             scheduleNextPingCallWithRandomizedBackoff()
+            eventLogger.logEvent(eventType: .warning, errorCode: Constants.IAMErrorCode.pingInternalServerError.errorCode, errorMessage: Constants.IAMErrorCode.pingInternalServerError.errorMessage)
             reportError(description: "Ping request error: Response Code \(code): Internal server error. Retry scheduled", data: nil)
 
         case MessageMixerServiceError.invalidRequestError(let code):
+            eventLogger.logEvent(eventType: .warning, errorCode: Constants.IAMErrorCode.pingInvalidRequestError.errorCode, errorMessage: Constants.IAMErrorCode.pingInvalidRequestError.errorMessage)
             reportError(description: "Ping request error: Response Code \(code): Invalid request error", data: nil)
 
         default:

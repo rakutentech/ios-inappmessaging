@@ -1,4 +1,5 @@
 import typealias Foundation.TimeInterval
+import Foundation
 
 internal enum Constants {
 
@@ -111,6 +112,10 @@ internal enum Constants {
         static let minHeight = 5.0
         static let defaultHeight = 250.0
     }
+    
+    enum Url {
+        static let invalidURL = URL(string: "invalid")!
+    }
 
     enum IAMErrorCode {
         case pingInvalidConfig
@@ -131,6 +136,17 @@ internal enum Constants {
         case configUnknownSubscriptionId
         case configInvalidRequestError
         case configInternalServerError
+        case configInvalidConfigUrl
+        case pushPrimerAuthorizationFailed
+        case pushPrimerAuthorizationDenied
+        case configJsonDecodingError
+        case configRequestError
+        case pingRequestError
+        case impressionMissingEndpoint
+        case impressionResponseError
+        case impressionMissingMetadata
+        case impressionMissingdParameters
+        case impressionFailedCreatingRequestBody
 
         var errorCode: String {
             switch self {
@@ -139,11 +155,11 @@ internal enum Constants {
             case .pingDecodingError:
                 return "PING_JSON_DECODING_ERROR"
             case .pingTooManyRequestsError:
-                return "PING_TOO_MANY_REQUESTS_ERROR"
+                return "PING_TOO_MANY_REQUESTS_ERROR:"
             case .pingInvalidRequestError:
-                return "PING_INVALID_REQUEST_ERROR"
+                return "PING_INVALID_REQUEST_ERROR:"
             case .pingInternalServerError:
-                return "PING_INTERNAL_SERVER_ERROR"
+                return "PING_INTERNAL_SERVER_ERROR:"
             case .pingMissingMetadata:
                 return "PING_MISSING_METADATA"
             case .checkPermissionError:
@@ -159,17 +175,39 @@ internal enum Constants {
             case .userDataCacheEncodingFailed:
                 return "USERDATA_CACHE_ENCODING_FAILED"
             case .configTooManyRequestsError:
-                return "CONFIG_TOO_MANY_REQUESTS_ERROR"
+                return "CONFIG_TOO_MANY_REQUESTS_ERROR:"
             case .configMissingOrInvalidSubscriptionId:
-                return "CONFIG_MISSING_OR_INVALID_SUBSCRIPTION_ID"
+                return "CONFIG_MISSING_OR_INVALID_SUBSCRIPTION_ID:"
             case .configUnknownSubscriptionId:
-                return "CONFIG_UNKNOWN_SUBSCRIPTION_ID"
+                return "CONFIG_UNKNOWN_SUBSCRIPTION_ID:"
             case .configInvalidRequestError:
-                return "CONFIG_INVALID_REQUEST_ERROR"
+                return "CONFIG_INVALID_REQUEST_ERROR:"
             case .configInternalServerError:
-                return "CONFIG_INTERNAL_SERVER_ERROR"
+                return "CONFIG_INTERNAL_SERVER_ERROR:"
+            case .configJsonDecodingError:
+                return "CONFIGURE_JSON_DECODING_ERROR"
+            case .configRequestError:
+                return "CONFIGURE_REQUEST_ERROR:"
             case .displayPerFailedCreatingRequestBody:
                 return "DISPLAY_PERMISSION_FAILED_CREATING_REQUEST_BODY"
+            case .configInvalidConfigUrl:
+                return "CONFIGURE_INVALID_CONFIGURATION_URL"
+            case .pushPrimerAuthorizationFailed:
+                return "PUSH_AUTHORIZATION_FAILED"
+            case .pushPrimerAuthorizationDenied:
+                return "PUSH_AUTHORIZATION_DENIED"
+            case .pingRequestError:
+                return "PING_REQUEST_ERROR"
+            case .impressionMissingEndpoint:
+                return "IMPRESSION_MISSING_ENDPOINT"
+            case .impressionResponseError:
+                return "IMPRESSION_RESPONSE_ERROR:"
+            case .impressionMissingMetadata:
+                return "IMPRESSION_MISSING_METADATA"
+            case .impressionMissingdParameters:
+                return "IMPRESSION_MISSING_PARAMETERS"
+            case .impressionFailedCreatingRequestBody:
+                return "IMPRESSION_ERROR_ENCODING_IMPRESSION_REQUEST"
             }
         }
 
@@ -210,7 +248,29 @@ internal enum Constants {
             case .configInternalServerError:
                 return "An internal server error occurred while fetching the configuration."
             case .displayPerFailedCreatingRequestBody:
-             return "failed creating a request body"
+                return "Failed creating display permission request body"
+            case .configInvalidConfigUrl:
+                return "Configuration Url is Invalid"
+            case .pushPrimerAuthorizationFailed:
+                return "PushPrimer: UNUserNotificationCenter requestAuthorization failed."
+            case .pushPrimerAuthorizationDenied:
+                return "PushPrimer: User has not granted authorization."
+            case .configJsonDecodingError:
+                return "JSON Decoding Error for Config API"
+            case .configRequestError:
+                return "Configure Request Error"
+            case .pingRequestError:
+                return "Ping Request Error"
+            case .impressionMissingEndpoint:
+                return "Error retrieving InAppMessaging Impression URL"
+            case .impressionResponseError:
+                return "Couldn't get a valid response from impression endpoint."
+            case .impressionMissingMetadata:
+                return "Missing metadata in impression request."
+            case .impressionMissingdParameters:
+                return "Unexpected parameters in impression request."
+            case .impressionFailedCreatingRequestBody:
+                return "Error encoding impression request"
             }
         }
     }

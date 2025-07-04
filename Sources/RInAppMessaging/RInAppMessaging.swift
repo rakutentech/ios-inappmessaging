@@ -17,6 +17,8 @@ import RSDKUtils
     internal static var swiftUIEventHandler: SwiftUIViewEventHandlerType? {
         dependencyManager?.resolve(type: SwiftUIViewEventHandlerType.self)
     }
+    private static var _eventInfoHandler: ((Int, String, String, [String: String]?) -> Void)?
+    private static var eventLogger: EventLoggerSendable?
 
     internal static var bundleInfo = BundleInfo.self
     
@@ -111,10 +113,16 @@ import RSDKUtils
         /// - apiKey -`InAppMessagingEventLoggerApiUrl`
         /// - apiKey - `InAppMessagingEventLoggerApiKey`
         /// - isEventLoggerEnabled - `InAppMessagingEventLoggerEnabled`
-        if let eventLogger = dependencyManager.resolve(type: EventLoggerSendable.self){
-            eventLogger.configure(apiKey: self.loggerApiKey ?? BundleInfo.eventLoggerApiKey,
-                                  apiUrl: self.loggerApiUrl ?? BundleInfo.eventLoggerApiUrl,
-                                  isEventLoggerEnabled: self.loggerEnabled ?? BundleInfo.isEventLoggerEnabled)
+        let eventLogger = dependencyManager.resolve(type: EventLoggerSendable.self)
+        if !RInAppMessaging.isRMCEnvironment {
+            eventLogger?.configure(apiKey: self.loggerApiKey ?? BundleInfo.eventLoggerApiKey,
+                                   apiUrl:  self.loggerApiUrl ?? BundleInfo.eventLoggerApiUrl,
+                                   isEventLoggerEnabled: self.loggerEnabled ?? BundleInfo.isEventLoggerEnabled)
+        }
+        if validConfigURL == Constants.Url.invalidURL {
+            eventLogger?.logEvent(eventType: .critical,
+                                  errorCode: Constants.IAMErrorCode.configInvalidConfigUrl.errorCode,
+                                  errorMessage: Constants.IAMErrorCode.configInvalidConfigUrl.errorMessage)
         }
 
         configure(dependencyManager: dependencyManager, moduleConfig: config)
@@ -203,6 +211,18 @@ import RSDKUtils
         self.loggerEnabled = isEventLoggerEnabled
     }
     
+    /// Sets the callback to receive event logger information.
+    /// This property is used for internal purpose
+    public static var eventInfoHandler: ((Int, String, String, [String: String]?) -> Void)? {
+        get {
+            return _eventInfoHandler
+        }
+        set {
+            _eventInfoHandler = newValue
+            eventLogger?.setEventInfoHandler(handler: newValue)
+        }
+    }
+    
     // visible for unit tests
     internal static func tryGettingValidConfigURL(_ config: InAppMessagingModuleConfiguration) -> URL {
         
@@ -212,7 +232,7 @@ import RSDKUtils
             Logger.debug(description)
             errorCallback?(error)
             assertionFailure(description)
-            return URL(string: "invalid")!
+            return Constants.Url.invalidURL
         }
 
         return configURL
