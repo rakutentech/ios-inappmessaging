@@ -63,21 +63,19 @@ internal class DisplayPermissionService: DisplayPermissionServiceType, HttpReque
 
         case .failure(let error):
             guard retry else {
+                eventLogger.logEvent(eventType: .critical, errorCode: Constants.IAMErrorCode.checkPermissionError.errorCode, errorMessage: Constants.IAMErrorCode.checkPermissionError.errorMessage)
                 break
             }
             switch error {
             case .httpError(let statusCode, _, _) where statusCode >= 500:
-                eventLogger.logEvent(eventType: .critical, errorCode: Constants.IAMErrorCode.checkPermissionError.errorCode + String(statusCode), errorMessage: Constants.IAMErrorCode.checkPermissionError.errorMessage)
                 return checkPermission(forCampaign: campaign, retry: false)
 
             case .taskFailed:
-                eventLogger.logEvent(eventType: .critical, errorCode: Constants.IAMErrorCode.checkPermissionError.errorCode + error.localizedDescription, errorMessage: Constants.IAMErrorCode.checkPermissionError.errorMessage)
                 return checkPermission(forCampaign: campaign, retry: false)
 
             default: ()
             }
         }
-        eventLogger.logEvent(eventType: .critical, errorCode: Constants.IAMErrorCode.checkPermissionError.errorCode, errorMessage: Constants.IAMErrorCode.checkPermissionError.errorMessage)
         reportError(description: "couldn't get a valid response from display permission endpoint", data: nil)
         return fallbackResponse
     }
