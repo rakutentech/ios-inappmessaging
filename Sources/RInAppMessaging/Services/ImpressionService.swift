@@ -86,7 +86,6 @@ internal class ImpressionService: ImpressionServiceType, HttpRequestable, TaskSc
                         self.retryImpressionRequest(endpoint: endpoint, parameters: parameters)
 
                     case .taskFailed:
-                        eventLogger.logEvent(eventType: .critical, errorCode: Constants.IAMErrorCode.impressionResponseError.errorCode + error.localizedDescription, errorMessage: Constants.IAMErrorCode.impressionResponseError.errorMessage)
                         self.retryImpressionRequest(endpoint: endpoint, parameters: parameters)
 
                     default: ()

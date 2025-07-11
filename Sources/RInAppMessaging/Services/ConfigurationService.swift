@@ -65,7 +65,6 @@ internal struct ConfigurationService: ConfigurationServiceType, HttpRequestable 
                 eventLogger.logEvent(eventType: .critical, errorCode:Constants.IAMErrorCode.configInternalServerError.errorCode + String(statusCode), errorMessage: Constants.IAMErrorCode.configInternalServerError.errorMessage)
                 return .failure(.internalServerError(statusCode))
             default:
-                eventLogger.logEvent(eventType: .critical, errorCode:Constants.IAMErrorCode.configRequestError.errorCode, errorMessage: Constants.IAMErrorCode.configRequestError.errorMessage + requestError.localizedDescription)
                 return .failure(.requestError(requestError))
             }
         }
