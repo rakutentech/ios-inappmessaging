@@ -140,7 +140,6 @@ internal enum Constants {
         case pushPrimerAuthorizationFailed
         case pushPrimerAuthorizationDenied
         case configJsonDecodingError
-        case configRequestError
         case pingRequestError
         case impressionMissingEndpoint
         case impressionResponseError
@@ -186,8 +185,6 @@ internal enum Constants {
                 return "CONFIG_INTERNAL_SERVER_ERROR:"
             case .configJsonDecodingError:
                 return "CONFIGURE_JSON_DECODING_ERROR"
-            case .configRequestError:
-                return "CONFIGURE_REQUEST_ERROR:"
             case .displayPerFailedCreatingRequestBody:
                 return "DISPLAY_PERMISSION_FAILED_CREATING_REQUEST_BODY"
             case .configInvalidConfigUrl:
@@ -257,8 +254,6 @@ internal enum Constants {
                 return "PushPrimer: User has not granted authorization."
             case .configJsonDecodingError:
                 return "JSON Decoding Error for Config API"
-            case .configRequestError:
-                return "Configure Request Error"
             case .pingRequestError:
                 return "Ping Request Error"
             case .impressionMissingEndpoint:
