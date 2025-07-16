@@ -162,7 +162,7 @@ internal enum Constants {
             case .pingMissingMetadata:
                 return "PING_MISSING_METADATA"
             case .checkPermissionError:
-                return "CHECK_PERMISSION_RESPONSE_ERROR"
+                return "CHECK_PERMISSION_RESPONSE_ERROR: 500"
             case .displayPerMissingEndpoint:
                 return "DISPLAY_PERMISSION_MISSING_ENDPOINT"
             case .displayPerMissingMetadata:
