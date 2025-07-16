@@ -101,12 +101,12 @@ internal class ConfigurationManager: ConfigurationManagerType, TaskSchedulable {
                 reportError(description: "Config request error: Response Code \(code): Internal server error. Retry scheduled", data: nil)
 
             case .invalidRequestError(let code):
-                completion(ConfigEndpointData(rolloutPercentage: 0, endpoints: nil))
                 reportError(description: "Config request error: Response Code \(code): Invalid request error", data: nil)
+                completion(ConfigEndpointData(rolloutPercentage: 0, endpoints: nil))
 
             case .jsonDecodingError(let decodingError):
-                completion(ConfigEndpointData(rolloutPercentage: 0, endpoints: nil))
                 reportError(description: "Config request error: Failed to parse json", data: decodingError)
+                completion(ConfigEndpointData(rolloutPercentage: 0, endpoints: nil))
 
             default:
                 reportError(description: "Error calling config server. Retrying in \(retryDelayMS)ms", data: error)
