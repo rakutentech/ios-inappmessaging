@@ -74,17 +74,23 @@ internal struct CustomJson: Codable {
     let pushPrimer: PrimerButton?
     let clickableImage: ClickableImage?
     let background: BackgroundColor?
+    let carousel: Carousel?
     
     enum CodingKeys: String, CodingKey {
         case pushPrimer
         case clickableImage
         case background
+        case carousel
     }
     
-    init(pushPrimer: PrimerButton? = nil, clickableImage: ClickableImage? = nil, background: BackgroundColor? = nil) {
+    init(pushPrimer: PrimerButton? = nil,
+         clickableImage: ClickableImage? = nil,
+         background: BackgroundColor? = nil,
+         carousel: Carousel? = nil) {
         self.pushPrimer = pushPrimer
         self.clickableImage = clickableImage
         self.background = background
+        self.carousel = carousel
     }
     
     init(from decoder: Decoder) throws {
@@ -92,6 +98,7 @@ internal struct CustomJson: Codable {
         pushPrimer = try? container.decodeIfPresent(PrimerButton.self, forKey: .pushPrimer)
         clickableImage = try? container.decodeIfPresent(ClickableImage.self, forKey: .clickableImage)
         background = try? container.decodeIfPresent(BackgroundColor.self, forKey: .background)
+        carousel = try? container.decodeIfPresent(Carousel.self, forKey: .carousel)
     }
 }
 
@@ -145,3 +152,46 @@ internal struct BackgroundColor: Codable, Equatable {
         self.opacity = try? container.decodeIfPresent(Double.self, forKey: .opacity)
     }
 }
+
+struct Carousel: Codable {
+    let images: [String: ImageDetails]?
+    
+    enum CodingKeys: String, CodingKey {
+        case images
+    }
+    
+    init(images: [String: ImageDetails]?) {
+        self.images = images
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        images = try container.decodeIfPresent([String: ImageDetails].self, forKey: .images)
+    }
+}
+
+struct ImageDetails: Codable {
+    let imgUrl: String?
+    let link: String?
+    let altText: String?
+    
+    enum CodingKeys: String, CodingKey {
+        case imgUrl
+        case link
+        case altText
+    }
+    
+    init(imgUrl: String?, link: String?, altText: String?) {
+        self.imgUrl = imgUrl
+        self.altText = altText
+        self.link = link
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        imgUrl = try container.decodeIfPresent(String.self, forKey: .imgUrl)
+        link = try container.decodeIfPresent(String.self, forKey: .link)
+        altText = try container.decodeIfPresent(String.self, forKey: .altText)
+    }
+}
+

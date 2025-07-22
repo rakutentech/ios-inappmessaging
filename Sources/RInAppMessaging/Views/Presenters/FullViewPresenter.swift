@@ -7,7 +7,7 @@ internal protocol FullViewPresenterType: BaseViewPresenterType {
     func loadButtons()
     func didClickAction(sender: ActionButton)
     func didClickExitButton()
-    func didClickCampaignImage()
+    func didClickCampaignImage(url: String?)
 }
 
 internal class FullViewPresenter: BaseViewPresenter, FullViewPresenterType, ErrorReportable {
@@ -19,6 +19,7 @@ internal class FullViewPresenter: BaseViewPresenter, FullViewPresenterType, Erro
     private var viewBackgroundColor: UIColor {
         UIColor(hexString: campaign.data.messagePayload.backgroundColor) ?? .white
     }
+    private let eventLogger: EventLoggerSendable = EventLogger()
 
     init(campaignRepository: CampaignRepositoryType,
          impressionService: ImpressionServiceType,
@@ -51,7 +52,8 @@ internal class FullViewPresenter: BaseViewPresenter, FullViewPresenterType, Erro
                                       showOptOut: messagePayload.messageSettings.displaySettings.optOut,
                                       showButtons: !messagePayload.messageSettings.controlSettings.buttons.isEmpty,
                                       isDismissable: campaign.data.isCampaignDismissable,
-                                      customJson: campaign.data.customJson)
+                                      customJson: campaign.data.customJson,
+                                      carouselData: carouselData)
 
         view?.setup(viewModel: viewModel)
     }
@@ -117,11 +119,11 @@ internal class FullViewPresenter: BaseViewPresenter, FullViewPresenterType, Erro
         view?.dismiss()
     }
     
-    func didClickCampaignImage() {
+    func didClickCampaignImage(url: String?) {
         guard !campaign.isPushPrimer else { return }
-        guard let clickImageData = campaign.data.customJson?.clickableImage,
-              CommonUtility.isValidURL(clickImageData.url ?? ""),
-              let uriToOpen = URL(string: clickImageData.url ?? "") else {
+        guard let redirectUrl = url,
+              CommonUtility.isValidURL(redirectUrl),
+              let uriToOpen = URL(string: redirectUrl) else {
             return
         }
         logImpression(type: .clickContent)
@@ -159,6 +161,7 @@ internal class FullViewPresenter: BaseViewPresenter, FullViewPresenterType, Erro
             self.notificationCenter.requestAuthorization(options: pushPrimerOptions) { [self] (granted, error) in
                 if let error = error {
                     self.reportError(description: "PushPrimer: UNUserNotificationCenter requestAuthorization failed", data: error)
+                    eventLogger.logEvent(eventType: .warning, errorCode: Constants.IAMErrorCode.pushPrimerAuthorizationFailed.errorCode, errorMessage: Constants.IAMErrorCode.pushPrimerAuthorizationFailed.errorMessage)
                 } else if granted {
                     if willPopupAppear {
                         self.trackPushPrimerAction(didOptIn: true)
@@ -169,6 +172,7 @@ internal class FullViewPresenter: BaseViewPresenter, FullViewPresenterType, Erro
                         self.trackPushPrimerAction(didOptIn: false)
                     }
                     self.reportError(description: "PushPrimer: User has not granted authorization", data: nil)
+                    eventLogger.logEvent(eventType: .warning, errorCode: Constants.IAMErrorCode.pushPrimerAuthorizationDenied.errorCode, errorMessage: Constants.IAMErrorCode.pushPrimerAuthorizationDenied.errorMessage)
                 }
             }
         }

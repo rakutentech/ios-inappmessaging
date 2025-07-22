@@ -17,7 +17,9 @@ import RSDKUtils
     internal static var swiftUIEventHandler: SwiftUIViewEventHandlerType? {
         dependencyManager?.resolve(type: SwiftUIViewEventHandlerType.self)
     }
-    
+    private static var _eventInfoHandler: ((Int, String, String, [String: String]?) -> Void)?
+    private static var eventLogger: EventLoggerSendable?
+
     internal static var bundleInfo = BundleInfo.self
     
     internal static var isInitialized: Bool {
@@ -30,6 +32,9 @@ import RSDKUtils
     internal static var isRMCEnvironment: Bool {
         bundleInfo.rmcBundle != nil
     }
+    private static var loggerApiKey: String?
+    private static var loggerApiUrl: String?
+    private static var loggerEnabled: Bool?
 
     private override init() { super.init() }
 
@@ -101,6 +106,25 @@ import RSDKUtils
         let validConfigURL = tryGettingValidConfigURL(config)
         let mainContainer = MainContainerFactory.create(dependencyManager: dependencyManager, configURL: validConfigURL)
         dependencyManager.appendContainer(mainContainer)
+
+        /// Event Logger configuration for  App Popup .
+        ///
+        /// If credentials are not set using `setupApiConfig()` then they are fetched from Info.plist
+        /// - apiKey -`InAppMessagingEventLoggerApiUrl`
+        /// - apiKey - `InAppMessagingEventLoggerApiKey`
+        /// - isEventLoggerEnabled - `InAppMessagingEventLoggerEnabled`
+        let eventLogger = dependencyManager.resolve(type: EventLoggerSendable.self)
+        if !RInAppMessaging.isRMCEnvironment {
+            eventLogger?.configure(apiKey: self.loggerApiKey ?? BundleInfo.eventLoggerApiKey,
+                                   apiUrl:  self.loggerApiUrl ?? BundleInfo.eventLoggerApiUrl,
+                                   isEventLoggerEnabled: self.loggerEnabled ?? BundleInfo.isEventLoggerEnabled)
+        }
+        if validConfigURL == Constants.Url.invalidURL {
+            eventLogger?.logEvent(eventType: .critical,
+                                  errorCode: Constants.IAMErrorCode.configInvalidConfigUrl.errorCode,
+                                  errorMessage: Constants.IAMErrorCode.configInvalidConfigUrl.errorMessage)
+        }
+
         configure(dependencyManager: dependencyManager, moduleConfig: config)
     }
 
@@ -169,7 +193,36 @@ import RSDKUtils
             interactor.closeTooltip(with: uiElementIdentifier)
         }
     }
-
+    
+    /// Sets the credentials required for Event Logger
+    ///
+    /// This method configures the Event Logger with  API key, API URL and enable/disable flag (for internal use only).
+    ///
+    /// - Parameters:
+    ///   - apiKey: The API key used for authenticating logging requests.
+    ///   - apiUrl: The endpoint URL where logs will be sent.
+    ///   - isEventLoggerEnabled: A Boolean value that determines if event logging should be enabled.
+    ///
+    /// - Note: This method is **intended for internal use only** within the wrapper framework.
+    /// Clients using the SDK should not call this method directly.
+    @objc public static func setupApiConfig(apiKey: String, apiUrl: String, isEventLoggerEnabled: Bool) {
+        self.loggerApiKey = apiKey
+        self.loggerApiUrl = apiUrl
+        self.loggerEnabled = isEventLoggerEnabled
+    }
+    
+    /// Sets the callback to receive event logger information.
+    /// This property is used for internal purpose
+    public static var eventInfoHandler: ((Int, String, String, [String: String]?) -> Void)? {
+        get {
+            return _eventInfoHandler
+        }
+        set {
+            _eventInfoHandler = newValue
+            eventLogger?.setEventInfoHandler(handler: newValue)
+        }
+    }
+    
     // visible for unit tests
     internal static func tryGettingValidConfigURL(_ config: InAppMessagingModuleConfiguration) -> URL {
         
@@ -179,7 +232,7 @@ import RSDKUtils
             Logger.debug(description)
             errorCallback?(error)
             assertionFailure(description)
-            return URL(string: "invalid")!
+            return Constants.Url.invalidURL
         }
 
         return configURL

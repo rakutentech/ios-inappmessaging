@@ -2,3 +2,4 @@
 "dialog_alert_invalidURI_title" = "Page not found";
 "dialog_alert_invalidURI_message" = "Encountered error while navigating to the page";
 "dialog_alert_invalidURI_close" = "Close";
+"carousel_image_load_error" = "Unable to load image";

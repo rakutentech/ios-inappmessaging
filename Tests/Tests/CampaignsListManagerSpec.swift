@@ -15,6 +15,7 @@ class CampaignsListManagerSpec: QuickSpec {
             var campaignTriggerAgent: CampaignTriggerAgentMock!
             var errorDelegate: ErrorDelegateMock!
             var configurationRepository: ConfigurationRepository!
+            var eventLogger: MockEventLoggerSendable!
 
             beforeEach {
                 campaignRepository = CampaignRepositoryMock()
@@ -22,12 +23,14 @@ class CampaignsListManagerSpec: QuickSpec {
                 errorDelegate = ErrorDelegateMock()
                 campaignTriggerAgent = CampaignTriggerAgentMock()
                 configurationRepository = ConfigurationRepository()
+                eventLogger = MockEventLoggerSendable()
                 configurationRepository.saveIAMModuleConfiguration(
                     InAppMessagingModuleConfiguration(configURLString: nil, subscriptionID: nil, isTooltipFeatureEnabled: true))
                 manager = CampaignsListManager(campaignRepository: campaignRepository,
                                                campaignTriggerAgent: campaignTriggerAgent,
                                                messageMixerService: messageMixerService,
-                                               configurationRepository: configurationRepository)
+                                               configurationRepository: configurationRepository,
+                                               eventLogger: eventLogger)
                 manager.errorDelegate = errorDelegate
             }
 

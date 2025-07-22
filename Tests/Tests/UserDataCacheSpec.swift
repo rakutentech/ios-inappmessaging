@@ -8,6 +8,7 @@ class UserDataCacheSpec: QuickSpec {
     override func spec() {
 
         let userDefaults = UserDefaults(suiteName: "UserDataCacheSpec")!
+        let eventLogger = MockEventLoggerSendable()
         let user = [UserIdentifier(type: .userId, identifier: "testUser")]
         let userDefaultsDataKey = "IAM_user_cache"
 
@@ -18,30 +19,30 @@ class UserDataCacheSpec: QuickSpec {
         describe("UserDataCache") {
 
             it("will return nil if no cached data was found") {
-                let userCache = UserDataCache(userDefaults: userDefaults)
+                let userCache = UserDataCache(userDefaults: userDefaults, eventLogger: eventLogger)
                 expect(userCache.getUserData(identifiers: [])).to(beNil())
             }
 
             it("will return nil if invalid cached data was found") {
                 userDefaults.set(Data("invalid_data".utf8), forKey: userDefaultsDataKey)
-                let userCache = UserDataCache(userDefaults: userDefaults)
+                let userCache = UserDataCache(userDefaults: userDefaults, eventLogger: eventLogger)
                 expect(userCache.getUserData(identifiers: [])).to(beNil())
             }
 
             it("will return previously cached display permission data") {
-                let previousUserCache = UserDataCache(userDefaults: userDefaults)
+                let previousUserCache = UserDataCache(userDefaults: userDefaults, eventLogger: eventLogger)
                 let displayPermissionData = DisplayPermissionResponse(display: true, performPing: false)
                 let campaign = TestHelpers.generateCampaign(id: "test")
                 previousUserCache.cacheDisplayPermissionData(displayPermissionData, campaignID: campaign.id, userIdentifiers: [])
 
-                let userCache = UserDataCache(userDefaults: userDefaults)
+                let userCache = UserDataCache(userDefaults: userDefaults, eventLogger: eventLogger)
                 let userContainer = userCache.getUserData(identifiers: [])
                 expect(userContainer).toNot(beNil())
                 expect(userContainer?.displayPermissionData(for: campaign)).to(equal(displayPermissionData))
             }
 
             it("will store separate display permission data for each campaign") {
-                let userCache = UserDataCache(userDefaults: userDefaults)
+                let userCache = UserDataCache(userDefaults: userDefaults, eventLogger: eventLogger)
                 let dpDataA = DisplayPermissionResponse(display: true, performPing: false)
                 let dpDataB = DisplayPermissionResponse(display: false, performPing: false) // creationTimeMilliseconds is also different
                 let campaignA = TestHelpers.generateCampaign(id: "test1")
@@ -54,39 +55,39 @@ class UserDataCacheSpec: QuickSpec {
             }
 
             it("will return previously cached campaign data") {
-                let previousUserCache = UserDataCache(userDefaults: userDefaults)
+                let previousUserCache = UserDataCache(userDefaults: userDefaults, eventLogger: eventLogger)
                 let campaigns = TestHelpers.MockResponse.withGeneratedCampaigns(count: 2, test: false, delay: 0).data
                 previousUserCache.cacheCampaignData(campaigns, userIdentifiers: [])
 
-                let userCache = UserDataCache(userDefaults: userDefaults)
+                let userCache = UserDataCache(userDefaults: userDefaults, eventLogger: eventLogger)
                 let userContainer = userCache.getUserData(identifiers: [])
                 expect(userContainer).toNot(beNil())
                 expect(userContainer?.campaignData).to(equal(campaigns))
             }
 
             it("will return previously cached data for registered user") {
-                let previousUserCache = UserDataCache(userDefaults: userDefaults)
+                let previousUserCache = UserDataCache(userDefaults: userDefaults, eventLogger: eventLogger)
                 let campaigns = TestHelpers.MockResponse.withGeneratedCampaigns(count: 2, test: false, delay: 0).data
                 previousUserCache.cacheCampaignData(campaigns, userIdentifiers: user)
 
-                let userCache = UserDataCache(userDefaults: userDefaults)
+                let userCache = UserDataCache(userDefaults: userDefaults, eventLogger: eventLogger)
                 let userContainer = userCache.getUserData(identifiers: user)
                 expect(userContainer).toNot(beNil())
                 expect(userContainer?.campaignData).to(equal(campaigns))
             }
 
             it("will not return registered user data from anonymous user container") {
-                let previousUserCache = UserDataCache(userDefaults: userDefaults)
+                let previousUserCache = UserDataCache(userDefaults: userDefaults, eventLogger: eventLogger)
                 let campaigns = TestHelpers.MockResponse.withGeneratedCampaigns(count: 2, test: false, delay: 0).data
                 previousUserCache.cacheCampaignData(campaigns, userIdentifiers: [])
 
-                let userCache = UserDataCache(userDefaults: userDefaults)
+                let userCache = UserDataCache(userDefaults: userDefaults, eventLogger: eventLogger)
                 let userContainer = userCache.getUserData(identifiers: user)
                 expect(userContainer).to(beNil())
             }
 
             it("will remove all user cached data for registered user") {
-                let userCache = UserDataCache(userDefaults: userDefaults)
+                let userCache = UserDataCache(userDefaults: userDefaults, eventLogger: eventLogger)
                 let userIdentifier = [UserIdentifier(type: .userId, identifier: "testUser")]
 
                 let campaigns = TestHelpers.MockResponse.withGeneratedCampaigns(count: 2, test: false, delay: 0).data
@@ -105,7 +106,7 @@ class UserDataCacheSpec: QuickSpec {
                 it("will not crash") {
                     let queue1 = DispatchQueue(label: "UserDataCacheQueue1")
                     let queue2 = DispatchQueue(label: "UserDataCacheQueue2")
-                    let userCache = UserDataCache(userDefaults: UserDefaults(suiteName: "UserDataCacheForQueue")!)
+                    let userCache = UserDataCache(userDefaults: UserDefaults(suiteName: "UserDataCacheForQueue")!, eventLogger: eventLogger)
                     var queue1IsDone = false
                     var queue2IsDone = false
                     queue1.async {
@@ -135,7 +136,7 @@ class UserDataCacheSpec: QuickSpec {
                 var userCache: UserDataCache!
 
                 beforeEach {
-                    userCache = UserDataCache(userDefaults: userDefaults)
+                    userCache = UserDataCache(userDefaults: userDefaults, eventLogger: eventLogger)
                 }
 
                 it("will use separate containers for different userIds") {

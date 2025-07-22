@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
-    <device id="retina6_1" orientation="portrait" appearance="light"/>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="23094" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_3" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23084"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -17,6 +17,7 @@
                 <outlet property="bodyView" destination="mHs-W6-s9X" id="DFx-Il-UEO"/>
                 <outlet property="bodyViewOffsetYConstraint" destination="LEa-Mv-BCR" id="abv-2p-TYw"/>
                 <outlet property="buttonsContainer" destination="x36-hg-Dgf" id="V6b-Wj-ReC"/>
+                <outlet property="carouselView" destination="y34-nW-wPD" id="S39-ma-qcz"/>
                 <outlet property="contentScrollView" destination="R2i-po-Za0" id="n9b-nr-Eho"/>
                 <outlet property="contentView" destination="9fo-EW-lL9" id="qtH-MB-9vO"/>
                 <outlet property="contentWidthOffsetConstraint" destination="rmG-89-pbI" id="RLz-RF-qgv"/>
@@ -26,6 +27,7 @@
                 <outlet property="headerLabel" destination="T7s-2B-xbs" id="z3s-fm-1Ez"/>
                 <outlet property="imageView" destination="87e-5v-58Z" id="gZQ-P8-aXx"/>
                 <outlet property="optOutAndButtonsSpacer" destination="cX9-6w-OUz" id="nq1-Dm-L26"/>
+                <outlet property="optOutButtonTopSpacer" destination="wrt-M2-rbv" id="R9h-3n-UVl"/>
                 <outlet property="optOutView" destination="v9s-j4-ABc" id="st4-gn-1jx"/>
                 <outlet property="webViewContainer" destination="d8e-45-aEu" id="L7l-e9-tiy"/>
             </connections>
@@ -35,11 +37,11 @@
             <rect key="frame" x="0.0" y="0.0" width="414" height="631"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9fo-EW-lL9">
-                    <rect key="frame" x="0.0" y="20.5" width="414" height="590"/>
+                <view contentMode="scaleToFill" placeholderIntrinsicWidth="414" placeholderIntrinsicHeight="635" translatesAutoresizingMaskIntoConstraints="NO" id="9fo-EW-lL9">
+                    <rect key="frame" x="0.0" y="-2" width="414" height="635"/>
                     <subviews>
-                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="sQ8-dx-V3p">
-                            <rect key="frame" x="0.0" y="0.0" width="414" height="590"/>
+                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" translatesAutoresizingMaskIntoConstraints="NO" id="sQ8-dx-V3p">
+                            <rect key="frame" x="0.0" y="0.0" width="414" height="635"/>
                             <subviews>
                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="LBu-gO-Kcj">
                                     <rect key="frame" x="0.0" y="0.0" width="414" height="50"/>
@@ -64,10 +66,10 @@
                                     </constraints>
                                 </view>
                                 <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" contentInsetAdjustmentBehavior="never" translatesAutoresizingMaskIntoConstraints="NO" id="R2i-po-Za0">
-                                    <rect key="frame" x="0.0" y="50" width="414" height="426"/>
+                                    <rect key="frame" x="0.0" y="50" width="414" height="446"/>
                                     <subviews>
-                                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="kFe-rN-o5K">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="146"/>
+                                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" translatesAutoresizingMaskIntoConstraints="NO" id="kFe-rN-o5K">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="446"/>
                                             <subviews>
                                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="18" translatesAutoresizingMaskIntoConstraints="NO" id="mHs-W6-s9X">
                                                     <rect key="frame" x="0.0" y="0.0" width="414" height="18"/>
@@ -87,16 +89,50 @@
                                                     </subviews>
                                                 </stackView>
                                                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" placeholderIntrinsicWidth="infinite" placeholderIntrinsicHeight="128" translatesAutoresizingMaskIntoConstraints="NO" id="87e-5v-58Z" customClass="FlexibleHeightImageView" customModule="RInAppMessaging">
-                                                    <rect key="frame" x="0.0" y="18" width="414" height="128"/>
+                                                    <rect key="frame" x="0.0" y="104" width="414" height="128"/>
                                                 </imageView>
+                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="y34-nW-wPD" customClass="CarouselView" customModule="RInAppMessaging">
+                                                    <rect key="frame" x="0.0" y="318" width="414" height="128"/>
+                                                    <subviews>
+                                                        <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="UdF-Wq-BHP">
+                                                            <rect key="frame" x="0.0" y="0.0" width="414" height="128"/>
+                                                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="height" relation="greaterThanOrEqual" id="dyD-qw-zsZ"/>
+                                                            </constraints>
+                                                            <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="ezo-fG-LtL">
+                                                                <size key="itemSize" width="128" height="128"/>
+                                                                <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                                                <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                                                <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                                            </collectionViewFlowLayout>
+                                                        </collectionView>
+                                                    </subviews>
+                                                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                                    <constraints>
+                                                        <constraint firstItem="UdF-Wq-BHP" firstAttribute="top" secondItem="y34-nW-wPD" secondAttribute="top" id="C4e-8Q-VDs"/>
+                                                        <constraint firstAttribute="bottom" secondItem="UdF-Wq-BHP" secondAttribute="bottom" id="EVa-Gz-4QX"/>
+                                                        <constraint firstAttribute="trailing" secondItem="UdF-Wq-BHP" secondAttribute="trailing" id="d7d-LU-Vhz"/>
+                                                        <constraint firstItem="UdF-Wq-BHP" firstAttribute="leading" secondItem="y34-nW-wPD" secondAttribute="leading" id="ogg-Dr-rdN"/>
+                                                    </constraints>
+                                                    <connections>
+                                                        <outlet property="carouselHeightConstraint" destination="dyD-qw-zsZ" id="lAR-ki-B6a"/>
+                                                        <outlet property="carouselPageControl" destination="5hR-t8-kdI" id="6Un-XU-Uc7"/>
+                                                        <outlet property="collectionView" destination="UdF-Wq-BHP" id="d30-00-edS"/>
+                                                    </connections>
+                                                </view>
                                                 <view hidden="YES" contentMode="scaleToFill" verticalHuggingPriority="750" verticalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="01e-c5-HnS" userLabel="Empty Space">
-                                                    <rect key="frame" x="0.0" y="146" width="414" height="0.0"/>
+                                                    <rect key="frame" x="0.0" y="446" width="414" height="0.0"/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" relation="greaterThanOrEqual" id="e9Y-gr-e8O"/>
                                                     </constraints>
                                                 </view>
                                             </subviews>
+                                            <constraints>
+                                                <constraint firstItem="y34-nW-wPD" firstAttribute="trailing" secondItem="mHs-W6-s9X" secondAttribute="trailing" id="RoU-uq-CPk"/>
+                                                <constraint firstItem="y34-nW-wPD" firstAttribute="leading" secondItem="mHs-W6-s9X" secondAttribute="leading" id="ebq-qF-U3J"/>
+                                            </constraints>
                                         </stackView>
                                     </subviews>
                                     <constraints>
@@ -108,8 +144,16 @@
                                         <constraint firstAttribute="trailing" secondItem="kFe-rN-o5K" secondAttribute="trailing" id="xap-UG-GBz"/>
                                     </constraints>
                                 </scrollView>
+                                <pageControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" numberOfPages="3" translatesAutoresizingMaskIntoConstraints="NO" id="5hR-t8-kdI">
+                                    <rect key="frame" x="0.0" y="496" width="414" height="25"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="25" id="DL9-m6-0pe"/>
+                                    </constraints>
+                                    <color key="pageIndicatorTintColor" red="0.55490550240000003" green="0.58685298559999999" blue="0.76942896839999997" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                    <color key="currentPageIndicatorTintColor" systemColor="linkColor"/>
+                                </pageControl>
                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="IpI-Mq-vby">
-                                    <rect key="frame" x="0.0" y="476" width="414" height="96"/>
+                                    <rect key="frame" x="0.0" y="521" width="414" height="96"/>
                                     <subviews>
                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wrt-M2-rbv" userLabel="Spacer">
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="16"/>
@@ -138,7 +182,7 @@
                                     </subviews>
                                 </stackView>
                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QTR-Lw-dcX" userLabel="Spacer">
-                                    <rect key="frame" x="0.0" y="572" width="414" height="18"/>
+                                    <rect key="frame" x="0.0" y="617" width="414" height="18"/>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="18" id="ITU-je-EpF"/>
@@ -167,6 +211,9 @@
         </view>
     </objects>
     <resources>
+        <systemColor name="linkColor">
+            <color red="0.0" green="0.47843137254901963" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

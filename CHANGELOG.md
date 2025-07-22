@@ -1,5 +1,22 @@
 ## Changelog
 
+### Unreleased:
+
+### 9.1.0 (2025-02-18)
+- Features:
+    - Implement data model for Custom Json carousel data [RMCCX-7616]
+    - Implement Carousel UI display with manual scroll [RMCCX-7619]
+    - Implement user click behavior on Carousel Images [RMCCX-7618]
+    - Implement autoscroll behavior for Carousel [RMCCX-7620]
+    - Images on FullScreen Campaigns should be center aligned for normal campaigns [RMCCX-8296]
+- Fixes:
+    - Fixed issue of two images appearing on a single page in fullscreen Image Carousel campaign [RMCCX-8178]
+    - Uploaded Image should be displayed when single image is uploaded to JSON for carousel [RMCCX-8192]
+    - Auto scrolling should be stopped once the auto scroll reaches last image [RMCCX-8236]
+    - Prevent images on carousel getting zoomed in after the app is brought back to foreground from background [RMCCX-8247]
+    - Fixed incorrect carousel image display issue on changing device orientation [RMCCX-8330]
+    - Fix image skipping issue on carousel while auto scrolling [RMCCX-8347]
+
 ### 9.0.0 (2024-10-22) 
 - Features:
     - Implement Clickable image through CustomJson [RMCCX-7233]

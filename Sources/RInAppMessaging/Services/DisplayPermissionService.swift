@@ -9,6 +9,7 @@ internal class DisplayPermissionService: DisplayPermissionServiceType, HttpReque
     private let campaignRepository: CampaignRepositoryType
     private let accountRepository: AccountRepositoryType
     private let configurationRepository: ConfigurationRepositoryType
+    private let eventLogger: EventLoggerSendable
 
     private(set) var httpSession: URLSession
     private(set) var lastResponse: RequestResult?
@@ -17,11 +18,13 @@ internal class DisplayPermissionService: DisplayPermissionServiceType, HttpReque
 
     init(campaignRepository: CampaignRepositoryType,
          accountRepository: AccountRepositoryType,
-         configurationRepository: ConfigurationRepositoryType) {
+         configurationRepository: ConfigurationRepositoryType,
+         eventLogger: EventLoggerSendable) {
 
         self.campaignRepository = campaignRepository
         self.accountRepository = accountRepository
         self.configurationRepository = configurationRepository
+        self.eventLogger = eventLogger
         httpSession = URLSession(configuration: configurationRepository.defaultHttpSessionConfiguration)
     }
 
@@ -37,6 +40,7 @@ internal class DisplayPermissionService: DisplayPermissionServiceType, HttpReque
         ]
 
         guard let displayPermissionUrl = configurationRepository.getEndpoints()?.displayPermission else {
+            eventLogger.logEvent(eventType: .critical, errorCode: Constants.IAMErrorCode.displayPerMissingEndpoint.errorCode, errorMessage: Constants.IAMErrorCode.displayPerMissingEndpoint.errorMessage)
             Logger.debug("error: missing endpoint for DisplayPermissionService")
             return fallbackResponse
         }
@@ -59,6 +63,7 @@ internal class DisplayPermissionService: DisplayPermissionServiceType, HttpReque
 
         case .failure(let error):
             guard retry else {
+                eventLogger.logEvent(eventType: .critical, errorCode: Constants.IAMErrorCode.checkPermissionError.errorCode, errorMessage: Constants.IAMErrorCode.checkPermissionError.errorMessage)
                 break
             }
             switch error {
@@ -71,7 +76,6 @@ internal class DisplayPermissionService: DisplayPermissionServiceType, HttpReque
             default: ()
             }
         }
-
         reportError(description: "couldn't get a valid response from display permission endpoint", data: nil)
         return fallbackResponse
     }
@@ -84,10 +88,12 @@ extension DisplayPermissionService {
 
         guard let subscriptionId = configurationRepository.getSubscriptionID(),
               let appVersion = bundleInfo.appVersion else {
+            eventLogger.logEvent(eventType: .warning, errorCode: Constants.IAMErrorCode.displayPerMissingMetadata.errorCode, errorMessage: Constants.IAMErrorCode.displayPerMissingMetadata.errorMessage)
             Logger.debug("error while building request body for display permssion - missing metadata")
             return .failure(RequestError.missingMetadata)
         }
         guard let campaignId = parameters?[Constants.Request.campaignID] as? String else {
+            eventLogger.logEvent(eventType: .warning, errorCode: Constants.IAMErrorCode.displayPerUnexpectedParameters.errorCode, errorMessage: Constants.IAMErrorCode.displayPerUnexpectedParameters.errorMessage)
             Logger.debug("error while building request body for display permssion - unexpected parameters")
             return .failure(RequestError.missingParameters)
         }
@@ -105,6 +111,7 @@ extension DisplayPermissionService {
             let body = try JSONEncoder().encode(permissionRequest)
             return .success(body)
         } catch {
+            eventLogger.logEvent(eventType: .warning, errorCode: Constants.IAMErrorCode.displayPerFailedCreatingRequestBody.errorCode, errorMessage: Constants.IAMErrorCode.displayPerFailedCreatingRequestBody.errorMessage)
             Logger.debug("failed creating a request body.")
             return .failure(error)
         }

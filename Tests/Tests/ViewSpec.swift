@@ -98,7 +98,7 @@ class ViewSpec: QuickSpec {
             }
 
             it("will have .none mode set") {
-                expect(view.mode).to(equal(FullView.Mode.none))
+                expect(view.mode).to(equal(Mode.none))
             }
 
             it("will call viewDidInitialize on presenter after init") {
@@ -223,6 +223,66 @@ class ViewSpec: QuickSpec {
                 view.setup(viewModel: TestHelpers.generateFullViewModel(customJson: nil))
                 expect(view.backgroundViewColor).to(equal(.black.withAlphaComponent(0.14)))
             }
+
+            context("with Carousel Data") {
+                let carouselData = TestHelpers.carouselData
+
+                it("it will display Carousel view and Carousel Page Control if the data is valid") {
+                    view.setup(viewModel: TestHelpers.generateFullViewCarouselModel(carouselData: carouselData))
+                    expect(view.carouselView).toNot(beNil())
+                    expect(view.carouselView.isHidden).to(beFalse())
+                    expect(view.carouselView.collectionView.numberOfItems(inSection: 0)).to(equal(carouselData.count))
+
+                    expect(view.carouselView.carouselPageControl.isHidden).to(beFalse())
+                    expect(view.carouselView.carouselPageControl.numberOfPages).to(equal(carouselData.count))
+                    expect(view.carouselView.carouselPageControl.currentPage).to(equal(0))
+
+                    let indexPath = IndexPath(item: 0, section: 0)
+                    let cell = view.carouselView.collectionView(view.carouselView.collectionView, cellForItemAt: indexPath)
+                    expect(cell).to(beAKindOf(CarouselCell.self))
+                }
+
+                it("it will not display Carousel view and Carousel Page Control if the data is valid but campaign has header and body text") {
+
+                    view.setup(viewModel: TestHelpers.generateFullViewModel(carouselData: carouselData))
+                    expect(view.carouselView.isHidden).to(beTrue())
+                    expect(view.carouselView.carouselPageControl.isHidden).to(beTrue())
+                }
+
+                it("it will display Carousel view and Carousel Page Control if some images are nil") {
+                    let carouselData = [CarouselData(image: UIImage(named: "istockphoto-1047234038"), altText: "error loading image", link: "https://www.google.com"),
+                                                                   CarouselData(image: nil, altText: nil, link: "https://www.google1.com"),
+                                                                   CarouselData(image: nil, altText: "error loading image2", link: "https://www.google2.com")]
+
+                    view.setup(viewModel: TestHelpers.generateFullViewCarouselModel(carouselData: carouselData))
+                    expect(view.carouselView).toNot(beNil())
+                    expect(view.carouselView.isHidden).to(beFalse())
+                    expect(view.carouselView.collectionView.numberOfItems(inSection: 0)).to(equal(carouselData.count))
+
+                    expect(view.carouselView.carouselPageControl.isHidden).to(beFalse())
+                    expect(view.carouselView.carouselPageControl.numberOfPages).to(equal(carouselData.count))
+                    expect(view.carouselView.carouselPageControl.currentPage).to(equal(0))
+
+                    let indexPath = IndexPath(item: 2, section: 0) // index path with nil image
+                    let cell = view.carouselView.collectionView(view.carouselView.collectionView, cellForItemAt: indexPath)
+                    expect(cell).to(beAKindOf(CarouselCell.self))
+                }
+
+                it("it will scroll to the correct collection view page on swipe") {
+                    view.setup(viewModel: TestHelpers.generateFullViewCarouselModel(carouselData: carouselData))
+
+                    view.carouselView.collectionView.frame = CGRect(x: 0, y: 0, width: 300, height: 300)
+                    view.carouselView.collectionView.contentOffset.x = 300 // Scroll to the second item
+                    view.carouselView.pageControlValueChanged()
+                    view.carouselView.scrollViewDidScroll(view.carouselView.collectionView)
+                    expect(view.carouselView.carouselPageControl.currentPage).to(equal(1))
+
+                    view.carouselView.collectionView.contentOffset.x = 600 // Scroll to the third item
+                    view.carouselView.pageControlValueChanged()
+                    view.carouselView.scrollViewDidScroll(view.carouselView.collectionView)
+                    expect(view.carouselView.carouselPageControl.currentPage).to(equal(2))
+                }
+            }
         }
 
         describe("FullScreenView") {
@@ -267,6 +327,7 @@ class BaseViewTestObject: UIView, BaseView {
 }
 
 class BaseViewPresenterMock: BaseViewPresenterType {
+    var carouselData: [CarouselData]?
     var campaign: Campaign!
     var impressions: [Impression] = []
     var impressionService: ImpressionServiceType = ImpressionServiceMock()
@@ -278,6 +339,7 @@ class BaseViewPresenterMock: BaseViewPresenterType {
 }
 
 class FullViewPresenterMock: FullViewPresenterType {
+    var carouselData: [CarouselData]?
     var view: FullViewType?
     var campaign: Campaign!
     var impressions: [Impression] = []
@@ -294,10 +356,11 @@ class FullViewPresenterMock: FullViewPresenterType {
     }
     func handleButtonTrigger(_ trigger: Trigger?) { }
     func optOutCampaign() { }
-    func didClickCampaignImage() {  }
+    func didClickCampaignImage(url: String?) { }
 }
 
 class SlideUpViewPresenterMock: SlideUpViewPresenterType {
+    var carouselData: [CarouselData]?
     var view: SlideUpViewType?
     var campaign: Campaign!
     var impressions: [Impression] = []
@@ -329,7 +392,8 @@ extension FullViewModel {
               showOptOut: true,
               showButtons: true,
               isDismissable: true,
-              customJson: nil)
+              customJson: nil,
+              carouselData: nil)
     }
 }
 

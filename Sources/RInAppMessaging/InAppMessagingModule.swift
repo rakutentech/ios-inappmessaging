@@ -13,6 +13,7 @@ internal class InAppMessagingModule: ErrorDelegate, CampaignDispatcherDelegate, 
     private let campaignRepository: CampaignRepositoryType
     private let router: RouterType
     private let randomizer: RandomizerType
+    private let eventLogger: EventLoggerSendable
 
     private var isInitialized = false
 
@@ -30,7 +31,8 @@ internal class InAppMessagingModule: ErrorDelegate, CampaignDispatcherDelegate, 
          router: RouterType,
          randomizer: RandomizerType,
          displayPermissionService: DisplayPermissionServiceType,
-         tooltipDispatcher: TooltipDispatcherType) {
+         tooltipDispatcher: TooltipDispatcherType,
+         eventLogger: EventLoggerSendable) {
 
         self.configurationManager = configurationManager
         self.campaignsListManager = campaignsListManager
@@ -42,6 +44,7 @@ internal class InAppMessagingModule: ErrorDelegate, CampaignDispatcherDelegate, 
         self.campaignRepository = campaignRepository
         self.router = router
         self.randomizer = randomizer
+        self.eventLogger = eventLogger
 
         self.configurationManager.errorDelegate = self
         self.campaignsListManager.errorDelegate = self

@@ -10,6 +10,7 @@ internal class CampaignsListManager: CampaignsListManagerType, TaskSchedulable {
     private let campaignTriggerAgent: CampaignTriggerAgentType
     private let messageMixerService: MessageMixerServiceType
     private let configurationRepository: ConfigurationRepositoryType
+    private let eventLogger: EventLoggerSendable
 
     weak var errorDelegate: ErrorDelegate?
     var scheduledTask: DispatchWorkItem?
@@ -21,12 +22,14 @@ internal class CampaignsListManager: CampaignsListManagerType, TaskSchedulable {
     init(campaignRepository: CampaignRepositoryType,
          campaignTriggerAgent: CampaignTriggerAgentType,
          messageMixerService: MessageMixerServiceType,
-         configurationRepository: ConfigurationRepositoryType) {
+         configurationRepository: ConfigurationRepositoryType,
+         eventLogger: EventLoggerSendable) {
 
         self.campaignRepository = campaignRepository
         self.campaignTriggerAgent = campaignTriggerAgent
         self.messageMixerService = messageMixerService
         self.configurationRepository = configurationRepository
+        self.eventLogger = eventLogger
     }
 
     deinit {
@@ -75,9 +78,11 @@ internal class CampaignsListManager: CampaignsListManagerType, TaskSchedulable {
 
         switch error {
         case MessageMixerServiceError.invalidConfiguration:
+            eventLogger.logEvent(eventType: .critical, errorCode: Constants.IAMErrorCode.pingInvalidConfig.errorCode, errorMessage: Constants.IAMErrorCode.pingInvalidConfig.errorMessage)
             reportError(description: "Error retrieving InAppMessaging Mixer Server URL", data: nil)
 
         case MessageMixerServiceError.jsonDecodingError(let decodingError):
+            eventLogger.logEvent(eventType: .critical, errorCode: Constants.IAMErrorCode.pingDecodingError.errorCode, errorMessage: Constants.IAMErrorCode.pingDecodingError.errorMessage)
             reportError(description: "Ping request error: Failed to parse json", data: decodingError)
 
         case MessageMixerServiceError.tooManyRequestsError:
@@ -85,13 +90,16 @@ internal class CampaignsListManager: CampaignsListManagerType, TaskSchedulable {
 
         case MessageMixerServiceError.internalServerError(let code):
             guard responseStateMachine.consecutiveErrorCount <= Constants.Retry.retryCount else {
+                eventLogger.logEvent(eventType: .warning, errorCode: Constants.IAMErrorCode.pingInternalServerError.errorCode, errorMessage: Constants.IAMErrorCode.pingInternalServerError.errorMessage)
                 reportError(description: "Ping request error: Response Code \(code): Internal server error", data: nil)
                 return
             }
             scheduleNextPingCallWithRandomizedBackoff()
+            eventLogger.logEvent(eventType: .warning, errorCode: Constants.IAMErrorCode.pingInternalServerError.errorCode, errorMessage: Constants.IAMErrorCode.pingInternalServerError.errorMessage)
             reportError(description: "Ping request error: Response Code \(code): Internal server error. Retry scheduled", data: nil)
 
         case MessageMixerServiceError.invalidRequestError(let code):
+            eventLogger.logEvent(eventType: .warning, errorCode: Constants.IAMErrorCode.pingInvalidRequestError.errorCode, errorMessage: Constants.IAMErrorCode.pingInvalidRequestError.errorMessage)
             reportError(description: "Ping request error: Response Code \(code): Invalid request error", data: nil)
 
         default:
