@@ -25,7 +25,7 @@ final class EventLogger: EventLoggerSendable {
         guard let apiKey = apiKey, let apiUrl = apiUrl else {
             return
         }
-        REventLogger.shared.configure(apiKey: apiKey, apiUrl: apiUrl)
+        REventLogger.shared.configure(apiKey: apiKey, apiUrl: apiUrl, appGroupId: " ")
     }
 
     func logEvent(eventType: REventType, errorCode: String, errorMessage: String) {

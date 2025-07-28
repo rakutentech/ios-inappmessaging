@@ -74,9 +74,9 @@ DEPENDENCIES:
   - Nimble (~> 12.1.0)
   - Quick (~> 5.0)
   - RInAppMessaging (from `.`)
-  - RSDKUtils (~> 5.1.0)
-  - RSDKUtils/Nimble (~> 5.1.0)
-  - RSDKUtils/TestHelpers (~> 5.1.0)
+  - RSDKUtils (from `https://github.com/rakutentech/ios-sdkutils.git`, branch `master`)
+  - RSDKUtils/Nimble (from `https://github.com/rakutentech/ios-sdkutils.git`, branch `master`)
+  - RSDKUtils/TestHelpers (from `https://github.com/rakutentech/ios-sdkutils.git`, branch `master`)
   - Shock (~> 6.1.2)
   - SwiftLint (~> 0.50)
 
@@ -91,7 +91,6 @@ SPEC REPOS:
     - GRMustache.swift
     - Nimble
     - Quick
-    - RSDKUtils
     - Shock
     - SwiftLint
     - SwiftNIO
@@ -104,6 +103,14 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   RInAppMessaging:
     :path: "."
+  RSDKUtils:
+    :branch: master
+    :git: https://github.com/rakutentech/ios-sdkutils.git
+
+CHECKOUT OPTIONS:
+  RSDKUtils:
+    :commit: 2852a674f0c4b8ebe1cbdf3283de6170b55e1fff
+    :git: https://github.com/rakutentech/ios-sdkutils.git
 
 SPEC CHECKSUMS:
   _NIODataStructures: 3d45d8e70a1d17a15b1dc59d102c63dbc0525ffd
@@ -116,7 +123,7 @@ SPEC CHECKSUMS:
   Nimble: 7badc051fbff5e14e3798e2392b9389de67f75ea
   Quick: 749aa754fd1e7d984f2000fe051e18a3a9809179
   RInAppMessaging: a3d7a99450ba7f8e9d9b4eaf6f4c95fdcf2d5b48
-  RSDKUtils: 6ae357662b44e390f026edd3431f57ad23fcaf97
+  RSDKUtils: f175c22053e9388ddf11e0dfdac30e78523af407
   Shock: 34def30d5e729f6c1eea2a5b5c2d024b875af86c
   SwiftLint: 3d48e2fb2a3468fdaccf049e5e755df22fb40c2c
   SwiftNIO: 829958aab300642625091f82fc2f49cb7cf4ef24
@@ -126,6 +133,6 @@ SPEC CHECKSUMS:
   SwiftNIOHTTP1: ef56706550a1dc135ea69d65215b9941e643c23b
   SwiftNIOPosix: b49af4bdbecaadfadd5c93dfe28594d6722b75e4
 
-PODFILE CHECKSUM: bf8834898227837993c3ab3c1c9fb240641fa120
+PODFILE CHECKSUM: d0347eff82c0c74c8af9783699f4d84c7edf040f
 
 COCOAPODS: 1.16.2
