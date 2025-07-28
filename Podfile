@@ -8,7 +8,7 @@ project 'RInAppMessaging', 'UITests' => :debug
 target 'RInAppMessaging_Example' do
   pod 'RInAppMessaging', :path => '.'
   pod 'SwiftLint', '~> 0.50'
-  pod 'RSDKUtils', '~> 5.1.0', :testspecs => ['Nimble', 'TestHelpers']
+  pod 'RSDKUtils', :git => 'https://github.com/rakutentech/ios-sdkutils.git', :branch => 'master', :testspecs => ['Nimble', 'TestHelpers']
   
   pod 'Shock', '~> 6.1.2'
 
