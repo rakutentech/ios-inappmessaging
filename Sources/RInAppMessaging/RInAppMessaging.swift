@@ -219,7 +219,9 @@ import RSDKUtils
         }
         set {
             _eventInfoHandler = newValue
-            eventLogger?.setEventInfoHandler(handler: newValue)
+            if let eventLogger = dependencyManager?.resolve(type: EventLoggerSendable.self) {
+                eventLogger.setEventInfoHandler(handler: newValue)
+            }
         }
     }
     
