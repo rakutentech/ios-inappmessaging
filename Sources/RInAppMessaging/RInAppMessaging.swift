@@ -113,7 +113,7 @@ import RSDKUtils
         /// - apiKey -`InAppMessagingEventLoggerApiUrl`
         /// - apiKey - `InAppMessagingEventLoggerApiKey`
         /// - isEventLoggerEnabled - `InAppMessagingEventLoggerEnabled`
-        let eventLogger = dependencyManager.resolve(type: EventLoggerSendable.self)
+        eventLogger = dependencyManager.resolve(type: EventLoggerSendable.self)
         if !RInAppMessaging.isRMCEnvironment {
             eventLogger?.configure(apiKey: self.loggerApiKey ?? BundleInfo.eventLoggerApiKey,
                                    apiUrl:  self.loggerApiUrl ?? BundleInfo.eventLoggerApiUrl,
