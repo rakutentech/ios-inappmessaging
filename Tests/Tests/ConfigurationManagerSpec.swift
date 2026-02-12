@@ -13,16 +13,19 @@ class ConfigurationManagerSpec: QuickSpec {
             var configurationRepository: ConfigurationRepository!
             var configurationManager: ConfigurationManager!
             var errorDelegate: ErrorDelegateMock!
+            var eventLogger: MockEventLoggerSendable!
 
             beforeEach {
                 reachability = ReachabilityMock()
                 configurationService = ConfigurationServiceMock()
                 configurationRepository = ConfigurationRepository()
                 errorDelegate = ErrorDelegateMock()
+                eventLogger = MockEventLoggerSendable()
                 configurationManager = ConfigurationManager(reachability: reachability,
                                                             configurationService: configurationService,
                                                             configurationRepository: configurationRepository,
-                                                            resumeQueue: DispatchQueue(label: "iam.test.request"))
+                                                            resumeQueue: DispatchQueue(label: "iam.test.request"),
+                                                            eventLogger: eventLogger)
                 configurationManager.errorDelegate = errorDelegate
             }
 
@@ -30,10 +33,11 @@ class ConfigurationManagerSpec: QuickSpec {
 
                 context("when configurationService is nil (when config URL is missing)") {
                     beforeEach {
+                        eventLogger = MockEventLoggerSendable()
                         configurationManager = ConfigurationManager(reachability: reachability,
                                                                     configurationService: nil,
                                                                     configurationRepository: configurationRepository,
-                                                                    resumeQueue: DispatchQueue(label: "iam.test.request"))
+                                                                    resumeQueue: DispatchQueue(label: "iam.test.request"), eventLogger: eventLogger)
                         configurationManager.errorDelegate = errorDelegate
                     }
 

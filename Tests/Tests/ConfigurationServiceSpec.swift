@@ -24,6 +24,8 @@ class ConfigurationServiceSpec: QuickSpec {
         var service: ConfigurationService!
         var httpSession: URLSessionMock!
         var configRepository: ConfigurationRepository!
+        var eventLogger: MockEventLoggerSendable!
+        let constants = Constants.IAMErrorCode.self
 
         describe("ConfigurationService") {
 
@@ -31,8 +33,10 @@ class ConfigurationServiceSpec: QuickSpec {
                 URLSessionMock.startMockingURLSession()
 
                 configRepository = ConfigurationRepository()
+                eventLogger = MockEventLoggerSendable()
                 configRepository.saveIAMModuleConfiguration(moduleConfig)
-                service = ConfigurationService(configurationRepository: configRepository)
+                service = ConfigurationService(configurationRepository: configRepository,
+                                               eventLogger: eventLogger)
 
                 BundleInfoMock.reset()
                 service.bundleInfo = BundleInfoMock.self
@@ -135,6 +139,11 @@ class ConfigurationServiceSpec: QuickSpec {
                                 let error = result.getError()
                                 expect(error).toNot(beNil())
 
+                                expect(eventLogger.logEventCalled).to(beTrue())
+                                expect(eventLogger.lastEventType).to(equal(REventType.critical))
+                                expect(eventLogger.lastErrorCode).to(equal(constants.configTooManyRequestsError.errorCode + "429"))
+                                expect(eventLogger.lastErrorMessage).to(equal(constants.configTooManyRequestsError.errorMessage))
+
                                 guard case .tooManyRequestsError = error else {
                                     fail("Unexpected error type \(String(describing: error)). Expected .tooManyRequestsError")
                                     done()
@@ -153,6 +162,12 @@ class ConfigurationServiceSpec: QuickSpec {
                                 let error = result.getError()
                                 expect(error).toNot(beNil())
 
+                                expect(eventLogger.logEventCalled).to(beTrue())
+                                expect(eventLogger.lastEventType).to(equal(REventType.critical))
+
+                                expect(eventLogger.lastErrorCode).to(equal(constants.configMissingOrInvalidSubscriptionId.errorCode + "400"))
+                                expect(eventLogger.lastErrorMessage).to(equal(constants.configMissingOrInvalidSubscriptionId.errorMessage))
+
                                 guard case .missingOrInvalidSubscriptionId = error else {
                                     fail("Unexpected error type \(String(describing: error)). Expected .missingOrInvalidSubscriptionId")
                                     done()
@@ -170,6 +185,11 @@ class ConfigurationServiceSpec: QuickSpec {
                                 let result = service.getConfigData()
                                 let error = result.getError()
                                 expect(error).toNot(beNil())
+
+                                expect(eventLogger.logEventCalled).to(beTrue())
+                                expect(eventLogger.lastEventType).to(equal(REventType.critical))
+                                expect(eventLogger.lastErrorCode).to(equal(constants.configUnknownSubscriptionId.errorCode + "404"))
+                                expect(eventLogger.lastErrorMessage).to(equal(constants.configUnknownSubscriptionId.errorMessage))
 
                                 guard case .unknownSubscriptionId = error else {
                                     fail("Unexpected error type \(String(describing: error)). Expected .missingOrInvalidSubscriptionId")
@@ -190,6 +210,14 @@ class ConfigurationServiceSpec: QuickSpec {
                                     let result = service.getConfigData()
                                     let error = result.getError()
                                     expect(error).toNot(beNil())
+
+                                    expect(eventLogger.logEventCalled).to(beTrue())
+                                    expect(eventLogger.lastEventType).to(equal(REventType.critical))
+                                    let errorCodeParts = eventLogger.lastErrorCode?.components(separatedBy: ":")
+                                    expect(Int(errorCodeParts?[1] ?? " ")).to(beGreaterThanOrEqualTo(300))
+                                    expect(Int(errorCodeParts?[1] ?? " ")).to(beLessThan(500))
+                                    expect((errorCodeParts?[0])!+":").to(equal(constants.configInvalidRequestError.errorCode))
+                                    expect(eventLogger.lastErrorMessage).to(equal(constants.configInvalidRequestError.errorMessage))
 
                                     guard case .invalidRequestError(let code) = error else {
                                         fail("Unexpected error type \(String(describing: error)). Expected .invalidRequestError")
@@ -214,6 +242,13 @@ class ConfigurationServiceSpec: QuickSpec {
                                     let result = service.getConfigData()
                                     let error = result.getError()
                                     expect(error).toNot(beNil())
+
+                                    expect(eventLogger.logEventCalled).to(beTrue())
+                                    expect(eventLogger.lastEventType).to(equal(REventType.critical))
+                                    let errorCodeParts = eventLogger.lastErrorCode?.components(separatedBy: ":")
+                                    expect(Int(errorCodeParts?[1] ?? " ")).to(beGreaterThanOrEqualTo(500))
+                                    expect((errorCodeParts?[0])!+":").to(equal(constants.configInternalServerError.errorCode))
+                                    expect(eventLogger.lastErrorMessage).to(equal(constants.configInternalServerError.errorMessage))
 
                                     guard case .internalServerError(let code) = error else {
                                         fail("Unexpected error type \(String(describing: error)). Expected .internalServerError")

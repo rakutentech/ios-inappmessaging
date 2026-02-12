@@ -213,7 +213,7 @@ class CustomJsonSpec: QuickSpec {
 
                 context("when JSON contains all fields") {
                     beforeEach {
-                        jsonData = """
+                        jsonData = Data("""
                                 {
                                     "carousel": {
                                         "images": {
@@ -230,7 +230,7 @@ class CustomJsonSpec: QuickSpec {
                                         }
                                     }
                                 }
-                                """.data(using: .utf8)
+                                """.utf8)
                         let decoder = JSONDecoder()
                         decoder.keyDecodingStrategy = .convertFromSnakeCase
                         let decodedData = try? decoder.decode([String: Carousel].self, from: jsonData)
@@ -252,7 +252,7 @@ class CustomJsonSpec: QuickSpec {
 
                 context("when JSON is missing some fields") {
                     beforeEach {
-                        jsonData = """
+                        jsonData = Data("""
                                 {
                                     "carousel": {
                                         "images": {
@@ -262,7 +262,7 @@ class CustomJsonSpec: QuickSpec {
                                         }
                                     }
                                 }
-                                """.data(using: .utf8)
+                                """.utf8)
                         let decoder = JSONDecoder()
                         decoder.keyDecodingStrategy = .convertFromSnakeCase
                         let decodedData = try? decoder.decode([String: Carousel].self, from: jsonData)
@@ -279,11 +279,11 @@ class CustomJsonSpec: QuickSpec {
 
                 context("when JSON has no images") {
                     beforeEach {
-                        jsonData = """
+                        jsonData = Data("""
                                 {
                                     "carousel": {}
                                 }
-                                """.data(using: .utf8)
+                                """.utf8)
                         let decodedData = try? JSONDecoder().decode([String: Carousel].self, from: jsonData)
                         carousel = decodedData?["carousel"]
                     }
@@ -295,7 +295,7 @@ class CustomJsonSpec: QuickSpec {
 
                 context("when JSON is completely empty") {
                     beforeEach {
-                        jsonData = "{}".data(using: .utf8)
+                        jsonData = Data("{}".utf8)
                         let decodedData = try? JSONDecoder().decode([String: Carousel].self, from: jsonData)
                         carousel = decodedData?["carousel"]
                     }
@@ -307,11 +307,11 @@ class CustomJsonSpec: QuickSpec {
 
                 context("when JSON contains 'carousel' key but no images") {
                     beforeEach {
-                        jsonData = """
+                        jsonData = Data("""
                         {
                             "carousel": {}
                         }
-                        """.data(using: .utf8)
+                        """.utf8)
 
                         let decodedData = try? JSONDecoder().decode([String: Carousel].self, from: jsonData)
                         carousel = decodedData?["carousel"]
@@ -324,13 +324,13 @@ class CustomJsonSpec: QuickSpec {
 
                 context("when 'images' is an empty dictionary") {
                     beforeEach {
-                        jsonData = """
+                        jsonData = Data("""
                         {
                             "carousel": {
                                 "images": {}
                             }
                         }
-                        """.data(using: .utf8)
+                        """.utf8)
 
                         let decodedData = try? JSONDecoder().decode([String: Carousel].self, from: jsonData)
                         carousel = decodedData?["carousel"]
@@ -344,7 +344,7 @@ class CustomJsonSpec: QuickSpec {
 
                 context("when images contain empty ImageDetails objects") {
                     beforeEach {
-                        jsonData = """
+                        jsonData = Data("""
                         {
                             "carousel": {
                                 "images": {
@@ -352,7 +352,7 @@ class CustomJsonSpec: QuickSpec {
                                 }
                             }
                         }
-                        """.data(using: .utf8)
+                        """.utf8)
 
                         let decodedData = try? JSONDecoder().decode([String: Carousel].self, from: jsonData)
                         carousel = decodedData?["carousel"]

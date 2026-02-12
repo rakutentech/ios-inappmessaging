@@ -15,12 +15,13 @@ let package = Package(
             targets: ["RInAppMessaging"])
     ],
     dependencies: [
-        .package(url: "https://github.com/rakutentech/ios-sdkutils.git", .upToNextMajor(from: "5.1.0"))
+        .package(url: "https://github.com/rakutentech/ios-sdkutils.git", branch: "master")
     ],
     targets: [
         .target(
             name: "RInAppMessaging",
-            dependencies: [.product(name: "RSDKUtilsMain", package: "ios-sdkutils")],
+            dependencies: [.product(name: "RSDKUtilsMain", package: "ios-sdkutils"),
+                           .product(name: "REventLogger", package: "ios-sdkutils")],
             resources: [.process("Resources")]
         )
     ],

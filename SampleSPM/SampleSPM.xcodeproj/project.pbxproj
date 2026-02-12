@@ -267,8 +267,8 @@
 		D920D8CA2277B965008FB38D /* SecondPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondPageViewController.swift; sourceTree = "<group>"; };
 		D924268022D91046002F50D3 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Main.strings; sourceTree = "<group>"; };
 		D924268122D91046002F50D3 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
-		D924268622D91C15002F50D3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
-		D924268822D91C19002F50D3 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
+		D924268622D91C15002F50D3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = ../../Sample/Base.lproj/Localizable.strings; sourceTree = "<group>"; };
+		D924268822D91C19002F50D3 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ../../Sample/ja.lproj/Localizable.strings; sourceTree = "<group>"; };
 		D92D1F242224A265008EA748 /* TestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestHelpers.swift; sourceTree = "<group>"; };
 		E6DDD1212A2F3A44005365DA /* TooltipViewSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TooltipViewSpec.swift; sourceTree = "<group>"; };
 		E6DDD1232A2F3A64005365DA /* tooltip-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "tooltip-data.json"; sourceTree = "<group>"; };
@@ -476,7 +476,6 @@
 				607FACDC1AFB9204008FA782 /* Images.xcassets */,
 				607FACDE1AFB9204008FA782 /* LaunchScreen.xib */,
 				607FACD31AFB9204008FA782 /* Supporting Files */,
-				D924268522D91C15002F50D3 /* Localizable.strings */,
 			);
 			name = Sample;
 			path = ../Sample;
@@ -498,6 +497,7 @@
 		607FACE81AFB9204008FA782 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				D924268522D91C15002F50D3 /* Localizable.strings */,
 				45B572F625AE2163005A80F7 /* Helpers */,
 				45357AE32457EB49007D8FDC /* Payloads */,
 				D234A6FA291C62CB0086AC80 /* AccountRepositorySpec.swift */,

@@ -85,5 +85,11 @@
 	<string>blank-Bold</string>
 	<key>InAppMessagingCustomFontNameButton</key>
 	<string>blank-Bold</string>
+	<key>InAppMessagingEventLoggerApiUrl</key>
+	<string>eventLoggerSampleKey</string>
+	<key>InAppMessagingEventLoggerApiKey</key>
+	<string>https://stg.eventLogger.url</string>
+	<key>InAppMessagingEventLoggerEnabled</key>
+	<true/>
 </dict>
 </plist>

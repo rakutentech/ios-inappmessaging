@@ -30,6 +30,7 @@ class InAppMessagingModuleSpec: QuickSpec {
             var campaignRepository: CampaignRepositoryMock!
             var router: RouterMock!
             var randomizer: RandomizerMock!
+            var eventLogger: MockEventLoggerSendable!
 
             beforeEach {
                 configurationManager = ConfigurationManagerMock()
@@ -39,6 +40,7 @@ class InAppMessagingModuleSpec: QuickSpec {
                 campaignsValidator = CampaignsValidatorMock()
                 eventMatcher = EventMatcherMock()
                 readyCampaignDispatcher = CampaignDispatcherMock()
+                eventLogger = MockEventLoggerSendable()
                 campaignTriggerAgent = CampaignTriggerAgent(eventMatcher: eventMatcher,
                                                             readyCampaignDispatcher: readyCampaignDispatcher,
                                                             tooltipDispatcher: TooltipDispatcherMock(),
@@ -57,7 +59,8 @@ class InAppMessagingModuleSpec: QuickSpec {
                                                  router: router,
                                                  randomizer: randomizer,
                                                  displayPermissionService: DisplayPermissionServiceMock(),
-                                                 tooltipDispatcher: TooltipDispatcherMock())
+                                                 tooltipDispatcher: TooltipDispatcherMock(),
+                                                 eventLogger: eventLogger)
             }
 
             context("when calling initialize") {

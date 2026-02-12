@@ -24,6 +24,7 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
             var imageDetails: [String: ImageDetails]!
             var images: [UIImage?]!
             var result: [CarouselData]!
+            var eventlogger: MockEventLoggerSendable!
 
             beforeEach {
                 URLCache.shared.removeAllCachedResponses()
@@ -31,9 +32,11 @@ class ReadyCampaignDispatcherSpec: QuickSpec {
                 campaignRepository = CampaignRepositoryMock()
                 router = RouterMock()
                 delegate = Delegate()
+                eventlogger = MockEventLoggerSendable()
                 dispatcher = CampaignDispatcher(router: router,
                                                 permissionService: permissionService,
-                                                campaignRepository: campaignRepository)
+                                                campaignRepository: campaignRepository,
+                                                eventlogger: eventlogger)
                 dispatcher.delegate = delegate
 
                 URLSessionMock.startMockingURLSession()
